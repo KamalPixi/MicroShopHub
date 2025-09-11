@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product Form with Relations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .form-container {
+            transition: all 0.3s ease;
+        }
+
+        .form-container:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-field,
+        .textarea-field,
+        .select-field {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-field:focus,
+        .textarea-field:focus,
+        .select-field:focus {
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .error-message {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            color: #dc2626;
+        }
+
+        .form-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .form-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .form-button:active {
+            transform: translateY(0);
+        }
+
+        .checkbox-field {
+            accent-color: #2563eb;
+        }
+
+        .table-field {
+            border: 1px solid #e5e7eb;
+        }
+
+        .table-field th,
+        .table-field td {
+            padding: 0.5rem;
+        }
+
+        .table-field input {
+            padding: 0.25rem;
+        }
+
+        .attribute-display {
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="bg-white p-4 rounded-lg shadow form-container max-w-3xl mx-auto">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Add New Product
+        </h3>
+        <div class="space-y-4">
+            <form wire:submit.prevent="submit" class="space-y-5">
+                <!-- Product Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Product Name</label>
+                    <input wire:model="name" type="text" id="name" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Enter product name">
+                    @error('name') <span class="error-message">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Slug -->
+                <div>
+                    <label for="slug" class="block text-sm font-medium text-gray-700">Slug</label>
+                    <input wire:model="slug" type="text" id="slug" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Enter product slug">
+                    @error('slug') <span class="error-message">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea wire:model="description" id="description" rows="4" class="textarea-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Describe the product"></textarea>
+                    @error('description') <span class="error-message">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Categories</label>
+                    <select wire:model="selectedCategories" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                        @foreach ($categoryOptions as $id => $name)
+                        <option value="{{ $id }}">{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    <p class="mt-1 text-xs text-gray-500">Select one or more categories (subcategories are indented).</p>
+                    @error('selectedCategories') <span class="error-message">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Related Products -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Related Products</label>
+                    <select wire:model="relatedProducts" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                        @foreach ($availableProducts as $id => $name)
+                        <option value="{{ $id }}">{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    <p class="mt-1 text-xs text-gray-500">Select products for cross-sells or upsells (e.g., "You may also like").</p>
+                    @error('relatedProducts') <span class="error-message">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Add New Attribute -->
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Add New Attribute</h4>
+                    <div class="space-y-2">
+                        <div>
+                            <label for="newAttributeName" class="block text-sm font-medium text-gray-700">Attribute Name</label>
+                            <input wire:model="newAttribute.name" type="text" id="newAttributeName" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g., Color, Size">
+                            @error('newAttribute.name') <span class="error-message">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Attribute Values</label>
+                            @foreach ($newAttribute['values'] as $index => $value)
+                            <div class="flex items-center space-x-2 mt-1">
+                                <input wire:model="newAttribute.values.{{ $index }}" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g., Red, Medium">
+                                <button type="button" wire:click="removeAttributeValueField({{ $index }})" class="form-button bg-red-600 text-white px-2 py-1 rounded-lg hover:bg-red-700 text-sm">Remove</button>
+                            </div>
+                            @error("newAttribute.values.{$index}") <span class="error-message">{{ $message }}</span> @enderror
+                            @endforeach
+                            <button type="button" wire:click="addAttributeValueField" class="form-button bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 text-sm mt-2">Add Value</button>
+                        </div>
+                        <button type="button" wire:click="saveNewAttribute" class="form-button bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">Save Attribute</button>
+                    </div>
+                </div>
+
+                <!-- Select Attributes -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Select Attributes</label>
+                    <select wire:model="selectedAttributes" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                        @foreach ($productAttributes as $attribute)
+                        <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('selectedAttributes') <span class="error-message">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Attribute Values -->
+                @foreach ($selectedAttributes as $attrId)
+                @php $attr = $productAttributes->find($attrId); @endphp
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">{{ $attr->name }} Values</label>
+                    <select wire:model="attributeValues.{{ $attrId }}" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                        @foreach ($attr->values as $value)
+                        <option value="{{ $value->id }}">{{ $value->value }}</option>
+                        @endforeach
+                    </select>
+                    @error("attributeValues.{$attrId}") <span class="error-message">{{ $message }}</span> @enderror
+                </div>
+                @endforeach
+
+                <!-- Display Selected Attributes and Values -->
+                @if (!empty($selectedAttributesDisplay))
+                <div class="mt-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Selected Attributes</h4>
+                    <div class="attribute-display p-4">
+                        @foreach ($selectedAttributesDisplay as $attr)
+                        <div class="mb-2">
+                            <span class="font-medium text-gray-800">{{ $attr['name'] }}:</span>
+                            <span class="text-gray-600">{{ $attr['values'] ?: 'No values selected' }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                <!-- Has Variations Checkbox -->
+                <div class="flex items-center">
+                    <input wire:model="has_variations" type="checkbox" id="has_variations" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="has_variations" class="ml-2 block text-sm font-medium text-gray-700">Has Variations</label>
+                </div>
+
+                <!-- Generate Variations Button (Conditional) -->
+                @if ($has_variations)
+                <button type="button" wire:click="generateVariations" class="form-button bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">Generate Variations</button>
+
+                <!-- Variations Table -->
+                @if (!empty($variations))
+                <div class="mt-4">
+                    <h3 class="text-base font-semibold text-gray-800 mb-3">Variations</h3>
+                    <table class="table-field w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="p-2 font-medium text-gray-700">Combination</th>
+                                <th class="p-2 font-medium text-gray-700">SKU</th>
+                                <th class="p-2 font-medium text-gray-700">Price</th>
+                                <th class="p-2 font-medium text-gray-700">Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($variations as $index => $var)
+                            <tr class="border-t hover:bg-gray-50">
+                                <td class="p-2">
+                                    @foreach ($var['attribute_values'] as $attrId => $valId)
+                                    {{ $productAttributes->find($attrId)->name }}: {{ $productAttributes->find($attrId)->values->find($valId)->value }}<br>
+                                    @endforeach
+                                </td>
+                                <td class="p-2">
+                                    <input wire:model="variations.{{ $index }}.sku" type="text" class="input-field w-full border border-gray-300 rounded-md text-sm">
+                                    @error("variations.{$index}.sku") <span class="error-message">{{ $message }}</span> @enderror
+                                </td>
+                                <td class="p-2">
+                                    <input wire:model="variations.{{ $index }}.price" type="number" step="0.01" class="input-field w-full border border-gray-300 rounded-md text-sm">
+                                    @error("variations.{$index}.price") <span class="error-message">{{ $message }}</span> @enderror
+                                </td>
+                                <td class="p-2">
+                                    <input wire:model="variations.{{ $index }}.stock" type="number" class="input-field w-full border border-gray-300 rounded-md text-sm">
+                                    @error("variations.{$index}.stock") <span class="error-message">{{ $message }}</span> @enderror
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @endif
+                @else
+                <!-- Conditional Fields for No Variations -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+                        <input wire:model="price" type="number" step="0.01" id="price" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="0.00">
+                        @error('price') <span class="error-message">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
+                        <input wire:model="stock" type="number" id="stock" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="0">
+                        @error('stock') <span class="error-message">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                @endif
+
+                <!-- Submit Button -->
+                <button type="submit" class="form-button bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Add Product
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
