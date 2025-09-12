@@ -14,11 +14,11 @@
     </h2>
     <div class="flex items-center">
         <span class="text-gray-600 text-sm mr-3">Admin</span>
-        <a href="#" class="text-blue-600 hover:underline text-sm flex items-center">
+        <a href="{{ route('admin.logout') }}" class="text-blue-600 hover:underline text-sm flex items-center">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"></path>
             </svg>
-            Logout
+            Signout
         </a>
     </div>
 </header>

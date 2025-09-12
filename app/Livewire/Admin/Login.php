@@ -2,8 +2,6 @@
 
 namespace App\Livewire\Admin;
 
-namespace App\Livewire\Admin;
-
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 

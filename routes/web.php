@@ -11,17 +11,24 @@ Route::prefix('admin')
     // Open routes
     // ------------------
     Route::controller('AuthController')->group(function () {
-        Route::get('/login', 'login')->name('login');
+        Route::get('/', 'login')->name('login');
         Route::get('/password-request', 'passwordRequest')->name('password.request');
     });
 
     // ------------------
     // Protected routes
     // ------------------
-    Route::middleware(['auth:admin'])->group(function () {
+    Route::middleware(['auth.admin'])->group(function () {
+
+        Route::controller('AuthController')->group(function () {
+            Route::get('/logout', 'logout')->name('logout');
+        });
+
         // Dashboard
         Route::controller('DashboardController')->group(function () {
             Route::get('/dashboard', 'index')->name('dashboard');
+            Route::get('/settings', 'settings')->name('settings');
+            Route::get('/shipping-methods', 'shippingMethods')->name('shipping-methods');
         });
 
         // Products
@@ -45,6 +52,21 @@ Route::prefix('admin')
         // Discounts
         Route::controller('DiscountController')->group(function () {
             Route::get('/discounts', 'index')->name('discounts.index');
+        });
+
+        Route::controller('CustomerController')->group(function () {
+            Route::get('/customers', 'index')->name('customers');
+        });
+
+        Route::controller('OrderController')->group(function () {
+            Route::get('/orders', 'index')->name('orders');
+        });
+
+        Route::controller('UserController')->group(function () {
+            Route::get('/users', 'index')->name('users');
+            Route::get('/users/create', 'create')->name('users.create');
+            Route::get('/users/show', 'show')->name('users.show');
+            Route::get('/users/edit', 'edit')->name('users.edit');
         });
 
     }); // end protected routes

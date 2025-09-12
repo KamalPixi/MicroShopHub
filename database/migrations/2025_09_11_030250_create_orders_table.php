@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('total', 12, 2)->default(0);
             $table->decimal('shipping_cost', 10, 2)->default(0);
             $table->string('shipping_address')->nullable();
+            $table->foreignId('shipping_method_id')->nullable()->constrained('shipping_methods')->onDelete('set null');
             $table->timestamps();
         });
     }

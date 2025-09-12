@@ -14,14 +14,17 @@
     </div>
     <nav class="flex-1">
         <ul>
+            <!-- Dashboard -->
             <li class="mb-3">
-                <a href="#" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2M9 19"></path>
                     </svg>
                     Dashboard
                 </a>
             </li>
+
+            <!-- Products -->
             <li class="mb-3">
                 <a href="{{ route('admin.products.index') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,31 +33,89 @@
                     Products
                 </a>
             </li>
+
+            <!-- Orders -->
             <li class="mb-3">
-                <a href="#" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+                <a href="{{ route('admin.orders') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                     Orders
                 </a>
             </li>
+
+            <!-- Customers -->
             <li class="mb-3">
-                <a href="#" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+                <a href="{{ route('admin.customers') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                     Customers
                 </a>
             </li>
+
+            <!-- Users -->
             <li class="mb-3">
-                <a href="#" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <a href="{{ route('admin.users') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M17 20h5v-2a4 4 0 00-4-4h-1
+                                 M9 20H4v-2a4 4 0 014-4h1
+                                 M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
-                    Settings
+                    Users
                 </a>
             </li>
+
+            <!-- Settings with nested menu -->
+            <li class="mb-3">
+                <button 
+                    class="flex items-center text-sm hover:bg-gray-700 p-2 rounded w-full" 
+                    onclick="document.getElementById('settings-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                >
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066
+                                c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572
+                                c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573
+                                c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065
+                                c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066
+                                c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572
+                                c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573
+                                c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Settings
+                    <svg class="chevron ml-auto w-4 h-4 transform transition-transform" 
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+                <ul id="settings-submenu" class="ml-6 mt-2 hidden">
+                    <li class="mb-2">
+                        <a href="{{ route('admin.settings') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                            Shop Setting
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ route('admin.shipping-methods') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                            Shipping Methods
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="mb-3">
+                <a href="{{ route('admin.logout') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+                    </svg>
+                    Signout
+                </a>
+            </li>
+
+
         </ul>
     </nav>
 </aside>
