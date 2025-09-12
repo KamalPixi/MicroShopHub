@@ -2,5 +2,5 @@
 
 @section('content')
     @include('admin.includes.breadcrumb')
-    @livewire('Admin.ProductList')
+    @livewire('Admin.Discounts')
 @endsection

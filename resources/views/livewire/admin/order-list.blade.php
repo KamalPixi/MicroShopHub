@@ -7,6 +7,10 @@
             Order List
         </h3>
     </div>
+    
+    {{-- success/failed message --}}
+    @include('admin.includes.message')
+
     <div class="mb-4">
         <label for="search" class="block text-sm font-medium text-gray-700">Search Orders</label>
         <input 
@@ -17,12 +21,6 @@
             placeholder="Search by order ID, customer name, or status"
         >
     </div>
-
-    @if (session()->has('message'))
-        <div class="mb-4 p-2 bg-green-100 text-green-700 rounded-md text-sm">
-            {{ session('message') }}
-        </div>
-    @endif
 
     <div class="overflow-x-auto">
         <table class="table-field w-full text-left text-sm">

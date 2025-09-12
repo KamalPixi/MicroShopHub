@@ -17,6 +17,7 @@ class ProductList extends Component
     public function deleteProduct($productId) {
         $product = Product::findOrFail($productId);
         $product->delete();
+        session()->flash('message', 'Product deleted successfully!');
     }
 
     public function render()

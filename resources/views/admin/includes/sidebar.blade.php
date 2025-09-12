@@ -50,6 +50,11 @@
                             Categories
                         </a>
                     </li>
+                    <li class="mb-2">
+                        <a href="{{ route('admin.discounts.index') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                            Discounts
+                        </a>
+                    </li>
                 </ul>
             </li>
 

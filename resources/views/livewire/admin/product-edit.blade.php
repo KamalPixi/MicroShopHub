@@ -7,8 +7,11 @@
     </h3>
     <div class="space-y-4">
         <div>
+            {{-- success/failed message --}}
+            @include('admin.includes.message')
             @include('admin.includes.errors')
         </div>
+        
         <div wire:loading wire:target="submit">
             @include('admin.includes.loading')
         </div>

@@ -47,6 +47,8 @@ Route::prefix('admin')
 
         Route::controller('CustomerController')->group(function () {
             Route::get('/customers', 'index')->name('customers');
+            Route::get('/customers/show', 'show')->name('customers.show');
+            Route::get('/customers/edit', 'edit')->name('customers.edit');
         });
 
         Route::controller('OrderController')->group(function () {
@@ -55,9 +57,6 @@ Route::prefix('admin')
 
         Route::controller('UserController')->group(function () {
             Route::get('/users', 'index')->name('users');
-            Route::get('/users/create', 'create')->name('users.create');
-            Route::get('/users/show', 'show')->name('users.show');
-            Route::get('/users/edit', 'edit')->name('users.edit');
         });
 
     }); // end protected routes

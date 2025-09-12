@@ -9,11 +9,8 @@
         </h3>
     </div>
 
-    @if (session()->has('message'))
-        <div class="mb-4 p-2 bg-green-100 text-green-700 rounded-md text-sm">
-            {{ session('message') }}
-        </div>
-    @endif
+    {{-- success/failed message --}}
+    @include('admin.includes.message')
 
     <div class="space-y-6">
         <!-- General Settings -->

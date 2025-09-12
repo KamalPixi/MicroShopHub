@@ -5,17 +5,14 @@
         </svg>
         Add New Product
     </h3>
-    <div class="space-y-4">
 
-        @if ($errors->any())
-            <div class="bg-red-100 text-red-700 px-3 py-2 rounded mb-4 text-sm">
-                <ul class="list-disc list-inside">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <div class="space-y-4">
+    
+        <div>
+            {{-- success/failed message --}}
+            @include('admin.includes.message')
+            @include('admin.includes.errors')
+        </div>
 
         <form wire:submit.prevent="submit" class="space-y-5">
             <!-- Product Name -->

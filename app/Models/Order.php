@@ -11,4 +11,9 @@ class Order extends Model
     {
         return $this->belongsTo(ShippingMethod::class);
     }
+
+    public function discounts()
+    {
+        return $this->belongsToMany(Discount::class, 'discount_order')->withPivot('applied_value')->withTimestamps();
+    }
 }

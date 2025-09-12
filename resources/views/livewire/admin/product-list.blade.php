@@ -19,6 +19,10 @@
         <label for="search" class="block text-sm font-medium text-gray-700">Search Products</label>
         <input wire:model.live="search" type="text" id="search" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Search by name, slug, or category">
     </div>
+
+    {{-- success/failed message --}}
+    @include('admin.includes.message')
+
     <div class="overflow-x-auto">
         <table class="table-field w-full text-left text-sm">
             <thead>

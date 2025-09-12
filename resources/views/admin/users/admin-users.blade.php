@@ -2,6 +2,5 @@
 
 @section('content')
     @include('admin.includes.breadcrumb')
-
-    @livewire('Admin.UserList')
+    @livewire('Admin.AdminUsers')
 @endsection

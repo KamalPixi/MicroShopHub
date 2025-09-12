@@ -7,6 +7,10 @@
             Customer List
         </h3>
     </div>
+    
+    {{-- success/failed message --}}
+    @include('admin.includes.message')
+
     <div class="mb-4">
         <label for="search" class="block text-sm font-medium text-gray-700">Search Customers</label>
         <input 
@@ -17,12 +21,6 @@
             placeholder="Search by name, email, or phone"
         >
     </div>
-
-    @if (session()->has('message'))
-        <div class="mb-4 p-2 bg-green-100 text-green-700 rounded-md text-sm">
-            {{ session('message') }}
-        </div>
-    @endif
 
     <div class="overflow-x-auto">
         <table class="table-field w-full text-left text-sm">
@@ -45,7 +43,7 @@
                         <td class="p-2">{{ $customer->email }}</td>
                         <td class="p-2">{{ $customer->phone ?? 'N/A' }}</td>
                         <td class="p-2">{{ $customer->address ?? 'N/A' }}</td>
-                        <td class="p-2">{{ $customer->created_at->format('Y-m-d H:i') }}</td>
+                        <td class="p-2">{{ $customer->created_at?->format('Y-m-d H:i') }}</td>
                         <td class="p-2 text-end space-x-1">
                             <!-- View -->
                             <a href="{{ route('admin.customers.show', ['customer_id' => $customer->id]) }}" class="inline-flex items-center py-1 text-blue-600 hover:text-blue-800 rounded" title="View">
