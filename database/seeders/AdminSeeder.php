@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         Admin::updateOrCreate(
-            ['email' => 'admin@microshophub.com'],
+            ['email' => 'admin@e.com'],
             [
                 'name' => 'Admin',
                 'password' => Hash::make('password'),

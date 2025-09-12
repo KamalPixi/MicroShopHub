@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Cotton T-Shirt - ShopHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#2563eb', secondary: '#64748b' } } }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-700">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-12">
+            <h1 class="text-lg font-bold text-primary">ShopHub</h1>
+            <div class="flex-1 mx-3 hidden sm:block">
+                <input type="text" placeholder="Search..." class="w-full pl-8 pr-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <div class="flex items-center space-x-2">
+                <button class="p-1 text-gray-600 hover:text-primary">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </button>
+                <button class="p-1 text-gray-600 hover:text-primary relative">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m-2.4 8l1.44-4.8M7 13L5.4 7M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v8a2 2 0 01-2 2H9a2 2 0 01-2-2v-8" />
+                    </svg>
+                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 text-sm flex flex-wrap text-gray-600">
+        <a href="#" class="hover:text-primary">Home</a><span class="mx-1">/</span>
+        <a href="#" class="hover:text-primary">Clothing</a><span class="mx-1">/</span>
+        <a href="#" class="hover:text-primary">T-Shirts</a><span class="mx-1">/</span>
+        <span class="text-gray-900">Premium Cotton T-Shirt</span>
+    </div>
+
+    <!-- Product Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 grid lg:grid-cols-2 gap-6">
+        <!-- Image Gallery -->
+        <div class="flex flex-col space-y-3">
+            <div class="w-full h-64 bg-gradient-to-br from-blue-100 to-blue-300 rounded-lg flex items-center justify-center text-4xl">👕</div>
+            <div class="grid grid-cols-4 gap-1">
+                <div class="h-14 bg-blue-200 rounded-md flex items-center justify-center text-xs text-gray-600 cursor-pointer">Front</div>
+                <div class="h-14 bg-green-200 rounded-md flex items-center justify-center text-xs text-gray-600 cursor-pointer">Back</div>
+                <div class="h-14 bg-purple-200 rounded-md flex items-center justify-center text-xs text-gray-600 cursor-pointer">Side</div>
+                <div class="h-14 bg-pink-200 rounded-md flex items-center justify-center text-xs text-gray-600 cursor-pointer">Detail</div>
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="space-y-3">
+            <h1 class="text-xl font-bold text-gray-900">Premium Cotton T-Shirt</h1>
+            <div class="flex items-center space-x-2">
+                <p class="text-lg font-bold text-primary">$29.99</p>
+                <p class="text-gray-500 line-through text-sm">$39.99</p>
+                <span class="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded">25% OFF</span>
+            </div>
+
+            <!-- Color Selection -->
+            <div>
+                <h3 class="text-sm font-medium text-gray-900">Color</h3>
+                <div class="flex space-x-2 mt-1">
+                    <span class="w-5 h-5 rounded-full bg-blue-900 border border-gray-300 cursor-pointer"></span>
+                    <span class="w-5 h-5 rounded-full bg-white border border-gray-300 cursor-pointer"></span>
+                    <span class="w-5 h-5 rounded-full bg-black border border-gray-300 cursor-pointer"></span>
+                    <span class="w-5 h-5 rounded-full bg-red-500 border border-gray-300 cursor-pointer"></span>
+                </div>
+            </div>
+
+            <!-- Size Selection -->
+            <div>
+                <h3 class="text-sm font-medium text-gray-900 flex justify-between">Size <a href="#" class="text-primary text-xs">Size guide</a></h3>
+                <div class="grid grid-cols-3 sm:grid-cols-6 gap-1 mt-1 text-xs">
+                    <div class="border rounded-md py-1 text-center cursor-pointer">XS</div>
+                    <div class="border rounded-md py-1 text-center cursor-pointer">S</div>
+                    <div class="border rounded-md py-1 text-center cursor-pointer bg-gray-200">M</div>
+                    <div class="border rounded-md py-1 text-center cursor-pointer">L</div>
+                    <div class="border rounded-md py-1 text-center cursor-pointer">XL</div>
+                    <div class="border rounded-md py-1 text-center text-gray-400 cursor-not-allowed">XXL</div>
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div>
+                <h3 class="text-sm font-medium text-gray-900">Quantity</h3>
+                <div class="flex items-center mt-1 border rounded-md w-28">
+                    <button class="p-1 text-gray-600 hover:text-gray-900">-</button>
+                    <input type="number" value="1" min="1" class="w-10 text-center border-0 focus:outline-none text-sm">
+                    <button class="p-1 text-gray-600 hover:text-gray-900">+</button>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex space-x-2 mt-2">
+                <button class="flex-1 bg-primary text-white py-1.5 rounded-md text-sm hover:bg-blue-700">Add to Cart</button>
+                <button class="flex-1 border border-primary text-primary py-1.5 rounded-md text-sm hover:bg-blue-50">Buy Now</button>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-2 space-y-1 text-xs">
+                <div class="flex items-center space-x-1">
+                    <svg class="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Free Shipping on orders over $50</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                    </svg>
+                    <span>30-day return policy</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <svg class="w-3 h-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>100% Cotton, Soft & Breathable</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mt-4 border-t border-gray-200">
+            <nav class="flex -mb-px space-x-4 text-xs font-medium" aria-label="Tabs">
+                <button class="tab-btn text-primary border-b-2 border-primary py-2 px-2" data-tab="description">Description</button>
+                <button class="tab-btn text-gray-500 hover:text-gray-700 border-b-2 border-transparent py-2 px-2" data-tab="reviews">Reviews</button>
+                <button class="tab-btn text-gray-500 hover:text-gray-700 border-b-2 border-transparent py-2 px-2" data-tab="shipping">Shipping & Returns</button>
+            </nav>
+        </div>
+
+        <div class="tab-content mt-2 text-sm space-y-2">
+            <div id="description" class="tab-panel">
+                <p>This premium cotton t-shirt is made from 100% organic cotton. Soft, breathable, and perfect for casual wear.</p>
+            </div>
+            <div id="reviews" class="tab-panel hidden">
+                <p>No reviews yet. Be the first to review!</p>
+            </div>
+            <div id="shipping" class="tab-panel hidden">
+                <p>Free shipping on orders over $50. 30-day return policy applies.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-8 py-4 text-xs text-gray-500 text-center border-t border-gray-200">
+        &copy; 2025 ShopHub. All rights reserved.
+    </footer>
+
+    <script>
+        // Tabs functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabButtons.forEach(b => b.classList.remove('text-primary', 'border-primary'));
+                tabButtons.forEach(b => b.classList.add('text-gray-500', 'border-transparent'));
+                btn.classList.add('text-primary', 'border-primary');
+                btn.classList.remove('text-gray-500', 'border-transparent');
+
+                const target = btn.getAttribute('data-tab');
+                tabPanels.forEach(panel => panel.classList.add('hidden'));
+                document.getElementById(target).classList.remove('hidden');
+            });
+        });
+    </script>
+
+</body>
+
+</html>

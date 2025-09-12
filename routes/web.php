@@ -29,6 +29,7 @@ Route::prefix('admin')
             Route::get('/dashboard', 'index')->name('dashboard');
             Route::get('/settings', 'settings')->name('settings');
             Route::get('/shipping-methods', 'shippingMethods')->name('shipping-methods');
+            Route::get('/categories', 'categories')->name('categories');
         });
 
         // Products
@@ -37,16 +38,6 @@ Route::prefix('admin')
             Route::get('/products/create', 'create')->name('products.create');
             Route::get('/products/show', 'show')->name('products.show');
             Route::get('/products/edit', 'edit')->name('products.edit');
-        });
-
-        // Categories
-        Route::controller('CategoryController')->group(function () {
-            Route::get('/categories', 'index')->name('categories.index');
-        });
-
-        // Attributes
-        Route::controller('AttributeController')->group(function () {
-            Route::get('/attributes', 'index')->name('attributes.index');
         });
 
         // Discounts

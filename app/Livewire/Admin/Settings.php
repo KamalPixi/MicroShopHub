@@ -14,6 +14,7 @@ class Settings extends Component
     public $settings = [
         'shop_logo' => '',
         'branding_color' => '#000000',
+        'shop_name' => '',
         'site_title' => '',
         'meta_description' => '',
         'meta_keywords' => '',
@@ -24,16 +25,19 @@ class Settings extends Component
         'stripe_api_key' => '',
         'paypal_api_key' => '',
         'sslcommerz_api_key' => '',
-        'currency' => 'USD',
+        'currency' => 'BDT',
         'tax_rate' => 0,
+        'email' => '',
+        'phone' => '',
     ];
 
     public $logo; // Temporary property for file upload
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048', // Max 2MB
-        'settings.branding_color' => 'required|regex:/^#[0-9A-Fa-f]{6}$/',
-        'settings.site_title' => 'required|string|max:255',
+        'settings.branding_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+        'settings.shop_name' => 'nullable|string|max:255',
+        'settings.site_title' => 'nullable|string|max:255',
         'settings.meta_description' => 'nullable|string|max:500',
         'settings.meta_keywords' => 'nullable|string|max:255',
         'settings.social_facebook' => 'nullable|url',
@@ -43,8 +47,10 @@ class Settings extends Component
         'settings.stripe_api_key' => 'nullable|string|max:255',
         'settings.paypal_api_key' => 'nullable|string|max:255',
         'settings.sslcommerz_api_key' => 'nullable|string|max:255',
-        'settings.currency' => 'required|string|in:USD,BDT,EUR,GBP',
-        'settings.tax_rate' => 'required|numeric|min:0|max:100',
+        'settings.currency' => 'nullable|string|in:USD,BDT,EUR,GBP',
+        'settings.tax_rate' => 'nullable|numeric|min:0|max:100',
+        'settings.email' => 'nullable|numeric|min:0|max:100',
+        'settings.phone' => 'nullable|numeric|min:0|max:100',
     ];
 
     public function mount()

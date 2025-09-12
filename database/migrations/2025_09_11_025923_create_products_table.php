@@ -18,12 +18,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('thumbnail');
+            $table->string('thumbnail')->nullable();
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->nullable(); // if no variations
             $table->integer('stock')->nullable();        // if no variations
             $table->boolean('has_variations')->default(false);
-            $table->boolean('is_active')->default(false);
+            $table->boolean('status')->default(false);
             $table->timestamps();
         });
     }

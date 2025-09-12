@@ -17,12 +17,11 @@
             </div>
         @endif
 
-
         <form wire:submit.prevent="submit" class="space-y-5">
             <!-- Product Name -->
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Product Name</label>
-                <input wire:model="name" type="text" id="name" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Enter product name">
+                <input wire:model.live="name" type="text" id="name" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Enter product name">
                 @error('name') <span class="error-message">{{ $message }}</span> @enderror
             </div>
 
@@ -43,6 +42,9 @@
             <!-- Thumbnail -->
             <div>
                 <label for="thumbnail" class="block text-sm font-medium text-gray-700">Thumbnail (Main Image)</label>
+                <p class="text-xs text-gray-500 mb-2">
+                    Recommended size: <span class="font-medium">500x500px</span> (1:1 ratio)
+                </p>
                 <input wire:model="thumbnail" type="file" id="thumbnail" accept="image/*" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
                 <p class="mt-1 text-xs text-gray-500">Upload the main product image (JPEG, PNG).</p>
                 @if ($thumbnail)
@@ -56,6 +58,9 @@
             <!-- Additional Images -->
             <div>
                 <label for="images" class="block text-sm font-medium text-gray-700">Additional Images</label>
+                <p class="text-xs text-gray-500 mb-2">
+                    Recommended size: <span class="font-medium">1000x800px</span> (5:4 ratio)
+                </p>
                 <input wire:model="images" type="file" id="images" accept="image/*" multiple class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
                 <p class="mt-1 text-xs text-gray-500">Upload additional product images (JPEG, PNG).</p>
                 @if ($images)

@@ -17,7 +17,10 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('subtitle')->nullable();
             $table->string('slug')->unique();
+            $table->string('thumbnail')->nullable();
+            $table->boolean('show_on_homepage')->default(false);
             $table->foreignId('parent_id')->nullable()->constrained('categories')->cascadeOnDelete();
             $table->timestamps();
         });

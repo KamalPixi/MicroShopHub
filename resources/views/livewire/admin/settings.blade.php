@@ -21,6 +21,17 @@
             <h4 class="text-sm font-medium text-gray-700 mb-3">General Settings</h4>
             <div class="space-y-4">
                 <div>
+                    <label for="shop_name" class="block text-sm font-medium text-gray-700">Shop Name</label>
+                    <input 
+                        wire:model="settings.shop_name" 
+                        type="text" 
+                        id="shop_name" 
+                        class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
+                        placeholder="Enter shop name"
+                    >
+                    @error('settings.shop_name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                </div>
+                <div>
                     <label for="logo" class="block text-sm font-medium text-gray-700">Shop Logo</label>
                     <input 
                         wire:model="logo" 
@@ -208,6 +219,35 @@
                         placeholder="Enter tax rate"
                     >
                     @error('settings.tax_rate') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div>
+            <h4 class="text-sm font-medium text-gray-700 mb-3">Contact Info</h4>
+            <div class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input 
+                        wire:model="settings.email" 
+                        type="email" 
+                        id="email" 
+                        class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
+                        placeholder="Enter support email"
+                    >
+                    @error('settings.email') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                    <input 
+                        wire:model="settings.phone" 
+                        type="text" 
+                        id="phone" 
+                        class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
+                        placeholder="Enter support phone"
+                    >
+                    @error('settings.phone') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                 </div>
             </div>
         </div>

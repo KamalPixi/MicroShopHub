@@ -26,12 +26,31 @@
 
             <!-- Products -->
             <li class="mb-3">
-                <a href="{{ route('admin.products.index') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+                <button 
+                    class="flex items-center text-sm hover:bg-gray-700 p-2 rounded w-full" 
+                    onclick="document.getElementById('products-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                >
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
                     Products
-                </a>
+                    <svg class="chevron ml-auto w-4 h-4 transform transition-transform" 
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+                <ul id="products-submenu" class="ml-6 mt-2 hidden">
+                    <li class="mb-2">
+                        <a href="{{ route('admin.products.index') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                            All Products
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ route('admin.categories') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                            Categories
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <!-- Orders -->
@@ -95,7 +114,7 @@
                 <ul id="settings-submenu" class="ml-6 mt-2 hidden">
                     <li class="mb-2">
                         <a href="{{ route('admin.settings') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
-                            Shop Setting
+                            Shop Settings
                         </a>
                     </li>
                     <li class="mb-2">

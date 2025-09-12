@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,8 +19,9 @@
         }
     </script>
 </head>
+
 <body class="bg-gray-50">
-    <!-- Header (Same as homepage) -->
+    <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
@@ -76,7 +78,7 @@
                 <!-- Thumbnail Images -->
                 <div class="mt-6 w-full max-w-2xl mx-auto sm:block lg:max-w-none">
                     <div class="grid grid-cols-4 gap-6" id="thumbnail-container">
-                        <button class="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-primary thumbnail-btn active" data-image="1">
+                        <button class="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-primary thumbnail-btn active ring-2 ring-primary" data-image="1">
                             <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-300 rounded-md flex items-center justify-center">
                                 <span class="text-xs text-gray-600">Front View</span>
                             </div>
@@ -100,11 +102,11 @@
                 </div>
 
                 <!-- Main Image -->
-                <!-- <div class="w-full aspect-w-1 aspect-h-1">
+                <div class="w-full aspect-w-1 aspect-h-1">
                     <div id="main-image" class="w-full h-96 bg-gradient-to-br from-blue-100 to-blue-300 rounded-lg flex items-center justify-center relative overflow-hidden">
                         <div class="text-center">
                             <div class="text-6xl mb-4">👕</div>
-                            <span class="text-gray-600 text-lg">Premium Cotton T-Shirt</span>
+                            <span class="text-gray-600 text-lg" id="main-image-text">Premium Cotton T-Shirt</span>
                             <div class="absolute top-4 right-4">
                                 <button class="p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 transition-colors">
                                     <svg class="w-5 h-5 text-gray-600 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,24 +116,7 @@
                             </div>
                         </div>
                     </div>
-                </div> -->
-
-            <div class="w-full aspect-w-1 aspect-h-1">
-                <div id="main-image" class="w-full h-96 rounded-lg overflow-hidden relative">
-                    <img src="https://placehold.co/800x1000" alt="Premium Cotton T-Shirt" class="w-full h-full object-cover">
-                    <div class="absolute bottom-4 left-4 text-white bg-black/50 px-3 py-1 rounded">
-                        Premium Cotton T-Shirt
-                    </div>
-                    <div class="absolute top-4 right-4">
-                        <button class="p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 transition-colors">
-                            <svg class="w-5 h-5 text-gray-600 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
                 </div>
-            </div>
-
             </div>
 
             <!-- Product Info -->
@@ -140,8 +125,8 @@
                 <div class="mt-3">
                     <h2 class="sr-only">Product information</h2>
                     <div class="flex items-center">
-                        <p class="text-3xl tracking-tight text-primary font-bold">$29.99</p>
-                        <p class="ml-3 text-lg text-gray-500 line-through">$39.99</p>
+                        <p class="text-3xl tracking-tight text-primary font-bold" id="current-price">$29.99</p>
+                        <p class="ml-3 text-lg text-gray-500 line-through" id="original-price">$39.99</p>
                         <span class="ml-3 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">25% OFF</span>
                     </div>
                 </div>
@@ -151,19 +136,19 @@
                     <div class="flex items-center">
                         <div class="flex items-center">
                             <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                             <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                             <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                             <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                             <svg class="text-gray-300 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                         </div>
                         <p class="ml-3 text-sm text-gray-600">4.1 out of 5 stars</p>
@@ -171,41 +156,84 @@
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <h3 class="sr-only">Description</h3>
-                    <div class="text-base text-gray-700">
-                        <p>Experience ultimate comfort with our premium 100% organic cotton t-shirt. Designed for everyday wear, this versatile piece features a classic fit that flatters all body types. The soft, breathable fabric ensures all-day comfort while maintaining its shape wash after wash.</p>
+                <!-- Selected Variant Info -->
+                <div class="mt-4 p-3 bg-blue-50 rounded-lg" id="variant-info">
+                    <div class="text-sm text-gray-700">
+                        <span class="font-medium">Selected:</span>
+                        <span id="selected-variant">Navy Blue, Medium</span>
+                        <span class="ml-2 text-green-600 font-medium" id="stock-status">In Stock (15 available)</span>
                     </div>
                 </div>
 
                 <form class="mt-6">
-                    <!-- Color Selection -->
+                    <!-- Color Selection with Visual Swatches -->
                     <div>
-                        <h3 class="text-sm font-medium text-gray-900">Color</h3>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-medium text-gray-900">Color</h3>
+                            <span class="text-sm text-gray-500" id="selected-color">Navy Blue</span>
+                        </div>
                         <fieldset class="mt-2">
                             <legend class="sr-only">Choose a color</legend>
                             <div class="flex items-center space-x-3">
-                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-900">
-                                    <input type="radio" name="color-choice" value="Navy" class="sr-only" checked>
+                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-2 ring-primary ring-offset-2 color-option" data-color="Navy Blue" data-price="29.99">
+                                    <input type="radio" name="color-choice" value="navy" class="sr-only" checked>
                                     <span class="h-8 w-8 bg-blue-900 border border-black border-opacity-10 rounded-full"></span>
                                 </label>
-                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-900">
-                                    <input type="radio" name="color-choice" value="White" class="sr-only">
+                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-900 color-option" data-color="White" data-price="29.99">
+                                    <input type="radio" name="color-choice" value="white" class="sr-only">
                                     <span class="h-8 w-8 bg-white border border-black border-opacity-10 rounded-full"></span>
                                 </label>
-                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-900">
-                                    <input type="radio" name="color-choice" value="Black" class="sr-only">
+                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-900 color-option" data-color="Black" data-price="29.99">
+                                    <input type="radio" name="color-choice" value="black" class="sr-only">
                                     <span class="h-8 w-8 bg-black border border-black border-opacity-10 rounded-full"></span>
                                 </label>
-                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-900">
-                                    <input type="radio" name="color-choice" value="Red" class="sr-only">
+                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-900 color-option" data-color="Red" data-price="32.99">
+                                    <input type="radio" name="color-choice" value="red" class="sr-only">
                                     <span class="h-8 w-8 bg-red-500 border border-black border-opacity-10 rounded-full"></span>
+                                </label>
+                                <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-900 color-option" data-color="Forest Green" data-price="34.99">
+                                    <input type="radio" name="color-choice" value="green" class="sr-only">
+                                    <span class="h-8 w-8 bg-green-700 border border-black border-opacity-10 rounded-full"></span>
                                 </label>
                             </div>
                         </fieldset>
                     </div>
 
-                    <!-- Size Selection -->
+                    <!-- Style Variation -->
+                    <div class="mt-8">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-medium text-gray-900">Style</h3>
+                            <span class="text-sm text-gray-500" id="selected-style">Regular Fit</span>
+                        </div>
+                        <fieldset class="mt-2">
+                            <legend class="sr-only">Choose a style</legend>
+                            <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                <label class="cursor-pointer bg-white border-2 border-primary rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium hover:bg-blue-50 focus:outline-none style-option" data-style="Regular Fit" data-modifier="0">
+                                    <input type="radio" name="style-choice" value="regular" class="sr-only" checked>
+                                    <div class="text-center">
+                                        <div class="font-medium">Regular Fit</div>
+                                        <div class="text-xs text-gray-500 mt-1">Classic comfort</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer bg-white border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium hover:bg-gray-50 focus:outline-none style-option" data-style="Slim Fit" data-modifier="2">
+                                    <input type="radio" name="style-choice" value="slim" class="sr-only">
+                                    <div class="text-center">
+                                        <div class="font-medium">Slim Fit</div>
+                                        <div class="text-xs text-gray-500 mt-1">Tailored cut <span class="text-green-600">+$2</span></div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer bg-white border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium hover:bg-gray-50 focus:outline-none style-option" data-style="Oversized" data-modifier="5">
+                                    <input type="radio" name="style-choice" value="oversized" class="sr-only">
+                                    <div class="text-center">
+                                        <div class="font-medium">Oversized</div>
+                                        <div class="text-xs text-gray-500 mt-1">Relaxed fit <span class="text-green-600">+$5</span></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <!-- Size Selection with Stock Indicators -->
                     <div class="mt-8">
                         <div class="flex items-center justify-between">
                             <h3 class="text-sm font-medium text-gray-900">Size</h3>
@@ -214,29 +242,76 @@
                         <fieldset class="mt-2">
                             <legend class="sr-only">Choose a size</legend>
                             <div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
-                                <label class="cursor-pointer bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1">
+                                <label class="cursor-pointer bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 size-option" data-size="XS" data-stock="3">
                                     <input type="radio" name="size-choice" value="XS" class="sr-only">
-                                    <span>XS</span>
+                                    <div class="text-center">
+                                        <span>XS</span>
+                                        <div class="text-xs text-orange-600 mt-1">3 left</div>
+                                    </div>
                                 </label>
-                                <label class="cursor-pointer bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1">
+                                <label class="cursor-pointer bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 size-option" data-size="S" data-stock="8">
                                     <input type="radio" name="size-choice" value="S" class="sr-only">
-                                    <span>S</span>
+                                    <div class="text-center">
+                                        <span>S</span>
+                                        <div class="text-xs text-green-600 mt-1">In stock</div>
+                                    </div>
                                 </label>
-                                <label class="cursor-pointer bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1">
+                                <label class="cursor-pointer bg-primary border-2 border-primary rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase text-white focus:outline-none sm:flex-1 size-option" data-size="M" data-stock="15">
                                     <input type="radio" name="size-choice" value="M" class="sr-only" checked>
-                                    <span>M</span>
+                                    <div class="text-center">
+                                        <span>M</span>
+                                        <div class="text-xs mt-1 opacity-90">In stock</div>
+                                    </div>
                                 </label>
-                                <label class="cursor-cursor bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1">
+                                <label class="cursor-pointer bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 size-option" data-size="L" data-stock="12">
                                     <input type="radio" name="size-choice" value="L" class="sr-only">
-                                    <span>L</span>
+                                    <div class="text-center">
+                                        <span>L</span>
+                                        <div class="text-xs text-green-600 mt-1">In stock</div>
+                                    </div>
                                 </label>
-                                <label class="cursor-pointer bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1">
+                                <label class="cursor-pointer bg-white border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 size-option" data-size="XL" data-stock="7">
                                     <input type="radio" name="size-choice" value="XL" class="sr-only">
-                                    <span>XL</span>
+                                    <div class="text-center">
+                                        <span>XL</span>
+                                        <div class="text-xs text-green-600 mt-1">In stock</div>
+                                    </div>
                                 </label>
-                                <label class="cursor-not-allowed bg-gray-50 text-gray-200 cursor-not-allowed border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase sm:flex-1">
+                                <label class="cursor-not-allowed bg-gray-50 text-gray-200 border rounded-md py-3 px-3 flex items-center justify-center text-sm font-medium uppercase sm:flex-1" data-size="XXL" data-stock="0">
                                     <input type="radio" name="size-choice" value="XXL" disabled class="sr-only">
-                                    <span>XXL</span>
+                                    <div class="text-center">
+                                        <span>XXL</span>
+                                        <div class="text-xs text-red-500 mt-1">Out of stock</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <!-- Material Option -->
+                    <div class="mt-8">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-medium text-gray-900">Material</h3>
+                            <span class="text-sm text-gray-500" id="selected-material">100% Organic Cotton</span>
+                        </div>
+                        <fieldset class="mt-2">
+                            <legend class="sr-only">Choose material</legend>
+                            <div class="grid grid-cols-1 gap-3">
+                                <label class="cursor-pointer bg-white border-2 border-primary rounded-md py-3 px-4 flex items-center justify-between text-sm font-medium hover:bg-blue-50 focus:outline-none material-option" data-material="100% Organic Cotton" data-modifier="0">
+                                    <input type="radio" name="material-choice" value="organic" class="sr-only" checked>
+                                    <div>
+                                        <div class="font-medium">100% Organic Cotton</div>
+                                        <div class="text-xs text-gray-500 mt-1">Eco-friendly, soft, breathable</div>
+                                    </div>
+                                    <div class="text-green-600 font-medium">Included</div>
+                                </label>
+                                <label class="cursor-pointer bg-white border rounded-md py-3 px-4 flex items-center justify-between text-sm font-medium hover:bg-gray-50 focus:outline-none material-option" data-material="Cotton Blend" data-modifier="3">
+                                    <input type="radio" name="material-choice" value="blend" class="sr-only">
+                                    <div>
+                                        <div class="font-medium">Premium Cotton Blend</div>
+                                        <div class="text-xs text-gray-500 mt-1">Wrinkle-resistant, durable</div>
+                                    </div>
+                                    <div class="text-green-600 font-medium">+$3</div>
                                 </label>
                             </div>
                         </fieldset>
@@ -247,13 +322,13 @@
                         <h3 class="text-sm font-medium text-gray-900">Quantity</h3>
                         <div class="mt-2">
                             <div class="flex items-center border border-gray-300 rounded-md">
-                                <button type="button" class="p-2 text-gray-600 hover:text-gray-900" id="decrease-qty">
+                                <button type="button" class="p-2 text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed" id="decrease-qty">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
                                     </svg>
                                 </button>
-                                <input type="number" id="quantity" value="1" min="1" max="10" class="w-16 text-center border-0 focus:ring-0 focus:outline-none">
-                                <button type="button" class="p-2 text-gray-600 hover:text-gray-900" id="increase-qty">
+                                <input type="number" id="quantity" value="1" min="1" max="15" class="w-16 text-center border-0 focus:ring-0 focus:outline-none">
+                                <button type="button" class="p-2 text-gray-600 hover:text-gray-900 disabled:text-gray-300 disabled:cursor-not-allowed" id="increase-qty">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                     </svg>
@@ -264,7 +339,7 @@
 
                     <!-- Add to Cart -->
                     <div class="mt-8 flex space-x-4">
-                        <button type="button" id="add-to-cart" class="flex-1 bg-primary border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                        <button type="button" id="add-to-cart" class="flex-1 bg-primary border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed">
                             Add to Cart
                         </button>
                         <button type="button" class="flex-1 bg-white border border-primary rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-primary hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
@@ -340,18 +415,19 @@
                     <div class="prose max-w-none">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Product Description</h3>
                         <p class="text-gray-600 mb-4">
-                            Our Premium Cotton T-Shirt is crafted from the finest 100% organic cotton, ensuring exceptional comfort and durability. The fabric is pre-shrunk and garment-washed for a soft, lived-in feel that only gets better with each wear.
+                            Experience ultimate comfort with our premium cotton t-shirt collection. Each piece is carefully crafted to deliver exceptional quality, comfort, and style that adapts to your lifestyle.
                         </p>
                         <p class="text-gray-600 mb-4">
-                            Features include reinforced seams, a tagless design for maximum comfort, and a classic fit that works for any occasion. Whether you're dressing it up with a blazer or keeping it casual with jeans, this versatile tee is a wardrobe essential.
+                            Available in multiple fits and finishes, this versatile tee features reinforced construction and premium materials. Whether you choose our classic organic cotton or upgrade to our premium blend, you'll enjoy lasting comfort and durability.
                         </p>
                         <ul class="list-disc pl-6 text-gray-600 space-y-1">
-                            <li>100% organic cotton construction</li>
-                            <li>Pre-shrunk and garment-washed</li>
+                            <li>Multiple fit options: Regular, Slim, and Oversized</li>
+                            <li>Choice of 100% organic cotton or premium cotton blend</li>
+                            <li>Available in 5 carefully selected colors</li>
                             <li>Reinforced shoulder and sleeve seams</li>
-                            <li>Tagless design for comfort</li>
-                            <li>Available in multiple colors and sizes</li>
-                            <li>Machine washable</li>
+                            <li>Tagless design for maximum comfort</li>
+                            <li>Pre-shrunk and garment-washed</li>
+                            <li>Machine washable and easy care</li>
                         </ul>
                     </div>
                 </div>
@@ -363,16 +439,16 @@
                             <h3 class="text-lg font-medium text-gray-900 mb-4">Material & Care</h3>
                             <dl class="space-y-3">
                                 <div class="flex justify-between">
-                                    <dt class="text-sm font-medium text-gray-900">Material</dt>
-                                    <dd class="text-sm text-gray-600">100% Organic Cotton</dd>
+                                    <dt class="text-sm font-medium text-gray-900">Material Options</dt>
+                                    <dd class="text-sm text-gray-600">100% Organic Cotton / Cotton Blend</dd>
                                 </div>
                                 <div class="flex justify-between">
                                     <dt class="text-sm font-medium text-gray-900">Weight</dt>
                                     <dd class="text-sm text-gray-600">180 GSM</dd>
                                 </div>
                                 <div class="flex justify-between">
-                                    <dt class="text-sm font-medium text-gray-900">Fit</dt>
-                                    <dd class="text-sm text-gray-600">Classic Fit</dd>
+                                    <dt class="text-sm font-medium text-gray-900">Fit Options</dt>
+                                    <dd class="text-sm text-gray-600">Regular, Slim, Oversized</dd>
                                 </div>
                                 <div class="flex justify-between">
                                     <dt class="text-sm font-medium text-gray-900">Care</dt>
@@ -385,7 +461,7 @@
                             </dl>
                         </div>
                         <div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Size Chart</h3>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Size Chart (Regular Fit)</h3>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full text-sm">
                                     <thead>
@@ -437,19 +513,19 @@
                                 <div class="flex items-center">
                                     <div class="flex items-center">
                                         <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                         <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                         <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                         <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                         <svg class="text-gray-300 h-5 w-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                     </div>
                                     <p class="ml-2 text-sm text-gray-900">4.1 out of 5 stars</p>
@@ -472,17 +548,18 @@
                                             <h4 class="text-sm font-bold text-gray-900">John Doe</h4>
                                             <div class="ml-4 flex items-center">
                                                 <svg class="text-yellow-400 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                 </svg>
                                             </div>
                                         </div>
                                         <p class="mt-1 text-sm text-gray-600">2 weeks ago • Verified Purchase</p>
                                         <div class="mt-4 text-sm text-gray-600">
-                                            <p>Perfect t-shirt! Bought 3 different colors. The fit is exactly what I expected and the quality is outstanding for the price. Highly recommend!</p>
+                                            <p>Ordered the slim fit in black - perfect! The fit is exactly what I expected and the quality is outstanding for the price. Love the different options available.</p>
                                         </div>
-                                        <div class="mt-4 flex items-center text-xs text-gray-500">
+                                        <div class="mt-4 flex items-center text-xs text-gray-500 space-x-2">
                                             <span class="bg-gray-100 px-2 py-1 rounded">Size: L</span>
-                                            <span class="ml-2 bg-gray-100 px-2 py-1 rounded">Color: Black</span>
+                                            <span class="bg-gray-100 px-2 py-1 rounded">Color: Black</span>
+                                            <span class="bg-gray-100 px-2 py-1 rounded">Style: Slim Fit</span>
                                         </div>
                                         <div class="mt-4">
                                             <button class="text-sm text-gray-500 hover:text-gray-700">Helpful (15)</button>
@@ -650,178 +727,340 @@
     </div>
 
     <script>
-        // Image gallery functionality
-        const thumbnails = document.querySelectorAll('.thumbnail-btn');
-        const mainImage = document.getElementById('main-image');
-        
-        const imageData = {
-            '1': {
-                gradient: 'from-blue-100 to-blue-300',
-                emoji: '👕',
-                text: 'Premium Cotton T-Shirt'
+        // Product variation data
+        const productVariations = {
+            colors: {
+                'navy': { name: 'Navy Blue', price: 29.99, gradient: 'from-blue-100 to-blue-300' },
+                'white': { name: 'White', price: 29.99, gradient: 'from-gray-100 to-gray-200' },
+                'black': { name: 'Black', price: 29.99, gradient: 'from-gray-300 to-gray-500' },
+                'red': { name: 'Red', price: 32.99, gradient: 'from-red-100 to-red-300' },
+                'green': { name: 'Forest Green', price: 34.99, gradient: 'from-green-100 to-green-300' }
             },
-            '2': {
-                gradient: 'from-green-100 to-green-300',
-                emoji: '👕',
-                text: 'Back View'
+            styles: {
+                'regular': { name: 'Regular Fit', modifier: 0 },
+                'slim': { name: 'Slim Fit', modifier: 2 },
+                'oversized': { name: 'Oversized', modifier: 5 }
             },
-            '3': {
-                gradient: 'from-purple-100 to-purple-300',
-                emoji: '👕',
-                text: 'Side Profile'
+            materials: {
+                'organic': { name: '100% Organic Cotton', modifier: 0 },
+                'blend': { name: 'Cotton Blend', modifier: 3 }
             },
-            '4': {
-                gradient: 'from-pink-100 to-pink-300',
-                emoji: '👕',
-                text: 'Detail Shot'
+            sizes: {
+                'XS': { stock: 3 },
+                'S': { stock: 8 },
+                'M': { stock: 15 },
+                'L': { stock: 12 },
+                'XL': { stock: 7 },
+                'XXL': { stock: 0 }
             }
         };
 
-        thumbnails.forEach(thumbnail => {
-            thumbnail.addEventListener('click', function() {
-                // Remove active class from all thumbnails
-                thumbnails.forEach(t => t.classList.remove('active', 'ring-2', 'ring-primary'));
-                
-                // Add active class to clicked thumbnail
-                this.classList.add('active', 'ring-2', 'ring-primary');
-                
-                // Update main image
-                const imageId = this.getAttribute('data-image');
-                const data = imageData[imageId];
-                
-                mainImage.className = `w-full h-96 bg-gradient-to-br ${data.gradient} rounded-lg flex items-center justify-center relative overflow-hidden`;
-                mainImage.innerHTML = `
-                    <div class="text-center">
-                        <div class="text-6xl mb-4">${data.emoji}</div>
-                        <span class="text-gray-600 text-lg">${data.text}</span>
-                        <div class="absolute top-4 right-4">
-                            <button class="p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 transition-colors">
-                                <svg class="w-5 h-5 text-gray-600 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                </svg>
-                            </button>
+        // Current selections
+        let currentSelection = {
+            color: 'navy',
+            style: 'regular',
+            material: 'organic',
+            size: 'M'
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            updateVariantDisplay();
+            updatePrice();
+            initializeEventListeners();
+        });
+
+        function initializeEventListeners() {
+            // Image gallery functionality
+            const thumbnails = document.querySelectorAll('.thumbnail-btn');
+            const mainImage = document.getElementById('main-image');
+
+            const imageData = {
+                '1': { gradient: 'from-blue-100 to-blue-300', emoji: '👕', text: 'Premium Cotton T-Shirt' },
+                '2': { gradient: 'from-green-100 to-green-300', emoji: '👕', text: 'Back View' },
+                '3': { gradient: 'from-purple-100 to-purple-300', emoji: '👕', text: 'Side Profile' },
+                '4': { gradient: 'from-pink-100 to-pink-300', emoji: '👕', text: 'Detail Shot' }
+            };
+
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function () {
+                    thumbnails.forEach(t => t.classList.remove('active', 'ring-2', 'ring-primary'));
+                    this.classList.add('active', 'ring-2', 'ring-primary');
+
+                    const imageId = this.getAttribute('data-image');
+                    const data = imageData[imageId];
+                    const currentColor = productVariations.colors[currentSelection.color];
+
+                    mainImage.className = `w-full h-96 bg-gradient-to-br ${currentColor.gradient} rounded-lg flex items-center justify-center relative overflow-hidden`;
+                    mainImage.innerHTML = `
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">${data.emoji}</div>
+                            <span class="text-gray-600 text-lg">${data.text}</span>
+                            <div class="absolute top-4 right-4">
+                                <button class="p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 transition-colors">
+                                    <svg class="w-5 h-5 text-gray-600 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    `;
+                });
+            });
+
+            // Color selection
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    colorOptions.forEach(opt => opt.classList.remove('ring-2', 'ring-primary', 'ring-offset-2'));
+                    this.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+
+                    const colorValue = this.querySelector('input').value;
+                    currentSelection.color = colorValue;
+                    updateVariantDisplay();
+                    updatePrice();
+                    updateMainImage();
+                });
+            });
+
+            // Style selection
+            const styleOptions = document.querySelectorAll('.style-option');
+            styleOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    styleOptions.forEach(opt => {
+                        opt.classList.remove('border-2', 'border-primary', 'bg-blue-50');
+                        opt.classList.add('border', 'border-gray-300');
+                    });
+                    this.classList.remove('border', 'border-gray-300');
+                    this.classList.add('border-2', 'border-primary', 'bg-blue-50');
+
+                    const styleValue = this.querySelector('input').value;
+                    currentSelection.style = styleValue;
+                    updateVariantDisplay();
+                    updatePrice();
+                });
+            });
+
+            // Size selection
+            const sizeOptions = document.querySelectorAll('.size-option');
+            sizeOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    if (this.querySelector('input').disabled) return;
+
+                    sizeOptions.forEach(opt => {
+                        opt.classList.remove('bg-primary', 'text-white', 'border-primary');
+                        opt.classList.add('bg-white', 'text-gray-900', 'border-gray-300');
+                    });
+                    this.classList.remove('bg-white', 'text-gray-900', 'border-gray-300');
+                    this.classList.add('bg-primary', 'text-white', 'border-primary');
+
+                    const sizeValue = this.querySelector('input').value;
+                    currentSelection.size = sizeValue;
+                    updateVariantDisplay();
+                    updateQuantityLimits();
+                });
+            });
+
+            // Material selection
+            const materialOptions = document.querySelectorAll('.material-option');
+            materialOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    materialOptions.forEach(opt => {
+                        opt.classList.remove('border-2', 'border-primary', 'bg-blue-50');
+                        opt.classList.add('border', 'border-gray-300');
+                    });
+                    this.classList.remove('border', 'border-gray-300');
+                    this.classList.add('border-2', 'border-primary', 'bg-blue-50');
+
+                    const materialValue = this.querySelector('input').value;
+                    currentSelection.material = materialValue;
+                    updateVariantDisplay();
+                    updatePrice();
+                });
+            });
+
+            // Quantity controls
+            const decreaseBtn = document.getElementById('decrease-qty');
+            const increaseBtn = document.getElementById('increase-qty');
+            const quantityInput = document.getElementById('quantity');
+
+            decreaseBtn.addEventListener('click', function () {
+                const currentValue = parseInt(quantityInput.value);
+                if (currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                    updateQuantityButtons();
+                }
+            });
+
+            increaseBtn.addEventListener('click', function () {
+                const currentValue = parseInt(quantityInput.value);
+                const maxStock = productVariations.sizes[currentSelection.size].stock;
+                if (currentValue < maxStock) {
+                    quantityInput.value = currentValue + 1;
+                    updateQuantityButtons();
+                }
+            });
+
+            quantityInput.addEventListener('input', updateQuantityButtons);
+
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('border-primary', 'text-primary');
+                        btn.classList.add('border-transparent', 'text-gray-500');
+                    });
+
+                    this.classList.remove('border-transparent', 'text-gray-500');
+                    this.classList.add('border-primary', 'text-primary');
+
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    document.getElementById(targetTab).classList.remove('hidden');
+                });
+            });
+
+            // Add to cart functionality
+            const addToCartBtn = document.getElementById('add-to-cart');
+            addToCartBtn.addEventListener('click', function () {
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const cartCount = document.getElementById('cart-count');
+
+                // Update cart count
+                let currentCount = parseInt(cartCount.textContent);
+                cartCount.textContent = currentCount + quantity;
+
+                // Visual feedback
+                this.style.background = '#10b981';
+                this.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Added to Cart!
                 `;
+
+                setTimeout(() => {
+                    this.style.background = '';
+                    this.textContent = 'Add to Cart';
+                }, 2000);
+
+                // Update stock
+                productVariations.sizes[currentSelection.size].stock -= quantity;
+                updateVariantDisplay();
+                updateQuantityLimits();
+
+                // Show notification
+                const selectedVariant = getSelectedVariantText();
+                alert(`Added ${quantity} ${selectedVariant} to cart!`);
             });
-        });
+        }
 
-        // Tab functionality
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
+        function updateVariantDisplay() {
+            const color = productVariations.colors[currentSelection.color];
+            const style = productVariations.styles[currentSelection.style];
+            const material = productVariations.materials[currentSelection.material];
+            const size = currentSelection.size;
+            const stock = productVariations.sizes[size].stock;
 
-        tabButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const targetTab = this.getAttribute('data-tab');
-                
-                // Remove active classes
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('border-primary', 'text-primary');
-                    btn.classList.add('border-transparent', 'text-gray-500');
-                });
-                
-                // Add active class to clicked button
-                this.classList.remove('border-transparent', 'text-gray-500');
-                this.classList.add('border-primary', 'text-primary');
-                
-                // Hide all tab contents
-                tabContents.forEach(content => content.classList.add('hidden'));
-                
-                // Show target tab content
-                document.getElementById(targetTab).classList.remove('hidden');
-            });
-        });
+            // Update selected labels
+            document.getElementById('selected-color').textContent = color.name;
+            document.getElementById('selected-style').textContent = style.name;
+            document.getElementById('selected-material').textContent = material.name;
 
-        // Quantity controls
-        const decreaseBtn = document.getElementById('decrease-qty');
-        const increaseBtn = document.getElementById('increase-qty');
-        const quantityInput = document.getElementById('quantity');
+            // Update variant info box
+            const variantText = `${color.name}, ${style.name}, ${size}`;
+            document.getElementById('selected-variant').textContent = variantText;
 
-        decreaseBtn.addEventListener('click', function() {
-            const currentValue = parseInt(quantityInput.value);
-            if (currentValue > 1) {
-                quantityInput.value = currentValue - 1;
+            const stockStatus = document.getElementById('stock-status');
+            if (stock > 10) {
+                stockStatus.textContent = `In Stock (${stock} available)`;
+                stockStatus.className = 'ml-2 text-green-600 font-medium';
+            } else if (stock > 0) {
+                stockStatus.textContent = `Low Stock (${stock} left)`;
+                stockStatus.className = 'ml-2 text-orange-600 font-medium';
+            } else {
+                stockStatus.textContent = 'Out of Stock';
+                stockStatus.className = 'ml-2 text-red-600 font-medium';
             }
-        });
 
-        increaseBtn.addEventListener('click', function() {
-            const currentValue = parseInt(quantityInput.value);
-            if (currentValue < 10) {
-                quantityInput.value = currentValue + 1;
+            // Enable/disable add to cart button
+            const addToCartBtn = document.getElementById('add-to-cart');
+            if (stock === 0) {
+                addToCartBtn.disabled = true;
+                addToCartBtn.textContent = 'Out of Stock';
+            } else {
+                addToCartBtn.disabled = false;
+                addToCartBtn.textContent = 'Add to Cart';
             }
-        });
+        }
 
-        // Color and size selection
-        const colorInputs = document.querySelectorAll('input[name="color-choice"]');
-        const sizeInputs = document.querySelectorAll('input[name="size-choice"]');
+        function updatePrice() {
+            const color = productVariations.colors[currentSelection.color];
+            const style = productVariations.styles[currentSelection.style];
+            const material = productVariations.materials[currentSelection.material];
 
-        colorInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                colorInputs.forEach(colorInput => {
-                    const label = colorInput.closest('label');
-                    label.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
-                });
-                
-                if (this.checked) {
-                    const label = this.closest('label');
-                    label.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
-                }
-            });
-        });
+            const totalPrice = color.price + style.modifier + material.modifier;
+            const originalPrice = totalPrice / 0.75; // 25% discount
 
-        sizeInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                sizeInputs.forEach(sizeInput => {
-                    const label = sizeInput.closest('label');
-                    label.classList.remove('ring-2', 'ring-primary', 'bg-primary', 'text-white');
-                    label.classList.add('bg-white', 'text-gray-900');
-                });
-                
-                if (this.checked && !this.disabled) {
-                    const label = this.closest('label');
-                    label.classList.remove('bg-white', 'text-gray-900');
-                    label.classList.add('ring-2', 'ring-primary', 'bg-primary', 'text-white');
-                }
-            });
-        });
+            document.getElementById('current-price').textContent = `${totalPrice.toFixed(2)}`;
+            document.getElementById('original-price').textContent = `${originalPrice.toFixed(2)}`;
+        }
 
-        // Add to cart functionality
-        const addToCartBtn = document.getElementById('add-to-cart');
-        const cartCount = document.getElementById('cart-count');
+        function updateMainImage() {
+            const mainImage = document.getElementById('main-image');
+            const currentColor = productVariations.colors[currentSelection.color];
 
-        addToCartBtn.addEventListener('click', function() {
-            const selectedColor = document.querySelector('input[name="color-choice"]:checked')?.value || 'Navy';
-            const selectedSize = document.querySelector('input[name="size-choice"]:checked')?.value || 'M';
-            const quantity = quantityInput.value;
-            
-            // Update cart count
-            let currentCount = parseInt(cartCount.textContent);
-            cartCount.textContent = currentCount + parseInt(quantity);
-            
-            // Visual feedback
-            this.style.background = '#10b981';
-            this.innerHTML = `
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Added to Cart!
-            `;
-            
-            setTimeout(() => {
-                this.style.background = '';
-                this.textContent = 'Add to Cart';
-            }, 2000);
-            
-            // Show notification (you could enhance this with a proper toast notification)
-            alert(`Added ${quantity} ${selectedColor} ${selectedSize} t-shirt(s) to cart!`);
-        });
+            mainImage.className = `w-full h-96 bg-gradient-to-br ${currentColor.gradient} rounded-lg flex items-center justify-center relative overflow-hidden`;
+        }
 
-        // Initialize first color and size as selected
-        document.querySelector('input[name="color-choice"]').checked = true;
-        document.querySelector('input[name="color-choice"]').dispatchEvent(new Event('change'));
-        
-        document.querySelector('input[name="size-choice"][value="M"]').checked = true;
-        document.querySelector('input[name="size-choice"][value="M"]').dispatchEvent(new Event('change'));
+        function updateQuantityLimits() {
+            const quantityInput = document.getElementById('quantity');
+            const maxStock = productVariations.sizes[currentSelection.size].stock;
+
+            quantityInput.max = maxStock;
+            if (parseInt(quantityInput.value) > maxStock) {
+                quantityInput.value = maxStock;
+            }
+            if (maxStock === 0) {
+                quantityInput.value = 0;
+            }
+            updateQuantityButtons();
+        }
+
+        function updateQuantityButtons() {
+            const quantityInput = document.getElementById('quantity');
+            const decreaseBtn = document.getElementById('decrease-qty');
+            const increaseBtn = document.getElementById('increase-qty');
+            const currentValue = parseInt(quantityInput.value);
+            const maxStock = productVariations.sizes[currentSelection.size].stock;
+
+            decreaseBtn.disabled = currentValue <= 1;
+            increaseBtn.disabled = currentValue >= maxStock || maxStock === 0;
+
+            if (decreaseBtn.disabled) {
+                decreaseBtn.classList.add('text-gray-300', 'cursor-not-allowed');
+            } else {
+                decreaseBtn.classList.remove('text-gray-300', 'cursor-not-allowed');
+            }
+
+            if (increaseBtn.disabled) {
+                increaseBtn.classList.add('text-gray-300', 'cursor-not-allowed');
+            } else {
+                increaseBtn.classList.remove('text-gray-300', 'cursor-not-allowed');
+            }
+        }
+
+        function getSelectedVariantText() {
+            const color = productVariations.colors[currentSelection.color];
+            const style = productVariations.styles[currentSelection.style];
+            const material = productVariations.materials[currentSelection.material];
+            return `${color.name} ${style.name} ${material.name} (Size: ${currentSelection.size})`;
+        }
     </script>
 </body>
+
 </html>

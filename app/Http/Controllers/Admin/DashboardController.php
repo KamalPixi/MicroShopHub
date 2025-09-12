@@ -15,6 +15,10 @@ class DashboardController extends Controller
         return view('admin.settings');
     }
 
+    public function categories() {
+        return view('admin.categories');
+    }
+
     public function shippingMethods() {
         return view('admin.shipping-methods');
     }
