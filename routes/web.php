@@ -30,6 +30,7 @@ Route::prefix('admin')
             Route::get('/settings', 'settings')->name('settings');
             Route::get('/shipping-methods', 'shippingMethods')->name('shipping-methods');
             Route::get('/categories', 'categories')->name('categories');
+            Route::get('/homepage-settings', 'homepageSettings')->name('homepage-settings');
         });
 
         // Products

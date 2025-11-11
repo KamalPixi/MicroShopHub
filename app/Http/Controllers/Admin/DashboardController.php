@@ -22,4 +22,8 @@ class DashboardController extends Controller
     public function shippingMethods() {
         return view('admin.shipping-methods');
     }
+
+    public function homepageSettings() {
+        return view('admin.homepage-settings');
+    }
 }

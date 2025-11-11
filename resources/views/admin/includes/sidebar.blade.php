@@ -123,6 +123,11 @@
                         </a>
                     </li>
                     <li class="mb-2">
+                        <a href="{{ route('admin.homepage-settings') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                            Homepage Settings
+                        </a>
+                    </li>
+                    <li class="mb-2">
                         <a href="{{ route('admin.shipping-methods') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
                             Shipping Methods
                         </a>
