@@ -155,6 +155,11 @@
             </div>
 
             <div class="flex items-center">
+                <input wire:model.live="featured" type="checkbox" id="featured" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                <label for="featured" class="ml-2 block text-sm font-medium text-gray-700">Featured Item?</label>
+            </div>
+
+            <div class="flex items-center">
                 <input wire:model.live="has_attributes" type="checkbox" id="has_attributes" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                 <label for="has_attributes" class="ml-2 block text-sm font-medium text-gray-700">Has Attributes</label>
             </div>

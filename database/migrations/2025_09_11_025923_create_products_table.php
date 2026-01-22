@@ -15,13 +15,15 @@ return new class extends Migration
          * Products
          */
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+$table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('thumbnail')->nullable();
+            $table->string('thumbnail')->nullable();            
+            $table->json('images')->nullable(); 
             $table->text('description')->nullable();
-            $table->decimal('price', 10, 2)->nullable(); // if no variations
-            $table->integer('stock')->nullable();        // if no variations
+            $table->decimal('price', 10, 2)->nullable();
+            $table->integer('stock')->nullable();
+            $table->boolean('featured')->default(false);
             $table->boolean('has_variations')->default(false);
             $table->boolean('status')->default(false);
             $table->timestamps();

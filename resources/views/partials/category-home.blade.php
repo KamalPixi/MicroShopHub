@@ -22,53 +22,40 @@
         <div x-ref="container" class="overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory pb-2">
             <div class="flex gap-4 py-3 px-1">
 
-                <div class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card">
-                    <img src="https://placehold.co/400x225" alt="Fashion & Clothing" class="w-full h-40 object-cover">
-                    <div class="p-3">
-                        <h3 class="text-base font-semibold text-gray-900 group-hover/card:text-primary transition-colors line-clamp-1">Fashion & Clothing</h3>
-                        <p class="text-xs text-gray-600 mt-1 line-clamp-2">Trendy outfits for all seasons</p>
-                    </div>
-                </div>
+                @if(isset($homeCategories) && $homeCategories->count() > 0)
+                    @foreach($homeCategories as $category)
+                        <a href="#" class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card block">
+                            
+                            @php
+                                $imageUrl = 'https://placehold.co/400x225?text=No+Image';
+                                if ($category->thumbnail) {
+                                    if (Str::startsWith($category->thumbnail, ['http://', 'https://'])) {
+                                        $imageUrl = $category->thumbnail;
+                                    } else {
+                                        $imageUrl = Storage::url($category->thumbnail);
+                                    }
+                                }
+                            @endphp
 
-                <div class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card">
-                    <img src="https://placehold.co/400x225/4CAF50/white" alt="Health & Medicine" class="w-full h-40 object-cover">
-                    <div class="p-3">
-                        <h3 class="text-base font-semibold text-gray-900 group-hover/card:text-primary transition-colors line-clamp-1">Health & Medicine</h3>
-                        <p class="text-xs text-gray-600 mt-1 line-clamp-2">Quality healthcare products</p>
+                            <img src="{{ $imageUrl }}" alt="{{ $category->name }}" class="w-full h-40 object-cover">
+                            
+                            <div class="p-3">
+                                <h3 class="text-base font-semibold text-gray-900 group-hover/card:text-primary transition-colors line-clamp-1">
+                                    {{ $category->name }}
+                                </h3>
+                                @if($category->subtitle)
+                                    <p class="text-xs text-gray-600 mt-1 line-clamp-2">
+                                        {{ $category->subtitle }}
+                                    </p>
+                                @endif
+                            </div>
+                        </a>
+                    @endforeach
+                @else
+                    <div class="w-full text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                        <p>No categories found to display.</p>
                     </div>
-                </div>
-
-                <div class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card">
-                    <img src="https://placehold.co/400x225/FF9800/white" alt="Handmade Crafts" class="w-full h-40 object-cover">
-                    <div class="p-3">
-                        <h3 class="text-base font-semibold text-gray-900 group-hover/card:text-primary transition-colors line-clamp-1">Handmade Crafts</h3>
-                        <p class="text-xs text-gray-600 mt-1 line-clamp-2">Unique artisanal products</p>
-                    </div>
-                </div>
-
-                <div class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card">
-                    <img src="https://placehold.co/400x225/2196F3/white" alt="Electronics" class="w-full h-40 object-cover">
-                    <div class="p-3">
-                        <h3 class="text-base font-semibold text-gray-900 group-hover/card:text-primary transition-colors line-clamp-1">Electronics</h3>
-                        <p class="text-xs text-gray-600 mt-1 line-clamp-2">Latest gadgets & tech</p>
-                    </div>
-                </div>
-
-                <div class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card">
-                    <img src="https://placehold.co/400x225/795548/white" alt="Home & Garden" class="w-full h-40 object-cover">
-                    <div class="p-3">
-                        <h3 class="text-base font-semibold text-gray-900 group-hover/card:text-primary transition-colors line-clamp-1">Home & Garden</h3>
-                        <p class="text-xs text-gray-600 mt-1 line-clamp-2">Decor and essentials</p>
-                    </div>
-                </div>
-
-                <div class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card">
-                    <img src="https://placehold.co/400x225/E91E63/white" alt="Beauty & Personal Care" class="w-full h-40 object-cover">
-                    <div class="p-3">
-                        <h3 class="text-base font-semibold text-gray-900 group-hover/card:text-primary transition-colors line-clamp-1">Beauty & Personal Care</h3>
-                        <p class="text-xs text-gray-600 mt-1 line-clamp-2">Premium skincare & cosmetics</p>
-                    </div>
-                </div>
+                @endif
 
             </div>
         </div>

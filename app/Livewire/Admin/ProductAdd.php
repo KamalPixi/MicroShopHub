@@ -20,6 +20,7 @@ class ProductAdd extends Component
     public $description = '';
     public $price;
     public $stock;
+    public $featured = false;
     public $has_attributes = false;
     public $has_variations = false;
     public $selectedCategories = [];
@@ -36,7 +37,7 @@ class ProductAdd extends Component
     
     // Images
     public $thumbnail;
-    public $images = [];
+    public $images = []; // Stores temporary uploaded files
     public $tempImage;
 
     public function rules()
@@ -48,6 +49,7 @@ class ProductAdd extends Component
             'selectedCategories' => 'array|min:1',
             'relatedProducts' => 'nullable|array',
             'has_variations' => 'boolean',
+            'featured' => 'nullable|boolean',
             'thumbnail' => 'nullable|image|mimes:jpeg,png|max:2048', 
             'images.*' => 'nullable|image|mimes:jpeg,png|max:2048',
             'status' => 'required|integer|in:0,1',
@@ -67,10 +69,7 @@ class ProductAdd extends Component
 
     public function mount()
     {
-        // CHANGED: Fetch only Root categories (where parent_id is null) with their children
-        // This ensures we can loop through them as Parent -> Children trees
         $this->categories = Category::whereNull('parent_id')->with('children')->get();
-        
         $this->productAttributes = Attribute::with('values')->get();
         $this->availableProducts = Product::pluck('name', 'id')->toArray();
     }
@@ -212,6 +211,19 @@ class ProductAdd extends Component
     {
         $this->validate();
 
+        // 1. Handle Thumbnail
+        $thumbnailPath = null;
+        if ($this->thumbnail) {
+            $thumbnailPath = $this->thumbnail->store('images/products', 'public');
+        }
+
+        // 2. Handle Additional Images (Array)
+        $galleryPaths = [];
+        foreach ($this->images as $image) {
+            $galleryPaths[] = $image->store('images/products', 'public');
+        }
+
+        // 3. Create Product
         $product = Product::create([
             'name' => $this->name,
             'slug' => $this->slug,
@@ -219,19 +231,13 @@ class ProductAdd extends Component
             'price' => $this->has_variations ? null : $this->price,
             'stock' => $this->has_variations ? null : $this->stock,
             'has_variations' => $this->has_variations,
+            'featured' => $this->featured,
             'status' => $this->status,
+            'thumbnail' => $thumbnailPath,
+            'images' => $galleryPaths, // Save array directly to JSON column
         ]);
 
-        if ($this->thumbnail) {
-            $path = $this->thumbnail->store('images/products', 'public');
-            $product->update(['thumbnail' => $path]);
-        }
-
-        foreach ($this->images as $image) {
-            $path = $image->store('images/products', 'public');
-            $product->images()->create(['image_path' => $path]);
-        }
-
+        // 4. Relations
         $product->categories()->sync($this->selectedCategories);
         $product->relatedProducts()->sync($this->relatedProducts);
         $product->attributes()->sync(
@@ -274,7 +280,6 @@ class ProductAdd extends Component
     {
         $selectedAttributesDisplay = $this->getSelectedAttributesDisplay();
 
-        // Passed $this->categories directly to view (Livewire public property)
         return view('livewire.admin.product-add', [
             'selectedAttributesDisplay' => $selectedAttributesDisplay,
         ]);

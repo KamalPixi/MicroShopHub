@@ -18,7 +18,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Men\'s Fashion',
                 'subtitle' => 'Modern styles for him',
-                'thumbnail' => 'https://via.placeholder.com/400x225/3b82f6/ffffff?text=Mens+Fashion',
+                'thumbnail' => 'https://placehold.co/400x225/3b82f6/ffffff?text=Mens+Fashion',
                 'show_on_homepage' => true,
                 'children' => [
                     ['name' => 'T-Shirts & Polos', 'subtitle' => 'Casual essentials'],
@@ -31,7 +31,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Women\'s Fashion',
                 'subtitle' => 'Trending styles for her',
-                'thumbnail' => 'https://via.placeholder.com/400x225/ec4899/ffffff?text=Womens+Fashion',
+                'thumbnail' => 'https://placehold.co/400x225/ec4899/ffffff?text=Womens+Fashion',
                 'show_on_homepage' => true,
                 'children' => [
                     ['name' => 'Dresses', 'subtitle' => 'Elegant and casual dresses'],
@@ -44,7 +44,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Kids\' Wear',
                 'subtitle' => 'Comfortable clothes for kids',
-                'thumbnail' => 'https://via.placeholder.com/400x225/f59e0b/ffffff?text=Kids+Wear',
+                'thumbnail' => 'https://placehold.co/400x225/f59e0b/ffffff?text=Kids+Wear',
                 'show_on_homepage' => true,
                 'children' => [
                     ['name' => 'Boys\' Clothing', 'subtitle' => 'Tough and playful'],
@@ -55,7 +55,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Accessories',
                 'subtitle' => 'Complete your look',
-                'thumbnail' => 'https://via.placeholder.com/400x225/10b981/ffffff?text=Accessories',
+                'thumbnail' => 'https://placehold.co/400x225/10b981/ffffff?text=Accessories',
                 'show_on_homepage' => false,
                 'children' => [
                     ['name' => 'Watches', 'subtitle' => 'Timeless pieces'],
@@ -67,7 +67,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Footwear',
                 'subtitle' => 'Step out in style',
-                'thumbnail' => 'https://via.placeholder.com/400x225/6366f1/ffffff?text=Footwear',
+                'thumbnail' => 'https://placehold.co/400x225/6366f1/ffffff?text=Footwear',
                 'show_on_homepage' => true,
                 'children' => [
                     ['name' => 'Sneakers', 'subtitle' => 'Everyday comfort'],

@@ -20,7 +20,10 @@ class StoreController extends Controller
             ->get();
 
         // 2. Featured Products
-        $featuredProducts = Product::where('status', 1) 
+        $featuredProducts = Product::where([
+                'status' => 1,
+                'featured' => true
+            ]) 
             ->inRandomOrder()
             ->take(10) 
             ->get();

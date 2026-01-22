@@ -9,7 +9,7 @@
 }">
     <div class="flex items-center justify-between mb-6 px-1">
         <h2 class="text-2xl font-bold text-gray-900">New Arrivals</h2>
-        <a href="#" class="text-primary font-medium hover:text-blue-700">View All →</a>
+        <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-blue-700">View All →</a>
     </div>
 
     <div class="relative">
@@ -24,61 +24,53 @@
 
         <div x-ref="container" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 no-scrollbar">
 
-            <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer">
-                <div class="aspect-square overflow-hidden">
-                    <img src="https://placehold.co/500x500" alt="Summer Dress" class="w-full h-full object-cover">
-                </div>
-                <div class="p-3">
-                    <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary">Summer Dress</h3>
-                    <p class="text-xs text-gray-600 mb-2">Light and breezy fabric</p>
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-primary text-base sm:text-lg">$59.99</span>
-                        @livewire('add-to-cart-button')
-                    </div>
-                </div>
-            </div>
+            @if(isset($newArrivals) && $newArrivals->count() > 0)
+                @foreach($newArrivals as $product)
+                    <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer">
+                        
+                        <div class="aspect-square overflow-hidden bg-gray-100 relative">
+                            @php
+                                $imageUrl = 'https://placehold.co/500x500?text=No+Image';
+                                if ($product->thumbnail) {
+                                    // Check if it's an external URL (like from Seeder) or local storage
+                                    if (Str::startsWith($product->thumbnail, ['http://', 'https://'])) {
+                                        $imageUrl = $product->thumbnail;
+                                    } else {
+                                        $imageUrl = Storage::url($product->thumbnail);
+                                    }
+                                }
+                            @endphp
+                            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105">
+                        </div>
 
-            <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer">
-                <div class="aspect-square overflow-hidden">
-                    <img src="https://placehold.co/500x500" alt="Herbal Tea" class="w-full h-full object-cover">
-                </div>
-                <div class="p-3">
-                    <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary">Herbal Tea</h3>
-                    <p class="text-xs text-gray-600 mb-2">Organic blend, 20 bags</p>
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-primary text-base sm:text-lg">$14.99</span>
-                        @livewire('add-to-cart-button')
-                    </div>
-                </div>
-            </div>
+                        <div class="p-3">
+                            <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary truncate">
+                                {{ $product->name }}
+                            </h3>
+                            
+                            <p class="text-xs text-gray-600 mb-2 truncate">
+                                {{ Str::limit(strip_tags($product->description), 40) }}
+                            </p>
 
-            <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer">
-                <div class="aspect-square overflow-hidden">
-                    <img src="https://placehold.co/500x500" alt="Knitted Blanket" class="w-full h-full object-cover">
-                </div>
-                <div class="p-3">
-                    <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary">Knitted Blanket</h3>
-                    <p class="text-xs text-gray-600 mb-2">Soft wool, queen size</p>
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-primary text-base sm:text-lg">$89.99</span>
-                        @livewire('add-to-cart-button')
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-primary text-base sm:text-lg">
+                                    @if($product->price)
+                                        ${{ number_format($product->price, 2) }}
+                                    @else
+                                        <span class="text-xs text-gray-500">View</span>
+                                    @endif
+                                </span>
+                                
+                                @livewire('add-to-cart-button', ['productId' => $product->id], key('new-arrival-'.$product->id))
+                            </div>
+                        </div>
                     </div>
+                @endforeach
+            @else
+                <div class="w-full text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                    No new arrivals found.
                 </div>
-            </div>
-
-            <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer">
-                <div class="aspect-square overflow-hidden">
-                    <img src="https://placehold.co/500x500" alt="Running Shoes" class="w-full h-full object-cover">
-                </div>
-                <div class="p-3">
-                    <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary">Running Shoes</h3>
-                    <p class="text-xs text-gray-600 mb-2">Lightweight, breathable</p>
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-primary text-base sm:text-lg">$99.99</span>
-                        @livewire('add-to-cart-button')
-                    </div>
-                </div>
-            </div>
+            @endif
 
         </div>
 
