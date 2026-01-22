@@ -1,11 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StoreController;
 
-
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [StoreController::class, 'index'])->name('store.index');
 
 Route::prefix('admin')
 ->name('admin.')

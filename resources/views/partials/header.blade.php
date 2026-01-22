@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="{{ route('home') }}">
+                <a href="{{ route('store.index') }}">
                     <h1 class="text-2xl font-bold text-primary">ShopHub</h1>
                 </a>
             </div>
