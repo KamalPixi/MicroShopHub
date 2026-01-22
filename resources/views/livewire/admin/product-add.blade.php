@@ -1,6 +1,13 @@
 <div class="bg-white p-4 rounded-lg shadow form-container mx-auto">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+
+    <style>
+        .ck-editor__editable {
+            min-height: 200px;
+        }
+    </style>
 
     <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
         <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,12 +36,31 @@
                 @error('slug') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <div>
+            <div wire:ignore>
                 <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea wire:model="description" id="description" rows="4" class="textarea-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Describe the product"></textarea>
-                @error('description') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-            </div>
+                <div x-data="{
+                    description: @entangle('description'),
+                    init() {
+                        ClassicEditor
+                            .create(this.$refs.editor)
+                            .then(editor => {
+                                // Set initial value
+                                editor.setData(this.description || '');
 
+                                // Update Livewire property on change
+                                editor.model.document.on('change:data', () => {
+                                    this.description = editor.getData();
+                                });
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    }
+                }">
+                    <div x-ref="editor" class="mt-1 block w-full text-gray-700"></div>
+                </div>
+            </div>
+            @error('description') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             <div x-data="imageCropper({ target: 'thumbnail', ratio: 1/1 })">
                 <label class="block text-sm font-medium text-gray-700">Thumbnail (Main Image)</label>
                 <p class="text-xs text-gray-500 mb-2">
