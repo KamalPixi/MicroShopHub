@@ -90,7 +90,7 @@
 
                 <div class="mb-6">
                     @if($currentStock > 0)
-                        <div class="flex items-center text-green-600 bg-green-50 px-3 py-2 rounded-lg w-fit">
+                        <div class="flex items-center text-green-600 bg-green-50 px-3 py-2 rounded-lg w-fit border border-green-100">
                             <span class="relative flex h-2 w-2 mr-2">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -99,7 +99,7 @@
                             <span class="text-xs ml-1 text-green-700">({{ $currentStock }} available)</span>
                         </div>
                     @else
-                        <div class="flex items-center text-red-600 bg-red-50 px-3 py-2 rounded-lg w-fit">
+                        <div class="flex items-center text-red-600 bg-red-50 px-3 py-2 rounded-lg w-fit border border-red-100">
                             <span class="text-sm font-bold">
                                 {{ $product->has_variations && !$selectedVariation ? 'Select options to see stock' : 'Out of Stock' }}
                             </span>
@@ -107,37 +107,52 @@
                     @endif
                 </div>
 
-                <div class="mt-auto bg-gray-50 p-4 rounded-xl border border-gray-100">
-                    <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <div class="mt-auto pt-6 border-t border-gray-100">
+                    
+                    <div class="flex items-end justify-between mb-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Quantity</label>
+                            <div class="flex items-center border border-gray-300 rounded-lg h-10 w-fit">
+                                <button wire:click="decrement" class="px-3 text-gray-500 hover:text-primary hover:bg-gray-50 h-full rounded-l-lg transition">-</button>
+                                <input type="text" value="{{ $quantity }}" readonly class="w-10 text-center border-none p-0 text-gray-900 font-bold focus:ring-0">
+                                <button wire:click="increment" class="px-3 text-gray-500 hover:text-primary hover:bg-gray-50 h-full rounded-r-lg transition">+</button>
+                            </div>
+                        </div>
                         
-                        <div class="flex items-center bg-white border border-gray-300 rounded-lg h-10 w-fit shadow-sm">
-                            <button wire:click="decrement" class="px-3 text-gray-600 hover:text-primary transition text-lg">-</button>
-                            <input type="text" value="{{ $quantity }}" readonly class="w-10 text-center border-none p-0 text-gray-900 font-bold focus:ring-0">
-                            <button wire:click="increment" class="px-3 text-gray-600 hover:text-primary transition text-lg">+</button>
+                        <div class="text-right">
+                            <span class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Total</span>
+                            <span class="text-2xl font-bold text-gray-900">${{ number_format($currentPrice * $quantity, 2) }}</span>
                         </div>
+                    </div>
 
-                        <div class="flex flex-col px-2">
-                            <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">Total</span>
-                            <span class="text-lg font-bold text-gray-900">${{ number_format($currentPrice * $quantity, 2) }}</span>
-                        </div>
-
+                    <div class="flex flex-col sm:flex-row gap-3">
                         <button wire:click="addToCart" 
                                 wire:loading.attr="disabled"
-                                class="flex-1 h-10 px-6 rounded-lg font-bold text-white shadow-md transition-all flex items-center justify-center space-x-2 text-sm
-                                {{ $showSuccess ? 'bg-green-500 hover:bg-green-600' : 'bg-primary hover:bg-blue-700' }} 
+                                class="flex-1 h-10 px-4 rounded-lg font-bold text-white shadow-sm hover:shadow-md transform active:scale-[0.99] transition-all flex items-center justify-center text-sm
+                                {{ $showSuccess ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-blue-700' }} 
                                 {{ $currentStock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}"
                                 {{ $currentStock <= 0 ? 'disabled' : '' }}>
                             
-                            <span wire:loading.remove>
-                                {{ $showSuccess ? 'Added to Cart!' : ($currentStock <= 0 ? 'Unavailable' : 'Add to Cart') }}
+                            <span wire:loading.remove class="flex items-center gap-2">
+                                @if($showSuccess)
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    Added
+                                @else
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                    Add to Cart
+                                @endif
                             </span>
                             <span wire:loading><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>
                         </button>
+
+                        <button wire:click="addToCart(true)" 
+                                class="flex-1 h-10 px-4 rounded-lg font-bold bg-gray-900 text-white shadow-sm hover:shadow-md hover:bg-black transform active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-sm"
+                                {{ $currentStock <= 0 ? 'disabled opacity-50' : '' }}>
+                            <span>Buy Now</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
                     </div>
 
-                    <div class="mt-3 text-center">
-                         <button wire:click="addToCart(true)" class="text-sm text-gray-500 hover:text-primary underline decoration-dotted">Buy now & checkout</button>
-                    </div>
                 </div>
 
             </div>
@@ -161,9 +176,48 @@
             <ul class="space-y-3">
                 <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Premium Quality</li>
                 <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Secure Payment</li>
+                <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Fast Shipping</li>
             </ul>
         </div>
     </div>
+
+    @if($relatedProducts && $relatedProducts->count() > 0)
+        <div class="border-t border-gray-200 pt-12">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-bold text-gray-900">You might also like</h2>
+                @if($product->categories->first())
+                    <a href="{{ route('store.search', ['category' => $product->categories->first()->id]) }}" class="text-primary hover:text-blue-700 font-medium text-sm">View More →</a>
+                @endif
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                @foreach($relatedProducts as $related)
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col">
+                        <a href="{{ route('store.product', $related->slug) }}" class="aspect-square relative overflow-hidden bg-gray-100 block">
+                            <img src="{{ $related->thumbnail ? (Str::startsWith($related->thumbnail, ['http']) ? $related->thumbnail : Storage::url($related->thumbnail)) : 'https://placehold.co/500' }}" 
+                                 alt="{{ $related->name }}" 
+                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            
+                            @if($related->price < 50) 
+                                <span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">HOT</span>
+                            @endif
+                        </a>
+                        <div class="p-4 flex-1 flex flex-col">
+                            <a href="{{ route('store.product', $related->slug) }}" class="block mb-1">
+                                <h3 class="text-sm font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-1">{{ $related->name }}</h3>
+                            </a>
+                            <p class="text-xs text-gray-500 mb-3">{{ $related->categories->first()->name ?? 'General' }}</p>
+                            
+                            <div class="mt-auto flex items-center justify-between">
+                                <span class="text-lg font-bold text-gray-900">${{ number_format($related->price, 2) }}</span>
+                                @livewire('add-to-cart-button', ['productId' => $related->id], key('related-'.$related->id))
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
     
     <div x-show="lightboxOpen" style="display: none;" 
          x-transition.opacity class="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
