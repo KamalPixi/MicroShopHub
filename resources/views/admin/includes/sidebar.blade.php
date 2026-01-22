@@ -12,11 +12,9 @@
             </svg>
         </button>
     </div>
-    <nav class="flex-1">
-        <ul>
-            <!-- Dashboard -->
-            <li class="mb-3">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+    <nav class="flex-1 overflow-y-auto"> <ul class="space-y-1"> <li>
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="flex items-center text-sm p-2 rounded {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2M9 19"></path>
                     </svg>
@@ -24,43 +22,48 @@
                 </a>
             </li>
 
-            <!-- Products -->
-            <li class="mb-3">
+            @php
+                $isProductsOpen = request()->routeIs('admin.products*', 'admin.categories*', 'admin.discounts*');
+            @endphp
+            <li>
                 <button 
-                    class="flex items-center text-sm hover:bg-gray-700 p-2 rounded w-full" 
+                    class="flex items-center text-sm hover:bg-gray-700 p-2 rounded w-full {{ $isProductsOpen ? 'bg-gray-800' : '' }}" 
                     onclick="document.getElementById('products-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
                 >
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
                     Products
-                    <svg class="chevron ml-auto w-4 h-4 transform transition-transform" 
+                    <svg class="chevron ml-auto w-4 h-4 transform transition-transform {{ $isProductsOpen ? 'rotate-90' : '' }}" 
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </button>
-                <ul id="products-submenu" class="ml-6 mt-2 hidden">
-                    <li class="mb-2">
-                        <a href="{{ route('admin.products.index') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                <ul id="products-submenu" class="ml-6 mt-1 space-y-1 {{ $isProductsOpen ? '' : 'hidden' }}">
+                    <li>
+                        <a href="{{ route('admin.products.index') }}" 
+                           class="block text-sm p-2 rounded {{ request()->routeIs('admin.products*') ? 'bg-gray-700 text-white' : 'hover:bg-gray-700' }}">
                             All Products
                         </a>
                     </li>
-                    <li class="mb-2">
-                        <a href="{{ route('admin.categories') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                    <li>
+                        <a href="{{ route('admin.categories') }}" 
+                           class="block text-sm p-2 rounded {{ request()->routeIs('admin.categories*') ? 'bg-gray-700 text-white' : 'hover:bg-gray-700' }}">
                             Categories
                         </a>
                     </li>
-                    <li class="mb-2">
-                        <a href="{{ route('admin.discounts.index') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                    <li>
+                        <a href="{{ route('admin.discounts.index') }}" 
+                           class="block text-sm p-2 rounded {{ request()->routeIs('admin.discounts*') ? 'bg-gray-700 text-white' : 'hover:bg-gray-700' }}">
                             Discounts
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <!-- Orders -->
-            <li class="mb-3">
-                <a href="{{ route('admin.orders') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+            <li>
+                <a href="{{ route('admin.orders') }}" 
+                   class="flex items-center text-sm p-2 rounded {{ request()->routeIs('admin.orders*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
@@ -68,9 +71,9 @@
                 </a>
             </li>
 
-            <!-- Customers -->
-            <li class="mb-3">
-                <a href="{{ route('admin.customers') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+            <li>
+                <a href="{{ route('admin.customers') }}" 
+                   class="flex items-center text-sm p-2 rounded {{ request()->routeIs('admin.customers*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
@@ -78,9 +81,9 @@
                 </a>
             </li>
 
-            <!-- Users -->
-            <li class="mb-3">
-                <a href="{{ route('admin.users') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
+            <li>
+                <a href="{{ route('admin.users') }}" 
+                   class="flex items-center text-sm p-2 rounded {{ request()->routeIs('admin.users*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M17 20h5v-2a4 4 0 00-4-4h-1
@@ -91,10 +94,12 @@
                 </a>
             </li>
 
-            <!-- Settings with nested menu -->
-            <li class="mb-3">
+            @php
+                $isSettingsOpen = request()->routeIs('admin.settings*', 'admin.homepage-settings*', 'admin.shipping-methods*');
+            @endphp
+            <li>
                 <button 
-                    class="flex items-center text-sm hover:bg-gray-700 p-2 rounded w-full" 
+                    class="flex items-center text-sm hover:bg-gray-700 p-2 rounded w-full {{ $isSettingsOpen ? 'bg-gray-800' : '' }}" 
                     onclick="document.getElementById('settings-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
                 >
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,30 +116,34 @@
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     Settings
-                    <svg class="chevron ml-auto w-4 h-4 transform transition-transform" 
+                    <svg class="chevron ml-auto w-4 h-4 transform transition-transform {{ $isSettingsOpen ? 'rotate-90' : '' }}" 
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </button>
-                <ul id="settings-submenu" class="ml-6 mt-2 hidden">
-                    <li class="mb-2">
-                        <a href="{{ route('admin.settings') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                <ul id="settings-submenu" class="ml-6 mt-1 space-y-1 {{ $isSettingsOpen ? '' : 'hidden' }}">
+                    <li>
+                        <a href="{{ route('admin.settings') }}" 
+                           class="block text-sm p-2 rounded {{ request()->routeIs('admin.settings*') ? 'bg-gray-700 text-white' : 'hover:bg-gray-700' }}">
                             Shop Settings
                         </a>
                     </li>
-                    <li class="mb-2">
-                        <a href="{{ route('admin.homepage-settings') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                    <li>
+                        <a href="{{ route('admin.homepage-settings') }}" 
+                           class="block text-sm p-2 rounded {{ request()->routeIs('admin.homepage-settings*') ? 'bg-gray-700 text-white' : 'hover:bg-gray-700' }}">
                             Homepage Settings
                         </a>
                     </li>
-                    <li class="mb-2">
-                        <a href="{{ route('admin.shipping-methods') }}" class="block text-sm hover:bg-gray-700 p-2 rounded">
+                    <li>
+                        <a href="{{ route('admin.shipping-methods') }}" 
+                           class="block text-sm p-2 rounded {{ request()->routeIs('admin.shipping-methods*') ? 'bg-gray-700 text-white' : 'hover:bg-gray-700' }}">
                             Shipping Methods
                         </a>
                     </li>
                 </ul>
             </li>
-            <li class="mb-3">
+
+            <li>
                 <a href="{{ route('admin.logout') }}" class="flex items-center text-sm hover:bg-gray-700 p-2 rounded">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -143,8 +152,6 @@
                     Signout
                 </a>
             </li>
-
-
         </ul>
     </nav>
 </aside>

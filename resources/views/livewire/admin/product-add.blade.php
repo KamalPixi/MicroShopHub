@@ -44,10 +44,7 @@
                         ClassicEditor
                             .create(this.$refs.editor)
                             .then(editor => {
-                                // Set initial value
                                 editor.setData(this.description || '');
-
-                                // Update Livewire property on change
                                 editor.model.document.on('change:data', () => {
                                     this.description = editor.getData();
                                 });
@@ -61,11 +58,10 @@
                 </div>
             </div>
             @error('description') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
+            
             <div x-data="imageCropper({ target: 'thumbnail', ratio: 1/1 })">
                 <label class="block text-sm font-medium text-gray-700">Thumbnail (Main Image)</label>
-                <p class="text-xs text-gray-500 mb-2">
-                    Required: 1:1 Aspect Ratio (Recommended: 500x500px)
-                </p>
+                <p class="text-xs text-gray-500 mb-2">Required: 1:1 Aspect Ratio (Recommended: 500x500px)</p>
                 
                 <input type="file" accept="image/*" @change="fileChosen" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
                 
@@ -82,12 +78,9 @@
 
             <div>
                 <label for="images" class="block text-sm font-medium text-gray-700">Additional Images</label>
-                <p class="text-xs text-gray-500 mb-2">
-                    Recommended size: <span class="font-medium">1000x800px</span> (5:4 ratio)
-                </p>
+                <p class="text-xs text-gray-500 mb-2">Recommended size: <span class="font-medium">1000x800px</span> (5:4 ratio)</p>
 
                 <div class="flex items-start gap-4 flex-col sm:flex-row">
-                    
                     <div class="w-full sm:w-1/2">
                         <input wire:model="images" type="file" id="images" accept="image/*" multiple class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
                         <p class="mt-1 text-xs text-gray-500">Bulk upload multiple images directly.</p>
@@ -122,12 +115,32 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700">Categories</label>
-                <select wire:model="selectedCategories" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
-                    @foreach ($categoryOptions as $id => $name)
-                    <option value="{{ $id }}">{{ $name }}</option>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Categories</label>
+                <div class="border border-gray-300 rounded-lg p-3 max-h-60 overflow-y-auto space-y-3 bg-gray-50">
+                    @foreach ($categories as $category)
+                        <div class="flex flex-col">
+                            <label class="inline-flex items-center mb-1">
+                                <input wire:model="selectedCategories" value="{{ $category->id }}" type="checkbox" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-2 text-sm font-bold text-gray-800">{{ $category->name }}</span>
+                            </label>
+                            
+                            @if($category->children->count() > 0)
+                                <div class="ml-6 flex flex-col space-y-1 border-l-2 border-gray-200 pl-2">
+                                    @foreach($category->children as $child)
+                                        <label class="inline-flex items-center">
+                                            <input wire:model="selectedCategories" value="{{ $child->id }}" type="checkbox" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                            <span class="ml-2 text-sm text-gray-600">{{ $child->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
                     @endforeach
-                </select>
+                    
+                    @if($categories->isEmpty())
+                        <p class="text-sm text-gray-500 text-center py-2">No categories found.</p>
+                    @endif
+                </div>
                 @error('selectedCategories') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
@@ -299,7 +312,7 @@
             isCropping: false,
             cropper: null,
             selectedFile: null,
-            targetProperty: config.target, // 'thumbnail' or 'tempImage'
+            targetProperty: config.target, 
             aspectRatio: config.ratio || 1, 
 
             fileChosen(event) {
@@ -307,7 +320,6 @@
                 if (this.selectedFile) {
                     let reader = new FileReader();
                     reader.onload = (e) => {
-                        // Ensure the image element exists before setting src
                         if(this.$refs.cropImage) {
                             this.$refs.cropImage.src = e.target.result;
                             this.isCropping = true;
@@ -359,7 +371,6 @@
                     this.cropper.destroy();
                     this.cropper = null;
                 }
-                // Reset input
                 if(this.$el.querySelector('input[type="file"]')) {
                     this.$el.querySelector('input[type="file"]').value = '';
                 }

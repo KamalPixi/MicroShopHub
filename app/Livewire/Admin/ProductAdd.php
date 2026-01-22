@@ -37,7 +37,7 @@ class ProductAdd extends Component
     // Images
     public $thumbnail;
     public $images = [];
-    public $tempImage; // NEW: Used for handling cropped additional images
+    public $tempImage;
 
     public function rules()
     {
@@ -48,7 +48,7 @@ class ProductAdd extends Component
             'selectedCategories' => 'array|min:1',
             'relatedProducts' => 'nullable|array',
             'has_variations' => 'boolean',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png|max:2048', // 2MB
+            'thumbnail' => 'nullable|image|mimes:jpeg,png|max:2048', 
             'images.*' => 'nullable|image|mimes:jpeg,png|max:2048',
             'status' => 'required|integer|in:0,1',
         ];
@@ -67,25 +67,26 @@ class ProductAdd extends Component
 
     public function mount()
     {
-        $this->categories = Category::with('children')->get();
+        // CHANGED: Fetch only Root categories (where parent_id is null) with their children
+        // This ensures we can loop through them as Parent -> Children trees
+        $this->categories = Category::whereNull('parent_id')->with('children')->get();
+        
         $this->productAttributes = Attribute::with('values')->get();
         $this->availableProducts = Product::pluck('name', 'id')->toArray();
     }
 
-    // NEW: Handle merging cropped additional image into main array
     public function updatedTempImage()
     {
         if ($this->tempImage) {
             $this->images[] = $this->tempImage;
-            $this->tempImage = null; // Reset for next crop
+            $this->tempImage = null; 
         }
     }
 
-    // NEW: Allow removing specific images from the preview list
     public function removeImage($index)
     {
         unset($this->images[$index]);
-        $this->images = array_values($this->images); // Re-index array
+        $this->images = array_values($this->images); 
     }
 
     public function updatedName($value)
@@ -254,18 +255,6 @@ class ProductAdd extends Component
         $this->reset();
     }
 
-    public function getCategoryOptions($categories, $prefix = '')
-    {
-        $options = [];
-        foreach ($categories as $category) {
-            $options[$category->id] = $prefix . $category->name;
-            if ($category->children->count() > 0) {
-                $options += $this->getCategoryOptions($category->children, $prefix . '— ');
-            }
-        }
-        return $options;
-    }
-
     public function getSelectedAttributesDisplay()
     {
         $display = [];
@@ -283,11 +272,10 @@ class ProductAdd extends Component
 
     public function render()
     {
-        $categoryOptions = $this->getCategoryOptions($this->categories);
         $selectedAttributesDisplay = $this->getSelectedAttributesDisplay();
 
+        // Passed $this->categories directly to view (Livewire public property)
         return view('livewire.admin.product-add', [
-            'categoryOptions' => $categoryOptions,
             'selectedAttributesDisplay' => $selectedAttributesDisplay,
         ]);
     }

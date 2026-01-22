@@ -18,7 +18,6 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Men\'s Fashion',
                 'subtitle' => 'Modern styles for him',
-                // 400x225 is a 16:9 aspect ratio
                 'thumbnail' => 'https://via.placeholder.com/400x225/3b82f6/ffffff?text=Mens+Fashion',
                 'show_on_homepage' => true,
                 'children' => [
@@ -92,9 +91,14 @@ class CategorySeeder extends Seeder
             // Create Children Categories
             if (isset($parentData['children'])) {
                 foreach ($parentData['children'] as $childData) {
+                    
+                    // FIX: Create a unique slug for children by prefixing with parent name
+                    // Example: "Women's Fashion Footwear" -> "womens-fashion-footwear"
+                    $uniqueSlug = Str::slug($parent->name . ' ' . $childData['name']);
+
                     Category::create([
                         'name' => $childData['name'],
-                        'slug' => Str::slug($childData['name']),
+                        'slug' => $uniqueSlug, 
                         'subtitle' => $childData['subtitle'],
                         'thumbnail' => null, 
                         'show_on_homepage' => false,
