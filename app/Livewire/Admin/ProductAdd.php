@@ -33,8 +33,11 @@ class ProductAdd extends Component
     public $newAttribute = ['name' => '', 'values' => ['']];
     public $tempAttributes = [];
     public $status = 1;
+    
+    // Images
     public $thumbnail;
     public $images = [];
+    public $tempImage; // NEW: Used for handling cropped additional images
 
     public function rules()
     {
@@ -67,6 +70,22 @@ class ProductAdd extends Component
         $this->categories = Category::with('children')->get();
         $this->productAttributes = Attribute::with('values')->get();
         $this->availableProducts = Product::pluck('name', 'id')->toArray();
+    }
+
+    // NEW: Handle merging cropped additional image into main array
+    public function updatedTempImage()
+    {
+        if ($this->tempImage) {
+            $this->images[] = $this->tempImage;
+            $this->tempImage = null; // Reset for next crop
+        }
+    }
+
+    // NEW: Allow removing specific images from the preview list
+    public function removeImage($index)
+    {
+        unset($this->images[$index]);
+        $this->images = array_values($this->images); // Re-index array
     }
 
     public function updatedName($value)
@@ -202,13 +221,11 @@ class ProductAdd extends Component
             'status' => $this->status,
         ]);
 
-        // Handle thumbnail upload
         if ($this->thumbnail) {
             $path = $this->thumbnail->store('images/products', 'public');
             $product->update(['thumbnail' => $path]);
         }
 
-        // Handle additional images
         foreach ($this->images as $image) {
             $path = $image->store('images/products', 'public');
             $product->images()->create(['image_path' => $path]);

@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-commerce Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/heroicons@2.1.1/dist/heroicons.min.js"></script>
     <style>
         /* Smooth hover transitions and modern scrollbar */
         nav a:hover,
@@ -176,6 +175,9 @@
             padding-right: 2.5rem;
         }
     </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </head>
 
 <body class="bg-gray-50 font-sans antialiased flex flex-col min-h-screen">

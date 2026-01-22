@@ -1,4 +1,7 @@
 <div class="bg-white p-4 rounded-lg shadow form-container mx-auto">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
         <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -9,68 +12,89 @@
     <div class="space-y-4">
     
         <div>
-            {{-- success/failed message --}}
             @include('admin.includes.message')
             @include('admin.includes.errors')
         </div>
 
         <form wire:submit.prevent="submit" class="space-y-5">
-            <!-- Product Name -->
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Product Name</label>
                 <input wire:model.live="name" type="text" id="name" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Enter product name">
-                @error('name') <span class="error-message">{{ $message }}</span> @enderror
+                @error('name') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Slug -->
             <div>
                 <label for="slug" class="block text-sm font-medium text-gray-700">Slug</label>
                 <input wire:model="slug" type="text" id="slug" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Enter product slug">
-                @error('slug') <span class="error-message">{{ $message }}</span> @enderror
+                @error('slug') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Description -->
             <div>
                 <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                 <textarea wire:model="description" id="description" rows="4" class="textarea-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Describe the product"></textarea>
-                @error('description') <span class="error-message">{{ $message }}</span> @enderror
+                @error('description') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Thumbnail -->
-            <div>
-                <label for="thumbnail" class="block text-sm font-medium text-gray-700">Thumbnail (Main Image)</label>
+            <div x-data="imageCropper({ target: 'thumbnail', ratio: 1/1 })">
+                <label class="block text-sm font-medium text-gray-700">Thumbnail (Main Image)</label>
                 <p class="text-xs text-gray-500 mb-2">
-                    Recommended size: <span class="font-medium">500x500px</span> (1:1 ratio)
+                    Required: 1:1 Aspect Ratio (Recommended: 500x500px)
                 </p>
-                <input wire:model="thumbnail" type="file" id="thumbnail" accept="image/*" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
-                <p class="mt-1 text-xs text-gray-500">Upload the main product image (JPEG, PNG).</p>
+                
+                <input type="file" accept="image/*" @change="fileChosen" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
+                
                 @if ($thumbnail)
-                    <div class="image-preview">
-                        <img src="{{ $thumbnail->temporaryUrl() }}" alt="Thumbnail Preview" class="w-24 h-24 rounded-lg object-cover border border-gray-200">
+                    <div class="mt-2">
+                        <p class="text-xs text-green-600 mb-1 font-bold">Selected Thumbnail:</p>
+                        <img src="{{ $thumbnail->temporaryUrl() }}" class="w-32 h-32 rounded-lg object-cover border border-gray-200">
                     </div>
                 @endif
-                @error('thumbnail') <span class="error-message">{{ $message }}</span> @enderror
+                @error('thumbnail') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
+
+                @include('admin.includes.cropper-modal') 
             </div>
 
-            <!-- Additional Images -->
             <div>
                 <label for="images" class="block text-sm font-medium text-gray-700">Additional Images</label>
                 <p class="text-xs text-gray-500 mb-2">
                     Recommended size: <span class="font-medium">1000x800px</span> (5:4 ratio)
                 </p>
-                <input wire:model="images" type="file" id="images" accept="image/*" multiple class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
-                <p class="mt-1 text-xs text-gray-500">Upload additional product images (JPEG, PNG).</p>
+
+                <div class="flex items-start gap-4 flex-col sm:flex-row">
+                    
+                    <div class="w-full sm:w-1/2">
+                        <input wire:model="images" type="file" id="images" accept="image/*" multiple class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
+                        <p class="mt-1 text-xs text-gray-500">Bulk upload multiple images directly.</p>
+                    </div>
+
+                    <div class="w-full sm:w-1/2" x-data="imageCropper({ target: 'tempImage', ratio: 5/4 })">
+                        <label class="cursor-pointer inline-flex items-center justify-center w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-200 mt-1 h-[42px]">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            Crop & Add Single Image
+                            <input type="file" accept="image/*" @change="fileChosen" class="hidden">
+                        </label>
+                         @include('admin.includes.cropper-modal')
+                    </div>
+                </div>
+
                 @if ($images)
-                    <div class="image-preview flex overflow-x-auto space-x-2 mt-2">
-                        @foreach ($images as $image)
-                            <img src="{{ $image->temporaryUrl() }}" alt="Image Preview" class="w-24 h-24 rounded-lg object-cover border border-gray-200">
-                        @endforeach
+                    <div class="mt-3">
+                        <p class="text-xs text-gray-500 mb-2">Images to Upload:</p>
+                        <div class="flex flex-wrap gap-3">
+                            @foreach ($images as $index => $image)
+                                <div class="relative group">
+                                    <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="w-24 h-24 rounded-lg object-cover border border-gray-200">
+                                    <button type="button" wire:click="removeImage({{ $index }})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md hover:bg-red-600 transition">
+                                        &times;
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
-                @error('images.*') <span class="error-message">{{ $message }}</span> @enderror
+                @error('images.*') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Categories -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Categories</label>
                 <select wire:model="selectedCategories" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
@@ -78,11 +102,9 @@
                     <option value="{{ $id }}">{{ $name }}</option>
                     @endforeach
                 </select>
-                <p class="mt-1 text-xs text-gray-500">Select one or more categories (subcategories are indented).</p>
-                @error('selectedCategories') <span class="error-message">{{ $message }}</span> @enderror
+                @error('selectedCategories') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Related Products -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Related Products</label>
                 <select wire:model="relatedProducts" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
@@ -90,11 +112,9 @@
                     <option value="{{ $id }}">{{ $name }}</option>
                     @endforeach
                 </select>
-                <p class="mt-1 text-xs text-gray-500">Select products for cross-sells or upsells (e.g., "You may also like").</p>
-                @error('relatedProducts') <span class="error-message">{{ $message }}</span> @enderror
+                @error('relatedProducts') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Has Attributes Checkbox -->
             <div class="flex items-center">
                 <input wire:model.live="has_attributes" type="checkbox" id="has_attributes" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                 <label for="has_attributes" class="ml-2 block text-sm font-medium text-gray-700">Has Attributes</label>
@@ -102,14 +122,13 @@
 
             @if ($has_attributes)
                 <div>
-                    <!-- Add New Attribute -->
                     <div class="bg-white shadow-md rounded-lg p-4 border border-gray-200 mb-3">
                         <h4 class="text-sm font-medium text-gray-700 mb-2">Add New Attribute</h4>
                         <div class="space-y-2">
                             <div>
                                 <label for="newAttributeName" class="block text-sm font-medium text-gray-700">Attribute Name:</label>
                                 <input wire:model="newAttribute.name" type="text" id="newAttributeName" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g., Color">
-                                @error('newAttribute.name') <span class="error-message">{{ $message }}</span> @enderror
+                                @error('newAttribute.name') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Attribute Values:</label>
@@ -118,7 +137,7 @@
                                     <input wire:model="newAttribute.values.{{ $index }}" type="text" class="input-field flex-1 block border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 text-sm px-3 py-2" placeholder="e.g., Red">
                                     <button type="button" wire:click="removeAttributeValueField({{ $index }})" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-3 py-1 rounded-md transition">×</button>
                                 </div>
-                                @error("newAttribute.values.{$index}") <span class="error-message">{{ $message }}</span> @enderror
+                                @error("newAttribute.values.{$index}") <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
                                 @endforeach
                                 <button type="button" wire:click="addAttributeValueField" class="inline-flex items-center bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium px-3 py-1 rounded-md mt-2 transition">
                                     + Add Value
@@ -126,12 +145,11 @@
                             </div>
 
                             <button type="button" wire:click="saveNewAttribute" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md mt-3 transition">
-                                💾 Save Attribute
+                                Save Attribute
                             </button>
                         </div>
                     </div>
 
-                    <!-- Select Attributes -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Select Attributes</label>
                         <select wire:model.live="selectedAttributes" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
@@ -139,10 +157,9 @@
                             <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
                             @endforeach
                         </select>
-                        @error('selectedAttributes') <span class="error-message">{{ $message }}</span> @enderror
+                        @error('selectedAttributes') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
 
-                    <!-- Attribute Values -->
                     @foreach ($selectedAttributes as $attrId)
                     @php $attr = $productAttributes->find($attrId); @endphp
                     <div>
@@ -152,15 +169,14 @@
                             <option value="{{ $value->id }}">{{ $value->value }}</option>
                             @endforeach
                         </select>
-                        @error("attributeValues.{$attrId}") <span class="error-message">{{ $message }}</span> @enderror
+                        @error("attributeValues.{$attrId}") <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     @endforeach
 
-                    <!-- Display Selected Attributes and Values -->
                     @if (!empty($selectedAttributesDisplay))
                     <div class="mt-4">
                         <h4 class="text-sm font-medium text-gray-700 mb-2">Selected Attributes</h4>
-                        <div class="attribute-display p-4">
+                        <div class="attribute-display p-4 bg-gray-50 rounded">
                             @foreach ($selectedAttributesDisplay as $attr)
                             <div class="mb-2">
                                 <span class="font-medium text-gray-800">{{ $attr['name'] }}:</span>
@@ -173,20 +189,16 @@
                 </div>
             @endif
 
-
-            <!-- Has Variations Checkbox -->
             <div class="flex items-center">
                 <input wire:model.live="has_variations" type="checkbox" id="has_variations" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                 <label for="has_variations" class="ml-2 block text-sm font-medium text-gray-700">Has Variations</label>
             </div>
 
-            <!-- Generate Variations Button (Conditional) -->
             @if ($has_variations)
             <button type="button" wire:click="generateVariations" class="form-button bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">Generate Variations</button>
 
-            <!-- Variations Table -->
             @if (!empty($variations))
-            <div class="bg-white shadow-md rounded-lg p-4 border border-gray-200">
+            <div class="bg-white shadow-md rounded-lg p-4 border border-gray-200 mt-4">
                 <div class="mt-1">
                     <h3 class="text-base font-semibold text-gray-800 mb-3">Variations</h3>
                     <table class="table-field w-full text-left text-sm">
@@ -208,15 +220,12 @@
                                 </td>
                                 <td class="p-2">
                                     <input wire:model="variations.{{ $index }}.sku" type="text" class="input-field w-full border border-gray-300 rounded-md text-sm">
-                                    @error("variations.{$index}.sku") <span class="error-message">{{ $message }}</span> @enderror
                                 </td>
                                 <td class="p-2">
                                     <input wire:model="variations.{{ $index }}.price" type="number" step="0.01" class="input-field w-full border border-gray-300 rounded-md text-sm">
-                                    @error("variations.{$index}.price") <span class="error-message">{{ $message }}</span> @enderror
                                 </td>
                                 <td class="p-2">
                                     <input wire:model="variations.{{ $index }}.stock" type="number" class="input-field w-full border border-gray-300 rounded-md text-sm">
-                                    @error("variations.{$index}.stock") <span class="error-message">{{ $message }}</span> @enderror
                                 </td>
                             </tr>
                             @endforeach
@@ -226,17 +235,16 @@
             </div>
             @endif
             @else
-            <!-- Conditional Fields for No Variations -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
                     <input wire:model="price" type="number" step="0.01" id="price" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="0.00">
-                    @error('price') <span class="error-message">{{ $message }}</span> @enderror
+                    @error('price') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
                     <input wire:model="stock" type="number" id="stock" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="0">
-                    @error('stock') <span class="error-message">{{ $message }}</span> @enderror
+                    @error('stock') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
                 </div>
             </div>
             @endif
@@ -247,10 +255,8 @@
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>
                 </select>
-                @error('status') <span class="error-message">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Submit Button -->
             <button type="submit" class="form-button bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -260,3 +266,78 @@
         </form>
     </div>
 </div>
+
+<script>
+    function imageCropper(config) {
+        return {
+            isCropping: false,
+            cropper: null,
+            selectedFile: null,
+            targetProperty: config.target, // 'thumbnail' or 'tempImage'
+            aspectRatio: config.ratio || 1, 
+
+            fileChosen(event) {
+                this.selectedFile = event.target.files[0];
+                if (this.selectedFile) {
+                    let reader = new FileReader();
+                    reader.onload = (e) => {
+                        // Ensure the image element exists before setting src
+                        if(this.$refs.cropImage) {
+                            this.$refs.cropImage.src = e.target.result;
+                            this.isCropping = true;
+                            
+                            if (this.cropper) {
+                                this.cropper.destroy();
+                            }
+
+                            this.$nextTick(() => {
+                                this.cropper = new Cropper(this.$refs.cropImage, {
+                                    aspectRatio: this.aspectRatio,
+                                    viewMode: 1,
+                                    autoCropArea: 1,
+                                });
+                            });
+                        }
+                    };
+                    reader.readAsDataURL(this.selectedFile);
+                }
+            },
+
+            cropAndUpload() {
+                if (this.cropper) {
+                    this.cropper.getCroppedCanvas({
+                        width: 1000, 
+                    }).toBlob((blob) => {
+                        @this.upload(this.targetProperty, blob, (uploadedFilename) => {
+                            this.cancelCrop();
+                        }, () => {
+                            alert('Upload failed');
+                        });
+                    }, 'image/jpeg', 0.85);
+                }
+            },
+
+            uploadOriginal() {
+                if (this.selectedFile) {
+                    @this.upload(this.targetProperty, this.selectedFile, (uploadedFilename) => {
+                        this.cancelCrop();
+                    }, () => {
+                        alert('Upload failed');
+                    });
+                }
+            },
+
+            cancelCrop() {
+                this.isCropping = false;
+                if (this.cropper) {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                }
+                // Reset input
+                if(this.$el.querySelector('input[type="file"]')) {
+                    this.$el.querySelector('input[type="file"]').value = '';
+                }
+            }
+        }
+    }
+</script>
