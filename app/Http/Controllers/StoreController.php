@@ -83,11 +83,33 @@ class StoreController extends Controller
                         return $q->orderBy('created_at', 'desc');
                 }
             })
-            ->paginate(15) // 15 items to fit 5-column layout nicely (3 rows)
+            ->paginate(10) // 15 items to fit 5-column layout nicely (3 rows)
             ->withQueryString(); // Keep search params in pagination links
 
         $categories = Category::whereNull('parent_id')->with('children')->get();
 
         return view('store.search', compact('products', 'categories', 'query', 'categoryId', 'minPrice', 'maxPrice', 'sort'));
+    }
+
+    /**
+     * Show the single product details page.
+     */
+    public function show($slug)
+    {
+        $product = Product::where('slug', $slug)
+            ->where('status', 1)
+            ->with(['categories', 'attributes', 'variations']) 
+            ->firstOrFail();
+
+        // Get related products (same category)
+        $relatedProducts = Product::where('status', 1)
+            ->where('id', '!=', $product->id)
+            ->whereHas('categories', function($q) use ($product) {
+                $q->whereIn('categories.id', $product->categories->pluck('id'));
+            })
+            ->take(4)
+            ->get();
+
+        return view('store.product', compact('product', 'relatedProducts'));
     }
 }

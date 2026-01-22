@@ -103,51 +103,49 @@
 
             <div class="flex-1">
                 @if($products->count() > 0)
-                    {{-- 
-                        CHANGED: 
-                        - lg:grid-cols-4 (4 items per row on large screens)
-                        - Removed xl:grid-cols-5
-                    --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         @foreach($products as $product)
-                            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group border border-gray-100 flex flex-col">
-                                <div class="aspect-square relative overflow-hidden bg-gray-100">
-                                    @php
-                                        $img = 'https://placehold.co/500?text=No+Image';
-                                        if ($product->thumbnail) {
-                                            $img = Str::startsWith($product->thumbnail, ['http','https']) 
-                                                ? $product->thumbnail 
-                                                : Storage::url($product->thumbnail);
-                                        }
-                                    @endphp
-                                    <img src="{{ $img }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                    
-                                    @if($product->price < 50) 
-                                        <span class="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded">DEAL</span>
-                                    @endif
-                                </div>
+                        <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group border border-gray-100 flex flex-col">
+                            
+                            <a href="{{ route('store.product', $product->slug) }}" class="block aspect-square relative overflow-hidden bg-gray-100">
+                                @php
+                                    $img = 'https://placehold.co/500?text=No+Image';
+                                    if ($product->thumbnail) {
+                                        $img = Str::startsWith($product->thumbnail, ['http','https']) 
+                                            ? $product->thumbnail 
+                                            : Storage::url($product->thumbnail);
+                                    }
+                                @endphp
+                                <img src="{{ $img }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                                 
-                                <div class="p-3 flex-1 flex flex-col">
+                                @if($product->price < 50) 
+                                    <span class="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded">DEAL</span>
+                                @endif
+                            </a>
+                            
+                            <div class="p-3 flex-1 flex flex-col">
+                                <a href="{{ route('store.product', $product->slug) }}" class="block">
                                     <h3 class="text-sm font-medium text-gray-900 group-hover:text-primary truncate mb-1">
                                         {{ $product->name }}
                                     </h3>
-                                    
-                                    <p class="text-xs text-gray-500 mb-2 truncate">
-                                        {{ $product->categories->first()->name ?? 'General' }}
-                                    </p>
-                                    
-                                    <div class="mt-auto flex items-center justify-between">
-                                        <div class="flex flex-col">
-                                            <span class="text-sm font-bold text-gray-900">${{ number_format($product->price, 2) }}</span>
-                                        </div>
-                                        @livewire('add-to-cart-button', ['productId' => $product->id], key($product->id))
+                                </a>
+                                
+                                <p class="text-xs text-gray-500 mb-2 truncate">
+                                    {{ $product->categories->first()->name ?? 'General' }}
+                                </p>
+                                
+                                <div class="mt-auto flex items-center justify-between">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-bold text-gray-900">${{ number_format($product->price, 2) }}</span>
                                     </div>
+                                    @livewire('add-to-cart-button', ['productId' => $product->id], key($product->id))
                                 </div>
                             </div>
+                        </div>
                         @endforeach
                     </div>
 
-                    <div class="mt-10 flex justify-center">
+                    <div class="mt-10">
                         {{ $products->links() }} 
                     </div>
 
