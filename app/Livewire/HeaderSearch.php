@@ -13,6 +13,16 @@ class HeaderSearch extends Component
     public $query = '';
     public $category = '';
 
+
+    public function performSearch()
+    {
+        // Redirect to the full search page with params
+        return redirect()->route('store.search', [
+            'query' => $this->query,
+            'category' => $this->category
+        ]);
+    }
+
     public function render()
     {
         $results = [];

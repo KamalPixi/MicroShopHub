@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StoreController;
 
 Route::get('/', [StoreController::class, 'index'])->name('store.index');
+Route::get('/search', [StoreController::class, 'search'])->name('store.search');
 
 Route::prefix('admin')
 ->name('admin.')
