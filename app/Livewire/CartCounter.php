@@ -3,22 +3,27 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class CartCounter extends Component
 {
     public $count = 0;
 
-    protected $listeners = ['itemAdded' => 'increment'];
-
     public function mount()
     {
-        $this->count = session('cart_count', 3); // Start with 3 as in your design
+        $this->updateCount();
     }
 
-    public function increment()
+    #[On('cartUpdated')] 
+    public function updateCount()
     {
-        $this->count++;
-        session(['cart_count' => $this->count]);
+        $cart = session()->get('cart', []);
+        
+        // If we only want unique products, we can use count($cart)
+        $this->count = count($cart);
+        
+        // This calculates the TOTAL quantity (e.g., 2 shirts + 1 hat = 3 items)
+        // $this->count = array_sum(array_column($cart, 'quantity'));
     }
 
     public function render()
