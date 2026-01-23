@@ -6,6 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+
+    protected $fillable = [
+        'user_id',
+        'order_number',
+        'status',
+        'currency_code',
+        'exchange_rate',
+        'subtotal',
+        'discount',
+        'shipping_cost',
+        'total',
+        'shipping_method_id',
+        'payment_method',
+        'payment_status',
+        'payment_method_id',
+    ];
+
     public function currency()
     {
         return $this->belongsTo(Currency::class, 'currency_code', 'code');
