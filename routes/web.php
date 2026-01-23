@@ -2,11 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\CustomerController;
 
 Route::get('/', [StoreController::class, 'index'])->name('store.index');
 Route::get('/search', [StoreController::class, 'search'])->name('store.search');
 Route::get('/product/{slug}', [StoreController::class, 'show'])->name('store.product');
-Route::get('/cart', [App\Http\Controllers\StoreController::class, 'cart'])->name('cart.index');
+Route::get('/cart', [StoreController::class, 'cart'])->name('cart.index');
+
+
+Route::controller(CustomerController::class)->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', 'dashboard')->name('customer.dashboard');
+    Route::get('/logout', 'logout')->name('logout');
+    
+});
 
 Route::prefix('admin')
 ->name('admin.')
