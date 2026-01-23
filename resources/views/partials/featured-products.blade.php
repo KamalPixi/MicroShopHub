@@ -29,7 +29,7 @@
                 @foreach($featuredProducts as $product)
                     <div class="flex-none w-[200px] sm:w-[250px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group/card cursor-pointer">
                         
-                        <div class="aspect-square rounded-lg mb-3 overflow-hidden bg-gray-100 relative">
+                        <a href="{{ route('store.product', $product->slug) }}" class="block aspect-square rounded-lg mb-3 overflow-hidden bg-gray-100 relative">
                             @php
                                 $imageUrl = 'https://placehold.co/500x500?text=No+Image';
                                 if ($product->thumbnail) {
@@ -41,11 +41,13 @@
                                 }
                             @endphp
                             <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
-                        </div>
+                        </a>
 
-                        <h3 class="font-medium text-gray-900 text-sm mb-1 group-hover/card:text-primary truncate">
-                            {{ $product->name }}
-                        </h3>
+                        <a href="{{ route('store.product', $product->slug) }}" class="block">
+                            <h3 class="font-medium text-gray-900 text-sm mb-1 group-hover/card:text-primary truncate">
+                                {{ $product->name }}
+                            </h3>
+                        </a>
 
                         <p class="text-xs text-gray-600 mb-2 truncate">
                             {{ Str::limit(strip_tags($product->description), 30) }}

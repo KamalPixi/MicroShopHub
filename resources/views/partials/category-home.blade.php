@@ -24,7 +24,8 @@
 
                 @if(isset($homeCategories) && $homeCategories->count() > 0)
                     @foreach($homeCategories as $category)
-                        <a href="#" class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card block">
+                        <a href="{{ route('store.search', ['category' => $category->id]) }}" 
+                           class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card block">
                             
                             @php
                                 $imageUrl = 'https://placehold.co/400x225?text=No+Image';

@@ -6,6 +6,7 @@ use App\Http\Controllers\StoreController;
 Route::get('/', [StoreController::class, 'index'])->name('store.index');
 Route::get('/search', [StoreController::class, 'search'])->name('store.search');
 Route::get('/product/{slug}', [StoreController::class, 'show'])->name('store.product');
+Route::get('/cart', [App\Http\Controllers\StoreController::class, 'cart'])->name('cart.index');
 
 Route::prefix('admin')
 ->name('admin.')

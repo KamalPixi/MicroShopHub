@@ -18,9 +18,7 @@
                     </svg>
                 </a>
 
-                <a href="#" class="p-2">
-                    @livewire('cart-counter')
-                </a>
+                @livewire('cart-counter')
             </div>
         </div>
     </div>

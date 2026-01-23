@@ -28,11 +28,10 @@
                 @foreach($newArrivals as $product)
                     <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer">
                         
-                        <div class="aspect-square overflow-hidden bg-gray-100 relative">
+                        <a href="{{ route('store.product', $product->slug) }}" class="block aspect-square overflow-hidden bg-gray-100 relative">
                             @php
                                 $imageUrl = 'https://placehold.co/500x500?text=No+Image';
                                 if ($product->thumbnail) {
-                                    // Check if it's an external URL (like from Seeder) or local storage
                                     if (Str::startsWith($product->thumbnail, ['http://', 'https://'])) {
                                         $imageUrl = $product->thumbnail;
                                     } else {
@@ -41,12 +40,14 @@
                                 }
                             @endphp
                             <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105">
-                        </div>
+                        </a>
 
                         <div class="p-3">
-                            <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary truncate">
-                                {{ $product->name }}
-                            </h3>
+                            <a href="{{ route('store.product', $product->slug) }}" class="block">
+                                <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary truncate">
+                                    {{ $product->name }}
+                                </h3>
+                            </a>
                             
                             <p class="text-xs text-gray-600 mb-2 truncate">
                                 {{ Str::limit(strip_tags($product->description), 40) }}
