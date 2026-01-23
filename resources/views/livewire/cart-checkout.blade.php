@@ -13,28 +13,21 @@
                             <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Items in Cart</h2>
                             <span class="text-xs font-medium text-gray-500">{{ count($cart) }} Items</span>
                         </div>
-                        
                         <ul class="divide-y divide-gray-100">
                             @foreach($cart as $key => $item)
                                 <li class="p-4 flex items-center">
                                     <div class="flex-shrink-0 w-16 h-16 border border-gray-200 rounded-md overflow-hidden bg-gray-100">
                                         @php
-                                            $img = 'https://placehold.co/100';
-                                            if (!empty($item['thumbnail'])) {
-                                                $img = Str::startsWith($item['thumbnail'], ['http']) 
-                                                    ? $item['thumbnail'] 
-                                                    : Storage::url($item['thumbnail']);
-                                            }
+                                            $img = !empty($item['thumbnail']) 
+                                                ? (Str::startsWith($item['thumbnail'], ['http']) ? $item['thumbnail'] : Storage::url($item['thumbnail'])) 
+                                                : 'https://placehold.co/100';
                                         @endphp
                                         <img src="{{ $img }}" class="w-full h-full object-cover">
                                     </div>
-
                                     <div class="ml-4 flex-1">
                                         <div class="flex justify-between items-start">
                                             <div>
-                                                <h3 class="text-sm font-bold text-gray-900 line-clamp-1 hover:text-primary cursor-pointer">
-                                                    {{ $item['name'] }}
-                                                </h3>
+                                                <h3 class="text-sm font-bold text-gray-900 line-clamp-1 hover:text-primary cursor-pointer">{{ $item['name'] }}</h3>
                                                 @if(!empty($item['attributes']))
                                                     <div class="text-xs text-gray-500 mt-0.5 flex flex-wrap gap-2">
                                                         @foreach($item['attributes'] as $k => $v)
@@ -45,14 +38,12 @@
                                             </div>
                                             <p class="text-sm font-bold text-gray-900">${{ number_format($item['price'], 2) }}</p>
                                         </div>
-
                                         <div class="flex justify-between items-center mt-2">
                                             <div class="flex items-center border border-gray-300 rounded h-7">
                                                 <button wire:click="decrement('{{ $key }}')" class="px-2 text-gray-500 hover:text-primary hover:bg-gray-50 h-full border-r border-gray-300 text-xs">-</button>
                                                 <input type="text" value="{{ $item['quantity'] }}" readonly class="w-8 text-center border-none p-0 text-gray-900 font-bold text-xs h-full focus:ring-0">
                                                 <button wire:click="increment('{{ $key }}')" class="px-2 text-gray-500 hover:text-primary hover:bg-gray-50 h-full border-l border-gray-300 text-xs">+</button>
                                             </div>
-                                            
                                             <button wire:click="removeItem('{{ $key }}')" class="text-xs text-red-500 hover:underline">Remove</button>
                                         </div>
                                     </div>
@@ -62,93 +53,248 @@
                     </div>
 
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-                        <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide mb-4 border-b pb-2">Customer Details</h2>
+                        <div class="flex items-center justify-between mb-4 border-b pb-2">
+                            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Customer Details</h2>
+                            @if(auth()->check())
+                                <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold flex items-center">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    Logged In
+                                </span>
+                            @endif
+                        </div>
                         
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">Email</label>
-                                <input wire:model="email" type="email" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3 placeholder-gray-400" placeholder="john@example.com">
-                                @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">Phone</label>
-                                <input wire:model="phone" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3" placeholder="+123456789">
-                                @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">Full Name</label>
-                                <input wire:model="billing.name" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3">
-                                @error('billing.name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">Street Address</label>
-                                <input wire:model="billing.address_line1" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3" placeholder="123 Main St">
-                                @error('billing.address_line1') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">City</label>
-                                    <input wire:model="billing.city" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3">
-                                    @error('billing.city') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        <div class="mb-6">
+                            @if(!auth()->check())
+                                <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
+                                    <p class="text-sm text-blue-800 mb-3 font-medium">Log in or Sign up with just your email.</p>
+                                    
+                                    @if(!$otpSent)
+                                        <div class="flex gap-3">
+                                            <div class="flex-1">
+                                                <label class="sr-only">Email</label>
+                                                <input wire:model="email" type="email" 
+                                                       class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400" 
+                                                       placeholder="Enter your email address">
+                                                @error('email') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                            </div>
+                                            <button wire:click="sendOtp" 
+                                                    class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition whitespace-nowrap shadow-sm">
+                                                Send Code
+                                            </button>
+                                        </div>
+                                    @else
+                                        <div class="space-y-3">
+                                            <div class="flex gap-3">
+                                                <div class="flex-1">
+                                                    <label class="text-xs font-bold text-blue-800 mb-1 block">Enter Code sent to {{ $email }}</label>
+                                                    <input wire:model="otp" type="text" maxlength="6"
+                                                           class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 tracking-widest text-center font-mono placeholder-gray-400" 
+                                                           placeholder="123456">
+                                                </div>
+                                                <div class="flex items-end">
+                                                    <button wire:click="verifyOtp" 
+                                                            class="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition h-[38px] shadow-sm">
+                                                        Verify
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            @if(session('otp_message')) <p class="text-xs text-blue-600">{{ session('otp_message') }}</p> @endif
+                                            @error('otp') <p class="text-xs text-red-500 font-bold">{{ $message }}</p> @enderror
+                                        </div>
+                                    @endif
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">Postal Code</label>
-                                    <input wire:model="billing.postal_code" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <label class="inline-flex items-center cursor-pointer">
-                                <input wire:model.live="shipToDifferentAddress" type="checkbox" class="rounded border-gray-300 text-primary shadow-sm focus:ring-primary">
-                                <span class="ml-2 text-sm text-gray-700 font-medium">Ship to a different address?</span>
-                            </label>
-                        </div>
-
-                        @if($shipToDifferentAddress)
-                            <div class="mt-4 space-y-4 p-4 bg-gray-50 rounded border border-gray-200 animate-fade-in-down">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">Recipient Name</label>
-                                    <input wire:model="shipping.name" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">Address</label>
-                                    <input wire:model="shipping.address_line1" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3">
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
+                            @else
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">City</label>
-                                        <input wire:model="shipping.city" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3">
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Email (Verified)</label>
+                                        <input value="{{ auth()->user()->email }}" disabled 
+                                               class="w-full text-sm bg-gray-100 border border-gray-200 rounded-lg py-2 px-3 text-gray-500 cursor-not-allowed">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">Postal Code</label>
-                                        <input wire:model="shipping.postal_code" type="text" class="w-full text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3">
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Phone <span class="text-red-500">*</span></label>
+                                        <input wire:model="phone" type="text" 
+                                               class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400" 
+                                               placeholder="+123456789">
+                                        @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
+                            @endif
+                        </div>
+
+                        @if(auth()->check())
+                            <div class="space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">
+                                            Country <span class="text-red-500">*</span>
+                                        </label>
+
+                                        <div class="relative">
+                                            <select 
+                                                wire:model.live="billing.country_code" 
+                                                class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10"
+                                            >
+                                                <option value="BD">Bangladesh</option>
+                                                <option value="US">United States</option>
+                                                <option value="GB">United Kingdom</option>
+                                                <option value="CA">Canada</option>
+                                                <option value="MY">Malaysia</option>
+                                                <option value="SG">Singapore</option>
+                                            </select>
+                                            
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        @error('billing.country_code') 
+                                            <span class="text-red-500 text-xs">{{ $message }}</span> 
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Full Name <span class="text-red-500">*</span></label>
+                                        <input wire:model="billing.name" type="text" 
+                                               class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                        @error('billing.name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1">Street Address <span class="text-red-500">*</span></label>
+                                    <input wire:model="billing.address_line1" type="text" 
+                                           class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400" 
+                                           placeholder="123 Main St, Apt 4B">
+                                    @error('billing.address_line1') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">City <span class="text-red-500">*</span></label>
+                                        <input wire:model="billing.city" type="text" 
+                                               class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                        @error('billing.city') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">State / Province</label>
+                                        <input wire:model="billing.state" type="text" 
+                                               class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
+                                               placeholder="NY, CA, etc">
+                                        @error('billing.state') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Zip / Postal Code</label>
+                                        <input wire:model="billing.postal_code" type="text" 
+                                               class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                        @error('billing.postal_code') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+
+                                <div class="pt-2">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input wire:model.live="shipToDifferentAddress" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                        <span class="ml-2 text-sm text-gray-700 font-medium">Ship to a different address?</span>
+                                    </label>
+                                </div>
+
+                                @if($shipToDifferentAddress)
+                                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4 animate-fade-in-down">
+                                        
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                    Country <span class="text-red-500">*</span>
+                                                </label>
+
+                                                <div class="relative">
+                                                    <select 
+                                                        wire:model.live="billing.country_code" 
+                                                        class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10"
+                                                    >
+                                                        <option value="BD">Bangladesh</option>
+                                                        <option value="US">United States</option>
+                                                        <option value="GB">United Kingdom</option>
+                                                        <option value="CA">Canada</option>
+                                                        <option value="MY">Malaysia</option>
+                                                        <option value="SG">Singapore</option>
+                                                    </select>
+                                                    
+                                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                                        <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+
+                                                @error('billing.country_code') 
+                                                    <span class="text-red-500 text-xs">{{ $message }}</span> 
+                                                @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-600 mb-1">Recipient Name</label>
+                                                <input wire:model="shipping.name" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-600 mb-1">Address</label>
+                                            <input wire:model="shipping.address_line1" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                        </div>
+
+                                        <div class="grid grid-cols-3 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-600 mb-1">City</label>
+                                                <input wire:model="shipping.city" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-600 mb-1">State</label>
+                                                <input wire:model="shipping.state" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-600 mb-1">Zip Code</label>
+                                                <input wire:model="shipping.postal_code" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>
 
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
                         <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3">Delivery Method</h2>
-                        <div class="space-y-2">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @foreach($shippingMethods as $method)
-                                <label class="relative flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors {{ $selectedShippingMethod == $method->id ? 'border-primary bg-blue-50 ring-1 ring-primary' : 'border-gray-200' }}">
-                                    <div class="flex items-center">
-                                        <input wire:model.live="selectedShippingMethod" type="radio" value="{{ $method->id }}" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
-                                        <div class="ml-3">
-                                            <span class="block text-sm font-bold text-gray-900">{{ $method->name }}</span>
-                                            <span class="block text-xs text-gray-500">{{ $method->estimated_days }} Days</span>
+                                <label class="relative cursor-pointer group">
+                                    <input wire:model.live="selectedShippingMethod" type="radio" value="{{ $method->id }}" class="peer sr-only">
+                                    
+                                    <div class="p-3 rounded-lg border border-gray-200 hover:border-primary/50 transition-all duration-200 peer-checked:border-primary peer-checked:bg-blue-50 peer-checked:ring-1 peer-checked:ring-primary flex items-center justify-between">
+                                        
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-bold text-gray-900">{{ $method->name }}</span>
+                                            <span class="text-xs text-gray-500 flex items-center mt-0.5">
+                                                <svg class="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                {{ $method->estimated_days }} Days
+                                            </span>
+                                        </div>
+
+                                        <div class="text-right">
+                                            <span class="block text-sm font-bold text-gray-900">${{ number_format($method->cost, 2) }}</span>
+                                            
+                                            <div class="hidden peer-checked:block absolute top-0 right-0 -mt-2 -mr-2">
+                                                <span class="bg-primary text-white rounded-full p-0.5 shadow-sm block">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <span class="text-sm font-bold text-gray-900">${{ number_format($method->cost, 2) }}</span>
                                 </label>
                             @endforeach
                         </div>
-                        @error('selectedShippingMethod') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        @error('selectedShippingMethod') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
                     </div>
 
                 </div>
@@ -162,7 +308,6 @@
                                 <span>Subtotal</span>
                                 <span class="font-bold text-gray-900">${{ number_format($subtotal, 2) }}</span>
                             </div>
-
                             @if($appliedCoupon)
                                 <div class="flex justify-between text-green-600">
                                     <span class="flex items-center">
@@ -171,12 +316,10 @@
                                     <span class="font-bold">-${{ number_format($discountAmount, 2) }}</span>
                                 </div>
                             @endif
-
                             <div class="flex justify-between text-gray-600">
                                 <span>Shipping</span>
                                 <span class="font-bold text-gray-900">${{ number_format($shippingCost, 2) }}</span>
                             </div>
-
                             <div class="border-t border-dashed border-gray-300 pt-3 flex justify-between items-end">
                                 <span class="text-base font-bold text-gray-900">Total</span>
                                 <span class="text-xl font-extrabold text-primary">${{ number_format($total, 2) }}</span>
@@ -185,10 +328,14 @@
 
                         <div class="mb-6">
                             <div class="flex space-x-2">
-                                <input wire:model="couponCode" type="text" placeholder="Promo code" class="flex-1 text-sm border-gray-300 rounded focus:ring-primary focus:border-primary py-2 px-3 uppercase placeholder-gray-400">
-                                <button wire:click="applyCoupon" class="bg-gray-800 text-white px-3 py-2 rounded text-sm font-bold hover:bg-black transition">Apply</button>
+                                <input wire:model="couponCode" type="text" placeholder="Promo code" 
+                                       class="flex-1 text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 uppercase placeholder-gray-400">
+                                <button wire:click="applyCoupon" 
+                                        class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-black transition border border-gray-800 shadow-sm">
+                                    Apply
+                                </button>
                             </div>
-                            @error('coupon') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('coupon') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
                             @if(session('coupon_success')) <p class="text-green-600 text-xs mt-1 font-bold">{{ session('coupon_success') }}</p> @endif
                         </div>
 
@@ -204,8 +351,11 @@
 
                         <button wire:click="placeOrder" 
                                 wire:loading.attr="disabled"
-                                class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-blue-700 transition-all flex justify-center items-center">
-                            <span wire:loading.remove>Complete Order</span>
+                                class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-blue-700 transition-all flex justify-center items-center
+                                       {{ !auth()->check() ? 'opacity-70 cursor-not-allowed' : '' }}">
+                            <span wire:loading.remove>
+                                {{ !auth()->check() ? 'Log in to Order' : 'Complete Order' }}
+                            </span>
                             <span wire:loading><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>
                         </button>
 
@@ -223,10 +373,7 @@
                     <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 </div>
                 <h2 class="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
-                <p class="text-sm text-gray-500 mb-6">Looks like you haven't added anything yet.</p>
-                <a href="{{ route('store.index') }}" class="px-6 py-2 bg-primary text-white text-sm font-bold rounded hover:bg-blue-700 transition">
-                    Start Shopping
-                </a>
+                <a href="{{ route('store.index') }}" class="px-6 py-2 bg-primary text-white text-sm font-bold rounded hover:bg-blue-700 transition">Start Shopping</a>
             </div>
         @endif
 
@@ -242,6 +389,5 @@
                 </div>
             </div>
         @endif
-
     </div>
 </div>
