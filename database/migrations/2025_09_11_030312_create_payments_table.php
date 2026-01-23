@@ -17,8 +17,10 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->enum('method', ['cash', 'card', 'paypal', 'stripe', 'sslcommerz'])->default('cash');
+            $table->foreignId('payment_gateway_id')->nullable()->constrained('payment_gateways')->nullOnDelete();
             $table->decimal('amount', 12, 2);
+            $table->string('currency_code', 3);
+            $table->foreign('currency_code')->references('code')->on('currencies');
             $table->string('status')->default('pending'); // pending, paid, failed, refunded
             $table->string('transaction_id')->nullable(); // reference from gateway
             $table->timestamps();

@@ -112,4 +112,9 @@ class StoreController extends Controller
 
         return view('store.product', compact('product', 'relatedProducts'));
     }
+
+    public function cart()
+    {
+        return view('store.cart');
+    }
 }

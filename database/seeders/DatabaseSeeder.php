@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
+            CurrencySeeder::class,
+            ShippingSeeder::class,
+            PaymentGatewaySeeder::class,
         ]);
     }
 }

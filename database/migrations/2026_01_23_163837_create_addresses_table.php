@@ -11,22 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        /**
-         * Order Shipping + Billing Addresses
-         */
-        Schema::create('order_addresses', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->enum('type', ['billing', 'shipping']);
+            $table->morphs('addressable'); // User, Order, Store, etc.
+            $table->string('type')->nullable()->index(); // billing, shipping
+            
             $table->string('name');
-            $table->string('phone')->nullable();
             $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            
             $table->string('address_line1');
             $table->string('address_line2')->nullable();
             $table->string('city');
-            $table->string('state')->nullable();
+            $table->string('state')->nullable(); // State/Province/County
             $table->string('postal_code')->nullable();
-            $table->string('country')->default('Bangladesh');
+            
+            // ISO Country Code (e.g., 'US', 'BD')
+            $table->char('country_code', 2)->default('BD')->index(); 
+            
+            $table->boolean('is_default')->default(false);
             $table->timestamps();
         });
     }
@@ -36,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_addresses');
+        Schema::dropIfExists('addresses');
     }
 };

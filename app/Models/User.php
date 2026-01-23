@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function addresses()
+    {
+        return $this->morphMany(Address::class, 'addressable');
+    }
+    
+    public function defaultAddress()
+    {
+        return $this->morphOne(Address::class, 'addressable')->where('is_default', true);
+    }
 }
