@@ -23,6 +23,10 @@ class CartCheckout extends Component
     public $shippingCost = 0;
     public $total = 0;
 
+    // for saved addresses
+    public $savedAddresses = [];
+    public $selectedAddressId = null; // To track UI highlighting
+
     // --- Configuration ---
     public $shippingMethods = [];
     public $selectedShippingMethod = null;
@@ -87,8 +91,29 @@ class CartCheckout extends Component
         if (Auth::check()) {
             $user = Auth::user();
             $this->email = $user->email;
-            $this->billing['name'] = $user->name;
-            $this->phone = $user->phone ?? ''; // Assuming user model has phone
+            $this->phone = $user->phone ?? '';
+            
+
+            // Try to get addresses explicitly saved to User Profile
+            $this->savedAddresses = $user->addresses()->latest()->get();
+
+            // FALLBACK: If empty, check the User's Last Order
+            if ($this->savedAddresses->isEmpty()) {
+                $lastOrder = Order::where('user_id', $user->id)->latest()->first();
+                
+                if ($lastOrder) {
+                    // Get addresses linked to that order (billing & shipping)
+                    $this->savedAddresses = $lastOrder->addresses;
+                }
+            }
+
+            // If user has addresses, pre-fill the form with the latest one
+            if ($this->savedAddresses->isNotEmpty()) {
+                $latest = $this->savedAddresses->first();
+                $this->useSavedAddress($latest->id);
+            } else {
+                $this->billing['name'] = $user->name;
+            }
         }
 
         $this->calculateTotals();
@@ -329,9 +354,6 @@ class CartCheckout extends Component
                 $productId = $parts[0];
                 $variationId = $parts[1] ?? null;
 
-                // Create Item (Assuming you have an OrderItem model)
-                // If not using model: DB::table('order_items')->insert(...)
-                /*
                 $order->items()->create([
                     'product_id' => $productId,
                     'product_variation_id' => $variationId,
@@ -340,7 +362,6 @@ class CartCheckout extends Component
                     'quantity' => $item['quantity'],
                     'attributes' => json_encode($item['attributes'] ?? []),
                 ]);
-                */
 
                 // Stock Management
                 $product = Product::find($productId);
@@ -364,6 +385,41 @@ class CartCheckout extends Component
             // Optional: Redirect to success page
             // return redirect()->route('order.success', $order->id);
         });
+    }
+
+    // Method to populate form from saved address
+    public function useSavedAddress($addressId)
+    {
+        $address = $this->savedAddresses->where('id', $addressId)->first();
+        
+        if ($address) {
+            $this->selectedAddressId = $address->id;
+            
+            $this->billing = [
+                'name' => $address->name,
+                'country_code' => $address->country_code,
+                'address_line1' => $address->address_line1,
+                'city' => $address->city,
+                'state' => $address->state,
+                'postal_code' => $address->postal_code,
+            ];
+
+            $this->phone = $address->phone;            
+        }
+    }
+
+    // Method to clear form for new address
+    public function clearAddressSelection()
+    {
+        $this->selectedAddressId = 'new';
+        $this->billing = [
+            'name' => Auth::user()->name,
+            'country_code' => 'BD', // Default
+            'address_line1' => '',
+            'city' => '',
+            'state' => '',
+            'postal_code' => '',
+        ];
     }
 
     public function render()

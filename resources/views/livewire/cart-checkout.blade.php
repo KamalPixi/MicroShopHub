@@ -123,7 +123,46 @@
 
                         @if(auth()->check())
                             <div class="space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
-                                
+                                                            
+                                @if($savedAddresses && $savedAddresses->count() > 0)
+                                    <div class="mb-5">
+                                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Select Address</h3>
+                                        
+                                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                            
+                                            @foreach($savedAddresses as $addr)
+                                                <div wire:click="useSavedAddress({{ $addr->id }})" 
+                                                    class="cursor-pointer relative p-2.5 rounded-lg border transition-all duration-200 group h-full flex flex-col justify-between
+                                                    {{ $selectedAddressId == $addr->id ? 'border-primary bg-blue-50 ring-1 ring-primary shadow-sm' : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50' }}">
+                                                    
+                                                    <div class="flex items-center justify-between mb-1.5">
+                                                        <span class="text-[10px] font-bold text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded uppercase tracking-wider">{{ $addr->type ?? 'Home' }}</span>
+                                                        @if($selectedAddressId == $addr->id)
+                                                            <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="text-xs text-gray-600 leading-snug">
+                                                        <p class="font-bold text-gray-900 truncate mb-0.5">{{ $addr->name }}</p>
+                                                        <p class="truncate text-gray-500">{{ $addr->address_line1 }}</p>
+                                                        <p class="text-[10px] text-gray-400 mt-0.5">{{ $addr->city }}, {{ $addr->country_code }}</p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                            <div wire:click="clearAddressSelection"
+                                                class="cursor-pointer relative p-2.5 rounded-lg border border-dashed border-gray-300 hover:border-primary hover:bg-gray-50 transition-all flex flex-col items-center justify-center text-center h-full min-h-[85px]
+                                                {{ $selectedAddressId === 'new' ? 'border-primary bg-blue-50 ring-1 ring-primary' : '' }}">
+                                                <div class="bg-gray-100 rounded-full p-1.5 mb-1 group-hover:bg-white transition-colors">
+                                                    <svg class="w-4 h-4 text-gray-500 group-hover:text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                                </div>
+                                                <span class="text-xs font-bold text-gray-600 group-hover:text-primary">New Address</span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">

@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_variation_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('product_variation_id')->nullable()->constrained()->nullOnDelete();
             $table->integer('quantity');
             $table->decimal('price', 10, 2); // snapshot of price at order time
-            $table->decimal('subtotal', 12, 2); // quantity * price
+            $table->json('attributes')->nullable(); // to store selected attributes/options
             $table->timestamps();
         });
     }

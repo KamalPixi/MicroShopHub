@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->morphs('addressable'); // User, Order, Store, etc.
-            $table->string('type')->nullable()->index(); // billing, shipping
+            $table->morphs('addressable'); // User, Store, etc.
+            $table->string('type')->nullable()->index(); // home, work, etc.
             
             $table->string('name');
             $table->string('email')->nullable();
