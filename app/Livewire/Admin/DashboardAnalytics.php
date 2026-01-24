@@ -3,8 +3,8 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
-use App\Models\Customer;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ShippingMethod;
@@ -33,7 +33,7 @@ class DashboardAnalytics extends Component
         $this->totalOrders = Order::count();
 
         // Total Customers
-        $this->totalCustomers = Customer::count();
+        $this->totalCustomers = User::count();
 
         // Total Products
         $this->totalProducts = Product::count();
@@ -54,14 +54,14 @@ class DashboardAnalytics extends Component
         $this->activeShippingMethods = ShippingMethod::where('active', true)->count();
 
         // Recent Orders: Last 5 orders with customer name, total, status
-        $this->recentOrders = Order::with('customer')
+        $this->recentOrders = Order::with('user')
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get()
             ->map(function ($order) {
                 return [
                     'id' => $order->id,
-                    'customer_name' => $order->customer ? $order->customer->name : 'Guest',
+                    'customer_name' => $order->user ? $order->user->name : 'Guest',
                     'total' => $order->total,
                     'status' => $order->status,
                     'created_at' => $order->created_at->format('Y-m-d H:i'),
@@ -69,19 +69,22 @@ class DashboardAnalytics extends Component
             });
 
         // Top Products: Top 5 products by sales (sum of subtotals from order_items)
-        $this->topProducts = OrderItem::select('product_id', DB::raw('SUM(subtotal) as total_sales'))
-            ->groupBy('product_id')
+        $this->topProducts = OrderItem::join('products', 'order_items.product_id', '=', 'products.id')
+            ->select(
+                'products.name', 
+                DB::raw('SUM(order_items.quantity * order_items.price) as total_sales')
+            )
+            ->groupBy('products.id', 'products.name')
             ->orderBy('total_sales', 'desc')
             ->take(5)
             ->get()
             ->map(function ($item) {
-                $product = Product::find($item->product_id);
                 return [
-                    'name' => $product ? $product->name : 'Unknown',
-                    'total_sales' => $item->total_sales,
+                    'name' => $item->name,
+                    'total_sales' => (float) $item->total_sales,
                 ];
             });
-    }
+            }
 
     public function render()
     {
