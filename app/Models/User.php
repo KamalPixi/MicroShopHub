@@ -20,7 +20,11 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
+        'gender',
+        'birthday',
+        'avatar',
     ];
 
     /**
@@ -43,7 +47,19 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'gender' => 'integer',
+            'birthday' => 'date',
         ];
+    }
+
+    public function getGenderLabelAttribute()
+    {
+        return match($this->gender) {
+            1 => 'Male',
+            2 => 'Female',
+            3 => 'Other',
+            default => 'Not Specified',
+        };
     }
 
     public function addresses()
