@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SslCommerzController;
 
 Route::get('/', [StoreController::class, 'index'])->name('store.index');
 Route::get('/search', [StoreController::class, 'search'])->name('store.search');
@@ -18,6 +19,15 @@ Route::controller(CustomerController::class)->middleware(['auth'])->group(functi
         auth()->logout();
         return redirect('/');
     })->name('logout');
+});
+
+// SSLCommerz Routes
+Route::group(['prefix' => 'sslcommerz'], function () {
+    Route::post('/pay', [SslCommerzController::class, 'index'])->name('ssl.pay');
+    Route::post('/success', [SslCommerzController::class, 'success'])->name('ssl.success');
+    Route::post('/fail', [SslCommerzController::class, 'fail'])->name('ssl.fail');
+    Route::post('/cancel', [SslCommerzController::class, 'cancel'])->name('ssl.cancel');
+    Route::post('/ipn', [SslCommerzController::class, 'ipn'])->name('ssl.ipn');
 });
 
 Route::prefix('admin')

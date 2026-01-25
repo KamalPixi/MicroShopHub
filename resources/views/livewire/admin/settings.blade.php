@@ -124,9 +124,24 @@
                     <div class="flex items-center mb-2">
                         <span class="font-bold text-gray-700">SSLCommerz</span>
                     </div>
-                    <label for="sslcommerz_api_key" class="block text-xs font-semibold text-gray-500 uppercase">Store Password / API Key</label>
-                    <input wire:model="settings.sslcommerz_api_key" type="password" id="sslcommerz_api_key" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="SSLCommerz Key">
-                    @error('settings.sslcommerz_api_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="sslcommerz_store_id" class="block text-xs font-semibold text-gray-500 uppercase">Store ID</label>
+                            <input wire:model="settings.sslcommerz_store_id" type="text" id="sslcommerz_store_id" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="your_store_id">
+                            @error('settings.sslcommerz_store_id') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label for="sslcommerz_api_key" class="block text-xs font-semibold text-gray-500 uppercase">Store Password</label>
+                            <input wire:model="settings.sslcommerz_api_key" type="password" id="sslcommerz_api_key" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="Store Password">
+                            @error('settings.sslcommerz_api_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-center">
+                        <input wire:model="settings.sslcommerz_sandbox" type="checkbox" id="ssl_sandbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <label for="ssl_sandbox" class="ml-2 text-sm text-gray-600">Enable Sandbox Mode</label>
+                    </div>
                 </div>
             </div>
         </div>

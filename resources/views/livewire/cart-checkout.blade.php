@@ -1,5 +1,7 @@
-<div class="bg-gray-50 min-h-screen py-8">
+<div class="bg-gray-50 min-h-screen pb-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        @include('admin.includes.errors')
         
         <h1 class="text-2xl font-bold text-gray-900 mb-6">Shopping Cart & Checkout</h1>
 
@@ -377,6 +379,13 @@
                             @error('coupon') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
                             @if(session('coupon_success')) <p class="text-green-600 text-xs mt-1 font-bold">{{ session('coupon_success') }}</p> @endif
                         </div>
+
+                        <form class="mb-2" action="{{ route('ssl.pay') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold w-full hover:bg-blue-700">
+                                Pay with SSLCommerz
+                            </button>
+                        </form>
 
                         <div class="mb-6">
                             <label class="flex items-center p-3 border border-primary bg-blue-50/50 rounded-lg">
