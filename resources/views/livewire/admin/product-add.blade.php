@@ -1,324 +1,438 @@
-<div class="bg-white p-4 rounded-lg shadow form-container mx-auto">
+<div class="mx-4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+    <style>.ck-editor__editable { min-height: 200px; }</style>
 
-    <style>
-        .ck-editor__editable {
-            min-height: 200px;
-        }
-    </style>
-
-    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        Add New Product
-    </h3>
-
-    <div class="space-y-4">
-    
+    <div class="mb-6 flex items-center justify-between">
         <div>
-            @include('admin.includes.message')
-            @include('admin.includes.errors')
+            <h2 class="text-2xl font-bold text-gray-900">Add New Product</h2>
+            <p class="text-sm text-gray-500 mt-1">Create a new product listing in your catalog.</p>
         </div>
+        <div class="text-xs font-semibold text-gray-600 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
+            Step {{ $currentStep }} of {{ $totalSteps }}
+        </div>
+    </div>
 
-        <form wire:submit.prevent="submit" class="space-y-5">
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Product Name</label>
-                <input wire:model.live="name" type="text" id="name" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Enter product name">
-                @error('name') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label for="slug" class="block text-sm font-medium text-gray-700">Slug</label>
-                <input wire:model="slug" type="text" id="slug" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Enter product slug">
-                @error('slug') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-            </div>
-
-            <div wire:ignore>
-                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                <div x-data="{
-                    description: @entangle('description'),
-                    init() {
-                        ClassicEditor
-                            .create(this.$refs.editor)
-                            .then(editor => {
-                                editor.setData(this.description || '');
-                                editor.model.document.on('change:data', () => {
-                                    this.description = editor.getData();
-                                });
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
-                    }
-                }">
-                    <div x-ref="editor" class="mt-1 block w-full text-gray-700"></div>
+    <div class="mb-6">
+        <div class="flex items-center w-full">
+            @foreach([1 => 'Basic Info', 2 => 'Organization', 3 => 'Media', 4 => 'Pricing & Variants'] as $step => $label)
+                <div class="flex-1 relative">
+                    <div class="flex items-center">
+                        <div class="relative flex items-center justify-center w-8 h-8 rounded-full border-2 
+                            {{ $currentStep >= $step ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300 bg-white text-gray-400' }} 
+                            font-bold text-xs z-10 transition-all duration-300">
+                            @if($currentStep > $step)
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            @else
+                                {{ $step }}
+                            @endif
+                        </div>
+                        <div class="flex-1 h-1 {{ $currentStep > $step ? 'bg-blue-600' : 'bg-gray-200' }} mx-2"></div>
+                    </div>
+                    <span class="absolute top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium {{ $currentStep >= $step ? 'text-blue-700' : 'text-gray-500' }}">
+                        {{ $label }}
+                    </span>
                 </div>
-            </div>
-            @error('description') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
+            @endforeach
+        </div>
+    </div>
+
+    <div class="mb-6">
+        @include('admin.includes.message')
+        @include('admin.includes.errors')
+    </div>
+
+    <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+        
+        <form wire:submit.prevent="submit">
             
-            <div x-data="imageCropper({ target: 'thumbnail', ratio: 1/1 })">
-                <label class="block text-sm font-medium text-gray-700">Thumbnail (Main Image)</label>
-                <p class="text-xs text-gray-500 mb-2">Required: 1:1 Aspect Ratio (Recommended: 500x500px)</p>
-                
-                <input type="file" accept="image/*" @change="fileChosen" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
-                
-                @if ($thumbnail)
-                    <div class="mt-2">
-                        <p class="text-xs text-green-600 mb-1 font-bold">Selected Thumbnail:</p>
-                        <img src="{{ $thumbnail->temporaryUrl() }}" class="w-32 h-32 rounded-lg object-cover border border-gray-200">
-                    </div>
-                @endif
-                @error('thumbnail') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
+            @if($currentStep === 1)
+                <div class="p-6 space-y-5 animate-fade-in">
+                    
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center border-b pb-3 mb-5">
+                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Basic Information
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Product Name <span class="text-red-500">*</span></label>
+                            <input wire:model.live="name" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. Wireless Noise Cancelling Headphones">
+                            @error('name') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
 
-                @include('admin.includes.cropper-modal') 
-            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Slug</label>
+                            <div class="flex mt-1 shadow-sm rounded-lg">
+                                <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">/product/</span>
+                                <input wire:model="slug" type="text" class="block w-full border border-gray-300 rounded-none rounded-r-lg focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                            </div>
+                            @error('slug') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
 
-            <div>
-                <label for="images" class="block text-sm font-medium text-gray-700">Additional Images</label>
-                <p class="text-xs text-gray-500 mb-2">Recommended size: <span class="font-medium">1000x800px</span> (5:4 ratio)</p>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">SKU</label>
+                            <input wire:model="sku" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="SKU-12345">
+                            @error('sku') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
 
-                <div class="flex items-start gap-4 flex-col sm:flex-row">
-                    <div class="w-full sm:w-1/2">
-                        <input wire:model="images" type="file" id="images" accept="image/*" multiple class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2">
-                        <p class="mt-1 text-xs text-gray-500">Bulk upload multiple images directly.</p>
-                    </div>
-
-                    <div class="w-full sm:w-1/2" x-data="imageCropper({ target: 'tempImage', ratio: 5/4 })">
-                        <label class="cursor-pointer inline-flex items-center justify-center w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-200 mt-1 h-[42px]">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                            Crop & Add Single Image
-                            <input type="file" accept="image/*" @change="fileChosen" class="hidden">
-                        </label>
-                         @include('admin.includes.cropper-modal')
-                    </div>
-                </div>
-
-                @if ($images)
-                    <div class="mt-3">
-                        <p class="text-xs text-gray-500 mb-2">Images to Upload:</p>
-                        <div class="flex flex-wrap gap-3">
-                            @foreach ($images as $index => $image)
-                                <div class="relative group">
-                                    <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="w-24 h-24 rounded-lg object-cover border border-gray-200">
-                                    <button type="button" wire:click="removeImage({{ $index }})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md hover:bg-red-600 transition">
-                                        &times;
-                                    </button>
-                                </div>
-                            @endforeach
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <select wire:model="status" class="mt-1 block w-full bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                                <option value="1">Active</option>
+                                <option value="0">Draft</option>
+                            </select>
+                        </div>
+                        
+                         <div class="flex items-center pt-6">
+                            <input wire:model.live="featured" type="checkbox" id="featured" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="featured" class="ml-2 block text-sm font-medium text-gray-700">Mark as Featured Product</label>
                         </div>
                     </div>
-                @endif
-                @error('images.*') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Categories</label>
-                <div class="border border-gray-300 rounded-lg p-3 max-h-60 overflow-y-auto space-y-3 bg-gray-50">
-                    @foreach ($categories as $category)
-                        <div class="flex flex-col">
-                            <label class="inline-flex items-center mb-1">
-                                <input wire:model="selectedCategories" value="{{ $category->id }}" type="checkbox" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                <span class="ml-2 text-sm font-bold text-gray-800">{{ $category->name }}</span>
-                            </label>
-                            
-                            @if($category->children->count() > 0)
-                                <div class="ml-6 flex flex-col space-y-1 border-l-2 border-gray-200 pl-2">
-                                    @foreach($category->children as $child)
+                    <div wire:ignore>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Product Description</label>
+                        <div x-data="{
+                            description: @entangle('description'),
+                            init() {
+                                ClassicEditor.create(this.$refs.editor)
+                                    .then(editor => {
+                                        editor.setData(this.description || '');
+                                        editor.model.document.on('change:data', () => { this.description = editor.getData(); });
+                                    })
+                                    .catch(error => { console.error(error); });
+                            }
+                        }">
+                            <div x-ref="editor" class="rounded-lg border border-gray-300 overflow-hidden"></div>
+                        </div>
+                    </div>
+                    @error('description') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                </div>
+            @endif
+
+            @if($currentStep === 2)
+                <div class="p-6 space-y-5 animate-fade-in">
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center border-b pb-3 mb-5">
+                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        Organization & Categorization
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Categories <span class="text-red-500">*</span></label>
+                            <div class="border border-gray-300 rounded-lg p-4 max-h-[300px] overflow-y-auto bg-gray-50 shadow-sm">
+                                @foreach ($categories as $category)
+                                    <div class="mb-2">
                                         <label class="inline-flex items-center">
-                                            <input wire:model="selectedCategories" value="{{ $child->id }}" type="checkbox" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                            <span class="ml-2 text-sm text-gray-600">{{ $child->name }}</span>
+                                            <input wire:model="selectedCategories" value="{{ $category->id }}" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                            <span class="ml-2 text-sm font-medium text-gray-800">{{ $category->name }}</span>
                                         </label>
-                                    @endforeach
+                                        @if($category->children->count() > 0)
+                                            <div class="ml-6 mt-1 space-y-1 border-l-2 border-gray-200 pl-2">
+                                                @foreach($category->children as $child)
+                                                    <label class="flex items-center">
+                                                        <input wire:model="selectedCategories" value="{{ $child->id }}" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                                        <span class="ml-2 text-sm text-gray-600">{{ $child->name }}</span>
+                                                    </label>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                                @if($categories->isEmpty()) <p class="text-sm text-gray-500 text-center">No categories found.</p> @endif
+                            </div>
+                            @error('selectedCategories') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Related Products</label>
+                            <p class="text-xs text-gray-500 mb-2">Select products to recommend (Cross-selling).</p>
+                            <select wire:model="relatedProducts" multiple class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 min-h-[200px]">
+                                @foreach ($availableProducts as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if($currentStep === 3)
+                <div class="p-6 space-y-6 animate-fade-in" x-data="imageCropper({ target: 'thumbnail', ratio: 1/1, width: 500 })">
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center border-b pb-3 mb-5">
+                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Product Images
+                    </h3>
+
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                        <div class="flex flex-col md:flex-row gap-6 items-start">
+                            <div class="flex-1">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Main Thumbnail <span class="text-red-500">*</span></label>
+                                <p class="text-xs text-gray-500 mb-3">Required: 1:1 Aspect Ratio (Recommended: 500x500px)</p>
+                                
+                                <input type="file" accept="image/*" @change="fileChosen" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition">
+                                @error('thumbnail') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="w-32 h-32 bg-white border border-gray-300 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
+                                @if ($thumbnail)
+                                    <img src="{{ $thumbnail->temporaryUrl() }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="text-gray-400 text-xs text-center font-medium">No Image</span>
+                                @endif
+                            </div>
+                        </div>
+                        
+                        <div x-show="isCropping" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+                                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+                                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Image</h3>
+                                        <div class="relative w-full h-[400px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                                            <img x-ref="cropImage" class="max-w-full max-h-full block" style="max-width: 100%;">
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                                        <button type="button" @click="cropAndUpload" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:w-auto sm:text-sm">
+                                            Crop & Use
+                                        </button>
+                                        <button type="button" @click="uploadOriginal" class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">
+                                            Use Original
+                                        </button>
+                                        <button type="button" @click="cancelCrop" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200" x-data="imageCropper({ target: 'tempImage', ratio: 5/4, width: 1000 })">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Gallery Images</label>
+                        <p class="text-xs text-gray-500 mb-3">Recommended size: <span class="font-medium text-gray-700">1000x800px</span> (5:4 ratio)</p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                            <div class="flex-1">
+                                <label class="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Bulk Upload</label>
+                                <input wire:model="images" type="file" multiple accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300">
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Crop Single</label>
+                                <label class="cursor-pointer inline-flex items-center justify-center w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                    Select Image to Crop
+                                    <input type="file" accept="image/*" @change="fileChosen" class="hidden">
+                                </label>
+                            </div>
+                        </div>
+
+                        @if ($images)
+                            <div class="grid grid-cols-4 sm:grid-cols-6 gap-4">
+                                @foreach ($images as $index => $image)
+                                    <div class="relative group aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                                        <img src="{{ $image->temporaryUrl() }}" class="w-full h-full object-cover">
+                                        <button type="button" wire:click="removeImage({{ $index }})" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-md">
+                                            &times;
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                        @error('images.*') <span class="text-red-600 text-xs block mt-1">{{ $message }}</span> @enderror
+                        
+                        <div x-show="isCropping" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+                                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+                                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Image</h3>
+                                        <div class="relative w-full h-[400px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                                            <img x-ref="cropImage" class="max-w-full max-h-full block" style="max-width: 100%;">
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                                        <button type="button" @click="cropAndUpload" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:w-auto sm:text-sm">
+                                            Crop & Use
+                                        </button>
+                                        <button type="button" @click="uploadOriginal" class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">
+                                            Use Original
+                                        </button>
+                                        <button type="button" @click="cancelCrop" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if($currentStep === 4)
+                <div class="p-6 space-y-6 animate-fade-in">
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center border-b pb-3 mb-5">
+                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Pricing & Inventory
+                    </h3>
+
+                    <div class="flex items-center p-4 bg-purple-50 rounded-lg border border-purple-100 mb-6">
+                        <input wire:model.live="has_variations" type="checkbox" id="has_variations" class="h-5 w-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <div class="ml-3">
+                            <label for="has_variations" class="text-sm font-medium text-gray-900">This product has options</label>
+                            <p class="text-xs text-purple-700">Enable this if the product comes in different sizes, colors, etc.</p>
+                        </div>
+                    </div>
+
+                    @if(!$has_variations)
+                        <div class="grid grid-cols-2 gap-6 animate-fade-in">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Regular Price ($)</label>
+                                <input wire:model="price" type="number" step="0.01" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono">
+                                @error('price') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+                                <input wire:model="stock" type="number" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono">
+                                @error('stock') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    @else
+                        <div class="space-y-6 animate-fade-in" x-data="{ isNewAttribute: false }">
+                            <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="text-sm font-bold text-gray-800">1. Choose Attributes</h4>
+                                    <button type="button" @click="isNewAttribute = !isNewAttribute" class="text-xs font-bold text-blue-600 hover:text-blue-800 underline">
+                                        <span x-show="!isNewAttribute">+ Create New Attribute</span>
+                                        <span x-show="isNewAttribute">Back to Existing Attributes</span>
+                                    </button>
+                                </div>
+
+                                <div x-show="isNewAttribute" class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">New Attribute Name</label>
+                                    <input wire:model="new_attribute_name" type="text" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. Material">
+                                    <p class="text-xs text-gray-500 mt-1">Enter a unique name to define a new attribute for this product.</p>
+                                </div>
+
+                                <div x-show="!isNewAttribute">
+                                    <select wire:model.live="selectedAttributes" multiple class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 min-h-[100px]">
+                                        @foreach ($productAttributes as $attribute)
+                                            <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Note: These are previously created attributes that can be reused.</p>
+                                </div>
+                                @error('selectedAttributes') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                            </div>
+
+                            @if(count($selectedAttributes) > 0)
+                                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                                    <h4 class="text-sm font-bold text-gray-800 mb-3">2. Select Values</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        @foreach ($selectedAttributes as $attrId)
+                                            @php $attr = $productAttributes->find($attrId); @endphp
+                                            @if($attr)
+                                                <div>
+                                                    <label class="block text-xs font-bold text-gray-600 mb-1">{{ $attr->name }}</label>
+                                                    <select wire:model.live="attributeValues.{{ $attrId }}" multiple class="block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 h-24 focus:border-blue-500 focus:ring-blue-500">
+                                                        @foreach ($attr->values as $value)
+                                                            <option value="{{ $value->id }}">{{ $value->value }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error("attributeValues.{$attrId}") <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                    <div class="mt-4 text-right">
+                                        <button type="button" wire:click="generateVariations" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition">
+                                            Generate Variations Table
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if (!empty($variations))
+                                <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                                    <table class="w-full text-sm text-left">
+                                        <thead class="bg-gray-50 text-gray-700 uppercase text-xs font-bold border-b border-gray-200">
+                                            <tr>
+                                                <th class="p-3">Variation</th>
+                                                <th class="p-3">SKU</th>
+                                                <th class="p-3 w-32">Price</th>
+                                                <th class="p-3 w-32">Stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100">
+                                            @foreach ($variations as $index => $var)
+                                                <tr class="hover:bg-gray-50 bg-white">
+                                                    <td class="p-3">
+                                                        @foreach ($var['attribute_values'] as $attrId => $valId)
+                                                            <span class="inline-block bg-gray-100 border border-gray-200 rounded px-2 py-1 text-xs text-gray-700 mr-1">
+                                                                {{ $productAttributes->find($attrId)->name }}: <b>{{ $productAttributes->find($attrId)->values->find($valId)->value }}</b>
+                                                            </span>
+                                                        @endforeach
+                                                    </td>
+                                                    <td class="p-3">
+                                                        <input wire:model="variations.{{ $index }}.sku" type="text" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-xs px-2 py-1.5">
+                                                        @error("variations.{$index}.sku") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
+                                                    </td>
+                                                    <td class="p-3">
+                                                        <input wire:model="variations.{{ $index }}.price" type="number" step="0.01" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-xs px-2 py-1.5">
+                                                        @error("variations.{$index}.price") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
+                                                    </td>
+                                                    <td class="p-3">
+                                                        <input wire:model="variations.{{ $index }}.stock" type="number" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-xs px-2 py-1.5">
+                                                        @error("variations.{$index}.stock") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             @endif
                         </div>
-                    @endforeach
-                    
-                    @if($categories->isEmpty())
-                        <p class="text-sm text-gray-500 text-center py-2">No categories found.</p>
-                    @endif
-                </div>
-                @error('selectedCategories') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Related Products</label>
-                <select wire:model="relatedProducts" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
-                    @foreach ($availableProducts as $id => $name)
-                    <option value="{{ $id }}">{{ $name }}</option>
-                    @endforeach
-                </select>
-                @error('relatedProducts') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="flex items-center">
-                <input wire:model.live="featured" type="checkbox" id="featured" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                <label for="featured" class="ml-2 block text-sm font-medium text-gray-700">Featured Item?</label>
-            </div>
-
-            <div class="flex items-center">
-                <input wire:model.live="has_attributes" type="checkbox" id="has_attributes" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                <label for="has_attributes" class="ml-2 block text-sm font-medium text-gray-700">Has Attributes</label>
-            </div>
-
-            @if ($has_attributes)
-                <div>
-                    <div class="bg-white shadow-md rounded-lg p-4 border border-gray-200 mb-3">
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Add New Attribute</h4>
-                        <div class="space-y-2">
-                            <div>
-                                <label for="newAttributeName" class="block text-sm font-medium text-gray-700">Attribute Name:</label>
-                                <input wire:model="newAttribute.name" type="text" id="newAttributeName" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g., Color">
-                                @error('newAttribute.name') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Attribute Values:</label>
-                                @foreach ($newAttribute['values'] as $index => $value)
-                                <div class="flex items-center space-x-2 mt-1">
-                                    <input wire:model="newAttribute.values.{{ $index }}" type="text" class="input-field flex-1 block border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 text-sm px-3 py-2" placeholder="e.g., Red">
-                                    <button type="button" wire:click="removeAttributeValueField({{ $index }})" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-3 py-1 rounded-md transition">×</button>
-                                </div>
-                                @error("newAttribute.values.{$index}") <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-                                @endforeach
-                                <button type="button" wire:click="addAttributeValueField" class="inline-flex items-center bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium px-3 py-1 rounded-md mt-2 transition">
-                                    + Add Value
-                                </button>
-                            </div>
-
-                            <button type="button" wire:click="saveNewAttribute" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md mt-3 transition">
-                                Save Attribute
-                            </button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Select Attributes</label>
-                        <select wire:model.live="selectedAttributes" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
-                            @foreach ($productAttributes as $attribute)
-                            <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('selectedAttributes') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-                    </div>
-
-                    @foreach ($selectedAttributes as $attrId)
-                    @php $attr = $productAttributes->find($attrId); @endphp
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">{{ $attr->name }} Values</label>
-                        <select wire:model.live="attributeValues.{{ $attrId }}" multiple class="select-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
-                            @foreach ($attr->values as $value)
-                            <option value="{{ $value->id }}">{{ $value->value }}</option>
-                            @endforeach
-                        </select>
-                        @error("attributeValues.{$attrId}") <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
-                    </div>
-                    @endforeach
-
-                    @if (!empty($selectedAttributesDisplay))
-                    <div class="mt-4">
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Selected Attributes</h4>
-                        <div class="attribute-display p-4 bg-gray-50 rounded">
-                            @foreach ($selectedAttributesDisplay as $attr)
-                            <div class="mb-2">
-                                <span class="font-medium text-gray-800">{{ $attr['name'] }}:</span>
-                                <span class="text-gray-600">{{ $attr['values'] ?: 'No values selected' }}</span>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
                     @endif
                 </div>
             @endif
 
-            <div class="flex items-center">
-                <input wire:model.live="has_variations" type="checkbox" id="has_variations" class="checkbox-field h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                <label for="has_variations" class="ml-2 block text-sm font-medium text-gray-700">Has Variations</label>
-            </div>
-
-            @if ($has_variations)
-            <button type="button" wire:click="generateVariations" class="form-button bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">Generate Variations</button>
-
-            @if (!empty($variations))
-            <div class="bg-white shadow-md rounded-lg p-4 border border-gray-200 mt-4">
-                <div class="mt-1">
-                    <h3 class="text-base font-semibold text-gray-800 mb-3">Variations</h3>
-                    <table class="table-field w-full text-left text-sm">
-                        <thead>
-                            <tr class="bg-gray-50">
-                                <th class="p-2 font-medium text-gray-700">Combination</th>
-                                <th class="p-2 font-medium text-gray-700">SKU</th>
-                                <th class="p-2 font-medium text-gray-700">Price</th>
-                                <th class="p-2 font-medium text-gray-700">Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($variations as $index => $var)
-                            <tr class="border-t hover:bg-gray-50">
-                                <td class="p-2">
-                                    @foreach ($var['attribute_values'] as $attrId => $valId)
-                                    {{ $productAttributes->find($attrId)->name }}: {{ $productAttributes->find($attrId)->values->find($valId)->value }}<br>
-                                    @endforeach
-                                </td>
-                                <td class="p-2">
-                                    <input wire:model="variations.{{ $index }}.sku" type="text" class="input-field w-full border border-gray-300 rounded-md text-sm">
-                                </td>
-                                <td class="p-2">
-                                    <input wire:model="variations.{{ $index }}.price" type="number" step="0.01" class="input-field w-full border border-gray-300 rounded-md text-sm">
-                                </td>
-                                <td class="p-2">
-                                    <input wire:model="variations.{{ $index }}.stock" type="number" class="input-field w-full border border-gray-300 rounded-md text-sm">
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            @endif
-            @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-50 px-8 py-5 border-t border-gray-200 flex justify-between items-center rounded-b-lg">
                 <div>
-                    <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
-                    <input wire:model="price" type="number" step="0.01" id="price" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="0.00">
-                    @error('price') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
+                    @if($currentStep > 1)
+                        <button type="button" wire:click="previousStep" class="px-5 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                            Back
+                        </button>
+                    @endif
                 </div>
                 <div>
-                    <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
-                    <input wire:model="stock" type="number" id="stock" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="0">
-                    @error('stock') <span class="error-message text-red-600 text-xs">{{ $message }}</span> @enderror
+                    @if($currentStep < $totalSteps)
+                        <button type="button" wire:click="nextStep" class="px-5 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-md transition flex items-center">
+                            Next Step
+                        </button>
+                    @else
+                        <button type="submit" class="px-6 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-md transition flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Create Product
+                        </button>
+                    @endif
                 </div>
             </div>
-            @endif
-            
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                <select wire:model="status" class="form-input mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
-                </select>
-            </div>
 
-            <button type="submit" class="form-button bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                Add Product
-            </button>
         </form>
     </div>
-</div>
 
-<script>
-    function imageCropper(config) {
+    <script>
+        function imageCropper(config) {
         return {
             isCropping: false,
             cropper: null,
             selectedFile: null,
             targetProperty: config.target, 
-            aspectRatio: config.ratio || 1, 
+            aspectRatio: config.ratio || 1,
+            outputWidth: config.width || 1000, 
 
             fileChosen(event) {
                 this.selectedFile = event.target.files[0];
@@ -349,7 +463,7 @@
             cropAndUpload() {
                 if (this.cropper) {
                     this.cropper.getCroppedCanvas({
-                        width: 1000, 
+                        width: this.outputWidth, 
                     }).toBlob((blob) => {
                         @this.upload(this.targetProperty, blob, (uploadedFilename) => {
                             this.cancelCrop();
@@ -382,4 +496,5 @@
             }
         }
     }
-</script>
+    </script>
+</div>

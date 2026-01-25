@@ -5,324 +5,326 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
-use App\Models\Product;
-use App\Models\ProductVariation;
 
 class ProductEdit extends Component
 {
     use WithFileUploads;
 
+    // Query String Support
     public $product_id;
     protected $queryString = ['product_id'];
 
-    // for uploading new images
-    public $thumbnail;
-    public $images = [];
+    public $product; 
+    public $currentStep = 1;
+    public $totalSteps = 4;
 
-    public $name = '';
-    public $slug = '';
-    public $description = '';
+    // Step 1: Basic Info
+    public $name;
+    public $slug;
+    public $sku;
+    public $status = 1;
+    public $description;
+    public $featured = false;
+
+    // Step 2: Organization
+    public $selectedCategories = [];
+    public $relatedProducts = [];
+
+    // Step 3: Media
+    public $thumbnail; // New upload
+    public $existingThumbnail; // Path string
+    
+    public $newImages = []; // Array of newly uploaded temporary files
+    public $existingGallery = []; // Array of paths strings (from JSON column)
+
+    // Step 4: Pricing & Inventory
+    public $has_variations = false;
     public $price;
     public $stock;
-    public $has_attributes = false;
-    public $has_variations = false;
-    public $selectedCategories = [];
+
+    // Variation Logic
     public $selectedAttributes = [];
     public $attributeValues = [];
     public $variations = [];
-    public $relatedProducts = [];
-    public $categories = [];
-    public $productAttributes = [];
-    public $availableProducts = [];
-    public $newAttribute = ['name' => '', 'values' => ['']];
-    public $tempAttributes = [];
-    public $productThumbnail;
-    public $productImages = [];
-    public $status = 1;
-
-    public function rules()
-    {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:products,slug,' . $this->product_id,
-            'description' => 'nullable|string',
-            'selectedCategories' => 'array|min:1',
-            'relatedProducts' => 'nullable|array',
-            'has_variations' => 'boolean',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png|max:2048', // 2MB
-            'images.*' => 'nullable|image|mimes:jpeg,png|max:2048',
-            'status' => 'required|integer|in:0,1',
-        ];
-
-        if ($this->has_variations) {
-            $rules['variations.*.sku'] = 'required|string|unique:product_variations,sku';
-            $rules['variations.*.price'] = 'required|numeric|min:0';
-            $rules['variations.*.stock'] = 'required|integer|min:0';
-        } else {
-            $rules['price'] = 'required|numeric|min:0';
-            $rules['stock'] = 'required|integer|min:0';
-        }
-
-        return $rules;
-    }
+    public $new_attribute_name; 
 
     public function mount()
     {
-        $product = Product::with(['categories', 'attributes.values', 'variations.values', 'relatedProducts'])->findOrFail($this->product_id);
-
-        $this->name = $product->name;
-        $this->slug = $product->slug;
-        $this->description = $product->description;
-        $this->price = $product->price;
-        $this->stock = $product->stock;
-        $this->status = $product->status;
-        $this->has_attributes = $product->attributes->isNotEmpty();
-        $this->has_variations = $product->has_variations;
-        $this->selectedCategories = $product->categories->pluck('id')->toArray();
-        $this->selectedAttributes = $product->attributes->pluck('id')->toArray();
-        $this->attributeValues = $product->attributes->mapWithKeys(function ($attribute) {
-            return [$attribute->id => [$attribute->pivot->value_id]];
-        })->toArray();
-        $this->relatedProducts = $product->relatedProducts->pluck('id')->toArray();
-
-        if ($this->has_variations) {
-            $this->variations = $product->variations->map(function ($variation) {
-                return [
-                    'id' => $variation->id, // Store variation ID for updates
-                    'attribute_values' => $variation->values->pluck('id', 'attribute_id')->toArray(),
-                    'sku' => $variation->sku,
-                    'price' => $variation->price,
-                    'stock' => $variation->stock,
-                ];
-            })->toArray();
+        if (!$this->product_id) {
+            abort(404, 'Product ID is missing');
         }
 
-        $this->categories = Category::with('children')->get();
-        $this->productAttributes = Attribute::with('values')->get();
-        $this->availableProducts = Product::where('id', '!=', $this->product_id)->pluck('name', 'id')->toArray();
+        // Load Product with correct relationships
+        // Note: 'values' is the relation name in your ProductVariation model
+        $this->product = Product::with(['categories', 'variations.values', 'relatedProducts'])
+            ->findOrFail($this->product_id);
 
-        $this->productThumbnail = $product->thumbnail;
-        $this->productImages = []; $product->images;
+        // 1. Fill Basic Info
+        $this->name = $this->product->name;
+        $this->slug = $this->product->slug;
+        $this->sku = $this->product->sku; // Only if you have 'sku' column on products table (checked your fillable, strict check not needed)
+        $this->status = $this->product->status;
+        $this->description = $this->product->description;
+        $this->featured = (bool) $this->product->featured;
+
+        // 2. Fill Organization
+        $this->selectedCategories = $this->product->categories->pluck('id')->toArray();
+        $this->relatedProducts = $this->product->relatedProducts->pluck('id')->map(fn($id) => (string) $id)->toArray();
+
+        // 3. Fill Media (JSON Column Logic)
+        $this->existingThumbnail = $this->product->thumbnail;
+        // The 'images' attribute is already cast to array by your Model
+        $this->existingGallery = $this->product->images ?? [];
+
+        // 4. Fill Pricing/Variations
+        if ($this->product->has_variations) {
+            $this->has_variations = true;
+            $this->loadExistingVariations();
+        } else {
+            $this->has_variations = false;
+            $this->price = $this->product->price;
+            $this->stock = $this->product->stock;
+        }
+    }
+
+    public function loadExistingVariations()
+    {
+        $usedAttributeIds = [];
+        
+        foreach ($this->product->variations as $variation) {
+            $attrValues = [];
+            
+            // Your model uses 'values()' relation
+            foreach ($variation->values as $val) {
+                $attrValues[$val->attribute_id] = $val->id;
+                $usedAttributeIds[] = $val->attribute_id;
+                
+                // Pre-fill UI selections
+                if (!isset($this->attributeValues[$val->attribute_id])) {
+                    $this->attributeValues[$val->attribute_id] = [];
+                }
+                if (!in_array($val->id, $this->attributeValues[$val->attribute_id])) {
+                    $this->attributeValues[$val->attribute_id][] = (string)$val->id;
+                }
+            }
+
+            $this->variations[] = [
+                'id' => $variation->id,
+                'attribute_values' => $attrValues,
+                'sku' => $variation->sku,
+                'price' => $variation->price,
+                'stock' => $variation->stock,
+            ];
+        }
+
+        $this->selectedAttributes = array_unique($usedAttributeIds);
     }
 
     public function updatedName($value)
     {
-        $this->slug = Str::slug($value);
-    }
-
-    public function updatedHasVariations()
-    {
-        if (!$this->has_variations) {
-            $this->variations = [];
-            $this->price = null;
-            $this->stock = null;
+        if (empty($this->slug)) {
+            $this->slug = Str::slug($value);
         }
     }
 
-    public function updatedSelectedAttributes()
-    {
-        $this->attributeValues = array_intersect_key($this->attributeValues, array_flip($this->selectedAttributes));
-        $this->variations = [];
-    }
-
-    public function updatedAttributeValues()
-    {
-        $this->variations = [];
-    }
-
-    public function addAttributeValueField()
-    {
-        $this->newAttribute['values'][] = '';
-    }
-
-    public function removeAttributeValueField($index)
-    {
-        unset($this->newAttribute['values'][$index]);
-        $this->newAttribute['values'] = array_values($this->newAttribute['values']);
-    }
-
-    public function saveNewAttribute()
-    {
-        $this->validate([
-            'newAttribute.name' => 'required|string|max:255',
-            'newAttribute.values.*' => 'required|string|max:255',
-        ]);
-
-        $attribute = Attribute::create(['name' => $this->newAttribute['name']]);
-        foreach ($this->newAttribute['values'] as $value) {
-            AttributeValue::create([
-                'attribute_id' => $attribute->id,
-                'value' => $value,
-            ]);
-        }
-
-        $this->tempAttributes[] = [
-            'id' => $attribute->id,
-            'name' => $attribute->name,
-            'values' => $attribute->values->pluck('value', 'id')->toArray(),
-        ];
-
-        $this->productAttributes = Attribute::with('values')->get();
-        $this->selectedAttributes[] = $attribute->id;
-        $this->attributeValues[$attribute->id] = $attribute->values->pluck('id')->toArray();
-        $this->newAttribute = ['name' => '', 'values' => ['']];
-    }
-
+    // --- Variation Generation Logic ---
     public function generateVariations()
     {
-        if (!$this->has_variations) {
-            $this->addError('has_variations', 'Please check "Has Variations" to generate variations.');
-            return;
-        }
-
         $this->validate([
             'selectedAttributes' => 'required|array|min:1',
+            'attributeValues' => 'required|array',
         ]);
 
-        $valueSets = [];
+        $this->variations = [];
+        $arrays = [];
+
         foreach ($this->selectedAttributes as $attrId) {
-            if (empty($this->attributeValues[$attrId] ?? [])) {
-                $this->addError("attributeValues.{$attrId}", 'Select at least one value.');
-                return;
+            if (!empty($this->attributeValues[$attrId])) {
+                $arrays[$attrId] = $this->attributeValues[$attrId];
             }
-            $valueSets[$attrId] = $this->attributeValues[$attrId];
         }
 
-        $combinations = $this->cartesian($valueSets);
+        if (empty($arrays)) return;
 
-        $this->variations = [];
-        foreach ($combinations as $combo) {
-            $valueNames = [];
-            foreach ($combo as $attrId => $valId) {
-                $value = $this->productAttributes->find($attrId)->values->find($valId)->value;
-                $valueNames[] = Str::slug($value);
+        $combinations = [[]];
+        foreach ($arrays as $property => $values) {
+            $temp = [];
+            foreach ($combinations as $combination) {
+                foreach ($values as $value) {
+                    $temp[] = $combination + [$property => $value];
+                }
             }
-            $sku = Str::slug($this->name) . '-' . implode('-', $valueNames);
+            $combinations = $temp;
+        }
 
+        foreach ($combinations as $combination) {
             $this->variations[] = [
-                'attribute_values' => $combo,
-                'sku' => $sku,
-                'price' => '',
+                'id' => null, 
+                'attribute_values' => $combination,
+                'sku' => $this->sku . '-' . implode('-', $combination),
+                'price' => $this->price ?? 0,
                 'stock' => 0,
             ];
         }
     }
 
-    private function cartesian($input)
+    // --- Media Actions ---
+
+    public function deleteExistingImage($index)
     {
-        $result = [[]];
-        foreach ($input as $key => $values) {
-            $append = [];
-            foreach ($result as $product) {
-                foreach ($values as $item) {
-                    $product[$key] = $item;
-                    $append[] = $product;
-                }
-            }
-            $result = $append;
+        // For JSON array, we just remove the item from the array by index
+        if (isset($this->existingGallery[$index])) {
+            // Optional: Immediately delete file from storage if you want strict cleanup
+            // Storage::disk('public')->delete($this->existingGallery[$index]);
+            
+            unset($this->existingGallery[$index]);
+            // Re-index array to avoid gaps which might cause issues with JSON encoding
+            $this->existingGallery = array_values($this->existingGallery);
         }
-        return $result;
     }
+
+    public function removeNewImage($index)
+    {
+        array_splice($this->newImages, $index, 1);
+    }
+
+    // --- Navigation & Validation ---
+
+    public function nextStep()
+    {
+        $this->validateStep($this->currentStep);
+        if ($this->currentStep < $this->totalSteps) {
+            $this->currentStep++;
+        }
+    }
+
+    public function previousStep()
+    {
+        if ($this->currentStep > 1) {
+            $this->currentStep--;
+        }
+    }
+
+    public function validateStep($step)
+    {
+        if ($step == 1) {
+            $this->validate([
+                'name' => 'required|min:3',
+                'slug' => ['required', Rule::unique('products', 'slug')->ignore($this->product->id)],
+                // Note: 'sku' is on variations usually, but if your product table has it (based on fillable), validate it here
+                'description' => 'nullable',
+            ]);
+        }
+        elseif ($step == 2) {
+            $this->validate([
+                'selectedCategories' => 'required|array|min:1',
+            ]);
+        }
+        elseif ($step == 3) {
+            $this->validate([
+                'thumbnail' => 'nullable|image|max:2048', 
+                'newImages.*' => 'image|max:2048',
+            ]);
+        }
+    }
+
+    // --- Submit ---
 
     public function submit()
     {
-        $this->validate();
+        $this->validateStep(1);
+        $this->validateStep(2);
+        
+        if (!$this->has_variations) {
+            $this->validate([
+                'price' => 'required|numeric|min:0',
+                'stock' => 'required|integer|min:0',
+            ]);
+        } else {
+            $this->validate([
+                'variations' => 'required|array|min:1',
+                'variations.*.price' => 'required|numeric|min:0',
+                'variations.*.stock' => 'required|integer|min:0',
+                'variations.*.sku' => 'required',
+            ]);
+        }
 
-        $product = Product::findOrFail($this->product_id);
-        $product->update([
+        // 1. Prepare Images (Merge Existing + New)
+        $finalImages = $this->existingGallery; // Start with what wasn't deleted
+
+        // Save New Images
+        foreach ($this->newImages as $img) {
+            $finalImages[] = $img->store('products/gallery', 'public');
+        }
+
+        // Handle Thumbnail
+        $thumbnailPath = $this->product->thumbnail;
+        if ($this->thumbnail) {
+             if ($thumbnailPath) Storage::disk('public')->delete($thumbnailPath);
+             $thumbnailPath = $this->thumbnail->store('products/thumbnails', 'public');
+        }
+
+        // 2. Update Product
+        $this->product->update([
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'price' => $this->has_variations ? null : $this->price,
-            'stock' => $this->has_variations ? null : $this->stock,
-            'has_variations' => $this->has_variations,
+            'featured' => $this->featured,
             'status' => $this->status,
+            'has_variations' => $this->has_variations,
+            'price' => $this->has_variations ? null : $this->price,
+            'stock' => $this->has_variations ? 0 : $this->stock,
+            'thumbnail' => $thumbnailPath,
+            'images' => $finalImages, // Saving the array directly (Eloquent handles JSON encoding)
         ]);
 
-        // Handle thumbnail upload
-        if ($this->thumbnail) {
-            $path = $this->thumbnail->store('images/products', 'public');
-            $product->update(['thumbnail' => $path]);
-        }
+        // 3. Relationships
+        $this->product->categories()->sync($this->selectedCategories);
+        $this->product->relatedProducts()->sync($this->relatedProducts);
 
-        // Handle additional images
-        foreach ($this->images as $image) {
-            $path = $image->store('images/products', 'public');
-            $product->images()->create(['image_path' => $path]);
-        }
-
-        $product->categories()->sync($this->selectedCategories);
-        $product->relatedProducts()->sync($this->relatedProducts);
-
-        if ($this->has_attributes) {
-            $product->attributes()->sync(
-                collect($this->attributeValues)->mapWithKeys(function ($values, $attrId) {
-                    return [$attrId => ['value_id' => $values[0]]];
-                })->toArray()
-            );
-        } else {
-            $product->attributes()->detach();
-        }
-
+        // 4. Variations Logic
         if ($this->has_variations) {
-            // Delete existing variations
-            $product->variations()->delete();
-            // Create new variations
-            foreach ($this->variations as $var) {
-                $variation = ProductVariation::create([
-                    'product_id' => $product->id,
-                    'sku' => $var['sku'],
-                    'price' => $var['price'],
-                    'stock' => $var['stock'],
-                ]);
-                $variation->values()->sync(array_values($var['attribute_values']));
+            // Get IDs of variations submitted
+            $submittedIds = collect($this->variations)->pluck('id')->filter()->toArray();
+            
+            // Delete removed variations
+            $this->product->variations()->whereNotIn('id', $submittedIds)->delete();
+
+            foreach ($this->variations as $varData) {
+                // Update or Create Variation
+                $variation = $this->product->variations()->updateOrCreate(
+                    ['id' => $varData['id']], 
+                    [
+                        'sku' => $varData['sku'],
+                        'price' => $varData['price'],
+                        'stock' => $varData['stock'],
+                    ]
+                );
+
+                // Sync Values
+                // Using 'values()' relation from ProductVariation model
+                $variation->values()->sync(array_values($varData['attribute_values']));
             }
         } else {
-            $product->variations()->delete();
+            $this->product->variations()->delete();
         }
 
-        session()->flash('message', 'Product updated successfully!');
-        return redirect()->route('admin.products');
-    }
-
-    public function getCategoryOptions($categories, $prefix = '')
-    {
-        $options = [];
-        foreach ($categories as $category) {
-            $options[$category->id] = $prefix . $category->name;
-            if ($category->children->count() > 0) {
-                $options += $this->getCategoryOptions($category->children, $prefix . '— ');
-            }
-        }
-        return $options;
-    }
-
-    public function getSelectedAttributesDisplay()
-    {
-        $display = [];
-        foreach ($this->selectedAttributes as $attrId) {
-            $attribute = $this->productAttributes->find($attrId);
-            if ($attribute) {
-                $values = collect($this->attributeValues[$attrId] ?? [])->map(function ($valId) use ($attribute) {
-                    return $attribute->values->find($valId)->value ?? '';
-                })->filter()->implode(', ');
-                $display[] = ['name' => $attribute->name, 'values' => $values];
-            }
-        }
-        return $display;
+        session()->flash('success', 'Product updated successfully.');
+        return redirect()->route('admin.products.index');
     }
 
     public function render()
     {
-        $categoryOptions = $this->getCategoryOptions($this->categories);
-        $selectedAttributesDisplay = $this->getSelectedAttributesDisplay();
-
         return view('livewire.admin.product-edit', [
-            'categoryOptions' => $categoryOptions,
-            'selectedAttributesDisplay' => $selectedAttributesDisplay,
+            'categories' => Category::where('parent_id', null)->with('children')->get(),
+            'availableProducts' => Product::where('id', '!=', $this->product->id)->pluck('name', 'id'), 
+            'productAttributes' => Attribute::with('values')->get(),
         ]);
     }
 }
