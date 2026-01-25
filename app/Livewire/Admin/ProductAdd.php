@@ -38,20 +38,19 @@ class ProductAdd extends Component
     // Step 4: Inventory & Variations
     public $price;
     public $stock;
-    public $has_attributes = false;
-    public $has_variations = false;
+    public $has_attributes = false; // Controls visibility of Attribute Section
+    public $has_variations = false; // Controls visibility of Variation Table
     public $selectedAttributes = [];
     public $attributeValues = [];
     public $variations = [];
     
-    // Data Sources (Loaded in Mount)
+    // Data Sources
     public $categories = [];
     public $productAttributes = [];
     public $availableProducts = [];
     
-    // Attribute Management (UI helpers)
+    // Attribute Management
     public $newAttribute = ['name' => '', 'values' => ['']];
-    public $tempAttributes = [];
 
     public function mount()
     {
@@ -59,8 +58,6 @@ class ProductAdd extends Component
         $this->productAttributes = Attribute::with('values')->get();
         $this->availableProducts = Product::pluck('name', 'id')->toArray();
     }
-
-    // --- Wizard Navigation Logic ---
 
     public function nextStep()
     {
@@ -77,14 +74,6 @@ class ProductAdd extends Component
         }
     }
 
-    public function setStep($step)
-    {
-        // Only allow jumping to previous steps or the immediate next one if validated
-        if ($step < $this->currentStep) {
-            $this->currentStep = $step;
-        }
-    }
-
     public function validateStep()
     {
         if ($this->currentStep == 1) {
@@ -98,16 +87,16 @@ class ProductAdd extends Component
         elseif ($this->currentStep == 2) {
             $this->validate([
                 'selectedCategories' => 'required|array|min:1',
-                'selectedCategories.*' => 'exists:categories,id',
             ]);
         }
         elseif ($this->currentStep == 3) {
             $this->validate([
-                'thumbnail' => 'nullable|image|mimes:jpeg,png|max:2048',
-                'images.*' => 'nullable|image|mimes:jpeg,png|max:2048',
+                'thumbnail' => 'nullable|image|max:2048',
+                'images.*' => 'image|max:2048',
             ]);
         }
         elseif ($this->currentStep == 4) {
+            // Logic Fix: Only require variations IF has_variations is checked
             if ($this->has_variations) {
                 $this->validate([
                     'variations' => 'required|array|min:1',
@@ -116,6 +105,7 @@ class ProductAdd extends Component
                     'variations.*.stock' => 'required|integer|min:0',
                 ]);
             } else {
+                // Simple Product (even with attributes) needs base price/stock
                 $this->validate([
                     'price' => 'required|numeric|min:0',
                     'stock' => 'required|integer|min:0',
@@ -124,7 +114,7 @@ class ProductAdd extends Component
         }
     }
 
-    // --- Standard Logic (Same as before) ---
+    // --- Logic Handlers ---
 
     public function updatedName($value)
     {
@@ -145,23 +135,56 @@ class ProductAdd extends Component
         $this->images = array_values($this->images); 
     }
 
-    // ... [Attribute & Variation logic kept identical to your file] ...
-    public function updatedHasVariations() { if (!$this->has_variations) { $this->variations = []; $this->price = null; $this->stock = null; } }
-    public function updatedSelectedAttributes() { $this->attributeValues = array_intersect_key($this->attributeValues, array_flip($this->selectedAttributes)); $this->variations = []; }
-    public function updatedAttributeValues() { $this->variations = []; }
+    // Toggle Handlers
+    public function updatedHasAttributes()
+    {
+        if (!$this->has_attributes) {
+            $this->selectedAttributes = [];
+            $this->attributeValues = [];
+            $this->has_variations = false; // Disable variations if attributes are off
+            $this->variations = [];
+        }
+    }
+
+    public function updatedHasVariations()
+    {
+        if (!$this->has_variations) {
+            $this->variations = [];
+            // We do NOT clear price/stock here, so user can revert to simple product easily
+        } else {
+            $this->price = null;
+            $this->stock = null;
+        }
+    }
+
     public function addAttributeValueField() { $this->newAttribute['values'][] = ''; }
-    public function removeAttributeValueField($index) { unset($this->newAttribute['values'][$index]); $this->newAttribute['values'] = array_values($this->newAttribute['values']); }
+    
+    public function removeAttributeValueField($index) 
+    { 
+        unset($this->newAttribute['values'][$index]); 
+        $this->newAttribute['values'] = array_values($this->newAttribute['values']); 
+    }
     
     public function saveNewAttribute()
     {
-        $this->validate([ 'newAttribute.name' => 'required|string|max:255', 'newAttribute.values.*' => 'required|string|max:255' ]);
+        $this->validate([ 
+            'newAttribute.name' => 'required|string|max:255', 
+            'newAttribute.values.*' => 'required|string|max:255' 
+        ]);
+        
         $attribute = Attribute::create(['name' => $this->newAttribute['name']]);
         foreach ($this->newAttribute['values'] as $value) {
             AttributeValue::create(['attribute_id' => $attribute->id, 'value' => $value]);
         }
+        
+        // Refresh & Select
         $this->productAttributes = Attribute::with('values')->get();
-        $this->selectedAttributes[] = $attribute->id;
-        $this->attributeValues[$attribute->id] = $attribute->values->pluck('id')->toArray();
+        if (!in_array($attribute->id, $this->selectedAttributes)) {
+            $this->selectedAttributes[] = $attribute->id;
+        }
+        // Pre-select all new values
+        $this->attributeValues[$attribute->id] = $attribute->values->pluck('id')->map(fn($id)=>(string)$id)->toArray();
+        
         $this->newAttribute = ['name' => '', 'values' => ['']];
     }
 
@@ -173,7 +196,7 @@ class ProductAdd extends Component
         $valueSets = [];
         foreach ($this->selectedAttributes as $attrId) {
             if (empty($this->attributeValues[$attrId] ?? [])) {
-                $this->addError("attributeValues.{$attrId}", 'Select values.');
+                $this->addError("attributeValues.{$attrId}", 'Select at least one value.');
                 return;
             }
             $valueSets[$attrId] = $this->attributeValues[$attrId];
@@ -181,15 +204,20 @@ class ProductAdd extends Component
 
         $combinations = $this->cartesian($valueSets);
         $this->variations = [];
+        
         foreach ($combinations as $combo) {
             $valueNames = [];
             foreach ($combo as $attrId => $valId) {
-                $valueNames[] = Str::slug($this->productAttributes->find($attrId)->values->find($valId)->value);
+                // Safely find value name for SKU
+                $attr = $this->productAttributes->find($attrId);
+                $val = $attr ? $attr->values->find($valId) : null;
+                if ($val) $valueNames[] = Str::slug($val->value);
             }
+            
             $this->variations[] = [
                 'attribute_values' => $combo,
                 'sku' => Str::slug($this->name) . '-' . implode('-', $valueNames),
-                'price' => $this->price, // Pre-fill with main price if available
+                'price' => $this->price, // Optional pre-fill
                 'stock' => 0,
             ];
         }
@@ -210,36 +238,16 @@ class ProductAdd extends Component
         return $result;
     }
 
-    public function getSelectedAttributesDisplay()
-    {
-        $display = [];
-        foreach ($this->selectedAttributes as $attrId) {
-            $attribute = $this->productAttributes->find($attrId);
-            if ($attribute) {
-                $values = collect($this->attributeValues[$attrId] ?? [])->map(function ($valId) use ($attribute) {
-                    return $attribute->values->find($valId)->value ?? '';
-                })->filter()->implode(', ');
-                $display[] = ['name' => $attribute->name, 'values' => $values];
-            }
-        }
-        return $display;
-    }
-
     public function submit()
     {
-        // Final Global Validation
-        $this->validateStep(); // Validate the final step
+        $this->validateStep();
         
-        // 1. Handle Thumbnail
         $thumbnailPath = $this->thumbnail ? $this->thumbnail->store('images/products', 'public') : null;
-
-        // 2. Handle Gallery
         $galleryPaths = [];
         foreach ($this->images as $image) {
             $galleryPaths[] = $image->store('images/products', 'public');
         }
 
-        // 3. Create Product
         $product = Product::create([
             'name' => $this->name,
             'slug' => $this->slug,
@@ -253,14 +261,28 @@ class ProductAdd extends Component
             'images' => $galleryPaths,
         ]);
 
-        // 4. Relations
         $product->categories()->sync($this->selectedCategories);
         $product->relatedProducts()->sync($this->relatedProducts);
-        $product->attributes()->sync(
-            collect($this->attributeValues)->mapWithKeys(function ($values, $attrId) {
-                return [$attrId => ['value_id' => $values[0]]];
-            })->toArray()
-        );
+        
+        // Save Attributes (Sync regardless of variations)
+        // Format: [attr_id => ['value_id' => null]] or handling multiple values logic if needed.
+        // Usually product_attributes pivot needs adjustment if a product has multiple values for one attribute but is NOT a variation.
+        // For simplicity here, we attach the selected values.
+        
+        // Note: Standard pivot usually holds one value per attribute for Simple Products.
+        // If your DB design allows multiple, iterate. Assuming standard pivot here:
+        $syncData = [];
+        foreach ($this->attributeValues as $attrId => $valIds) {
+            foreach ($valIds as $valId) {
+                // We append to sync data. 
+                // Note: belongsToMany->sync() expects unique keys usually. 
+                // If your pivot table has an ID, use attach() instead loop.
+                // For safety in this specific snippet, we'll assume the primary value or handle strictly.
+                // If Pivot is (product_id, attribute_id, value_id), we can't use standard sync easily with dupes.
+                // We will use attach to be safe.
+                $product->attributes()->attach($attrId, ['value_id' => $valId]);
+            }
+        }
 
         if ($this->has_variations) {
             foreach ($this->variations as $var) {
@@ -275,16 +297,11 @@ class ProductAdd extends Component
         }
 
         session()->flash('message', 'Product created successfully!');
-        
-        // Use resetExcept to avoid "isEmpty on array" error
-        $this->resetExcept(['categories', 'productAttributes', 'availableProducts']);
-        $this->currentStep = 1;
+        return redirect()->route('admin.products.index');
     }
 
     public function render()
     {
-        return view('livewire.admin.product-add', [
-            'selectedAttributesDisplay' => $this->getSelectedAttributesDisplay(),
-        ]);
+        return view('livewire.admin.product-add');
     }
 }

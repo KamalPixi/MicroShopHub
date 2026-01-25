@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Product;
+use App\Models\AttributeValue;
 
 class ProductDetails extends Component
 {
@@ -22,6 +23,7 @@ class ProductDetails extends Component
     
     // UI Feedback
     public $showSuccess = false;
+    public $selectionMissing = false; // To trigger UI shake/warning
 
     public function mount($product, $relatedProducts)
     {
@@ -31,20 +33,38 @@ class ProductDetails extends Component
         $this->currentPrice = $product->price;
         $this->currentStock = $product->stock;
         
+        // Build options for BOTH Variation products and Simple products with attributes
+        $this->buildProductOptions();
+
         if ($this->product->has_variations) {
-            $this->currentStock = 0;
-            // Show the lowest price initially to encourage clicks
+            $this->currentStock = 0; // Wait for selection
             $this->currentPrice = $product->variations->min('price'); 
-            $this->buildProductOptions();
         }
     }
 
     public function buildProductOptions()
     {
-        $this->product->load('variations.values.attribute');
-        
-        $allValues = $this->product->variations->flatMap(fn($v) => $v->values);
+        $this->productOptions = [];
 
+        if ($this->product->has_variations) {
+            // 1. VARIATION LOGIC
+            $this->product->load('variations.values.attribute');
+            $allValues = $this->product->variations->flatMap(fn($v) => $v->values);
+        } else {
+            // 2. SIMPLE PRODUCT ATTRIBUTE LOGIC
+            // Fetch attributes attached via pivot table
+            $this->product->load('attributes');
+            
+            // Get all value_ids from the pivot table
+            $valueIds = $this->product->attributes->pluck('pivot.value_id')->unique();
+            
+            if ($valueIds->isEmpty()) return;
+
+            // Fetch the actual Value models with their parent Attribute
+            $allValues = AttributeValue::with('attribute')->whereIn('id', $valueIds)->get();
+        }
+
+        // Group by Attribute to build the UI structure
         $this->productOptions = $allValues->groupBy('attribute_id')->map(function ($values) {
             $first = $values->first();
             return [
@@ -55,17 +75,13 @@ class ProductDetails extends Component
         })->values()->toArray();
     }
 
-    // Helper to get the NAME of the selected option (e.g., "Red" instead of "15")
     public function getSelectedValueName($attributeId)
     {
         if (!isset($this->selectedAttributes[$attributeId])) return null;
         
-        $valueId = $this->selectedAttributes[$attributeId];
-        
-        // Find the value name from our pre-loaded options to avoid DB query
         foreach ($this->productOptions as $option) {
             if ($option['id'] == $attributeId) {
-                $found = $option['values']->firstWhere('id', $valueId);
+                $found = $option['values']->firstWhere('id', $this->selectedAttributes[$attributeId]);
                 return $found ? $found->value : null;
             }
         }
@@ -75,47 +91,63 @@ class ProductDetails extends Component
     public function selectAttribute($attributeId, $valueId)
     {
         $this->selectedAttributes[$attributeId] = $valueId;
-        $this->checkVariation();
+        $this->selectionMissing = false; // Reset warning
+        $this->checkSelection();
     }
 
     public function resetSelection()
     {
         $this->selectedAttributes = [];
         $this->selectedVariation = null;
-        $this->currentStock = 0;
-        $this->currentPrice = $this->product->variations->min('price');
+        $this->selectionMissing = false;
+        
+        if ($this->product->has_variations) {
+            $this->currentStock = 0;
+            $this->currentPrice = $this->product->variations->min('price');
+        } else {
+            // Reset to base
+            $this->currentStock = $this->product->stock;
+            $this->currentPrice = $this->product->price;
+        }
     }
 
-    public function checkVariation()
+    public function checkSelection()
     {
-        if (!$this->product->has_variations) return;
-
+        // 1. Check Completeness
         if (count($this->selectedAttributes) < count($this->productOptions)) {
-            // Reset to base price if they deselected something or are incomplete
             $this->selectedVariation = null;
-            $this->currentStock = 0;
+            if ($this->product->has_variations) $this->currentStock = 0;
             return; 
         }
 
-        $variation = $this->product->variations->first(function ($var) {
-            $varValueIds = $var->values->pluck('id')->toArray();
-            return !array_diff($this->selectedAttributes, $varValueIds) && 
-                   count($varValueIds) == count($this->selectedAttributes);
-        });
+        // 2. Handle Variations
+        if ($this->product->has_variations) {
+            $variation = $this->product->variations->first(function ($var) {
+                $varValueIds = $var->values->pluck('id')->toArray();
+                return !array_diff($this->selectedAttributes, $varValueIds) && 
+                       count($varValueIds) == count($this->selectedAttributes);
+            });
 
-        if ($variation) {
-            $this->selectedVariation = $variation;
-            $this->currentPrice = $variation->price; // Update Price Immediately
-            $this->currentStock = $variation->stock;
-        } else {
-            $this->selectedVariation = null;
-            $this->currentStock = 0;
+            if ($variation) {
+                $this->selectedVariation = $variation;
+                $this->currentPrice = $variation->price;
+                $this->currentStock = $variation->stock;
+            } else {
+                $this->selectedVariation = null;
+                $this->currentStock = 0;
+            }
         }
+        // 3. Simple Products: No extra logic needed, stock/price is already base
     }
 
     public function increment()
     {
-        if ($this->product->has_variations && !$this->selectedVariation) return;
+        // Require selection if options exist
+        if (count($this->productOptions) > 0 && count($this->selectedAttributes) < count($this->productOptions)) {
+            $this->selectionMissing = true;
+            return;
+        }
+        
         if ($this->quantity < $this->currentStock) {
             $this->quantity++;
         }
@@ -130,21 +162,35 @@ class ProductDetails extends Component
 
     public function addToCart($buyNow = false)
     {
-        if ($this->product->has_variations) {
-            if (!$this->selectedVariation) return;
-            if ($this->currentStock <= 0) return;
-        } elseif ($this->product->stock <= 0) {
+        // 1. Validation: Check if all attributes are selected
+        if (count($this->productOptions) > 0 && count($this->selectedAttributes) < count($this->productOptions)) {
+            $this->selectionMissing = true; // Triggers UI warning
             return;
         }
 
-        $cart = session()->get('cart', []);
-        $cartKey = $this->product->id . ($this->selectedVariation ? '-' . $this->selectedVariation->id : '');
+        // 2. Validation: Stock
+        if ($this->currentStock <= 0) return;
 
-        $optionsDisplay = [];
+        // 3. Prepare Cart Data
+        $cart = session()->get('cart', []);
+        
+        // Generate Key: ID + VariationID (if any) + Attribute Hash (for simple products with options)
+        $cartKey = $this->product->id;
         if ($this->selectedVariation) {
-            foreach($this->selectedVariation->values as $val) {
-                $optionsDisplay[$val->attribute->name] = $val->value;
-            }
+            $cartKey .= '-' . $this->selectedVariation->id;
+        } elseif (!empty($this->selectedAttributes)) {
+            // For simple products, append attributes to key to distinguish configurations (optional, but good practice)
+            $cartKey .= '-' . md5(json_encode($this->selectedAttributes));
+        }
+
+        // Format Attributes for Display
+        $optionsDisplay = [];
+        
+        // Use helper to get names from selected IDs
+        foreach($this->selectedAttributes as $attrId => $valId) {
+            $attrName = collect($this->productOptions)->firstWhere('id', $attrId)['name'] ?? 'Option';
+            $valName = $this->getSelectedValueName($attrId);
+            $optionsDisplay[$attrName] = $valName;
         }
 
         if (isset($cart[$cartKey])) {

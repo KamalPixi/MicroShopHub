@@ -279,123 +279,153 @@
                         Pricing & Inventory
                     </h3>
 
-                    <div class="flex items-center p-4 bg-purple-50 rounded-lg border border-purple-100 mb-6">
-                        <input wire:model.live="has_variations" type="checkbox" id="has_variations" class="h-5 w-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
-                        <div class="ml-3">
-                            <label for="has_variations" class="text-sm font-medium text-gray-900">This product has options</label>
-                            <p class="text-xs text-purple-700">Enable this if the product comes in different sizes, colors, etc.</p>
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="flex items-center">
+                                <input wire:model.live="has_attributes" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <span class="ml-3 text-sm font-bold text-gray-800">Add Attributes (e.g. Color, Size)</span>
+                            </label>
                         </div>
-                    </div>
 
-                    @if(!$has_variations)
-                        <div class="grid grid-cols-2 gap-6 animate-fade-in">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Regular Price ($)</label>
-                                <input wire:model="price" type="number" step="0.01" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono">
-                                @error('price') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
-                                <input wire:model="stock" type="number" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono">
-                                @error('stock') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    @else
-                        <div class="space-y-6 animate-fade-in" x-data="{ isNewAttribute: false }">
-                            <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                                <div class="flex justify-between items-center mb-3">
-                                    <h4 class="text-sm font-bold text-gray-800">1. Choose Attributes</h4>
+                        @if($has_attributes)
+                            <div class="space-y-6 animate-fade-in" x-data="{ isNewAttribute: false }">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="text-xs font-bold text-gray-500 uppercase">Selected Attributes</h4>
                                     <button type="button" @click="isNewAttribute = !isNewAttribute" class="text-xs font-bold text-blue-600 hover:text-blue-800 underline">
                                         <span x-show="!isNewAttribute">+ Create New Attribute</span>
-                                        <span x-show="isNewAttribute">Back to Existing Attributes</span>
+                                        <span x-show="isNewAttribute">Cancel & Select Existing</span>
                                     </button>
                                 </div>
 
-                                <div x-show="isNewAttribute" class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">New Attribute Name</label>
-                                    <input wire:model="new_attribute_name" type="text" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. Material">
-                                    <p class="text-xs text-gray-500 mt-1">Enter a unique name to define a new attribute for this product.</p>
+                                <div x-show="isNewAttribute" class="bg-white p-4 rounded-lg border border-blue-200 shadow-sm space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 mb-1">Attribute Name</label>
+                                        <input wire:model="newAttribute.name" type="text" class="block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2" placeholder="e.g. Material">
+                                        @error('newAttribute.name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 mb-1">Values</label>
+                                        <div class="space-y-2">
+                                            @foreach($newAttribute['values'] as $index => $val)
+                                                <div class="flex items-center gap-2">
+                                                    <input wire:model="newAttribute.values.{{ $index }}" type="text" class="block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2" placeholder="Value">
+                                                    @if(count($newAttribute['values']) > 1)
+                                                        <button type="button" wire:click="removeAttributeValueField({{ $index }})" class="text-red-500 hover:text-red-700 p-1">&times;</button>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <button type="button" wire:click="addAttributeValueField" class="mt-2 text-xs font-bold text-blue-600 hover:underline">+ Add Value</button>
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="button" wire:click="saveNewAttribute" @click="isNewAttribute = false" class="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-700">Save & Use</button>
+                                    </div>
                                 </div>
 
                                 <div x-show="!isNewAttribute">
-                                    <select wire:model.live="selectedAttributes" multiple class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 min-h-[100px]">
+                                    <select wire:model.live="selectedAttributes" multiple class="block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 min-h-[100px]">
                                         @foreach ($productAttributes as $attribute)
                                             <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
                                         @endforeach
                                     </select>
-                                    <p class="text-xs text-gray-500 mt-1">Note: These are previously created attributes that can be reused.</p>
+                                    <p class="text-[10px] text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple.</p>
                                 </div>
-                                @error('selectedAttributes') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
-                            </div>
 
-                            @if(count($selectedAttributes) > 0)
-                                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                                    <h4 class="text-sm font-bold text-gray-800 mb-3">2. Select Values</h4>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @if(count($selectedAttributes) > 0)
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
                                         @foreach ($selectedAttributes as $attrId)
                                             @php $attr = $productAttributes->find($attrId); @endphp
                                             @if($attr)
                                                 <div>
-                                                    <label class="block text-xs font-bold text-gray-600 mb-1">{{ $attr->name }}</label>
-                                                    <select wire:model.live="attributeValues.{{ $attrId }}" multiple class="block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 h-24 focus:border-blue-500 focus:ring-blue-500">
+                                                    <label class="block text-xs font-bold text-gray-700 mb-1">{{ $attr->name }}</label>
+                                                    <select wire:model.live="attributeValues.{{ $attrId }}" multiple class="block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 h-24">
                                                         @foreach ($attr->values as $value)
                                                             <option value="{{ $value->id }}">{{ $value->value }}</option>
                                                         @endforeach
                                                     </select>
-                                                    @error("attributeValues.{$attrId}") <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                                                 </div>
                                             @endif
                                         @endforeach
                                     </div>
-                                    <div class="mt-4 text-right">
-                                        <button type="button" wire:click="generateVariations" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition">
-                                            Generate Variations Table
-                                        </button>
-                                    </div>
-                                </div>
-                            @endif
+                                @endif
+                            </div>
+                        @endif
+                    </div>
 
-                            @if (!empty($variations))
-                                <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                                    <table class="w-full text-sm text-left">
-                                        <thead class="bg-gray-50 text-gray-700 uppercase text-xs font-bold border-b border-gray-200">
-                                            <tr>
-                                                <th class="p-3">Variation</th>
-                                                <th class="p-3">SKU</th>
-                                                <th class="p-3 w-32">Price</th>
-                                                <th class="p-3 w-32">Stock</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-100">
-                                            @foreach ($variations as $index => $var)
-                                                <tr class="hover:bg-gray-50 bg-white">
-                                                    <td class="p-3">
-                                                        @foreach ($var['attribute_values'] as $attrId => $valId)
-                                                            <span class="inline-block bg-gray-100 border border-gray-200 rounded px-2 py-1 text-xs text-gray-700 mr-1">
-                                                                {{ $productAttributes->find($attrId)->name }}: <b>{{ $productAttributes->find($attrId)->values->find($valId)->value }}</b>
-                                                            </span>
-                                                        @endforeach
-                                                    </td>
-                                                    <td class="p-3">
-                                                        <input wire:model="variations.{{ $index }}.sku" type="text" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-xs px-2 py-1.5">
-                                                        @error("variations.{$index}.sku") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
-                                                    </td>
-                                                    <td class="p-3">
-                                                        <input wire:model="variations.{{ $index }}.price" type="number" step="0.01" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-xs px-2 py-1.5">
-                                                        @error("variations.{$index}.price") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
-                                                    </td>
-                                                    <td class="p-3">
-                                                        <input wire:model="variations.{{ $index }}.stock" type="number" class="block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-xs px-2 py-1.5">
-                                                        @error("variations.{$index}.stock") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                    <div class="space-y-4">
+                        @if($has_attributes && count($selectedAttributes) > 0)
+                            <div class="flex items-center p-4 bg-purple-50 rounded-lg border border-purple-100">
+                                <input wire:model.live="has_variations" type="checkbox" id="has_variations" class="h-5 w-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                <div class="ml-3">
+                                    <label for="has_variations" class="text-sm font-bold text-gray-900">Enable Variations</label>
+                                    <p class="text-xs text-purple-700">Check this to set different prices/stock for each attribute combination.</p>
                                 </div>
-                            @endif
-                        </div>
-                    @endif
+                            </div>
+                        @endif
+
+                        @if($has_variations)
+                            <div class="animate-fade-in space-y-4">
+                                <div class="text-right">
+                                    <button type="button" wire:click="generateVariations" class="bg-gray-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-black transition shadow-sm">
+                                        Generate Variations Table
+                                    </button>
+                                </div>
+
+                                @if (!empty($variations))
+                                    <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                                        <table class="w-full text-sm text-left">
+                                            <thead class="bg-gray-50 text-gray-700 uppercase text-xs font-bold border-b border-gray-200">
+                                                <tr>
+                                                    <th class="p-3">Variation</th>
+                                                    <th class="p-3">SKU</th>
+                                                    <th class="p-3 w-32">Price</th>
+                                                    <th class="p-3 w-32">Stock</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100 bg-white">
+                                                @foreach ($variations as $index => $var)
+                                                    <tr>
+                                                        <td class="p-3">
+                                                            @foreach ($var['attribute_values'] as $attrId => $valId)
+                                                                <span class="inline-block bg-gray-100 border border-gray-200 rounded px-2 py-1 text-xs text-gray-700 mr-1">
+                                                                    {{ $productAttributes->find($attrId)->name }}: <b>{{ $productAttributes->find($attrId)->values->find($valId)->value }}</b>
+                                                                </span>
+                                                            @endforeach
+                                                        </td>
+                                                        <td class="p-3">
+                                                            <input wire:model="variations.{{ $index }}.sku" type="text" class="block w-full border border-gray-300 rounded shadow-sm text-xs px-2 py-1.5">
+                                                            @error("variations.{$index}.sku") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
+                                                        </td>
+                                                        <td class="p-3">
+                                                            <input wire:model="variations.{{ $index }}.price" type="number" step="0.01" class="block w-full border border-gray-300 rounded shadow-sm text-xs px-2 py-1.5">
+                                                            @error("variations.{$index}.price") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
+                                                        </td>
+                                                        <td class="p-3">
+                                                            <input wire:model="variations.{{ $index }}.stock" type="number" class="block w-full border border-gray-300 rounded shadow-sm text-xs px-2 py-1.5">
+                                                            @error("variations.{$index}.stock") <span class="text-red-600 text-[10px] block">{{ $message }}</span> @enderror
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
+                            </div>
+                        @else
+                            <div class="grid grid-cols-2 gap-6 animate-fade-in">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Regular Price ($)</label>
+                                    <input wire:model="price" type="number" step="0.01" class="block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 font-mono">
+                                    @error('price') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+                                    <input wire:model="stock" type="number" class="block w-full border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 font-mono">
+                                    @error('stock') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             @endif
 
