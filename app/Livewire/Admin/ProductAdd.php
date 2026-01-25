@@ -258,7 +258,7 @@ class ProductAdd extends Component
             }
         }
         session()->flash('message', 'Product created successfully!');
-        $this->reset();
+        $this->resetExcept(['categories', 'productAttributes', 'availableProducts']);
     }
 
     public function getSelectedAttributesDisplay()
