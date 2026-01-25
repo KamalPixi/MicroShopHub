@@ -45,4 +45,21 @@ class Product extends Model
     {
         return $this->belongsToMany(Product::class, 'product_relations', 'product_id', 'related_product_id')->withTimestamps();
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class)->where('status', true)->latest();
+    }
+
+    // Helper to get average rating (e.g., 4.5)
+    public function getAverageRatingAttribute()
+    {
+        return round($this->reviews()->avg('rating'), 1) ?? 0;
+    }
+
+    // Helper to get review count
+    public function getReviewCountAttribute()
+    {
+        return $this->reviews()->count();
+    }
 }

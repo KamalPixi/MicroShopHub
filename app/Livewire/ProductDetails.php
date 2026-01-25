@@ -4,16 +4,18 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Product;
-use Illuminate\Support\Str;
 
 class ProductDetails extends Component
 {
     public $product;
     public $relatedProducts;
     
+    // Data
+    public $productOptions = []; 
+    
     // State
     public $quantity = 1;
-    public $selectedAttributes = []; // Format: [attribute_id => value_id]
+    public $selectedAttributes = []; // [attribute_id => value_id]
     public $currentPrice;
     public $currentStock;
     public $selectedVariation = null;
@@ -26,20 +28,48 @@ class ProductDetails extends Component
         $this->product = $product;
         $this->relatedProducts = $relatedProducts;
         
-        // Initialize defaults
         $this->currentPrice = $product->price;
         $this->currentStock = $product->stock;
         
-        // If product has variations, we set stock to 0 until they select options
         if ($this->product->has_variations) {
-            $this->currentStock = 0; 
-            $this->currentPrice = $product->variations->min('price'); // Show "From $X" logic visually if needed
+            $this->currentStock = 0;
+            // Show the lowest price initially to encourage clicks
+            $this->currentPrice = $product->variations->min('price'); 
+            $this->buildProductOptions();
         }
     }
 
-    public function updatedSelectedAttributes()
+    public function buildProductOptions()
     {
-        $this->checkVariation();
+        $this->product->load('variations.values.attribute');
+        
+        $allValues = $this->product->variations->flatMap(fn($v) => $v->values);
+
+        $this->productOptions = $allValues->groupBy('attribute_id')->map(function ($values) {
+            $first = $values->first();
+            return [
+                'id' => $first->attribute_id,
+                'name' => $first->attribute->name,
+                'values' => $values->unique('id')->values()
+            ];
+        })->values()->toArray();
+    }
+
+    // Helper to get the NAME of the selected option (e.g., "Red" instead of "15")
+    public function getSelectedValueName($attributeId)
+    {
+        if (!isset($this->selectedAttributes[$attributeId])) return null;
+        
+        $valueId = $this->selectedAttributes[$attributeId];
+        
+        // Find the value name from our pre-loaded options to avoid DB query
+        foreach ($this->productOptions as $option) {
+            if ($option['id'] == $attributeId) {
+                $found = $option['values']->firstWhere('id', $valueId);
+                return $found ? $found->value : null;
+            }
+        }
+        return null;
     }
 
     public function selectAttribute($attributeId, $valueId)
@@ -48,41 +78,44 @@ class ProductDetails extends Component
         $this->checkVariation();
     }
 
+    public function resetSelection()
+    {
+        $this->selectedAttributes = [];
+        $this->selectedVariation = null;
+        $this->currentStock = 0;
+        $this->currentPrice = $this->product->variations->min('price');
+    }
+
     public function checkVariation()
     {
         if (!$this->product->has_variations) return;
 
-        // 1. Check if all attributes are selected
-        $requiredAttributes = $this->product->attributes->pluck('id')->unique();
-        if (count($this->selectedAttributes) < $requiredAttributes->count()) {
-            return; // Still waiting for user to select all options
+        if (count($this->selectedAttributes) < count($this->productOptions)) {
+            // Reset to base price if they deselected something or are incomplete
+            $this->selectedVariation = null;
+            $this->currentStock = 0;
+            return; 
         }
 
-        // 2. Find matching variation
-        // We filter variations where the 'values' collection contains ALL selected value IDs
         $variation = $this->product->variations->first(function ($var) {
             $varValueIds = $var->values->pluck('id')->toArray();
-            // Check if selected attributes are a subset of this variation's values
-            // (intersection of arrays should match selected)
-            return !array_diff($this->selectedAttributes, $varValueIds);
+            return !array_diff($this->selectedAttributes, $varValueIds) && 
+                   count($varValueIds) == count($this->selectedAttributes);
         });
 
         if ($variation) {
             $this->selectedVariation = $variation;
-            $this->currentPrice = $variation->price;
+            $this->currentPrice = $variation->price; // Update Price Immediately
             $this->currentStock = $variation->stock;
         } else {
-            // Combination not found
             $this->selectedVariation = null;
-            $this->currentStock = 0; 
+            $this->currentStock = 0;
         }
     }
 
     public function increment()
     {
         if ($this->product->has_variations && !$this->selectedVariation) return;
-        
-        // Check stock limit
         if ($this->quantity < $this->currentStock) {
             $this->quantity++;
         }
@@ -97,34 +130,16 @@ class ProductDetails extends Component
 
     public function addToCart($buyNow = false)
     {
-        // Validation
         if ($this->product->has_variations) {
-            if (!$this->selectedVariation) {
-                $this->dispatch('notify', ['message' => 'Please select all options first.', 'type' => 'error']);
-                return;
-            }
-            if ($this->currentStock <= 0) {
-                 $this->dispatch('notify', ['message' => 'Selected option is out of stock.', 'type' => 'error']);
-                 return;
-            }
-        } else {
-             if ($this->product->stock <= 0) {
-                 $this->dispatch('notify', ['message' => 'Product is out of stock.', 'type' => 'error']);
-                 return;
-             }
+            if (!$this->selectedVariation) return;
+            if ($this->currentStock <= 0) return;
+        } elseif ($this->product->stock <= 0) {
+            return;
         }
 
-        // Prepare Cart Data
         $cart = session()->get('cart', []);
-        
-        // Unique ID logic: If variation, use variation ID, else product ID
-        // To allow multiple variations of same product, key should be distinct.
-        $cartKey = $this->product->id;
-        if ($this->selectedVariation) {
-            $cartKey = $this->product->id . '-' . $this->selectedVariation->id;
-        }
+        $cartKey = $this->product->id . ($this->selectedVariation ? '-' . $this->selectedVariation->id : '');
 
-        // Format Attributes for display in Cart
         $optionsDisplay = [];
         if ($this->selectedVariation) {
             foreach($this->selectedVariation->values as $val) {
@@ -142,21 +157,16 @@ class ProductDetails extends Component
                 "quantity" => $this->quantity,
                 "price" => $this->currentPrice,
                 "thumbnail" => $this->product->thumbnail,
-                "attributes" => $optionsDisplay // e.g. ['Color' => 'Red', 'Size' => 'L']
+                "attributes" => $optionsDisplay
             ];
         }
 
         session()->put('cart', $cart);
-        $this->dispatch('cartUpdated'); // Updates the header cart counter
+        $this->dispatch('cartUpdated'); 
 
-        if ($buyNow) {
-            return redirect()->route('store.index'); // Or route('checkout')
-        }
+        if ($buyNow) return redirect()->route('store.index');
 
-        // Show success visual
         $this->showSuccess = true;
-        
-        // Reset success message after 2s
         $this->dispatch('reset-success'); 
     }
 
