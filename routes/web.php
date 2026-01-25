@@ -3,17 +3,21 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', [StoreController::class, 'index'])->name('store.index');
 Route::get('/search', [StoreController::class, 'search'])->name('store.search');
 Route::get('/product/{slug}', [StoreController::class, 'show'])->name('store.product');
 Route::get('/cart', [StoreController::class, 'cart'])->name('cart.index');
+Route::get('/login', [AuthController::class, 'login'])->name('login');
 
 
 Route::controller(CustomerController::class)->middleware(['auth'])->group(function () {
     Route::get('/dashboard', 'dashboard')->name('customer.dashboard');
-    Route::get('/logout', 'logout')->name('logout');
-    
+    Route::post('/logout', function () {
+        auth()->logout();
+        return redirect('/');
+    })->name('logout');
 });
 
 Route::prefix('admin')
