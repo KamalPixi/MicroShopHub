@@ -13,7 +13,8 @@ class Settings extends Component
 
     public $settings = [
         'shop_logo' => '',
-        'branding_color' => '#000000',
+        'branding_color' => '#000000', // Primary Color
+        'secondary_color' => '#6B7280', // New Secondary Color (Default Gray)
         'shop_name' => '',
         'site_title' => '',
         'meta_description' => '',
@@ -36,6 +37,7 @@ class Settings extends Component
     protected $rules = [
         'logo' => 'nullable|image|max:2048', // Max 2MB
         'settings.branding_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+        'settings.secondary_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         'settings.shop_name' => 'nullable|string|max:255',
         'settings.site_title' => 'nullable|string|max:255',
         'settings.meta_description' => 'nullable|string|max:500',
