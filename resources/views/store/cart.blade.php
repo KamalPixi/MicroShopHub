@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('store.layouts.app')
 
 @section('content')
-    @livewire('cart-checkout')
+    @livewire('store.cart-checkout')
 @endsection

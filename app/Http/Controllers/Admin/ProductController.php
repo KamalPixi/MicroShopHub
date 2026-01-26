@@ -15,12 +15,12 @@ class ProductController extends Controller
         return view('admin.products.create');
     }
 
-    public function show() {
-        return view('admin.products.show');
+    public function show($id) {
+        return view('admin.products.show', compact('id'));
     }
 
-    public function edit() {
-        return view('admin.products.edit');
+    public function edit($id) {
+        return view('admin.products.edit', compact('id'));
     }
 
     public function products() {

@@ -8,7 +8,7 @@
             </div>
 
             <div class="flex-1 mx-4 lg:mx-8">
-                <livewire:header-search />
+                <livewire:store.header-search />
             </div>
 
             <div class="flex items-center space-x-4 flex-shrink-0">
@@ -18,7 +18,7 @@
                     </svg>
                 </a>
 
-                @livewire('cart-counter')
+                @livewire('store.cart-counter')
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('store.layouts.app')
 
 @section('content')
-    @livewire('product-details', ['product' => $product, 'relatedProducts' => $relatedProducts])
+    @livewire('store.product-details', ['product' => $product, 'relatedProducts' => $relatedProducts])
 @endsection

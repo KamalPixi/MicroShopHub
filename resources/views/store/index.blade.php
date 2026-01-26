@@ -1,13 +1,12 @@
-@extends('layouts.app')
-
+@extends('store.layouts.app')
 @section('title', 'ShopHub - Home')
 
 @section('content')
 
 <!-- Shop by Category -->
-@include('partials.category-home')
-@include('partials.featured-products')
-@include('partials.new-arrivals')
+@include('store.partials.category-home')
+@include('store.partials.featured-products')
+@include('store.partials.new-arrivals')
 
 <!-- Newsletter -->
 <section class="bg-primary rounded-lg p-8 text-center text-white mb-12">

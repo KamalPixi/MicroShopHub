@@ -2,5 +2,5 @@
 
 @section('content')
     @include('admin.includes.breadcrumb')
-    @livewire('Admin.ProductShow')
+    @livewire('Admin.ProductShow', ['id' => $id])
 @endsection

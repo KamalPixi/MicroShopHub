@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('store.layouts.app')
 
 @section('content')
-    @livewire('customer.dashboard')
+    @livewire('store.customer.dashboard')
 @endsection
 

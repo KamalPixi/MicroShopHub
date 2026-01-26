@@ -54,16 +54,16 @@ class ProductEdit extends Component
     public $variations = [];
     public $new_attribute_name; 
 
-    public function mount()
+    public function mount($id)
     {
-        if (!$this->product_id) {
+        if (!$id) {
             abort(404, 'Product ID is missing');
         }
 
         // Load Product with correct relationships
         // Note: 'values' is the relation name in your ProductVariation model
         $this->product = Product::with(['categories', 'variations.values', 'relatedProducts'])
-            ->findOrFail($this->product_id);
+            ->findOrFail($id);
 
         // 1. Fill Basic Info
         $this->name = $this->product->name;

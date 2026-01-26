@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Store;
 
 use Livewire\Component;
 use App\Models\Product;
@@ -44,7 +44,7 @@ class HeaderSearch extends Component
         // Fetch root categories for the dropdown
         $categories = Category::whereNull('parent_id')->orderBy('name')->get();
 
-        return view('livewire.header-search', [
+        return view('livewire.store.header-search', [
             'results' => $results,
             'categories' => $categories
         ]);

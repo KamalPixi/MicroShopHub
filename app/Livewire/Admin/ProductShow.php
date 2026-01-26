@@ -10,6 +10,15 @@ class ProductShow extends Component
     public $product_id;
     protected $queryString = ['product_id'];
 
+    public function mount($id)
+    {
+        if (!$id) {
+            abort(404, 'Product ID is missing');
+        }
+
+        $this->product_id = $id;
+    }
+
     public function render()
     {
         $product = Product::with(['categories', 'attributes.values', 'variations.values', 'relatedProducts'])

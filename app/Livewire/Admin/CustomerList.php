@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\Customer;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -22,7 +22,7 @@ class CustomerList extends Component
 
     public function render()
     {
-        $customers = Customer::query()
+        $customers = User::query()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                       ->orWhere('email', 'like', '%' . $this->search . '%')
@@ -38,7 +38,7 @@ class CustomerList extends Component
 
     public function deleteCustomer($customerId)
     {
-        Customer::findOrFail($customerId)->delete();
+        User::findOrFail($customerId)->delete();
         session()->flash('message', 'Customer deleted successfully.');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Store;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -28,6 +28,6 @@ class CartCounter extends Component
 
     public function render()
     {
-        return view('livewire.cart-counter');
+        return view('livewire.store.cart-counter');
     }
 }

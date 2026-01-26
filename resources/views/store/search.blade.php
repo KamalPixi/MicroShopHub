@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('store.layouts.app')
 
 @section('content')
 <div class="bg-gray-50 min-h-screen py-8">
@@ -107,7 +107,7 @@
                         @foreach($products as $product)
                         <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group border border-gray-100 flex flex-col">
                             
-                            <a href="{{ route('store.product', $product->slug) }}" class="block aspect-square relative overflow-hidden bg-gray-100">
+                            <a href="{{ route('store.product.show', $product->slug) }}" class="block aspect-square relative overflow-hidden bg-gray-100">
                                 @php
                                     $img = 'https://placehold.co/500?text=No+Image';
                                     if ($product->thumbnail) {
@@ -124,7 +124,7 @@
                             </a>
                             
                             <div class="p-3 flex-1 flex flex-col">
-                                <a href="{{ route('store.product', $product->slug) }}" class="block">
+                                <a href="{{ route('store.product.show', $product->slug) }}" class="block">
                                     <h3 class="text-sm font-medium text-gray-900 group-hover:text-primary truncate mb-1">
                                         {{ $product->name }}
                                     </h3>
@@ -138,7 +138,7 @@
                                     <div class="flex flex-col">
                                         <span class="text-sm font-bold text-gray-900">${{ number_format($product->price, 2) }}</span>
                                     </div>
-                                    @livewire('add-to-cart-button', ['productId' => $product->id], key($product->id))
+                                    @livewire('store.add-to-cart-button', ['productId' => $product->id], key($product->id))
                                 </div>
                             </div>
                         </div>

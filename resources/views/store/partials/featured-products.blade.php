@@ -1,5 +1,6 @@
 <section class="mb-12 relative group" x-data="{
-    scrollAmount: 280,
+    scrollAmount: 300,
+    scrollContainer: null,
     scrollLeft() {
         this.$refs.container.scrollBy({ left: -this.scrollAmount, behavior: 'smooth' });
     },
@@ -8,7 +9,7 @@
     }
 }">
     <div class="flex items-center justify-between mb-6 px-1">
-        <h2 class="text-2xl font-bold text-gray-900">New Arrivals</h2>
+        <h2 class="text-2xl font-bold text-gray-900">Featured Products</h2>
         <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-blue-700">View All →</a>
     </div>
 
@@ -24,11 +25,11 @@
 
         <div x-ref="container" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 no-scrollbar">
 
-            @if(isset($newArrivals) && $newArrivals->count() > 0)
-                @foreach($newArrivals as $product)
-                    <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer">
+            @if(isset($featuredProducts) && $featuredProducts->count() > 0)
+                @foreach($featuredProducts as $product)
+                    <div class="flex-none w-[200px] sm:w-[250px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 group/card cursor-pointer">
                         
-                        <a href="{{ route('store.product', $product->slug) }}" class="block aspect-square overflow-hidden bg-gray-100 relative">
+                        <a href="{{ route('store.product.show', $product->slug) }}" class="block aspect-square rounded-lg mb-3 overflow-hidden bg-gray-100 relative">
                             @php
                                 $imageUrl = 'https://placehold.co/500x500?text=No+Image';
                                 if ($product->thumbnail) {
@@ -39,37 +40,35 @@
                                     }
                                 }
                             @endphp
-                            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105">
+                            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                         </a>
 
-                        <div class="p-3">
-                            <a href="{{ route('store.product', $product->slug) }}" class="block">
-                                <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary truncate">
-                                    {{ $product->name }}
-                                </h3>
-                            </a>
-                            
-                            <p class="text-xs text-gray-600 mb-2 truncate">
-                                {{ Str::limit(strip_tags($product->description), 40) }}
-                            </p>
+                        <a href="{{ route('store.product.show', $product->slug) }}" class="block">
+                            <h3 class="font-medium text-gray-900 text-sm mb-1 group-hover/card:text-primary truncate">
+                                {{ $product->name }}
+                            </h3>
+                        </a>
 
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-primary text-base sm:text-lg">
-                                    @if($product->price)
-                                        ${{ number_format($product->price, 2) }}
-                                    @else
-                                        <span class="text-xs text-gray-500">View</span>
-                                    @endif
-                                </span>
-                                
-                                @livewire('add-to-cart-button', ['productId' => $product->id], key('new-arrival-'.$product->id))
-                            </div>
+                        <p class="text-xs text-gray-600 mb-2 truncate">
+                            {{ Str::limit(strip_tags($product->description), 30) }}
+                        </p>
+
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-primary">
+                                @if($product->price)
+                                    ${{ number_format($product->price, 2) }}
+                                @else
+                                    <span class="text-xs text-gray-500">See Options</span>
+                                @endif
+                            </span>
+                            
+                            @livewire('store.add-to-cart-button', ['productId' => $product->id], key('featured-'.$product->id))
                         </div>
                     </div>
                 @endforeach
             @else
                 <div class="w-full text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
-                    No new arrivals found.
+                    No featured products found.
                 </div>
             @endif
 

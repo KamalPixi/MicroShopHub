@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Customer;
+namespace App\Livewire\Store\Customer;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -152,7 +152,7 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.customer.dashboard', [
+        return view('livewire.store.customer.dashboard', [
             'orders' => $this->activeTab === 'orders' ? $this->orders : [], // Uses the computed property above
             'addresses' => $this->activeTab === 'addresses' ? $this->user->addresses()->latest()->get() : [],
             'recentOrders' => $this->user->orders()->latest()->take(5)->get(),

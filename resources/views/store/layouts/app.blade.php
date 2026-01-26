@@ -22,14 +22,14 @@
     @livewireStyles
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
-    @include('partials.header')
-    @include('partials.navbar')
+    @include('store.partials.header')
+    @include('store.partials.navbar')
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 w-full">
         @yield('content')
     </main>
 
-    @include('partials.footer')
+    @include('store.partials.footer')
 
     @livewireScripts
 </body>

@@ -1,5 +1,5 @@
-@extends('layouts.app')
+@extends('store.layouts.app')
 
 @section('content')
-    @livewire('login')
+    @livewire('store.auth.login')
 @endsection

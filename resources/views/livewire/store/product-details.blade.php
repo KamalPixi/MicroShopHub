@@ -66,13 +66,21 @@
                     </span>
                     @if($product->has_variations && !$selectedVariation)
                         <span class="text-sm font-medium text-gray-400 mb-2 bg-gray-50 px-2 py-1 rounded">From (Base Price)</span>
-                    @elseif($selectedVariation)
+                    @elseif($selectedVariation && $product->has_variations)
                         <span class="text-sm font-medium text-green-600 mb-2 bg-green-50 px-2 py-1 rounded">Selected Price</span>
                     @endif
                 </div>
 
-                @if($product->has_variations && count($productOptions) > 0)
-                    <div class="space-y-6 mb-8">
+                @if(count($productOptions) > 0)
+                    <div id="attributes-section" class="space-y-6 mb-8 transition-all duration-300 {{ $selectionMissing ? 'p-4 border-2 border-red-100 bg-red-50 rounded-xl animate-pulse ring-4 ring-red-50' : '' }}">
+                        
+                        @if($selectionMissing)
+                            <div class="text-red-600 text-sm font-bold flex items-center mb-2 animate-bounce">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                Please select the options below to proceed
+                            </div>
+                        @endif
+
                         @foreach($productOptions as $option)
                             <div class="animate-fade-in">
                                 <div class="flex justify-between items-baseline mb-2">
@@ -93,15 +101,11 @@
                                                 class="px-5 py-2.5 text-sm font-medium border rounded-lg transition-all duration-200 focus:outline-none transform active:scale-95
                                                 {{ isset($selectedAttributes[$option['id']]) && $selectedAttributes[$option['id']] == $value['id']
                                                     ? 'border-primary bg-primary text-white shadow-md ring-2 ring-offset-1 ring-primary/30' 
-                                                    : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50 bg-white' }}">
+                                                    : 'border-gray-200 text-gray-700 hover:border-primary hover:text-primary bg-white' }}">
                                             {{ $value['value'] }}
                                         </button>
                                     @endforeach
                                 </div>
-                                
-                                <p class="text-xs text-gray-400 mt-2">
-                                    Please select your preferred <span class="lowercase">{{ $option['name'] }}</span> to check availability.
-                                </p>
                             </div>
                         @endforeach
                     </div>
@@ -111,7 +115,7 @@
                     @if($product->has_variations && !$selectedVariation)
                         <div class="flex items-center text-blue-700 bg-blue-50 px-4 py-3 rounded-lg w-full border border-blue-100 shadow-sm">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span class="text-sm font-medium">Please choose all options above to see final price and stock.</span>
+                            <span class="text-sm font-medium">Select options to see availability.</span>
                         </div>
                     @elseif($currentStock > 0)
                         <div class="flex items-center text-green-700 bg-green-50 px-4 py-3 rounded-lg w-fit border border-green-100 shadow-sm transition-all duration-500">
@@ -119,7 +123,7 @@
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                             </span>
-                            <span class="text-sm font-bold">In Stock & Ready to Ship</span>
+                            <span class="text-sm font-bold">In Stock</span>
                             <span class="text-xs ml-2 text-green-600 bg-white px-2 py-0.5 rounded border border-green-200">{{ $currentStock }} units</span>
                         </div>
                     @else
@@ -131,7 +135,6 @@
                 </div>
 
                 <div class="mt-auto pt-6 border-t border-gray-100">
-                    
                     <div class="flex items-end justify-between mb-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Quantity</label>
@@ -148,13 +151,26 @@
                         </div>
                     </div>
 
+                    @php
+                        $isOutOfStock = false;
+                        if ($product->has_variations) {
+                            if ($selectedVariation && $currentStock <= 0) {
+                                $isOutOfStock = true;
+                            }
+                        } else {
+                            if ($currentStock <= 0) {
+                                $isOutOfStock = true;
+                            }
+                        }
+                    @endphp
+
                     <div class="flex flex-col sm:flex-row gap-3">
                         <button wire:click="addToCart" 
                                 wire:loading.attr="disabled"
                                 class="flex-1 h-12 px-4 rounded-lg font-bold text-white shadow-sm hover:shadow-lg transform active:scale-[0.98] transition-all flex items-center justify-center text-sm
                                 {{ $showSuccess ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-blue-700' }} 
-                                {{ ($product->has_variations && !$selectedVariation) || $currentStock <= 0 ? 'opacity-50 cursor-not-allowed bg-gray-400 hover:bg-gray-400' : '' }}"
-                                {{ ($product->has_variations && !$selectedVariation) || $currentStock <= 0 ? 'disabled' : '' }}>
+                                {{ $isOutOfStock ? 'opacity-50 cursor-not-allowed bg-gray-400 hover:bg-gray-400' : '' }}"
+                                {{ $isOutOfStock ? 'disabled' : '' }}>
                             
                             <span wire:loading.remove class="flex items-center gap-2">
                                 @if($showSuccess)
@@ -169,42 +185,20 @@
                         </button>
 
                         <button wire:click="addToCart(true)" 
-                                class="flex-1 h-12 px-4 rounded-lg font-bold bg-gray-900 text-white shadow-sm hover:shadow-lg hover:bg-black transform active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm"
-                                {{ ($product->has_variations && !$selectedVariation) || $currentStock <= 0 ? 'disabled opacity-50 cursor-not-allowed' : '' }}>
+                                class="flex-1 h-12 px-4 rounded-lg font-bold bg-gray-900 text-white shadow-sm hover:shadow-lg hover:bg-black transform active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm
+                                {{ $isOutOfStock ? 'opacity-50 cursor-not-allowed' : '' }}"
+                                {{ $isOutOfStock ? 'disabled' : '' }}>
                             <span>Buy Now</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
     
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <span class="bg-primary/10 text-primary p-2 rounded-lg mr-3">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
-                </span>
-                Description
-            </h3>
-            <div class="prose prose-blue prose-lg max-w-none text-gray-600">
-                {!! $product->description !!}
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 h-fit">
-            <h3 class="text-lg font-bold text-gray-900 mb-4">Why shop with us?</h3>
-            <ul class="space-y-3">
-                <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Premium Quality</li>
-                <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Secure Payment</li>
-                <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Fast Shipping</li>
-            </ul>
-        </div>
-    </div>
-
     <div class="mt-16">
-        <livewire:product-reviews :product="$product" />
+        <livewire:store.product-reviews :product="$product" />
     </div>
 
     @if($relatedProducts && $relatedProducts->count() > 0)
@@ -219,7 +213,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 @foreach($relatedProducts as $related)
                     <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col">
-                        <a href="{{ route('store.product', $related->slug) }}" class="aspect-square relative overflow-hidden bg-gray-100 block">
+                        <a href="{{ route('store.product.show', $related->slug) }}" class="aspect-square relative overflow-hidden bg-gray-100 block">
                             <img src="{{ $related->thumbnail ? (Str::startsWith($related->thumbnail, ['http']) ? $related->thumbnail : Storage::url($related->thumbnail)) : 'https://placehold.co/500' }}" 
                                  alt="{{ $related->name }}" 
                                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
@@ -229,14 +223,14 @@
                             @endif
                         </a>
                         <div class="p-4 flex-1 flex flex-col">
-                            <a href="{{ route('store.product', $related->slug) }}" class="block mb-1">
+                            <a href="{{ route('store.product.show', $related->slug) }}" class="block mb-1">
                                 <h3 class="text-sm font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-1">{{ $related->name }}</h3>
                             </a>
                             <p class="text-xs text-gray-500 mb-3">{{ $related->categories->first()->name ?? 'General' }}</p>
                             
                             <div class="mt-auto flex items-center justify-between">
                                 <span class="text-lg font-bold text-gray-900">${{ number_format($related->price, 2) }}</span>
-                                @livewire('add-to-cart-button', ['productId' => $related->id], key('related-'.$related->id))
+                                @livewire('store.add-to-cart-button', ['productId' => $related->id], key('related-'.$related->id))
                             </div>
                         </div>
                     </div>

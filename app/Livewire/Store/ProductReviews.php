@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Store;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -107,7 +107,7 @@ class ProductReviews extends Component
 
     public function render()
     {
-        return view('livewire.product-reviews', [
+        return view('livewire.store.product-reviews', [
             'reviews' => $this->product->reviews()->with('user')->paginate(5),
             'avgRating' => $this->product->average_rating,
             'totalReviews' => $this->product->review_count
