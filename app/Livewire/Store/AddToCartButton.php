@@ -78,6 +78,7 @@ class AddToCartButton extends Component
                 "name" => $product->name,
                 "quantity" => $this->showQuantity ? $this->quantity : 1,
                 "price" => $product->price,
+                "currency_symbol" => $product->currency_symbol,
                 "thumbnail" => $product->thumbnail
             ];
         }

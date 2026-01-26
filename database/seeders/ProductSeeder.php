@@ -29,6 +29,7 @@ class ProductSeeder extends Seeder
             $product = Product::create([
                 'name' => $name,
                 'slug' => $slug,
+                'sku' => uniqid(),
                 'description' => $faker->paragraph(3),
                 'price' => $faker->randomFloat(2, 10, 300),
                 'stock' => $faker->numberBetween(5, 50),

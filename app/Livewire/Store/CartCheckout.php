@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Models\Product;
+use App\Models\Currency;
 use App\Models\ShippingMethod;
 use App\Models\Discount;
 use App\Models\Order;
@@ -18,6 +19,7 @@ class CartCheckout extends Component
 {
     // --- Cart Data ---
     public $cart = [];
+    public $currencySymbol = '$';
     public $subtotal = 0;
     public $discountAmount = 0;
     public $shippingCost = 0;
@@ -82,6 +84,9 @@ class CartCheckout extends Component
         // Load active shipping methods (In a real app, filter this by Zone based on country)
         $this->shippingMethods = ShippingMethod::where('active', true)->orderBy('cost', 'asc')->get();
         
+        // Currency
+        $this->currencySymbol = Currency::getActive()->symbol;
+
         // Default selection
         if ($this->shippingMethods->isNotEmpty()) {
             $this->selectedShippingMethod = $this->shippingMethods->first()->id;

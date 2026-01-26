@@ -56,7 +56,7 @@
                                     <p class="text-xs text-gray-500 truncate">{{ Str::limit(strip_tags($product->description), 40) }}</p>
                                 </div>
                                 <div class="ml-2">
-                                    <span class="text-sm font-bold text-primary">${{ number_format($product->price, 2) }}</span>
+                                    <span class="text-sm font-bold text-primary">{{$product->currency_symbol}}{{ number_format($product->price, 2) }}</span>
                                 </div>
                             </a>
                         </li>

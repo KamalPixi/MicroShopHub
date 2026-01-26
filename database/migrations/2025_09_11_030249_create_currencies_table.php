@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('symbol');             // '$', '৳'
             $table->decimal('exchange_rate', 10, 4)->default(1.0000); 
             $table->boolean('active')->default(true);
+            // Flag to identify the main store currency
+            $table->boolean('is_default')->default(false);
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Store\StoreController;
 use App\Http\Controllers\Store\CustomerController;
 use App\Http\Controllers\Store\AuthController;
-use App\Http\Controllers\Store\SslCommerzController;
+use App\Http\Controllers\Store\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,16 +60,19 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('sslcommerz')
-    ->name('ssl.')
-    ->group(function () {
-        Route::post('/pay', [SslCommerzController::class, 'index'])->name('pay');
-        Route::post('/success', [SslCommerzController::class, 'success'])->name('success');
-        Route::post('/fail', [SslCommerzController::class, 'fail'])->name('fail');
-        Route::post('/cancel', [SslCommerzController::class, 'cancel'])->name('cancel');
-        Route::post('/ipn', [SslCommerzController::class, 'ipn'])->name('ipn');
-    });
+Route::prefix('payment')->name('payment.')->group(function () {    
+    // Initiate Payment (Frontend posts here with 'gateway' name)
+    Route::post('/pay', [PaymentController::class, 'pay'])->name('pay');
 
+    // Global Callbacks (Dynamic {gateway} param)
+    // URL Example: /payment/sslcommerz/success
+    Route::group(['prefix' => '{gateway}'], function () {
+        Route::any('/success', [PaymentController::class, 'success'])->name('success');
+        Route::any('/fail', [PaymentController::class, 'fail'])->name('fail');
+        Route::any('/cancel', [PaymentController::class, 'cancel'])->name('cancel');
+        Route::any('/ipn', [PaymentController::class, 'ipn'])->name('ipn');
+    });
+});
 
 /*
 |--------------------------------------------------------------------------

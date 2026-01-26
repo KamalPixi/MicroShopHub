@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    protected static $activeCurrencySymbol = null;
+
     protected $casts = [
         'has_variations' => 'boolean',
         'featured' => 'boolean',
@@ -26,6 +28,20 @@ class Product extends Model
         'featured',
         'status',
     ];
+
+    /**
+     * Get the store's active currency symbol.
+     * Usage: $product->currency_symbol
+     */
+    public function getCurrencySymbolAttribute()
+    {
+        if (self::$activeCurrencySymbol === null) {
+            // Fetch once per request
+            self::$activeCurrencySymbol = Currency::getActive()->symbol;
+        }
+
+        return self::$activeCurrencySymbol;
+    }
 
     public function categories()
     {

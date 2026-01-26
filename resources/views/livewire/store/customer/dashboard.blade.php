@@ -336,7 +336,7 @@
                                     <div class="w-12 h-12 bg-gray-100 rounded-lg mr-4 overflow-hidden border border-gray-200"></div>
                                     <div><p class="text-sm font-bold text-gray-900">{{ $item->name }}</p><p class="text-xs text-gray-500">Qty: {{ $item->quantity }}</p></div>
                                 </div>
-                                <p class="text-sm font-bold text-gray-900">${{ number_format($item->price, 2) }}</p>
+                                <p class="text-sm font-bold text-gray-900">{{$product->currency_symbol}}{{ number_format($item->price, 2) }}</p>
                             </div>
                         @endforeach
                     </div>

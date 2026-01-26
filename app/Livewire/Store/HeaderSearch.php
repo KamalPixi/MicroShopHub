@@ -46,7 +46,7 @@ class HeaderSearch extends Component
 
         return view('livewire.store.header-search', [
             'results' => $results,
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 }

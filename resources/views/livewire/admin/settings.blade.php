@@ -23,13 +23,11 @@
                     <div>
                         <label for="shop_name" class="block text-sm font-semibold text-gray-700">Shop Name</label>
                         <input wire:model="settings.shop_name" type="text" id="shop_name" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. My Awesome Store">
-                        <p class="text-xs text-gray-500 mt-1">Displayed in emails and invoices.</p>
                         @error('settings.shop_name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="site_title" class="block text-sm font-semibold text-gray-700">Site Title</label>
                         <input wire:model="settings.site_title" type="text" id="site_title" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. Best Deals Online">
-                        <p class="text-xs text-gray-500 mt-1">Appears in the browser tab.</p>
                         @error('settings.site_title') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -44,7 +42,6 @@
                         @endif
                         <input wire:model="logo" type="file" id="logo" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">Recommended format: PNG or JPEG. Max size 2MB.</p>
                     @error('logo') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                 </div>
 
@@ -55,8 +52,6 @@
                             <input wire:model="settings.branding_color" type="color" id="branding_color" class="h-9 w-12 border border-gray-300 rounded p-0.5 cursor-pointer">
                             <input wire:model="settings.branding_color" type="text" class="ml-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono uppercase" placeholder="#000000">
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">Main brand color (Buttons, Links).</p>
-                        @error('settings.branding_color') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="secondary_color" class="block text-sm font-semibold text-gray-700">Secondary Color</label>
@@ -64,8 +59,6 @@
                             <input wire:model="settings.secondary_color" type="color" id="secondary_color" class="h-9 w-12 border border-gray-300 rounded p-0.5 cursor-pointer">
                             <input wire:model="settings.secondary_color" type="text" class="ml-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono uppercase" placeholder="#6B7280">
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">Accent color for secondary elements.</p>
-                        @error('settings.secondary_color') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
             </div>
@@ -81,15 +74,11 @@
             <div class="md:col-span-2 space-y-4">
                 <div>
                     <label for="meta_description" class="block text-sm font-semibold text-gray-700">Meta Description</label>
-                    <textarea wire:model="settings.meta_description" id="meta_description" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" rows="3" placeholder="Brief summary of your store..."></textarea>
-                    <p class="text-xs text-gray-500 mt-1">Recommended length: 150-160 characters.</p>
-                    @error('settings.meta_description') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    <textarea wire:model="settings.meta_description" id="meta_description" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" rows="3"></textarea>
                 </div>
                 <div>
                     <label for="meta_keywords" class="block text-sm font-semibold text-gray-700">Meta Keywords</label>
-                    <input wire:model="settings.meta_keywords" type="text" id="meta_keywords" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="ecommerce, fashion, electronics">
-                    <p class="text-xs text-gray-500 mt-1">Separate keywords with commas.</p>
-                    @error('settings.meta_keywords') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    <input wire:model="settings.meta_keywords" type="text" id="meta_keywords" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
                 </div>
             </div>
         </div>
@@ -99,50 +88,103 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="md:col-span-1">
                 <h4 class="text-base font-bold text-gray-800">Payment Gateways</h4>
-                <p class="text-xs text-gray-500 mt-1">Configure API keys for payment providers. Leave blank to disable a gateway.</p>
+                <p class="text-xs text-gray-500 mt-1">Configure credentials and labels. Leave keys blank to disable a method.</p>
             </div>
             <div class="md:col-span-2 space-y-5">
-                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <div class="flex items-center mb-2">
-                        <span class="font-bold text-gray-700">Stripe</span>
-                    </div>
-                    <label for="stripe_api_key" class="block text-xs font-semibold text-gray-500 uppercase">Secret Key</label>
-                    <input wire:model="settings.stripe_api_key" type="password" id="stripe_api_key" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="sk_live_...">
-                    @error('settings.stripe_api_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
-                </div>
 
-                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <div class="flex items-center mb-2">
-                        <span class="font-bold text-gray-700">PayPal</span>
-                    </div>
-                    <label for="paypal_api_key" class="block text-xs font-semibold text-gray-500 uppercase">Client Secret</label>
-                    <input wire:model="settings.paypal_api_key" type="password" id="paypal_api_key" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="Paypal Secret Key">
-                    @error('settings.paypal_api_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <div class="flex items-center mb-2">
-                        <span class="font-bold text-gray-700">SSLCommerz</span>
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <div class="flex items-center mb-4 justify-between">
+                        <span class="font-bold text-gray-800 text-sm">Cash on Delivery</span>
+                        <svg class="h-6 w-auto text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-4">
                         <div>
-                            <label for="sslcommerz_store_id" class="block text-xs font-semibold text-gray-500 uppercase">Store ID</label>
-                            <input wire:model="settings.sslcommerz_store_id" type="text" id="sslcommerz_store_id" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="your_store_id">
-                            @error('settings.sslcommerz_store_id') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gateway Display Name</label>
+                            <input wire:model="settings.cod_label" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Cash on Delivery / Pay on Arrival">
                         </div>
 
-                        <div>
-                            <label for="sslcommerz_api_key" class="block text-xs font-semibold text-gray-500 uppercase">Store Password</label>
-                            <input wire:model="settings.sslcommerz_api_key" type="password" id="sslcommerz_api_key" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="Store Password">
-                            @error('settings.sslcommerz_api_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                        <div class="flex items-center pt-2">
+                            <input wire:model="settings.cod_enabled" type="checkbox" id="cod_enabled" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="cod_enabled" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">
+                                Enable Cash on Delivery
+                            </label>
                         </div>
                     </div>
-                    <div class="mt-2 flex items-center">
-                        <input wire:model="settings.sslcommerz_sandbox" type="checkbox" id="ssl_sandbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-                        <label for="ssl_sandbox" class="ml-2 text-sm text-gray-600">Enable Sandbox Mode</label>
+                </div>
+                
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <div class="flex items-center mb-4 justify-between">
+                        <div class="flex items-center">
+                            <span class="font-bold text-gray-800 text-sm">SSLCommerz</span>
+                            <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">Local (BDT)</span>
+                        </div>
+                        <img src="https://securepay.sslcommerz.com/public/image/sslcommerz.png" class="h-6 opacity-90" alt="SSL">
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gateway Display Name</label>
+                            <input wire:model="settings.sslcommerz_label" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="bKash / Nagad / Rocket / Visa / MasterCard">
+                            <p class="text-[10px] text-gray-400 mt-1">This text appears on the checkout page.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Store ID</label>
+                                <input wire:model="settings.sslcommerz_store_id" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="your_store_id">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Store Password</label>
+                                <input wire:model="settings.sslcommerz_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center pt-2">
+                            <input wire:model="settings.sslcommerz_sandbox" type="checkbox" id="ssl_sandbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="ssl_sandbox" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">
+                                Enable Sandbox Mode (Test Mode)
+                            </label>
+                        </div>
                     </div>
                 </div>
+
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <div class="flex items-center mb-4 justify-between">
+                        <span class="font-bold text-gray-800 text-sm">Stripe</span>
+                        <svg class="h-6 w-auto text-blue-600" viewBox="0 0 40 17" fill="currentColor"><path d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z"/></svg>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gateway Display Name</label>
+                            <input wire:model="settings.stripe_label" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Credit / Debit Card (International)">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Secret Key</label>
+                            <input wire:model="settings.stripe_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="sk_live_...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <div class="flex items-center mb-4 justify-between">
+                        <span class="font-bold text-gray-800 text-sm">PayPal</span>
+                        <svg class="h-5 w-auto text-blue-800" viewBox="0 0 18 18" fill="currentColor"><path d="M15.3 5.4c-.6-2.4-3-3.6-6.6-3.6h-4.2c-.3 0-.6.3-.6.6v12.6c0 .3.3.6.6.6h2.1c.3 0 .6-.3.6-.6v-2.4h1.2c3.9 0 6.6-1.5 6.9-6.6zM6.6 3.6h1.8c2.4 0 3.9.6 4.2 2.1.3 1.5-.6 3-3.6 3h-2.4V3.6z"/></svg>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gateway Display Name</label>
+                            <input wire:model="settings.paypal_label" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Pay via PayPal">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Client Secret</label>
+                            <input wire:model="settings.paypal_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="PayPal Secret Key">
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -163,8 +205,6 @@
                             <option value="EUR">EUR (€)</option>
                             <option value="GBP">GBP (£)</option>
                         </select>
-                        <p class="text-xs text-gray-500 mt-1">Base currency for products.</p>
-                        @error('settings.currency') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="tax_rate" class="block text-sm font-semibold text-gray-700">Tax Rate (%)</label>
@@ -174,8 +214,6 @@
                                 <span class="text-gray-500 sm:text-sm">%</span>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">Applied to checkout total.</p>
-                        @error('settings.tax_rate') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
             </div>
@@ -193,12 +231,10 @@
                     <div>
                         <label for="email" class="block text-sm font-semibold text-gray-700">Support Email</label>
                         <input wire:model="settings.email" type="email" id="email" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="support@example.com">
-                        @error('settings.email') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="phone" class="block text-sm font-semibold text-gray-700">Support Phone</label>
                         <input wire:model="settings.phone" type="text" id="phone" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="+1 234 567 890">
-                        @error('settings.phone') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
                 

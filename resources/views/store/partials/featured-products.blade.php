@@ -56,7 +56,7 @@
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-primary">
                                 @if($product->price)
-                                    ${{ number_format($product->price, 2) }}
+                                    {{$product->currency_symbol}}{{ number_format($product->price, 2) }}
                                 @else
                                     <span class="text-xs text-gray-500">See Options</span>
                                 @endif

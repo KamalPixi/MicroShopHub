@@ -69,7 +69,7 @@
                                 {{ $value->attribute->name }}: {{ $value->value }}
                             </span>
                             @endforeach
-                            <span class="text-xs text-gray-600">(SKU: {{ $variation->sku }}, Price: ${{ $variation->price }}, Stock: {{ $variation->stock }})</span>
+                            <span class="text-xs text-gray-600">(SKU: {{ $variation->sku }}, Price: {{$product->currency_symbol}}{{ $variation->price }}, Stock: {{ $variation->stock }})</span>
                         </div>
                         @endforeach
                         @else

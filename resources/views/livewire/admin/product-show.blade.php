@@ -90,7 +90,7 @@
                                 @endforeach
                             </div>
                             <p class="variation-details mt-1">
-                                SKU: {{ $variation->sku }}, Price: ${{ number_format($variation->price, 2) }}, Stock: {{ $variation->stock }}
+                                SKU: {{ $variation->sku }}, Price: {{$product->currency_symbol}}{{ number_format($variation->price, 2) }}, Stock: {{ $variation->stock }}
                             </p>
                         </div>
                     @endforeach
@@ -150,7 +150,7 @@
                                         </div>
                                     </td>
                                     <td>{{ $variation->sku }}</td>
-                                    <td>${{ number_format($variation->price, 2) }}</td>
+                                    <td>{{$product->currency_symbol}}{{ number_format($variation->price, 2) }}</td>
                                     <td>{{ $variation->stock }}</td>
                                 </tr>
                             @endforeach

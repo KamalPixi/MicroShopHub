@@ -136,7 +136,7 @@
                                 
                                 <div class="mt-auto flex items-center justify-between">
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-bold text-gray-900">${{ number_format($product->price, 2) }}</span>
+                                        <span class="text-sm font-bold text-gray-900">{{$product->currency_symbol}}{{ number_format($product->price, 2) }}</span>
                                     </div>
                                     @livewire('store.add-to-cart-button', ['productId' => $product->id], key($product->id))
                                 </div>

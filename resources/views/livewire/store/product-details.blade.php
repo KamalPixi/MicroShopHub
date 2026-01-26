@@ -62,7 +62,7 @@
 
                 <div class="flex items-end gap-3 mb-6 pb-6 border-b border-gray-100">
                     <span class="text-4xl font-bold text-primary transition-all duration-300">
-                        ${{ number_format($currentPrice, 2) }}
+                        {{$product->currency_symbol}}{{ number_format($currentPrice, 2) }}
                     </span>
                     @if($product->has_variations && !$selectedVariation)
                         <span class="text-sm font-medium text-gray-400 mb-2 bg-gray-50 px-2 py-1 rounded">From (Base Price)</span>
@@ -147,7 +147,7 @@
                         
                         <div class="text-right">
                             <span class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Total</span>
-                            <span class="text-2xl font-bold text-gray-900">${{ number_format($currentPrice * $quantity, 2) }}</span>
+                            <span class="text-2xl font-bold text-gray-900">{{$product->currency_symbol}}{{ number_format($currentPrice * $quantity, 2) }}</span>
                         </div>
                     </div>
 
@@ -229,7 +229,7 @@
                             <p class="text-xs text-gray-500 mb-3">{{ $related->categories->first()->name ?? 'General' }}</p>
                             
                             <div class="mt-auto flex items-center justify-between">
-                                <span class="text-lg font-bold text-gray-900">${{ number_format($related->price, 2) }}</span>
+                                <span class="text-lg font-bold text-gray-900">{{$related->currency_symbol}}{{ number_format($related->price, 2) }}</span>
                                 @livewire('store.add-to-cart-button', ['productId' => $related->id], key('related-'.$related->id))
                             </div>
                         </div>
