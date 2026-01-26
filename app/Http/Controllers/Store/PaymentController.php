@@ -2,26 +2,30 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use App\Models\Setting;
+use App\Models\Order;
+use App\Models\Currency; // [NEW] Import Currency Model
 
 class PaymentController extends Controller
 {
     // --- 1. INITIATE PAYMENT ---
     public function pay(Request $request)
     {
-        // Validate request has a gateway
         $request->validate(['gateway' => 'required|string']);
         $gateway = $request->input('gateway');
 
-        // Route to the specific gateway logic
         switch ($gateway) {
             case 'sslcommerz':
                 return $this->payWithSslCommerz($request);
             
+            case 'cod': // Handle COD
+                return $this->processCod($request);
+
             case 'stripe':
-                // return $this->payWithStripe($request); // Future implementation
                 return redirect()->back()->with('error', 'Stripe not implemented yet.');
 
             default:
@@ -44,6 +48,9 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', 'SSLCommerz credentials missing.');
         }
 
+        //  Get Store Currency dynamically
+        $currencyCode = Currency::getActive()->code; 
+
         $api_url = $is_sandbox 
             ? 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php' 
             : 'https://securepay.sslcommerz.com/gwprocess/v4/api.php';
@@ -51,17 +58,17 @@ class PaymentController extends Controller
         $post_data = [
             'store_id' => $store_id,
             'store_passwd' => $store_passwd,
-            'total_amount' => '100', // Replace with dynamic amount
-            'currency' => 'BDT',
+            'total_amount' => '100', // Replace with actual Cart Total in production
+            'currency' => $currencyCode, // [UPDATED] Use dynamic store currency
             'tran_id' => "TRX-" . uniqid(),
             
-            // DYNAMIC CALLBACK URLs (Using the global route names)
+            // DYNAMIC CALLBACK URLs
             'success_url' => route('payment.success', ['gateway' => 'sslcommerz']),
             'fail_url'    => route('payment.fail', ['gateway' => 'sslcommerz']),
             'cancel_url'  => route('payment.cancel', ['gateway' => 'sslcommerz']),
             'ipn_url'     => route('payment.ipn', ['gateway' => 'sslcommerz']),
 
-            // Customer Info (Dummy Data)
+            // Customer Info (Dummy Data - Connect to Auth::user() later)
             'cus_name' => 'John Doe',
             'cus_email' => 'john@example.com',
             'cus_add1' => 'Dhaka',
@@ -87,19 +94,24 @@ class PaymentController extends Controller
         }
     }
 
-    // --- 3. GLOBAL CALLBACK HANDLERS ---
+    // --- 3. HANDLE CASH ON DELIVERY ---
+    private function processCod(Request $request)
+    {
+        // Logic to create order with 'pending' payment status
+        // Order::create([... 'payment_method' => 'cod', 'payment_status' => 'pending' ...]);
+
+        return redirect()->route('store.index')->with('success', 'Order placed successfully via Cash on Delivery!');
+    }
+
+    // --- 4. GLOBAL CALLBACK HANDLERS ---
 
     public function success($gateway, Request $request)
     {
         if ($gateway == 'sslcommerz') {
-            // Validate SSLCommerz Transaction
             $tran_id = $request->input('tran_id');
             // Update Database Logic Here...
-            
             return redirect()->route('store.index')->with('success', "Payment Successful via SSLCommerz! TRX: $tran_id");
         }
-
-        // Add 'elseif ($gateway == 'stripe')' later...
 
         return redirect()->route('store.index')->with('error', 'Unknown Payment Gateway.');
     }
@@ -116,7 +128,6 @@ class PaymentController extends Controller
 
     public function ipn($gateway, Request $request)
     {
-        // Log the incoming request for debugging
         Log::info("IPN Received from {$gateway}:", $request->all());
 
         switch ($gateway) {
@@ -124,7 +135,6 @@ class PaymentController extends Controller
                 return $this->handleSslCommerzIpn($request);
             
             case 'stripe':
-                // return $this->handleStripeWebhook($request);
                 return response()->json(['status' => 'Stripe not implemented'], 404);
 
             default:
@@ -134,14 +144,11 @@ class PaymentController extends Controller
 
     private function handleSslCommerzIpn(Request $request)
     {
-        // 1. Get Credentials
         $settings = Setting::whereIn('key', ['sslcommerz_store_id', 'sslcommerz_api_key', 'sslcommerz_sandbox'])->pluck('value', 'key');
         $store_id = $settings['sslcommerz_store_id'];
         $store_passwd = $settings['sslcommerz_api_key'];
         $is_sandbox = filter_var($settings['sslcommerz_sandbox'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-        // 2. Check if Transaction Exists & is Valid
-        // SSLCommerz sends 'tran_id' and 'val_id' in the POST request
         $tran_id = $request->input('tran_id');
         $val_id = $request->input('val_id');
         $amount = $request->input('amount');
@@ -150,8 +157,6 @@ class PaymentController extends Controller
             return response()->json(['status' => 'Invalid Data'], 400);
         }
 
-        // 3. VERIFY WITH SSLCOMMERZ API (Double Check)
-        // Never trust the request data alone; ask SSLCommerz if this is real.
         $validator_url = $is_sandbox 
             ? "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php"
             : "https://securepay.sslcommerz.com/validator/api/validationserverAPI.php";
@@ -167,25 +172,20 @@ class PaymentController extends Controller
 
         if ($result['status'] === 'VALID' || $result['status'] === 'VALIDATED') {
             
-            // 4. Find & Update Order
-            // Assuming you saved 'transaction_id' in your orders table when initiating payment
             $order = Order::where('transaction_id', $tran_id)->first();
 
             if ($order) {
-                // Security Check: Verify Amount Matches
                 if ((float) $order->grand_total !== (float) $amount) {
                     Log::error("SSLCommerz Fraud Attempt: Amount mismatch for Order #{$order->id}");
                     return response()->json(['status' => 'Fraud Detected'], 400);
                 }
 
-                // Update Order Status
                 if ($order->payment_status !== 'paid') {
                     $order->update([
                         'payment_status' => 'paid',
-                        'status' => 'processing', // or 'completed'
-                        'payment_details' => json_encode($result) // Save full gateway response for audit
+                        'status' => 'processing',
+                        'payment_details' => json_encode($result)
                     ]);
-                    
                     Log::info("Order #{$order->id} marked as PAID via SSLCommerz IPN.");
                 }
                 
