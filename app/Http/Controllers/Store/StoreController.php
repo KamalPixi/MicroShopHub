@@ -86,7 +86,9 @@ class StoreController extends Controller
             })
             ->paginate(10) // 15 items to fit 5-column layout nicely (3 rows)
             ->withQueryString(); // Keep search params in pagination links
-
+        
+        $categories = Category::whereNull('parent_id')->with('children')->get();
+        
         return view('store.search', compact('products', 'categories', 'query', 'categoryId', 'minPrice', 'maxPrice', 'sort'));
     }
 

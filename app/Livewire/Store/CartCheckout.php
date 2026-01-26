@@ -14,6 +14,7 @@ use App\Models\ShippingMethod;
 use App\Models\Discount;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Setting;
 
 class CartCheckout extends Component
 {
@@ -41,7 +42,11 @@ class CartCheckout extends Component
     public $phone = '';
     public $otp = '';
     public $otpSent = false;
-    
+
+    // --- Store Settings ---
+    public $settings = [];
+    public $codEnabled = false;
+
     // --- Addresses ---
     public $shipToDifferentAddress = false;
     public $billing = [
@@ -86,6 +91,10 @@ class CartCheckout extends Component
         
         // Currency
         $this->currencySymbol = Currency::getActive()->symbol;
+
+        // fetch store settings
+        $this->settings = Setting::pluck('value', 'key')->toArray();
+        $this->codEnabled = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         // Default selection
         if ($this->shippingMethods->isNotEmpty()) {

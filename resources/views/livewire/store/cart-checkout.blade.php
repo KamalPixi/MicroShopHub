@@ -323,7 +323,7 @@
                                         </div>
 
                                         <div class="text-right">
-                                            <span class="block text-sm font-bold text-gray-900">${{ number_format($method->cost, 2) }}</span>
+                                            <span class="block text-sm font-bold text-gray-900">{{$currencySymbol}}{{ number_format($method->cost, 2) }}</span>
                                             
                                             <div class="hidden peer-checked:block absolute top-0 right-0 -mt-2 -mr-2">
                                                 <span class="bg-primary text-white rounded-full p-0.5 shadow-sm block">
@@ -379,14 +379,6 @@
                             @error('coupon') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
                             @if(session('coupon_success')) <p class="text-green-600 text-xs mt-1 font-bold">{{ session('coupon_success') }}</p> @endif
                         </div>
-
-                        @php
-                            $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
-                            
-                            // Helper to check if a gateway is "on"
-                            // For COD, we check the specific flag. For others, we check if the key exists.
-                            $codEnabled = filter_var($settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
-                        @endphp
 
                         <div class="space-y-4 mb-4">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">Select Payment Method</h3>
