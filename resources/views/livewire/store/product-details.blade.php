@@ -196,6 +196,18 @@
             </div>
         </div>
     </div>
+
+    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="bg-primary/10 text-primary p-2 rounded-lg mr-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+            </span>
+            Product Description
+        </h3>
+        <div class="prose prose-blue prose-lg max-w-none text-gray-600">
+            {!! $product->description !!}
+        </div>
+    </div>
     
     <div class="mt-16">
         <livewire:store.product-reviews :product="$product" />
