@@ -1,4 +1,4 @@
-<section class="mb-8 pt-6 relative group" x-data="{
+<section class="mb-6 pt-4 relative group" x-data="{
     scrollAmount: 320,
     scrollLeft() {
         this.$refs.container.scrollBy({ left: -this.scrollAmount, behavior: 'smooth' });
@@ -7,7 +7,7 @@
         this.$refs.container.scrollBy({ left: this.scrollAmount, behavior: 'smooth' });
     }
 }">
-    <div class="mb-4 px-1">
+    <div class="mb-3 px-1">
         <h2 class="text-2xl font-bold text-gray-900">Shop by Category</h2>
     </div>
 
@@ -19,8 +19,8 @@
             </svg>
         </button>
 
-        <div x-ref="container" class="overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory pb-2">
-            <div class="flex gap-4 py-3 px-1">
+        <div x-ref="container" class="overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory pb-1">
+            <div class="flex gap-4 py-2 px-1">
 
                 @if(isset($homeCategories) && $homeCategories->count() > 0)
                     @foreach($homeCategories as $category)

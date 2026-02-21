@@ -1,4 +1,4 @@
-<section class="mb-12 relative group" x-data="{
+<section class="mb-8 relative group" x-data="{
     scrollAmount: 280,
     scrollLeft() {
         this.$refs.container.scrollBy({ left: -this.scrollAmount, behavior: 'smooth' });
@@ -7,7 +7,7 @@
         this.$refs.container.scrollBy({ left: this.scrollAmount, behavior: 'smooth' });
     }
 }">
-    <div class="flex items-center justify-between mb-6 px-1">
+    <div class="flex items-center justify-between mb-4 px-1">
         <h2 class="text-2xl font-bold text-gray-900">New Arrivals</h2>
         <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-blue-700">View All →</a>
     </div>
@@ -22,7 +22,7 @@
             </svg>
         </button>
 
-        <div x-ref="container" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 no-scrollbar">
+        <div x-ref="container" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
 
             @if(isset($newArrivals) && $newArrivals->count() > 0)
                 @foreach($newArrivals as $product)
