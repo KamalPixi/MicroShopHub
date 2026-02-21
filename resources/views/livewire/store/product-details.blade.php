@@ -113,7 +113,7 @@
                 @endphp
                 <div class="mb-2 pb-3 border-b border-gray-100">
                     <div class="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3 sm:p-4 space-y-2">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Price</p>
+                        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Price</p>
                         <div class="flex flex-wrap items-end gap-3">
                         <span class="text-3xl font-bold text-primary transition-all duration-300" 
                               role="status"
@@ -128,16 +128,22 @@
                                 Save {{ $discountPercent }}%
                             </span>
                         @endif
-                        @if($product->has_variations && count($selectedAttributes) == 0)
-                            <span class="text-sm font-medium text-gray-600 bg-white border border-gray-200 px-2 py-1 rounded">
-                                Select options to lock final price
-                            </span>
-                        @elseif($selectedVariation && $product->has_variations)
-                            <span class="text-sm font-medium text-green-700 bg-green-50 border border-green-100 px-2 py-1 rounded">
-                                Selected variation price
-                            </span>
-                        @endif
                         </div>
+                        @if($product->has_variations && count($selectedAttributes) == 0)
+                            <div class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-md">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Choose your options to see the exact final price
+                            </div>
+                        @elseif($selectedVariation && $product->has_variations)
+                            <div class="inline-flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-md">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Final price for selected options
+                            </div>
+                        @endif
                         @if($hasPriceRange && count($selectedAttributes) == 0)
                             <p class="text-sm text-gray-500">
                                 Range: {{ $product->currency_symbol }}{{ number_format($minVariationPrice, 2) }} - {{ $product->currency_symbol }}{{ number_format($maxVariationPrice, 2) }}
@@ -165,8 +171,8 @@
 
                         <div class="bg-gray-50 border border-gray-100 rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2">
                             <div>
-                                <h3 id="options-heading" class="text-sm font-bold text-gray-900">Attributes & Variations</h3>
-                                <p class="text-xs text-gray-500">Select one value per option before adding to cart.</p>
+                                <h3 id="options-heading" class="text-xs font-bold text-gray-900">Attributes & Variations</h3>
+                                <p class="text-[11px] text-gray-500">Select one value per option before adding to cart.</p>
                             </div>
                             @if(!empty($selectedAttributes))
                                 <button wire:click="resetSelection" 
@@ -180,7 +186,7 @@
                         @foreach($productOptions as $option)
                             <div class="space-y-2 border border-gray-100 bg-white rounded-xl p-2.5">
                                 <div class="flex justify-between items-baseline gap-2">
-                                    <label class="text-sm font-bold text-gray-900">
+                                    <label class="text-xs font-bold text-gray-900">
                                         {{ $option['name'] }}: 
                                         <span class="text-primary ml-1 font-extrabold">
                                             {{ $this->getSelectedValueName($option['id']) ?? 'Select one' }}
@@ -192,7 +198,7 @@
                                     @foreach($option['values'] as $value)
                                         <button wire:click="selectAttribute({{ $option['id'] }}, {{ $value->id }})"
                                                 type="button"
-                                                class="px-4 py-2.5 min-w-[84px] text-center text-sm font-medium border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 transform active:scale-95
+                                                class="px-4 py-2.5 min-w-[84px] text-center text-xs font-medium border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 transform active:scale-95
                                                 {{ isset($selectedAttributes[$option['id']]) && $selectedAttributes[$option['id']] == $value->id
                                                     ? 'border-primary bg-primary text-white shadow-md ring-primary/30' 
                                                     : 'border-gray-200 text-gray-700 hover:border-primary hover:text-primary bg-white focus:ring-primary' }}">
@@ -212,7 +218,7 @@
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
                             {{-- Quantity Selector --}}
                             <div class="flex-1">
-                                <label class="block text-xs font-bold text-gray-900 mb-2">
+                                <label class="block text-[11px] font-bold text-gray-900 mb-2">
                                     Quantity
                                 </label>
                                 <div class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-1">
@@ -250,7 +256,7 @@
 
                             {{-- Total Price --}}
                             <div class="flex-1 text-left sm:text-right">
-                                <label class="block text-xs font-bold text-gray-900 mb-2">
+                                <label class="block text-[11px] font-bold text-gray-900 mb-2">
                                     Total
                                 </label>
                                 <span class="text-xl font-bold text-primary">
