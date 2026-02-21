@@ -1,4 +1,4 @@
-<div class="bg-gray-50 min-h-screen pb-8">
+<div class="bg-gray-50 min-h-screen pt-6">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         @include('admin.includes.errors')
@@ -79,10 +79,12 @@
                                                        placeholder="Enter your email address">
                                                 @error('email') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
                                             </div>
+                                            <div>
                                             <button wire:click="sendOtp" 
                                                     class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition whitespace-nowrap shadow-sm">
                                                 Send Code
                                             </button>
+                                            </div>
                                         </div>
                                     @else
                                         <div class="space-y-3">
