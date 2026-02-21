@@ -1,250 +1,200 @@
-<div class="bg-white p-6 rounded-lg shadow card-container mx-auto">
-    <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        Product Details
-    </h3>
-    <div class="space-y-6">
-        <!-- Product Images -->
-        <div>
-            <h4 class="section-title">Product Images</h4>
-            <div class="section-content image-container flex overflow-x-auto space-x-2">
-                @if ($product->thumbnail)
-                    <img src="{{ Storage::url($product->thumbnail) }}" alt="{{ $product->name }} Thumbnail" class="thumbnail-image w-24 h-24 rounded-lg object-cover border border-gray-200">
-                @else
-                    <div class="w-24 h-24 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-200 text-gray-500 text-sm">
-                        No thumbnail
-                    </div>
-                @endif
-                @if ($product->images->count())
-                    @foreach ($product->images as $image)
-                        <img src="{{ Storage::url($image->image_path) }}" alt="{{ $product->name }} Image" class="additional-image w-24 h-24 rounded-lg object-cover border border-gray-200">
-                    @endforeach
-                @else
-                    <div class="w-24 h-24 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-200 text-gray-500 text-sm">
-                        No images
-                    </div>
-                @endif
-            </div>
-        </div>
+@php
+    $thumbnailUrl = null;
+    if (!empty($product->thumbnail)) {
+        $thumbnailUrl = \Illuminate\Support\Str::startsWith($product->thumbnail, ['http://', 'https://'])
+            ? $product->thumbnail
+            : Storage::url($product->thumbnail);
+    }
 
-        <!-- Name -->
-        <div>
-            <h4 class="section-title">Name</h4>
-            <p class="section-content">{{ $product->name }}</p>
-        </div>
+    $galleryImages = [];
+    if ($thumbnailUrl) {
+        $galleryImages[] = $thumbnailUrl;
+    }
 
-        <!-- Slug -->
-        <div>
-            <h4 class="section-title">Slug</h4>
-            <p class="section-content">{{ $product->slug }}</p>
-        </div>
+    if (is_array($product->images) && count($product->images) > 0) {
+        foreach ($product->images as $image) {
+            $galleryImages[] = \Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])
+                ? $image
+                : Storage::url($image);
+        }
+    }
 
-        <!-- Description -->
-        <div>
-            <h4 class="section-title">Description</h4>
-            <p class="section-content">{{ $product->description ?? 'No description available' }}</p>
-        </div>
+    $galleryImages = collect($galleryImages)->filter()->unique()->values()->toArray();
+@endphp
 
-        <!-- Categories -->
-        <div>
-            <h4 class="section-title">Categories</h4>
-            <div class="section-content flex flex-wrap gap-2">
-                @foreach ($product->categories as $category)
-                    <span class="badge bg-blue-100 text-blue-800">{{ $category->name }}</span>
-                @endforeach
-                @if ($product->categories->isEmpty())
-                    <span class="text-gray-500">None</span>
-                @endif
-            </div>
-        </div>
+<div class="bg-white rounded-lg shadow p-4 md:p-5 table-container mx-auto" x-data="{
+    images: @js($galleryImages),
+    index: 0,
+    next() { if (this.images.length > 1) this.index = (this.index + 1) % this.images.length; },
+    prev() { if (this.images.length > 1) this.index = (this.index - 1 + this.images.length) % this.images.length; },
+    set(i) { this.index = i; }
+}">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h3 class="text-base md:text-lg font-semibold text-gray-800 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Product Details
+        </h3>
+        <a href="{{ route('admin.products.index') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Product List
+        </a>
+    </div>
 
-        <!-- Attributes -->
-        <div>
-            <h4 class="section-title">Attributes</h4>
-            <div class="section-content flex flex-wrap gap-2">
-                @foreach ($product->attributes as $attribute)
-                    <span class="badge bg-green-100 text-green-800">
-                        {{ $attribute->name }}: {{ $attribute->pivot->value_id ? $attribute->values->find($attribute->pivot->value_id)->value : 'N/A' }}
-                    </span>
-                @endforeach
-                @if ($product->attributes->isEmpty())
-                    <span class="text-gray-500">None</span>
-                @endif
-            </div>
-        </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded-lg border border-gray-200 p-3">
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">Image Gallery</h4>
 
-        <!-- Variations -->
-        <div>
-            <h4 class="section-title">Variations</h4>
-            <div class="section-content">
-                @if ($product->has_variations)
-                    @foreach ($product->variations as $variation)
-                        <div class="mb-2">
-                            <div class="flex flex-wrap gap-2">
-                                @foreach ($variation->values as $value)
-                                    <span class="badge bg-purple-100 text-purple-800">
-                                        {{ $value->attribute->name }}: {{ $value->value }}
-                                    </span>
-                                @endforeach
-                            </div>
-                            <p class="variation-details mt-1">
-                                SKU: {{ $variation->sku }}, Price: {{$product->currency_symbol}}{{ number_format($variation->price, 2) }}, Stock: {{ $variation->stock }}
-                            </p>
-                        </div>
-                    @endforeach
-                @else
-                    <span class="text-gray-500">No variations</span>
-                @endif
-            </div>
-        </div>
+            @if(count($galleryImages) > 0)
+                <div class="relative rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                    <img :src="images[index]" alt="{{ $product->name }}" class="w-full h-72 md:h-80 object-cover">
 
-        <!-- Related Products -->
-        <div>
-            <h4 class="section-title">Related Products</h4>
-            <div class="section-content flex flex-wrap gap-2">
-                @foreach ($product->relatedProducts as $related)
-                    <span class="badge bg-yellow-100 text-yellow-800">{{ $related->name }}</span>
-                @endforeach
-                @if ($product->relatedProducts->isEmpty())
-                    <span class="text-gray-500">None</span>
-                @endif
-            </div>
-        </div>
+                    <button type="button" @click="prev"
+                            x-show="images.length > 1"
+                            class="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 border border-gray-200 text-gray-700 hover:bg-white">
+                        ‹
+                    </button>
+                    <button type="button" @click="next"
+                            x-show="images.length > 1"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/90 border border-gray-200 text-gray-700 hover:bg-white">
+                        ›
+                    </button>
+                </div>
 
-        <!-- Status -->
-        <div>
-            <h4 class="section-title">Status</h4>
-            @if ($product->status)
-                <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">Active</span>
+                <div class="mt-2 flex gap-2 overflow-x-auto pb-1">
+                    <template x-for="(img, i) in images" :key="i">
+                        <button type="button"
+                                @click="set(i)"
+                                class="shrink-0 rounded-md overflow-hidden border-2 transition"
+                                :class="index === i ? 'border-blue-500' : 'border-transparent'">
+                            <img :src="img" alt="Product thumbnail" class="w-14 h-14 object-cover">
+                        </button>
+                    </template>
+                </div>
             @else
-                <span class="inline-block bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded-full">Inactive</span>
+                <div class="h-72 md:h-80 rounded-lg border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-sm text-gray-500">
+                    No images available
+                </div>
             @endif
         </div>
 
-        <!-- Stock & Price -->
-        <div>
-            <h4 class="section-title">Stock & Price</h4>
-            <div class="section-content">
-                @if ($product->has_variations)
-                    <table class="price-table">
-                        <thead>
+        <div class="rounded-lg border border-gray-200 p-3">
+            <div class="flex flex-wrap items-start justify-between gap-2 mb-3">
+                <div>
+                    <h4 class="text-base font-semibold text-gray-900">{{ $product->name }}</h4>
+                    <p class="text-xs text-gray-500">{{ $product->slug }}</p>
+                </div>
+                @if ($product->status)
+                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">Active</span>
+                @else
+                    <span class="inline-block bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded-full">Inactive</span>
+                @endif
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 mb-3">
+                <div class="rounded-md border border-gray-200 p-2">
+                    <p class="text-[11px] text-gray-500 uppercase">Base Price</p>
+                    <p class="text-sm font-semibold text-gray-900">{{ $product->currency_symbol }}{{ number_format($product->price, 2) }}</p>
+                </div>
+                <div class="rounded-md border border-gray-200 p-2">
+                    <p class="text-[11px] text-gray-500 uppercase">Stock</p>
+                    <p class="text-sm font-semibold text-gray-900">{{ $product->stock }}</p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h5 class="text-xs font-semibold text-gray-700 mb-1">Description</h5>
+                <div class="text-sm text-gray-600 leading-6 max-h-40 overflow-auto pr-1">
+                    {!! $product->description ?: '<span class="text-gray-500">No description available</span>' !!}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <h5 class="text-xs font-semibold text-gray-700 mb-1">Categories</h5>
+                    <div class="flex flex-wrap gap-1">
+                        @forelse ($product->categories as $category)
+                            <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">{{ $category->name }}</span>
+                        @empty
+                            <span class="text-xs text-gray-500">None</span>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div>
+                    <h5 class="text-xs font-semibold text-gray-700 mb-1">Attributes</h5>
+                    <div class="flex flex-wrap gap-1">
+                        @forelse ($product->attributes as $attribute)
+                            @php
+                                $selectedValue = $attribute->pivot->value_id
+                                    ? $attribute->values->find($attribute->pivot->value_id)?->value
+                                    : null;
+                            @endphp
+                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
+                                {{ $attribute->name }}: {{ $selectedValue ?? 'N/A' }}
+                            </span>
+                        @empty
+                            <span class="text-xs text-gray-500">None</span>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded-lg border border-gray-200 p-3">
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">Related Products</h4>
+            <div class="flex flex-wrap gap-1">
+                @forelse ($product->relatedProducts as $related)
+                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full max-w-full truncate" title="{{ $related->name }}">
+                        {{ $related->name }}
+                    </span>
+                @empty
+                    <span class="text-xs text-gray-500">None</span>
+                @endforelse
+            </div>
+        </div>
+
+        <div class="rounded-lg border border-gray-200 p-3">
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">Variations</h4>
+            @if ($product->has_variations && $product->variations->isNotEmpty())
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs border border-gray-200 rounded-lg overflow-hidden">
+                        <thead class="bg-gray-50">
                             <tr>
-                                <th>Variation</th>
-                                <th>SKU</th>
-                                <th>Price</th>
-                                <th>Stock</th>
+                                <th class="text-left px-2 py-2 font-medium text-gray-700">Options</th>
+                                <th class="text-left px-2 py-2 font-medium text-gray-700">SKU</th>
+                                <th class="text-left px-2 py-2 font-medium text-gray-700">Price</th>
+                                <th class="text-left px-2 py-2 font-medium text-gray-700">Stock</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($product->variations as $variation)
-                                <tr>
-                                    <td>
-                                        <div class="flex flex-wrap gap-2">
+                                <tr class="border-t border-gray-200">
+                                    <td class="px-2 py-2 align-top">
+                                        <div class="flex flex-wrap gap-1">
                                             @foreach ($variation->values as $value)
-                                                <span class="badge bg-purple-100 text-purple-800">
+                                                <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full">
                                                     {{ $value->attribute->name }}: {{ $value->value }}
                                                 </span>
                                             @endforeach
                                         </div>
                                     </td>
-                                    <td>{{ $variation->sku }}</td>
-                                    <td>{{$product->currency_symbol}}{{ number_format($variation->price, 2) }}</td>
-                                    <td>{{ $variation->stock }}</td>
+                                    <td class="px-2 py-2 text-gray-700">{{ $variation->sku ?: '-' }}</td>
+                                    <td class="px-2 py-2 text-gray-700">{{ $product->currency_symbol }}{{ number_format($variation->price, 2) }}</td>
+                                    <td class="px-2 py-2 text-gray-700">{{ $variation->stock }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                @else
-                    <table class="price-table">
-                        <thead>
-                            <tr>
-                                <th>Price</th>
-                                <th>Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>${{ number_format($product->price, 2) }}</td>
-                                <td>{{ $product->stock }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                @endif
-            </div>
-        </div>
-
-        <!-- Back Button -->
-        <div>
-            <a href="{{ route('admin.products.index') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-                Back to Product List
-            </a>
+                </div>
+            @else
+                <p class="text-xs text-gray-500">No variations</p>
+            @endif
         </div>
     </div>
-
-<style>
-        .card-container {
-            transition: all 0.3s ease;
-        }
-        .card-container:hover {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        .section-title {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-        }
-        .section-content {
-            font-size: 0.875rem;
-            color: #4b5563;
-        }
-        .variation-details {
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-        .image-container {
-            display: flex;
-            overflow-x-auto;
-            gap: 0.5rem;
-        }
-        .thumbnail-image, .additional-image {
-            object-fit: cover;
-            border-radius: 0.375rem;
-            border: 1px solid #e5e7eb;
-        }
-        .price-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.375rem;
-            overflow: hidden;
-        }
-        .price-table th, .price-table td {
-            padding: 0.75rem;
-            text-align: left;
-            font-size: 0.875rem;
-        }
-        .price-table th {
-            background-color: #f9fafb;
-            font-weight: 500;
-            color: #374151;
-        }
-        .price-table td {
-            border-top: 1px solid #e5e7eb;
-        }
-        .price-table tr:hover {
-            background-color: #f3f4f6;
-        }
-    </style>
 </div>
