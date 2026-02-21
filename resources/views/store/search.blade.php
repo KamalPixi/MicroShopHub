@@ -105,9 +105,13 @@
                 @if($products->count() > 0)
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         @foreach($products as $product)
-                        <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group border border-gray-100 flex flex-col">
+                        <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group border border-gray-100 flex flex-col cursor-pointer"
+                             role="link"
+                             tabindex="0"
+                             onclick="if (!event.target.closest('button, a, [wire\\:click], input, select, textarea')) window.location='{{ route('store.product.show', $product->slug) }}'"
+                             onkeydown="if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('button, a, [wire\\:click], input, select, textarea')) { event.preventDefault(); window.location='{{ route('store.product.show', $product->slug) }}'; }">
                             
-                            <a href="{{ route('store.product.show', $product->slug) }}" class="block aspect-square relative overflow-hidden bg-gray-100">
+                            <div class="block aspect-square relative overflow-hidden bg-gray-100">
                                 @php
                                     $img = 'https://placehold.co/500?text=No+Image';
                                     if ($product->thumbnail) {
@@ -121,14 +125,14 @@
                                 @if($product->price < 50) 
                                     <span class="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded">DEAL</span>
                                 @endif
-                            </a>
+                            </div>
                             
                             <div class="p-3 flex-1 flex flex-col">
-                                <a href="{{ route('store.product.show', $product->slug) }}" class="block">
+                                <div class="block">
                                     <h3 class="text-sm font-medium text-gray-900 group-hover:text-primary truncate mb-1">
                                         {{ $product->name }}
                                     </h3>
-                                </a>
+                                </div>
                                 
                                 <p class="text-xs text-gray-500 mb-2 truncate">
                                     {{ $product->categories->first()->name ?? 'General' }}

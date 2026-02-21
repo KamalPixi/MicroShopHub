@@ -26,9 +26,13 @@
 
             @if(isset($newArrivals) && $newArrivals->count() > 0)
                 @foreach($newArrivals as $product)
-                    <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer">
+                    <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer"
+                         role="link"
+                         tabindex="0"
+                         onclick="if (!event.target.closest('button, a, [wire\\:click]')) window.location='{{ route('store.product.show', $product->slug) }}'"
+                         onkeydown="if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('button, a, [wire\\:click]')) { event.preventDefault(); window.location='{{ route('store.product.show', $product->slug) }}'; }">
                         
-                        <a href="{{ route('store.product.show', $product->slug) }}" class="block aspect-square overflow-hidden bg-gray-100 relative">
+                        <div class="block aspect-square overflow-hidden bg-gray-100 relative">
                             @php
                                 $imageUrl = 'https://placehold.co/500x500?text=No+Image';
                                 if ($product->thumbnail) {
@@ -40,14 +44,14 @@
                                 }
                             @endphp
                             <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105">
-                        </a>
+                        </div>
 
                         <div class="p-3">
-                            <a href="{{ route('store.product.show', $product->slug) }}" class="block">
+                            <div class="block">
                                 <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary truncate">
                                     {{ $product->name }}
                                 </h3>
-                            </a>
+                            </div>
                             
                             <p class="text-xs text-gray-600 mb-2 truncate">
                                 {{ Str::limit(strip_tags($product->description), 40) }}
