@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('sku')->unique();
+            $table->string('sku')->nullable()->unique();
             $table->string('thumbnail')->nullable();            
             $table->json('images')->nullable(); 
             $table->text('description')->nullable();

@@ -10,6 +10,7 @@ class ProductDetails extends Component
 {
     public $product;
     public $relatedProducts;
+    public $mainImageUrl;
     
     // Data
     public $productOptions = []; 
