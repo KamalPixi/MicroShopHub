@@ -87,11 +87,11 @@
             {{-- Product Details --}}
             <div class="flex flex-col">
                 {{-- Product Header --}}
-                <div class="mb-6">
-                    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 leading-tight mb-3">
+                <div class="mb-3">
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-gray-900 leading-tight mb-2">
                         {{ $product->name }}
                     </h1>
-                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                    <div class="flex flex-wrap items-center gap-2 text-xs text-gray-600">
                         <span class="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-700">
                             {{ $product->categories->first()->name ?? 'Product' }}
                         </span>
@@ -111,17 +111,17 @@
                         ? (int) round((($basePrice - $currentPrice) / $basePrice) * 100)
                         : 0;
                 @endphp
-                <div class="mb-6 pb-6 border-b border-gray-100">
-                    <div class="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 sm:p-5 space-y-3">
+                <div class="mb-2 pb-3 border-b border-gray-100">
+                    <div class="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3 sm:p-4 space-y-2">
                         <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Price</p>
                         <div class="flex flex-wrap items-end gap-3">
-                        <span class="text-4xl font-bold text-primary transition-all duration-300" 
+                        <span class="text-3xl font-bold text-primary transition-all duration-300" 
                               role="status"
                               aria-label="Product price">
                             {{ $product->currency_symbol }}{{ number_format($currentPrice, 2) }}
                         </span>
                         @if($discountPercent > 0)
-                            <span class="text-lg text-gray-400 line-through">
+                            <span class="text-base text-gray-400 line-through">
                                 {{ $product->currency_symbol }}{{ number_format($basePrice, 2) }}
                             </span>
                             <span class="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">
@@ -149,7 +149,7 @@
                 {{-- Product Options/Variations --}}
                 @if(count($productOptions) > 0)
                     <div id="attributes-section" 
-                         class="space-y-6 mb-8 transition-all duration-300 p-5 rounded-2xl border bg-gray-50/70 shadow-sm"
+                         class="space-y-3 mb-4 transition-all duration-300 p-4 rounded-2xl border bg-gray-50/70 shadow-sm"
                          :class="selectionMissing ? 'border-red-200 ring-2 ring-red-100 bg-red-50' : 'border-gray-200'"
                          role="region"
                          aria-labelledby="options-heading">
@@ -163,7 +163,7 @@
                             </div>
                         @endif
 
-                        <div class="bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
+                        <div class="bg-gray-50 border border-gray-100 rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2">
                             <div>
                                 <h3 id="options-heading" class="text-sm font-bold text-gray-900">Attributes & Variations</h3>
                                 <p class="text-xs text-gray-500">Select one value per option before adding to cart.</p>
@@ -178,7 +178,7 @@
                         </div>
 
                         @foreach($productOptions as $option)
-                            <div class="space-y-3 border border-gray-100 bg-white rounded-xl p-3">
+                            <div class="space-y-2 border border-gray-100 bg-white rounded-xl p-2.5">
                                 <div class="flex justify-between items-baseline gap-2">
                                     <label class="text-sm font-bold text-gray-900">
                                         {{ $option['name'] }}: 
@@ -206,13 +206,13 @@
                 @endif
 
                 {{-- Quantity & Add to Cart Section --}}
-                <div class="space-y-4">
+                <div class="space-y-2">
                     {{-- Quantity Selector & Total Price - Same Box --}}
-                    <div class="bg-white border border-gray-200 rounded-xl p-4">
+                    <div class="bg-white border border-gray-200 rounded-xl p-3">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
                             {{-- Quantity Selector --}}
                             <div class="flex-1">
-                                <label class="block text-sm font-bold text-gray-900 mb-3">
+                                <label class="block text-xs font-bold text-gray-900 mb-2">
                                     Quantity
                                 </label>
                                 <div class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-1">
@@ -250,36 +250,38 @@
 
                             {{-- Total Price --}}
                             <div class="flex-1 text-left sm:text-right">
-                                <label class="block text-sm font-bold text-gray-900 mb-3">
+                                <label class="block text-xs font-bold text-gray-900 mb-2">
                                     Total
                                 </label>
-                                <span class="text-2xl font-bold text-primary">
+                                <span class="text-xl font-bold text-primary">
                                     {{ $product->currency_symbol }}{{ number_format($currentPrice * $quantity, 2) }}
                                 </span>
                             </div>
                         </div>
-                    </div>
 
-                    {{-- Stock Status --}}
-                    <div class="text-sm py-2" 
-                         :class="currentStock > 0 ? 'text-green-600' : 'text-red-600'" 
-                         role="status">
-                        @if($product->has_variations)
-                            <span x-show="selectedAttributes.length > 0">
-                                <span x-show="currentStock > 5">In Stock - Ships in 1-2 business days</span>
-                                <span x-show="currentStock > 0 && currentStock <= 5">Only <span x-text="currentStock"></span> left in stock</span>
-                                <span x-show="currentStock <= 0" class="font-medium">Out of Stock</span>
-                            </span>
-                            <span x-show="selectedAttributes.length === 0">Select options to see availability</span>
-                        @else
-                            @if($currentStock > 5)
-                                <span>In Stock - Ships in 1-2 business days</span>
-                            @elseif($currentStock > 0)
-                                <span>Only {{ $currentStock }} left in stock</span>
+                        {{-- Stock Status --}}
+                        <div class="mt-3 rounded-lg border px-3 py-2 text-xs sm:text-sm flex items-center gap-2"
+                             :class="currentStock > 0 ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'"
+                             role="status">
+                            <span class="inline-block h-2 w-2 rounded-full"
+                                  :class="currentStock > 0 ? 'bg-green-500' : 'bg-red-500'"></span>
+                            @if($product->has_variations)
+                                <span x-show="selectedAttributes.length > 0">
+                                    <span x-show="currentStock > 5">In stock, ready to ship</span>
+                                    <span x-show="currentStock > 0 && currentStock <= 5">Only <span x-text="currentStock"></span> left in stock</span>
+                                    <span x-show="currentStock <= 0" class="font-semibold">Out of stock</span>
+                                </span>
+                                <span x-show="selectedAttributes.length === 0">Select options to view stock availability</span>
                             @else
-                                <span class="font-medium">Out of Stock</span>
+                                @if($currentStock > 5)
+                                    <span>In stock, ready to ship</span>
+                                @elseif($currentStock > 0)
+                                    <span>Only {{ $currentStock }} left in stock</span>
+                                @else
+                                    <span class="font-semibold">Out of stock</span>
+                                @endif
                             @endif
-                        @endif
+                        </div>
                     </div>
 
                     {{-- Add to Cart Buttons --}}
