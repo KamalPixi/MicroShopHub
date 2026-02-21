@@ -25,7 +25,7 @@
     @include('store.partials.header')
     @include('store.partials.navbar')
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 w-full">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         @yield('content')
     </main>
 

@@ -1,18 +1,18 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" 
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-7" 
      x-data="productDetailData()" 
      @keydown.escape="lightboxOpen = false">
 
     {{-- Breadcrumb Navigation --}}
-    <nav class="flex mb-8 text-sm text-gray-500" aria-label="Breadcrumb">
+    <nav class="flex flex-wrap items-center gap-1 text-xs text-gray-500 mb-4 pb-2 border-b border-gray-100" aria-label="Breadcrumb">
         <a href="{{ route('store.index') }}" class="hover:text-primary transition-colors">Home</a>
-        <span class="mx-2" aria-hidden="true">/</span>
+        <span class="mx-1" aria-hidden="true">/</span>
         <a href="{{ route('store.search') }}" class="hover:text-primary transition-colors">Shop</a>
-        <span class="mx-2" aria-hidden="true">/</span>
+        <span class="mx-1" aria-hidden="true">/</span>
         <span class="text-gray-900 font-medium" aria-current="page">{{ $product->name }}</span>
     </nav>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             
             {{-- Product Image Gallery --}}
             <div class="space-y-4">
@@ -339,8 +339,8 @@
     </div>
 
     {{-- Product Description --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-12">
-        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6 mb-8">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2.5">
             <span class="bg-primary/10 text-primary p-2 rounded-lg">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
@@ -354,15 +354,15 @@
     </div>
     
     {{-- Product Reviews Section --}}
-    <div class="mt-16">
+    <div class="mt-10">
         <livewire:store.product-reviews :product="$product" />
     </div>
 
     {{-- Related Products Section --}}
     @if($relatedProducts && $relatedProducts->count() > 0)
-        <div class="border-t border-gray-200 pt-12">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                <h2 class="text-2xl font-bold text-gray-900">You might also like</h2>
+        <div class="border-t border-gray-200 pt-8">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3">
+                <h2 class="text-xl font-bold text-gray-900">You might also like</h2>
                 @if($product->categories->first())
                     <a href="{{ route('store.search', ['category' => $product->categories->first()->id]) }}" 
                        class="text-primary hover:text-blue-700 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2">
