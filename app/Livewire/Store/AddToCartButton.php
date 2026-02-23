@@ -4,15 +4,23 @@ namespace App\Livewire\Store;
 
 use Livewire\Component;
 use App\Models\Product;
+use App\Services\CartService;
 
 class AddToCartButton extends Component
 {
+    protected CartService $cartService;
+
     public $productId;
     public $showQuantity = false; // Toggles between simple button vs quantity selector
     public $quantity = 1;
     public $isInCart = false;
     public $buttonText = 'Add to Cart';
     public $buttonClass = 'bg-primary hover:bg-blue-700';
+
+    public function boot(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
 
     public function mount($productId, $showQuantity = false)
     {
@@ -23,14 +31,14 @@ class AddToCartButton extends Component
 
     public function checkCartState()
     {
-        $cart = session()->get('cart', []);
-        
-        if (isset($cart[$this->productId])) {
+        $cartItem = $this->cartService->getItem($this->productId);
+
+        if ($cartItem) {
             $this->isInCart = true;
-            
+
             // If we are on the details page (showQuantity mode), sync the quantity
             if ($this->showQuantity) {
-                $this->quantity = $cart[$this->productId]['quantity'];
+                $this->quantity = $cartItem['quantity'];
             } else {
                 // For grid view, show "In Cart" state
                 $this->buttonText = 'In Cart';
@@ -62,28 +70,14 @@ class AddToCartButton extends Component
         $product = Product::find($this->productId);
         if (!$product) return;
 
-        $cart = session()->get('cart', []);
-
         // Logic: If already in cart, update quantity. Else, add new.
-        if (isset($cart[$this->productId])) {
-            if ($this->showQuantity) {
-                // On details page, set specific quantity
-                $cart[$this->productId]['quantity'] = $this->quantity; 
-            } else {
-                // On grid, just increment by 1
-                $cart[$this->productId]['quantity']++;
-            }
+        if ($this->showQuantity) {
+            // On details page, set specific quantity
+            $this->cartService->addOrSetBasicProduct($product, $this->quantity);
         } else {
-            $cart[$this->productId] = [
-                "name" => $product->name,
-                "quantity" => $this->showQuantity ? $this->quantity : 1,
-                "price" => $product->price,
-                "currency_symbol" => $product->currency_symbol,
-                "thumbnail" => $product->thumbnail
-            ];
+            // On grid, just increment by 1
+            $this->cartService->addOrIncrementBasicProduct($product);
         }
-
-        session()->put('cart', $cart);
 
         // Update local state
         $this->isInCart = true;

@@ -38,7 +38,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            <p class="text-sm font-bold text-gray-900">{{$item['currency_symbol']}}{{ number_format($item['price'], 2) }}</p>
+                                            <p class="text-sm font-bold text-gray-900">{{ $item['currency_symbol'] ?? $currencySymbol }}{{ number_format($item['price'], 2) }}</p>
                                         </div>
                                         <div class="flex justify-between items-center mt-2">
                                             <div class="flex items-center border border-gray-300 rounded h-7">

@@ -4,7 +4,6 @@ namespace App\Livewire\Store;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -15,9 +14,12 @@ use App\Models\Discount;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Setting;
+use App\Services\CartService;
 
 class CartCheckout extends Component
 {
+    protected CartService $cartService;
+
     // --- Cart Data ---
     public $cart = [];
     public $currencySymbol = '$';
@@ -82,9 +84,14 @@ class CartCheckout extends Component
         ];
     }
 
+    public function boot(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
     public function mount()
     {
-        $this->cart = Session::get('cart', []);
+        $this->cart = $this->cartService->getCart();
         
         // Load active shipping methods (In a real app, filter this by Zone based on country)
         $this->shippingMethods = ShippingMethod::where('active', true)->orderBy('cost', 'asc')->get();
@@ -233,7 +240,7 @@ class CartCheckout extends Component
 
     public function updateSession()
     {
-        Session::put('cart', $this->cart);
+        $this->cartService->putCart($this->cart);
         $this->calculateTotals();
         $this->dispatch('cartUpdated'); // Updates header badge
     }
@@ -390,7 +397,7 @@ class CartCheckout extends Component
             }
 
             // 5. Clear Cart & Finish
-            Session::forget('cart');
+            $this->cartService->clearCart();
             $this->cart = [];
             $this->dispatch('cartUpdated');
             

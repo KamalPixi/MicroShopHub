@@ -4,10 +4,18 @@ namespace App\Livewire\Store;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
+use App\Services\CartService;
 
 class CartCounter extends Component
 {
+    protected CartService $cartService;
+
     public $count = 0;
+
+    public function boot(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
 
     public function mount()
     {
@@ -17,7 +25,7 @@ class CartCounter extends Component
     #[On('cartUpdated')] 
     public function updateCount()
     {
-        $cart = session()->get('cart', []);
+        $cart = $this->cartService->getCart();
         
         // If we only want unique products, we can use count($cart)
         $this->count = count($cart);

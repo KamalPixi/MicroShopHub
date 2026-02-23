@@ -3,11 +3,13 @@
 namespace App\Livewire\Store;
 
 use Livewire\Component;
-use App\Models\Product;
 use App\Models\AttributeValue;
+use App\Services\CartService;
 
 class ProductDetails extends Component
 {
+    protected CartService $cartService;
+
     public $product;
     public $relatedProducts;
     public $mainImageUrl;
@@ -25,6 +27,11 @@ class ProductDetails extends Component
     // UI Feedback
     public $showSuccess = false;
     public $selectionMissing = false; // To trigger UI shake/warning
+
+    public function boot(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
 
     public function mount($product, $relatedProducts)
     {
@@ -173,16 +180,12 @@ class ProductDetails extends Component
         if ($this->currentStock <= 0) return;
 
         // 3. Prepare Cart Data
-        $cart = session()->get('cart', []);
-        
         // Generate Key: ID + VariationID (if any) + Attribute Hash (for simple products with options)
-        $cartKey = $this->product->id;
-        if ($this->selectedVariation) {
-            $cartKey .= '-' . $this->selectedVariation->id;
-        } elseif (!empty($this->selectedAttributes)) {
-            // For simple products, append attributes to key to distinguish configurations (optional, but good practice)
-            $cartKey .= '-' . md5(json_encode($this->selectedAttributes));
-        }
+        $cartKey = $this->cartService->generateCartKey(
+            productId: $this->product->id,
+            variationId: $this->selectedVariation?->id,
+            selectedAttributes: $this->selectedAttributes
+        );
 
         // Format Attributes for Display
         $optionsDisplay = [];
@@ -194,21 +197,19 @@ class ProductDetails extends Component
             $optionsDisplay[$attrName] = $valName;
         }
 
-        if (isset($cart[$cartKey])) {
-            $cart[$cartKey]['quantity'] += $this->quantity;
-        } else {
-            $cart[$cartKey] = [
-                "product_id" => $this->product->id,
-                "variation_id" => $this->selectedVariation ? $this->selectedVariation->id : null,
-                "name" => $this->product->name,
-                "quantity" => $this->quantity,
-                "price" => $this->currentPrice,
-                "thumbnail" => $this->product->thumbnail,
-                "attributes" => $optionsDisplay
-            ];
-        }
-
-        session()->put('cart', $cart);
+        $this->cartService->addOrIncrementItem(
+            key: $cartKey,
+            item: [
+                'product_id' => $this->product->id,
+                'variation_id' => $this->selectedVariation?->id,
+                'name' => $this->product->name,
+                'price' => $this->currentPrice,
+                'currency_symbol' => $this->product->currency_symbol,
+                'thumbnail' => $this->product->thumbnail,
+                'attributes' => $optionsDisplay,
+            ],
+            quantity: $this->quantity
+        );
         $this->dispatch('cartUpdated'); 
 
         if ($buyNow) return redirect()->route('store.index');
