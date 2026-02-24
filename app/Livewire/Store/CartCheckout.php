@@ -3,6 +3,7 @@
 namespace App\Livewire\Store;
 
 use App\Models\Currency;
+use App\Models\Country;
 use App\Models\Discount;
 use App\Models\Order;
 use App\Models\Product;
@@ -40,11 +41,22 @@ class CartCheckout extends Component
 
     public $settings = [];
     public $codEnabled = false;
+    public $supportedCountries = [];
     public $authSettings = [
         'email_otp_enabled' => false,
         'email_password_enabled' => true,
         'guest_checkout_enabled' => false,
     ];
+    public $authMethod = 'password';
+    public $authPanel = 'login';
+    public $loginEmail = '';
+    public $loginPassword = '';
+    public $loginRemember = false;
+    public $loginOtp = '';
+    public $loginOtpSent = false;
+    public $registerName = '';
+    public $registerEmail = '';
+    public $registerPassword = '';
 
     public $shipToDifferentAddress = false;
     public $billing = [
@@ -70,11 +82,11 @@ class CartCheckout extends Component
     {
         return [
             'email' => 'required|email',
-            'phone' => 'required|string|max:20',
+            'phone' => 'nullable|string|max:20',
             'billing.name' => 'required|string|max:255',
             'billing.address_line1' => 'required|string|max:255',
             'billing.city' => 'required|string|max:100',
-            'billing.country_code' => 'required|string|size:2',
+            'billing.country_code' => 'required|string|exists:countries,code',
             'selectedShippingMethod' => 'required|exists:shipping_methods,id',
         ];
     }
@@ -93,32 +105,35 @@ class CartCheckout extends Component
 
         $this->settings = Setting::pluck('value', 'key')->toArray();
         $this->codEnabled = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->supportedCountries = Country::query()
+            ->where('active', true)
+            ->orderBy('name')
+            ->get(['code', 'name'])
+            ->map(fn ($country) => ['code' => $country->code, 'name' => $country->name])
+            ->values()
+            ->all();
         $this->authSettings = $this->customerAuthService->getAuthSettings();
+        if ($this->authSettings['email_password_enabled']) {
+            $this->authMethod = 'password';
+        } elseif ($this->authSettings['email_otp_enabled']) {
+            $this->authMethod = 'otp';
+        }
+        $this->authPanel = 'login';
 
         if ($this->shippingMethods->isNotEmpty()) {
             $this->selectedShippingMethod = $this->shippingMethods->first()->id;
         }
 
+        $defaultCountry = $this->supportedCountries[0]['code'] ?? 'BD';
+        if (empty($this->billing['country_code'])) {
+            $this->billing['country_code'] = $defaultCountry;
+        }
+        if (empty($this->shipping['country_code'])) {
+            $this->shipping['country_code'] = $defaultCountry;
+        }
+
         if (Auth::check()) {
-            $user = Auth::user();
-            $this->email = $user->email;
-            $this->phone = $user->phone ?? '';
-
-            $this->savedAddresses = $user->addresses()->latest()->get();
-
-            if ($this->savedAddresses->isEmpty()) {
-                $lastOrder = Order::where('user_id', $user->id)->latest()->first();
-                if ($lastOrder) {
-                    $this->savedAddresses = $lastOrder->addresses;
-                }
-            }
-
-            if ($this->savedAddresses->isNotEmpty()) {
-                $latest = $this->savedAddresses->first();
-                $this->useSavedAddress($latest->id);
-            } else {
-                $this->billing['name'] = $user->name;
-            }
+            $this->fillFromAuthenticatedUser();
         }
 
         $this->calculateTotals();
@@ -297,6 +312,159 @@ class CartCheckout extends Component
         });
     }
 
+    public function setAuthMethod(string $method): void
+    {
+        if ($method === 'password' && $this->authSettings['email_password_enabled']) {
+            $this->authMethod = 'password';
+        }
+
+        if ($method === 'otp' && $this->authSettings['email_otp_enabled']) {
+            $this->authMethod = 'otp';
+        }
+
+        $this->loginPassword = '';
+        $this->loginOtp = '';
+        $this->loginOtpSent = false;
+        $this->resetErrorBag(['loginPassword', 'loginOtp', 'loginEmail']);
+    }
+
+    public function setAuthPanel(string $panel): void
+    {
+        if (! in_array($panel, ['login', 'register'], true)) {
+            return;
+        }
+
+        $this->authPanel = $panel;
+        $this->resetErrorBag([
+            'loginEmail',
+            'loginPassword',
+            'loginOtp',
+            'registerName',
+            'registerEmail',
+            'registerPassword',
+        ]);
+    }
+
+    public function sendLoginOtp(): void
+    {
+        if (! $this->authSettings['email_otp_enabled']) {
+            $this->addError('loginOtp', 'OTP login is disabled.');
+            return;
+        }
+
+        $validated = $this->validate([
+            'loginEmail' => 'required|email',
+        ]);
+
+        $this->customerAuthService->sendLoginOtp($validated['loginEmail']);
+        $this->loginOtpSent = true;
+        session()->flash('otp_message', 'We sent a 6-digit code to your email.');
+    }
+
+    public function verifyLoginOtp(): void
+    {
+        $validated = $this->validate([
+            'loginEmail' => 'required|email',
+            'loginOtp' => 'required|numeric|digits:6',
+        ]);
+
+        $user = $this->customerAuthService->loginWithOtp($validated['loginEmail'], $validated['loginOtp']);
+        if (! $user) {
+            $this->addError('loginOtp', 'Invalid or expired code.');
+            return;
+        }
+
+        $this->loginOtp = '';
+        $this->loginOtpSent = false;
+        $this->fillFromAuthenticatedUser();
+        session()->flash('auth_success', 'Logged in successfully.');
+    }
+
+    public function loginWithPasswordInline(): void
+    {
+        if (! $this->authSettings['email_password_enabled']) {
+            $this->addError('loginPassword', 'Password login is disabled.');
+            return;
+        }
+
+        $validated = $this->validate([
+            'loginEmail' => 'required|email',
+            'loginPassword' => 'required|string|min:6',
+        ]);
+
+        if (! $this->customerAuthService->loginWithPassword($validated['loginEmail'], $validated['loginPassword'], (bool) $this->loginRemember)) {
+            $this->addError('loginPassword', 'Invalid email or password.');
+            return;
+        }
+
+        $this->loginPassword = '';
+        $this->fillFromAuthenticatedUser();
+        session()->flash('auth_success', 'Logged in successfully.');
+    }
+
+    public function registerInline(): void
+    {
+        if (! $this->authSettings['email_password_enabled']) {
+            $this->addError('registerEmail', 'Registration is unavailable right now.');
+            return;
+        }
+
+        $validated = $this->validate([
+            'registerName' => 'required|string|max:255',
+            'registerEmail' => 'required|email|unique:users,email',
+            'registerPassword' => 'required|string|min:6',
+        ]);
+
+        $user = $this->customerAuthService->registerWithPassword(
+            name: $validated['registerName'],
+            email: $validated['registerEmail'],
+            password: $validated['registerPassword'],
+        );
+
+        if (! $user) {
+            $this->addError('registerEmail', 'This email is already in use.');
+            return;
+        }
+
+        $this->registerName = '';
+        $this->registerEmail = '';
+        $this->registerPassword = '';
+        $this->fillFromAuthenticatedUser();
+        session()->flash('auth_success', 'Account created and logged in.');
+    }
+
+    private function fillFromAuthenticatedUser(): void
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return;
+        }
+
+        $this->email = $user->email;
+        $this->phone = $user->phone ?? '';
+        $this->loginEmail = $user->email;
+        $this->authPanel = 'login';
+        $this->loginOtp = '';
+        $this->loginOtpSent = false;
+        $this->loginPassword = '';
+
+        $this->savedAddresses = $user->addresses()->latest()->get();
+
+        if ($this->savedAddresses->isEmpty()) {
+            $lastOrder = Order::where('user_id', $user->id)->latest()->first();
+            if ($lastOrder) {
+                $this->savedAddresses = $lastOrder->addresses;
+            }
+        }
+
+        if ($this->savedAddresses->isNotEmpty()) {
+            $latest = $this->savedAddresses->first();
+            $this->useSavedAddress($latest->id);
+        } else {
+            $this->billing['name'] = $user->name;
+        }
+    }
+
     public function useSavedAddress($addressId): void
     {
         $address = $this->savedAddresses->where('id', $addressId)->first();
@@ -317,10 +485,12 @@ class CartCheckout extends Component
 
     public function clearAddressSelection(): void
     {
+        $defaultCountry = $this->supportedCountries[0]['code'] ?? 'BD';
+
         $this->selectedAddressId = 'new';
         $this->billing = [
             'name' => Auth::check() ? (Auth::user()->name ?? '') : '',
-            'country_code' => 'BD',
+            'country_code' => $defaultCountry,
             'address_line1' => '',
             'city' => '',
             'state' => '',

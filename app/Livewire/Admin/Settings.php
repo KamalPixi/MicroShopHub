@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use App\Models\Setting;
 use App\Models\Currency;
+use App\Models\Country;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,6 +14,7 @@ class Settings extends Component
     use WithFileUploads;
 
     public $currencies = [];
+    public $countries = [];
 
     public $settings = [
         // General
@@ -68,6 +70,11 @@ class Settings extends Component
         'active' => true,
     ];
 
+    public $newCountry = [
+        'code' => '',
+        'name' => '',
+    ];
+
     public $logo;
 
     protected $rules = [
@@ -107,6 +114,7 @@ class Settings extends Component
     public function mount()
     {
         $this->currencies = Currency::query()->orderBy('code')->get();
+        $this->countries = Country::query()->orderBy('name')->get();
         $existingSettings = Setting::all()->pluck('value', 'key')->toArray();
         
         foreach ($this->settings as $key => $value) {
@@ -123,6 +131,38 @@ class Settings extends Component
         if (! $this->settings['currency'] && $this->currencies->isNotEmpty()) {
             $this->settings['currency'] = $this->currencies->first()->code;
         }
+    }
+
+    public function addCountry()
+    {
+        $this->newCountry['code'] = strtoupper(trim((string) $this->newCountry['code']));
+        $this->newCountry['name'] = trim((string) $this->newCountry['name']);
+
+        $validated = $this->validate([
+            'newCountry.code' => 'required|string|size:2|alpha|unique:countries,code',
+            'newCountry.name' => 'required|string|max:120',
+        ]);
+
+        Country::query()->create([
+            'code' => $validated['newCountry']['code'],
+            'name' => $validated['newCountry']['name'],
+            'active' => true,
+        ]);
+
+        $this->countries = Country::query()->orderBy('name')->get();
+
+        $this->newCountry = [
+            'code' => '',
+            'name' => '',
+        ];
+
+        session()->flash('message', 'Country added successfully.');
+    }
+
+    public function removeCountry(string $code)
+    {
+        Country::query()->where('code', strtoupper($code))->delete();
+        $this->countries = Country::query()->orderBy('name')->get();
     }
 
     public function addCurrency()
@@ -179,6 +219,9 @@ class Settings extends Component
             }
             $this->settings['shop_logo'] = $this->logo->store('logos', 'public');
         }
+
+        // Country list is now sourced from the countries table only.
+        Setting::where('key', 'supported_countries')->delete();
 
         foreach ($this->settings as $key => $value) {
 

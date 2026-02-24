@@ -1,4 +1,4 @@
-<div class="bg-gray-50 min-h-screen pt-6">
+<div class="bg-gray-50 min-h-screen py-6">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         @include('admin.includes.errors')
@@ -66,33 +66,114 @@
                         </div>
                         
                         <div class="mb-6 space-y-4">
-                            @if(!auth()->check() && !$authSettings['guest_checkout_enabled'])
-                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                    <p class="text-sm text-yellow-800 font-medium">Login is required to place an order.</p>
-                                    <a href="{{ route('login') }}" class="inline-block mt-2 text-sm font-semibold text-primary hover:underline">Go to customer login</a>
-                                </div>
-                            @elseif(!auth()->check() && $authSettings['guest_checkout_enabled'])
-                                <div class="bg-blue-50 border border-blue-100 rounded-lg p-4">
-                                    <p class="text-sm text-blue-800 font-medium">Guest checkout is enabled. You can place this order without signing in.</p>
+                            @if(!auth()->check() && ($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled']))
+                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-sm font-semibold text-gray-800">Account Access</p>
+                                        @if($authSettings['guest_checkout_enabled'])
+                                            <span class="text-[11px] px-2 py-1 rounded bg-blue-100 text-blue-700 font-semibold">Guest Checkout Available</span>
+                                        @endif
+                                    </div>
+
+                                    @if(session('auth_success'))
+                                        <p class="text-xs text-green-700 font-semibold">{{ session('auth_success') }}</p>
+                                    @endif
+
+                                    @if($authSettings['email_password_enabled'])
+                                        <div class="grid grid-cols-2 gap-2 rounded-lg bg-gray-100 p-1">
+                                            <button type="button" wire:click="setAuthPanel('login')" class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'login' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-700' }}">
+                                                Login
+                                            </button>
+                                            <button type="button" wire:click="setAuthPanel('register')" class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'register' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-700' }}">
+                                                Register
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                    @if($authPanel === 'login')
+                                        @if($authSettings['email_password_enabled'] && $authSettings['email_otp_enabled'])
+                                            <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-1 border border-gray-200">
+                                                <button type="button" wire:click="setAuthMethod('password')" class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'password' ? 'bg-gray-900 text-white' : 'text-gray-700' }}">
+                                                    Email + Password
+                                                </button>
+                                                <button type="button" wire:click="setAuthMethod('otp')" class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'otp' ? 'bg-gray-900 text-white' : 'text-gray-700' }}">
+                                                    Email OTP
+                                                </button>
+                                            </div>
+                                        @endif
+
+                                        <input wire:model="loginEmail" type="email" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Email for login">
+                                        @error('loginEmail') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                                        @if($authMethod === 'password' && $authSettings['email_password_enabled'])
+                                            <div class="space-y-2">
+                                                <input wire:model="loginPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Password">
+                                                @error('loginPassword') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                                                <div class="flex items-center justify-between">
+                                                    <label class="inline-flex items-center text-xs text-gray-700">
+                                                        <input wire:model="loginRemember" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary mr-2">
+                                                        Remember me
+                                                    </label>
+                                                    <button wire:click="loginWithPasswordInline" type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
+                                                        Login
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        @if($authMethod === 'otp' && $authSettings['email_otp_enabled'])
+                                            <div class="space-y-2">
+                                                @if(!$loginOtpSent)
+                                                    <button wire:click="sendLoginOtp" type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
+                                                        Send OTP
+                                                    </button>
+                                                @else
+                                                    <div class="flex gap-2">
+                                                        <input wire:model="loginOtp" type="text" maxlength="6" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3 tracking-widest text-center font-mono" placeholder="123456">
+                                                        <button wire:click="verifyLoginOtp" type="button" class="bg-green-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-green-700 transition">
+                                                            Verify
+                                                        </button>
+                                                    </div>
+                                                    @if(session('otp_message')) <p class="text-xs text-blue-700">{{ session('otp_message') }}</p> @endif
+                                                    @error('loginOtp') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                                @endif
+                                            </div>
+                                        @endif
+                                    @else
+                                        <div class="space-y-2">
+                                            <input wire:model="registerName" type="text" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Full name">
+                                            @error('registerName') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                                            <input wire:model="registerEmail" type="email" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Email">
+                                            @error('registerEmail') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                                            <input wire:model="registerPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Create password">
+                                            @error('registerPassword') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                                            <button wire:click="registerInline" type="button" class="bg-gray-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-black transition">
+                                                Create Account & Continue
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">Email <span class="text-red-500">*</span></label>
-                                    <input wire:model="email" type="email" {{ auth()->check() ? 'disabled' : '' }}
-                                           class="w-full text-sm border border-gray-300 {{ auth()->check() ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white' }} focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
-                                           placeholder="you@example.com">
-                                    @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            @if(auth()->check() || $authSettings['guest_checkout_enabled'])
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Email <span class="text-red-500">*</span></label>
+                                        <input wire:model="email" type="email" {{ auth()->check() ? 'disabled' : '' }}
+                                               class="w-full text-sm border border-gray-300 {{ auth()->check() ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white' }} focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
+                                               placeholder="you@example.com">
+                                        @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">Phone <span class="text-red-500">*</span></label>
-                                    <input wire:model="phone" type="text"
-                                           class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
-                                           placeholder="+123456789">
-                                    @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            @elseif(!auth()->check())
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                    <p class="text-xs text-yellow-800">Please login or register above to continue checkout.</p>
                                 </div>
-                            </div>
+                            @endif
                         </div>
 
                         <div class="space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
@@ -135,7 +216,7 @@
                                     </div>
                             @endif
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">
                                             Country <span class="text-red-500">*</span>
@@ -146,12 +227,9 @@
                                                 wire:model.live="billing.country_code" 
                                                 class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10"
                                             >
-                                                <option value="BD">Bangladesh</option>
-                                                <option value="US">United States</option>
-                                                <option value="GB">United Kingdom</option>
-                                                <option value="CA">Canada</option>
-                                                <option value="MY">Malaysia</option>
-                                                <option value="SG">Singapore</option>
+                                                @foreach($supportedCountries as $country)
+                                                    <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
+                                                @endforeach
                                             </select>
                                             
                                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
@@ -170,6 +248,13 @@
                                         <input wire:model="billing.name" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Phone <span class="text-gray-400">(Optional)</span></label>
+                                        <input wire:model="phone" type="text"
+                                               class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
+                                               placeholder="+123456789">
+                                        @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
                             </div>
 
@@ -221,15 +306,12 @@
 
                                                 <div class="relative">
                                                     <select 
-                                                        wire:model.live="billing.country_code" 
+                                                        wire:model.live="shipping.country_code" 
                                                         class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10"
                                                     >
-                                                        <option value="BD">Bangladesh</option>
-                                                        <option value="US">United States</option>
-                                                        <option value="GB">United Kingdom</option>
-                                                        <option value="CA">Canada</option>
-                                                        <option value="MY">Malaysia</option>
-                                                        <option value="SG">Singapore</option>
+                                                        @foreach($supportedCountries as $country)
+                                                            <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
+                                                        @endforeach
                                                     </select>
                                                     
                                                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">

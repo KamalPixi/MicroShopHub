@@ -79,6 +79,24 @@ class CustomerAuthService
         ], $remember);
     }
 
+    public function registerWithPassword(string $name, string $email, string $password): ?User
+    {
+        if (User::where('email', $email)->exists()) {
+            return null;
+        }
+
+        $user = User::create([
+            'name' => $name,
+            'email' => strtolower(trim($email)),
+            'password' => $password,
+            'email_verified_at' => now(),
+        ]);
+
+        Auth::login($user);
+
+        return $user;
+    }
+
     public function sendPasswordResetOtp(string $email): void
     {
         $user = User::where('email', $email)->first();
