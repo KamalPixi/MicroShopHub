@@ -12,6 +12,8 @@ class Settings extends Component
 {
     use WithFileUploads;
 
+    public $currencies = [];
+
     public $settings = [
         // General
         'shop_logo' => '',
@@ -51,6 +53,19 @@ class Settings extends Component
         'tax_rate' => 0,
         'email' => '',
         'phone' => '',
+
+        // Customer Authentication
+        'customer_auth_email_otp_enabled' => false,
+        'customer_auth_email_password_enabled' => true,
+        'customer_auth_guest_checkout_enabled' => false,
+    ];
+
+    public $newCurrency = [
+        'code' => '',
+        'name' => '',
+        'symbol' => '',
+        'exchange_rate' => 1,
+        'active' => true,
     ];
 
     public $logo;
@@ -80,14 +95,18 @@ class Settings extends Component
         'settings.cod_label' => 'nullable|string|max:255',
         'settings.cod_enabled' => 'boolean',
         
-        'settings.currency' => 'nullable|string|in:USD,BDT,EUR,GBP',
+        'settings.currency' => 'nullable|string|exists:currencies,code',
         'settings.tax_rate' => 'nullable|numeric|min:0|max:100',
-        'settings.email' => 'nullable|numeric|min:0|max:100',
-        'settings.phone' => 'nullable|numeric|min:0|max:100',
+        'settings.email' => 'nullable|email|max:255',
+        'settings.phone' => 'nullable|string|max:50',
+        'settings.customer_auth_email_otp_enabled' => 'boolean',
+        'settings.customer_auth_email_password_enabled' => 'boolean',
+        'settings.customer_auth_guest_checkout_enabled' => 'boolean',
     ];
 
     public function mount()
     {
+        $this->currencies = Currency::query()->orderBy('code')->get();
         $existingSettings = Setting::all()->pluck('value', 'key')->toArray();
         
         foreach ($this->settings as $key => $value) {
@@ -97,11 +116,62 @@ class Settings extends Component
         // Force Boolean for Checkboxes
         $this->settings['sslcommerz_sandbox'] = filter_var($this->settings['sslcommerz_sandbox'], FILTER_VALIDATE_BOOLEAN);
         $this->settings['cod_enabled'] = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN); // [NEW]
+        $this->settings['customer_auth_email_otp_enabled'] = filter_var($this->settings['customer_auth_email_otp_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['customer_auth_email_password_enabled'] = filter_var($this->settings['customer_auth_email_password_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['customer_auth_guest_checkout_enabled'] = filter_var($this->settings['customer_auth_guest_checkout_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        if (! $this->settings['currency'] && $this->currencies->isNotEmpty()) {
+            $this->settings['currency'] = $this->currencies->first()->code;
+        }
+    }
+
+    public function addCurrency()
+    {
+        $this->newCurrency['code'] = strtoupper(trim((string) $this->newCurrency['code']));
+
+        $validated = $this->validate([
+            'newCurrency.code' => 'required|string|size:3|alpha|unique:currencies,code',
+            'newCurrency.name' => 'required|string|max:255',
+            'newCurrency.symbol' => 'required|string|max:10',
+            'newCurrency.exchange_rate' => 'required|numeric|min:0.0001',
+            'newCurrency.active' => 'boolean',
+        ]);
+
+        Currency::query()->create([
+            'code' => strtoupper($validated['newCurrency']['code']),
+            'name' => $validated['newCurrency']['name'],
+            'symbol' => $validated['newCurrency']['symbol'],
+            'exchange_rate' => $validated['newCurrency']['exchange_rate'],
+            'active' => (bool) $validated['newCurrency']['active'],
+            'is_default' => false,
+        ]);
+
+        $this->currencies = Currency::query()->orderBy('code')->get();
+        $this->settings['currency'] = strtoupper($validated['newCurrency']['code']);
+
+        $this->newCurrency = [
+            'code' => '',
+            'name' => '',
+            'symbol' => '',
+            'exchange_rate' => 1,
+            'active' => true,
+        ];
+
+        session()->flash('message', 'Currency added successfully.');
     }
 
     public function save()
     {
         $this->validate();
+
+        if (
+            ! $this->settings['customer_auth_email_otp_enabled']
+            && ! $this->settings['customer_auth_email_password_enabled']
+            && ! $this->settings['customer_auth_guest_checkout_enabled']
+        ) {
+            $this->addError('settings.customer_auth_email_password_enabled', 'Enable at least one customer auth/checkout method.');
+            return;
+        }
 
         if ($this->logo) {
             if ($oldLogo = Setting::where('key', 'shop_logo')->value('value')) {

@@ -65,70 +65,38 @@
                             @endif
                         </div>
                         
-                        <div class="mb-6">
-                            @if(!auth()->check())
-                                <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
-                                    <p class="text-sm text-blue-800 mb-3 font-medium">Log in or Sign up with just your email.</p>
-                                    
-                                    @if(!$otpSent)
-                                        <div class="flex gap-3">
-                                            <div class="flex-1">
-                                                <label class="sr-only">Email</label>
-                                                <input wire:model="email" type="email" 
-                                                       class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400" 
-                                                       placeholder="Enter your email address">
-                                                @error('email') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
-                                            </div>
-                                            <div>
-                                            <button wire:click="sendOtp" 
-                                                    class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition whitespace-nowrap shadow-sm">
-                                                Send Code
-                                            </button>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="space-y-3">
-                                            <div class="flex gap-3">
-                                                <div class="flex-1">
-                                                    <label class="text-xs font-bold text-blue-800 mb-1 block">Enter Code sent to {{ $email }}</label>
-                                                    <input wire:model="otp" type="text" maxlength="6"
-                                                           class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 tracking-widest text-center font-mono placeholder-gray-400" 
-                                                           placeholder="123456">
-                                                </div>
-                                                <div class="flex items-end">
-                                                    <button wire:click="verifyOtp" 
-                                                            class="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition h-[38px] shadow-sm">
-                                                        Verify
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            @if(session('otp_message')) <p class="text-xs text-blue-600">{{ session('otp_message') }}</p> @endif
-                                            @error('otp') <p class="text-xs text-red-500 font-bold">{{ $message }}</p> @enderror
-                                        </div>
-                                    @endif
+                        <div class="mb-6 space-y-4">
+                            @if(!auth()->check() && !$authSettings['guest_checkout_enabled'])
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                    <p class="text-sm text-yellow-800 font-medium">Login is required to place an order.</p>
+                                    <a href="{{ route('login') }}" class="inline-block mt-2 text-sm font-semibold text-primary hover:underline">Go to customer login</a>
                                 </div>
-                            @else
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">Email (Verified)</label>
-                                        <input value="{{ auth()->user()->email }}" disabled 
-                                               class="w-full text-sm bg-gray-100 border border-gray-200 rounded-lg py-2 px-3 text-gray-500 cursor-not-allowed">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">Phone <span class="text-red-500">*</span></label>
-                                        <input wire:model="phone" type="text" 
-                                               class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400" 
-                                               placeholder="+123456789">
-                                        @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                    </div>
+                            @elseif(!auth()->check() && $authSettings['guest_checkout_enabled'])
+                                <div class="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                                    <p class="text-sm text-blue-800 font-medium">Guest checkout is enabled. You can place this order without signing in.</p>
                                 </div>
                             @endif
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1">Email <span class="text-red-500">*</span></label>
+                                    <input wire:model="email" type="email" {{ auth()->check() ? 'disabled' : '' }}
+                                           class="w-full text-sm border border-gray-300 {{ auth()->check() ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white' }} focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
+                                           placeholder="you@example.com">
+                                    @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1">Phone <span class="text-red-500">*</span></label>
+                                    <input wire:model="phone" type="text"
+                                           class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
+                                           placeholder="+123456789">
+                                    @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
                         </div>
 
-                        @if(auth()->check())
-                            <div class="space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
-                                                            
-                                @if($savedAddresses && $savedAddresses->count() > 0)
+                        <div class="space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
+                            @if(auth()->check() && $savedAddresses && $savedAddresses->count() > 0)
                                     <div class="mb-5">
                                         <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Select Address</h3>
                                         
@@ -165,9 +133,9 @@
 
                                         </div>
                                     </div>
-                                @endif
+                            @endif
 
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">
                                             Country <span class="text-red-500">*</span>
@@ -203,17 +171,17 @@
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
-                                </div>
+                            </div>
 
-                                <div>
+                            <div>
                                     <label class="block text-xs font-bold text-gray-600 mb-1">Street Address <span class="text-red-500">*</span></label>
                                     <input wire:model="billing.address_line1" type="text" 
                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400" 
                                            placeholder="123 Main St, Apt 4B">
                                     @error('billing.address_line1') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                </div>
+                            </div>
 
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">City <span class="text-red-500">*</span></label>
                                         <input wire:model="billing.city" type="text" 
@@ -233,17 +201,17 @@
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.postal_code') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
-                                </div>
+                            </div>
 
-                                <div class="pt-2">
+                            <div class="pt-2">
                                     <label class="inline-flex items-center cursor-pointer">
                                         <input wire:model.live="shipToDifferentAddress" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
                                         <span class="ml-2 text-sm text-gray-700 font-medium">Ship to a different address?</span>
                                     </label>
-                                </div>
+                            </div>
 
-                                @if($shipToDifferentAddress)
-                                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4 animate-fade-in-down">
+                            @if($shipToDifferentAddress)
+                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4 animate-fade-in-down">
                                         
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
@@ -300,10 +268,9 @@
                                                 <input wire:model="shipping.postal_code" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
-                            </div>
-                        @endif
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
@@ -457,12 +424,13 @@
                         <button wire:click="placeOrder" 
                                 wire:loading.attr="disabled"
                                 class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-blue-700 transition-all flex justify-center items-center
-                                       {{ !auth()->check() ? 'opacity-70 cursor-not-allowed' : '' }}">
+                                       {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? 'opacity-70 cursor-not-allowed' : '' }}">
                             <span wire:loading.remove>
-                                {{ !auth()->check() ? 'Log in to Order' : 'Complete Order' }}
+                                {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? 'Log in to Order' : 'Complete Order' }}
                             </span>
                             <span wire:loading><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>
                         </button>
+                        @error('auth') <p class="text-red-500 text-xs mt-2">{{ $message }}</p> @enderror
 
                         <div class="mt-4 flex justify-center items-center text-xs text-gray-400 gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>

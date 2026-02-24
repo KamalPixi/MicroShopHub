@@ -2,25 +2,23 @@
 
 namespace App\Livewire\Store;
 
-use Livewire\Component;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use App\Models\Product;
 use App\Models\Currency;
-use App\Models\ShippingMethod;
 use App\Models\Discount;
 use App\Models\Order;
-use App\Models\User;
+use App\Models\Product;
 use App\Models\Setting;
+use App\Models\ShippingMethod;
 use App\Services\CartService;
+use App\Services\CustomerAuthService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class CartCheckout extends Component
 {
     protected CartService $cartService;
+    protected CustomerAuthService $customerAuthService;
 
-    // --- Cart Data ---
     public $cart = [];
     public $currencySymbol = '$';
     public $subtotal = 0;
@@ -28,28 +26,26 @@ class CartCheckout extends Component
     public $shippingCost = 0;
     public $total = 0;
 
-    // for saved addresses
     public $savedAddresses = [];
-    public $selectedAddressId = null; // To track UI highlighting
+    public $selectedAddressId = null;
 
-    // --- Configuration ---
     public $shippingMethods = [];
     public $selectedShippingMethod = null;
     public $couponCode = '';
     public $appliedCoupon = null;
-    public $paymentMethod = 'cod'; // Default payment gateway code
+    public $paymentMethod = 'cod';
 
-    // --- Authentication (OTP) ---
     public $email = '';
     public $phone = '';
-    public $otp = '';
-    public $otpSent = false;
 
-    // --- Store Settings ---
     public $settings = [];
     public $codEnabled = false;
+    public $authSettings = [
+        'email_otp_enabled' => false,
+        'email_password_enabled' => true,
+        'guest_checkout_enabled' => false,
+    ];
 
-    // --- Addresses ---
     public $shipToDifferentAddress = false;
     public $billing = [
         'name' => '',
@@ -58,7 +54,7 @@ class CartCheckout extends Component
         'city' => '',
         'state' => '',
         'postal_code' => '',
-        'country_code' => 'BD', // Default to Bangladesh
+        'country_code' => 'BD',
     ];
     public $shipping = [
         'name' => '',
@@ -70,7 +66,6 @@ class CartCheckout extends Component
         'country_code' => 'BD',
     ];
 
-    // --- Validation Rules ---
     protected function rules()
     {
         return [
@@ -84,51 +79,40 @@ class CartCheckout extends Component
         ];
     }
 
-    public function boot(CartService $cartService)
+    public function boot(CartService $cartService, CustomerAuthService $customerAuthService): void
     {
         $this->cartService = $cartService;
+        $this->customerAuthService = $customerAuthService;
     }
 
-    public function mount()
+    public function mount(): void
     {
         $this->cart = $this->cartService->getCart();
-        
-        // Load active shipping methods (In a real app, filter this by Zone based on country)
         $this->shippingMethods = ShippingMethod::where('active', true)->orderBy('cost', 'asc')->get();
-        
-        // Currency
         $this->currencySymbol = Currency::getActive()->symbol;
 
-        // fetch store settings
         $this->settings = Setting::pluck('value', 'key')->toArray();
         $this->codEnabled = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->authSettings = $this->customerAuthService->getAuthSettings();
 
-        // Default selection
         if ($this->shippingMethods->isNotEmpty()) {
             $this->selectedShippingMethod = $this->shippingMethods->first()->id;
         }
 
-        // Auto-fill if logged in
         if (Auth::check()) {
             $user = Auth::user();
             $this->email = $user->email;
             $this->phone = $user->phone ?? '';
-            
 
-            // Try to get addresses explicitly saved to User Profile
             $this->savedAddresses = $user->addresses()->latest()->get();
 
-            // FALLBACK: If empty, check the User's Last Order
             if ($this->savedAddresses->isEmpty()) {
                 $lastOrder = Order::where('user_id', $user->id)->latest()->first();
-                
                 if ($lastOrder) {
-                    // Get addresses linked to that order (billing & shipping)
                     $this->savedAddresses = $lastOrder->addresses;
                 }
             }
 
-            // If user has addresses, pre-fill the form with the latest one
             if ($this->savedAddresses->isNotEmpty()) {
                 $latest = $this->savedAddresses->first();
                 $this->useSavedAddress($latest->id);
@@ -140,79 +124,7 @@ class CartCheckout extends Component
         $this->calculateTotals();
     }
 
-    // ==========================================
-    // 1. Authentication Logic (OTP)
-    // ==========================================
-
-    public function sendOtp()
-    {
-        $this->validate(['email' => 'required|email']);
-        
-        $token = rand(100000, 999999);
-        
-        // Store OTP
-        DB::table('otps')->updateOrInsert(
-            ['identifier' => $this->email],
-            [
-                'token' => $token,
-                'expires_at' => now()->addMinutes(10),
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
-        );
-
-        // TODO: Send real email here using Mail::to($this->email)...
-        Log::info("OTP for {$this->email}: {$token}"); // Check laravel.log for code
-
-        $this->otpSent = true;
-        session()->flash('otp_message', 'We sent a 6-digit code to your email.');
-    }
-
-    public function verifyOtp()
-    {
-        $this->validate(['otp' => 'required|numeric|digits:6']);
-
-        $record = DB::table('otps')
-            ->where('identifier', $this->email)
-            ->where('token', $this->otp)
-            ->where('expires_at', '>', now())
-            ->first();
-
-        if (!$record) {
-            $this->addError('otp', 'Invalid or expired code.');
-            return;
-        }
-
-        // Find or Create User
-        $user = User::firstOrCreate(
-            ['email' => $this->email],
-            [
-                'name' => 'Guest Customer',
-                'password' => bcrypt(Str::random(16)),
-                'email_verified_at' => now(),
-            ]
-        );
-
-        Auth::login($user);
-
-        // Cleanup & Reset UI
-        DB::table('otps')->where('identifier', $this->email)->delete();
-        $this->otpSent = false;
-        $this->otp = '';
-        
-        // Auto-fill billing name if needed
-        if (empty($this->billing['name'])) {
-            $this->billing['name'] = $user->name;
-        }
-
-        session()->flash('auth_success', 'Login successful!');
-    }
-
-    // ==========================================
-    // 2. Cart Management
-    // ==========================================
-
-    public function increment($key)
+    public function increment($key): void
     {
         if (isset($this->cart[$key])) {
             $this->cart[$key]['quantity']++;
@@ -220,44 +132,43 @@ class CartCheckout extends Component
         }
     }
 
-    public function decrement($key)
+    public function decrement($key): void
     {
         if (isset($this->cart[$key])) {
             if ($this->cart[$key]['quantity'] > 1) {
                 $this->cart[$key]['quantity']--;
             } else {
-                unset($this->cart[$key]); // Remove if qty becomes 0
+                unset($this->cart[$key]);
             }
             $this->updateSession();
         }
     }
 
-    public function removeItem($key)
+    public function removeItem($key): void
     {
         unset($this->cart[$key]);
         $this->updateSession();
     }
 
-    public function updateSession()
+    public function updateSession(): void
     {
         $this->cartService->putCart($this->cart);
         $this->calculateTotals();
-        $this->dispatch('cartUpdated'); // Updates header badge
+        $this->dispatch('cartUpdated');
     }
 
-    // ==========================================
-    // 3. Totals & Coupons
-    // ==========================================
-
-    public function updatedSelectedShippingMethod()
+    public function updatedSelectedShippingMethod(): void
     {
         $this->calculateTotals();
     }
 
-    public function applyCoupon()
+    public function applyCoupon(): void
     {
         $this->resetErrorBag('coupon');
-        if (empty($this->couponCode)) return;
+
+        if (empty($this->couponCode)) {
+            return;
+        }
 
         $coupon = Discount::where('code', $this->couponCode)
             ->where('active', true)
@@ -265,7 +176,7 @@ class CartCheckout extends Component
             ->where('expires_at', '>=', now())
             ->first();
 
-        if (!$coupon) {
+        if (! $coupon) {
             $this->addError('coupon', 'Invalid or expired coupon.');
             return;
         }
@@ -281,13 +192,13 @@ class CartCheckout extends Component
         session()->flash('coupon_success', 'Coupon applied successfully!');
     }
 
-    public function removeCoupon()
+    public function removeCoupon(): void
     {
         $this->appliedCoupon = null;
         $this->calculateTotals();
     }
 
-    public function calculateTotals()
+    public function calculateTotals(): void
     {
         $this->subtotal = 0;
         foreach ($this->cart as $item) {
@@ -305,19 +216,13 @@ class CartCheckout extends Component
 
         $method = $this->shippingMethods->find($this->selectedShippingMethod);
         $this->shippingCost = $method ? $method->cost : 0;
-
         $this->total = max(0, ($this->subtotal - $this->discountAmount) + $this->shippingCost);
     }
 
-    // ==========================================
-    // 4. Checkout Logic
-    // ==========================================
-
-    public function placeOrder()
+    public function placeOrder(): void
     {
-        // 1. Validation
-        if (!Auth::check()) {
-            $this->addError('email', 'Please login or verify email to place an order.');
+        if (! Auth::check() && ! $this->authSettings['guest_checkout_enabled']) {
+            $this->addError('auth', 'Login is required to place an order.');
             return;
         }
 
@@ -329,48 +234,35 @@ class CartCheckout extends Component
         $this->validate();
 
         DB::transaction(function () {
-            // 2. Create Order
             $order = Order::create([
                 'user_id' => Auth::id(),
-                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'order_number' => 'ORD-'.strtoupper(uniqid()),
                 'status' => 'pending',
-                
-                // Financials
                 'subtotal' => $this->subtotal,
                 'discount' => $this->discountAmount,
                 'shipping_cost' => $this->shippingCost,
                 'total' => $this->total,
-                
-                // Global Settings (Snapshots)
-                'currency_code' => 'USD', // Replace with dynamic currency if implemented
+                'currency_code' => 'USD',
                 'exchange_rate' => 1.0000,
-                
-                // Methods
                 'shipping_method_id' => $this->selectedShippingMethod,
-                'payment_method' => $this->paymentMethod, // 'cod', 'stripe', etc.
+                'payment_method' => $this->paymentMethod,
                 'payment_status' => 'pending',
             ]);
 
-            // 3. Save Polymorphic Addresses
-            
-            // Billing
             $order->addresses()->create(array_merge($this->billing, [
                 'type' => 'billing',
                 'email' => $this->email,
-                'phone' => $this->phone
+                'phone' => $this->phone,
             ]));
 
-            // Shipping
             $shipData = $this->shipToDifferentAddress ? $this->shipping : $this->billing;
             $order->addresses()->create(array_merge($shipData, [
                 'type' => 'shipping',
                 'email' => $this->email,
-                'phone' => $this->phone
+                'phone' => $this->phone,
             ]));
 
-            // 4. Save Order Items & Update Stock
             foreach ($this->cart as $key => $item) {
-                // Parse ID and Variation from Key "1-2" (Product 1, Variation 2)
                 $parts = explode('-', $key);
                 $productId = $parts[0];
                 $variationId = $parts[1] ?? null;
@@ -384,38 +276,33 @@ class CartCheckout extends Component
                     'attributes' => json_encode($item['attributes'] ?? []),
                 ]);
 
-                // Stock Management
                 $product = Product::find($productId);
                 if ($product) {
                     if ($variationId && $product->has_variations) {
                         $var = $product->variations()->find($variationId);
-                        if ($var) $var->decrement('stock', $item['quantity']);
+                        if ($var) {
+                            $var->decrement('stock', $item['quantity']);
+                        }
                     } else {
                         $product->decrement('stock', $item['quantity']);
                     }
                 }
             }
 
-            // 5. Clear Cart & Finish
             $this->cartService->clearCart();
             $this->cart = [];
             $this->dispatch('cartUpdated');
-            
+
             session()->flash('order_success', "Order #{$order->order_number} placed successfully!");
-            
-            // Optional: Redirect to success page
-            // return redirect()->route('order.success', $order->id);
         });
     }
 
-    // Method to populate form from saved address
-    public function useSavedAddress($addressId)
+    public function useSavedAddress($addressId): void
     {
         $address = $this->savedAddresses->where('id', $addressId)->first();
-        
+
         if ($address) {
             $this->selectedAddressId = $address->id;
-            
             $this->billing = [
                 'name' => $address->name,
                 'country_code' => $address->country_code,
@@ -424,18 +311,16 @@ class CartCheckout extends Component
                 'state' => $address->state,
                 'postal_code' => $address->postal_code,
             ];
-
-            $this->phone = $address->phone;            
+            $this->phone = $address->phone;
         }
     }
 
-    // Method to clear form for new address
-    public function clearAddressSelection()
+    public function clearAddressSelection(): void
     {
         $this->selectedAddressId = 'new';
         $this->billing = [
-            'name' => Auth::user()->name,
-            'country_code' => 'BD', // Default
+            'name' => Auth::check() ? (Auth::user()->name ?? '') : '',
+            'country_code' => 'BD',
             'address_line1' => '',
             'city' => '',
             'state' => '',

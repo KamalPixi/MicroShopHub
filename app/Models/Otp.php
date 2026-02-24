@@ -6,5 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Otp extends Model
 {
-    //
+    protected $fillable = [
+        'identifier',
+        'token',
+        'expires_at',
+    ];
+
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
 }

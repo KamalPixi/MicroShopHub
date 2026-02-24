@@ -2,95 +2,186 @@
 
 namespace App\Livewire\Store\Auth;
 
-use Livewire\Component;
-use Illuminate\Support\Facades\DB;
+use App\Services\CustomerAuthService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use App\Models\User;
+use Livewire\Component;
 
 class Login extends Component
 {
+    protected CustomerAuthService $customerAuthService;
+
+    public $authSettings = [];
+    public $activeMethod = 'password';
+
     public $email = '';
+    public $password = '';
+    public $remember = false;
+
     public $otp = '';
     public $otpSent = false;
-    public $isLoading = false;
 
-    protected $rules = [
-        'email' => 'required|email',
-        'otp' => 'required|numeric|digits:6',
-    ];
+    public $showForgotPassword = false;
+    public $resetEmail = '';
+    public $resetOtp = '';
+    public $resetOtpSent = false;
+    public $newPassword = '';
+    public $newPasswordConfirmation = '';
 
-    public function sendOtp()
+    public function boot(CustomerAuthService $customerAuthService): void
     {
-        $this->validate(['email' => 'required|email']);
-        $this->isLoading = true;
+        $this->customerAuthService = $customerAuthService;
+    }
 
-        // Generate 6-digit OTP
-        $token = rand(100000, 999999);
-        
-        // Save to DB (Update existing or insert new)
-        DB::table('otps')->updateOrInsert(
-            ['identifier' => $this->email],
-            [
-                'token' => $token,
-                'expires_at' => now()->addMinutes(10),
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
-        );
+    public function mount(): void
+    {
+        if (Auth::check()) {
+            $this->redirect(route('customer.dashboard'), navigate: true);
+            return;
+        }
 
-        // TODO: Send Email using Mail::to($this->email)...
-        // For local dev, we log it.
-        Log::info("Login OTP for {$this->email}: {$token}");
+        $this->authSettings = $this->customerAuthService->getAuthSettings();
 
+        if ($this->authSettings['email_password_enabled']) {
+            $this->activeMethod = 'password';
+        } elseif ($this->authSettings['email_otp_enabled']) {
+            $this->activeMethod = 'otp';
+        }
+    }
+
+    public function setMethod(string $method): void
+    {
+        if ($method === 'password' && $this->authSettings['email_password_enabled']) {
+            $this->activeMethod = 'password';
+        }
+
+        if ($method === 'otp' && $this->authSettings['email_otp_enabled']) {
+            $this->activeMethod = 'otp';
+        }
+
+        $this->resetLoginState();
+    }
+
+    public function sendOtp(): void
+    {
+        if (! $this->authSettings['email_otp_enabled']) {
+            $this->addError('email', 'Email OTP login is currently disabled.');
+            return;
+        }
+
+        $validated = $this->validate([
+            'email' => 'required|email',
+        ]);
+
+        $this->customerAuthService->sendLoginOtp($validated['email']);
         $this->otpSent = true;
-        $this->isLoading = false;
+
         session()->flash('message', 'We sent a 6-digit code to your email.');
     }
 
     public function verifyOtp()
     {
-        $this->validate(['otp' => 'required|numeric|digits:6']);
-        $this->isLoading = true;
-
-        $record = DB::table('otps')
-            ->where('identifier', $this->email)
-            ->where('token', $this->otp)
-            ->where('expires_at', '>', now())
-            ->first();
-
-        if (!$record) {
-            $this->addError('otp', 'Invalid or expired code.');
-            $this->isLoading = false;
+        if (! $this->authSettings['email_otp_enabled']) {
+            $this->addError('otp', 'Email OTP login is currently disabled.');
             return;
         }
 
-        // Find or Create User
-        // If new, we set a default name. They can change it in Dashboard -> Profile.
-        $user = User::firstOrCreate(
-            ['email' => $this->email],
-            [
-                'name' => 'User ' . Str::random(4),
-                'password' => bcrypt(Str::random(32)), // Random secure password
-                'email_verified_at' => now(),
-            ]
-        );
+        $validated = $this->validate([
+            'email' => 'required|email',
+            'otp' => 'required|numeric|digits:6',
+        ]);
 
-        // Login the user
-        Auth::login($user);
+        $user = $this->customerAuthService->loginWithOtp($validated['email'], $validated['otp']);
 
-        // Cleanup OTP
-        DB::table('otps')->where('identifier', $this->email)->delete();
+        if (! $user) {
+            $this->addError('otp', 'Invalid or expired code.');
+            return;
+        }
 
-        // Redirect to Dashboard or Home
         return redirect()->intended(route('customer.dashboard'));
     }
 
-    public function resetInput()
+    public function loginWithPassword()
+    {
+        if (! $this->authSettings['email_password_enabled']) {
+            $this->addError('email', 'Email and password login is currently disabled.');
+            return;
+        }
+
+        $validated = $this->validate([
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if (! $this->customerAuthService->loginWithPassword($validated['email'], $validated['password'], (bool) $this->remember)) {
+            $this->addError('password', 'Invalid email or password.');
+            return;
+        }
+
+        return redirect()->intended(route('customer.dashboard'));
+    }
+
+    public function showForgotPasswordForm(): void
+    {
+        $this->showForgotPassword = true;
+        $this->resetOtpSent = false;
+        $this->resetOtp = '';
+        $this->newPassword = '';
+        $this->newPasswordConfirmation = '';
+        $this->resetErrorBag();
+    }
+
+    public function hideForgotPasswordForm(): void
+    {
+        $this->showForgotPassword = false;
+        $this->resetOtpSent = false;
+        $this->resetOtp = '';
+        $this->newPassword = '';
+        $this->newPasswordConfirmation = '';
+        $this->resetErrorBag();
+    }
+
+    public function sendPasswordResetOtp(): void
+    {
+        $validated = $this->validate([
+            'resetEmail' => 'required|email',
+        ]);
+
+        $this->customerAuthService->sendPasswordResetOtp($validated['resetEmail']);
+        $this->resetOtpSent = true;
+
+        session()->flash('message', 'If the account exists, a reset code has been sent.');
+    }
+
+    public function resetPassword(): void
+    {
+        $validated = $this->validate([
+            'resetEmail' => 'required|email',
+            'resetOtp' => 'required|numeric|digits:6',
+            'newPassword' => 'required|string|min:6',
+            'newPasswordConfirmation' => 'required|same:newPassword',
+        ]);
+
+        $updated = $this->customerAuthService->resetPassword(
+            email: $validated['resetEmail'],
+            token: $validated['resetOtp'],
+            newPassword: $validated['newPassword'],
+        );
+
+        if (! $updated) {
+            $this->addError('resetOtp', 'Invalid code or account not found.');
+            return;
+        }
+
+        $this->hideForgotPasswordForm();
+        $this->email = $validated['resetEmail'];
+        session()->flash('message', 'Password reset successful. You can now sign in.');
+    }
+
+    public function resetLoginState(): void
     {
         $this->otpSent = false;
         $this->otp = '';
+        $this->password = '';
         $this->resetErrorBag();
     }
 
