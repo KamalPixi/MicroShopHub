@@ -66,14 +66,37 @@
                         </div>
                         
                         <div class="mb-6 space-y-4">
-                            @if(!auth()->check() && ($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled']))
-                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
+                            @if(!auth()->check() && $authSettings['guest_checkout_enabled'])
+                                <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                                    <p class="text-sm font-semibold text-blue-900">You can order as guest.</p>
+                                    <p class="text-xs text-blue-700 mt-1">No login or registration required. Just enter your email and shipping address below.</p>
+                                    @if($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled'])
+                                        <p class="text-xs text-blue-700 mt-2">Want faster checkout and order history? Use optional login/register below.</p>
+                                        <button wire:click="toggleAuthSection" type="button" class="mt-3 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 border border-blue-200 hover:bg-blue-100">
+                                            {{ $showAuthSection ? 'Hide Login / Register' : 'Show Login / Register' }}
+                                        </button>
+                                    @endif
+                                </div>
+                            @endif
+
+                            @if(
+                                !auth()->check()
+                                && ($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled'])
+                                && (!$authSettings['guest_checkout_enabled'] || $showAuthSection)
+                            )
+                                <div class="rounded-lg border {{ $authSettings['guest_checkout_enabled'] ? 'border-gray-200 bg-gray-50' : 'border-yellow-200 bg-yellow-50' }} p-4 space-y-3">
                                     <div class="flex items-center justify-between">
-                                        <p class="text-sm font-semibold text-gray-800">Account Access</p>
+                                        <p class="text-sm font-semibold text-gray-800">
+                                            {{ $authSettings['guest_checkout_enabled'] ? 'Optional Account Access' : 'Login Required' }}
+                                        </p>
                                         @if($authSettings['guest_checkout_enabled'])
-                                            <span class="text-[11px] px-2 py-1 rounded bg-blue-100 text-blue-700 font-semibold">Guest Checkout Available</span>
+                                            <button wire:click="toggleAuthSection" type="button" class="text-[11px] px-2 py-1 rounded bg-blue-100 text-blue-700 font-semibold hover:bg-blue-200">Hide</button>
                                         @endif
                                     </div>
+
+                                    @if(!$authSettings['guest_checkout_enabled'])
+                                        <p class="text-xs text-yellow-800">Please login or register to place your order.</p>
+                                    @endif
 
                                     @if(session('auth_success'))
                                         <p class="text-xs text-green-700 font-semibold">{{ session('auth_success') }}</p>

@@ -49,6 +49,7 @@ class CartCheckout extends Component
     ];
     public $authMethod = 'password';
     public $authPanel = 'login';
+    public $showAuthSection = false;
     public $loginEmail = '';
     public $loginPassword = '';
     public $loginRemember = false;
@@ -119,6 +120,7 @@ class CartCheckout extends Component
             $this->authMethod = 'otp';
         }
         $this->authPanel = 'login';
+        $this->showAuthSection = ! $this->authSettings['guest_checkout_enabled'];
 
         if ($this->shippingMethods->isNotEmpty()) {
             $this->selectedShippingMethod = $this->shippingMethods->first()->id;
@@ -343,6 +345,11 @@ class CartCheckout extends Component
             'registerEmail',
             'registerPassword',
         ]);
+    }
+
+    public function toggleAuthSection(): void
+    {
+        $this->showAuthSection = ! $this->showAuthSection;
     }
 
     public function sendLoginOtp(): void
