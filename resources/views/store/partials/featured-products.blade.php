@@ -10,7 +10,7 @@
 }">
     <div class="flex items-center justify-between mb-4 px-1">
         <h2 class="text-2xl font-bold text-gray-900">Featured Products</h2>
-        <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-blue-700">View All →</a>
+        <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-primary">View All →</a>
     </div>
 
     <div class="relative">

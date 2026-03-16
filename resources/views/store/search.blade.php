@@ -55,7 +55,7 @@
                                            class="w-full pl-6 pr-2 py-2 text-sm border border-gray-300 rounded focus:ring-primary focus:border-primary">
                                 </div>
                             </div>
-                            <button type="submit" class="w-full bg-gray-900 text-white py-2 rounded text-sm font-medium hover:bg-black transition">
+                            <button type="submit" class="w-full bg-primary text-white py-2 rounded text-sm font-medium hover:bg-primary transition">
                                 Apply Price
                             </button>
                         </div>
@@ -66,7 +66,7 @@
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">Categories</h3>
                         @if($categoryId)
-                            <a href="{{ route('store.search', request()->except('category', 'page')) }}" class="text-xs text-red-500 hover:underline">Clear</a>
+                            <a href="{{ route('store.search', request()->except('category', 'page')) }}" class="text-xs text-primary hover:underline">Clear</a>
                         @endif
                     </div>
                     
@@ -162,7 +162,7 @@
                         </div>
                         <h3 class="text-lg font-medium text-gray-900">No products found</h3>
                         <p class="text-gray-500 text-sm mt-1 mb-6">We couldn't find any matches for your filters.</p>
-                        <a href="{{ route('store.search') }}" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-blue-700 transition">
+                        <a href="{{ route('store.search') }}" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-primary transition">
                             Clear all filters
                         </a>
                     </div>

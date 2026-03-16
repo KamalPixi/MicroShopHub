@@ -130,7 +130,7 @@
                         @endif
                         </div>
                         @if($product->has_variations && count($selectedAttributes) == 0)
-                            <div class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-md">
+                            <div class="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-md">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
@@ -296,7 +296,7 @@
                                 type="button"
                                 wire:loading.attr="disabled"
                                 class="w-full md:flex-1 h-12 px-4 rounded-lg font-bold text-white shadow-sm hover:shadow-lg transform active:scale-[0.98] transition-all flex items-center justify-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2
-                                {{ $showSuccess ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : 'bg-primary hover:bg-blue-700 focus:ring-primary' }}
+                                {{ $showSuccess ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : 'bg-primary hover:bg-primary focus:ring-primary' }}
                                 {{ $currentStock <= 0 ? 'opacity-50 cursor-not-allowed bg-gray-400 hover:bg-gray-400' : '' }}"
                                 :disabled="currentStock <= 0">
                             
@@ -365,7 +365,7 @@
                 <h2 class="text-xl font-bold text-gray-900">You might also like</h2>
                 @if($product->categories->first())
                     <a href="{{ route('store.search', ['category' => $product->categories->first()->id]) }}" 
-                       class="text-primary hover:text-blue-700 font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2">
+                       class="text-primary hover:text-primary font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2">
                         View More →
                     </a>
                 @endif

@@ -20,7 +20,7 @@
             <button wire:click="addToCart" 
                     wire:loading.attr="disabled"
                     class="flex-1 font-bold py-2 px-6 rounded-lg shadow-md hover:shadow-lg h-10 flex items-center justify-center whitespace-nowrap transition-all duration-200 text-white text-sm
-                           {{ $isInCart ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-blue-700' }}">
+                           {{ $isInCart ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-primary' }}">
                 
                 <span wire:loading.remove wire:target="addToCart">
                     {{ $isInCart ? 'Update Cart' : 'Add to Cart' }}
