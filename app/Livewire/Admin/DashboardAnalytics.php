@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ShippingMethod;
+use App\Models\Currency;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -15,22 +16,37 @@ class DashboardAnalytics extends Component
 {
     public $totalSales;
     public $totalOrders;
+    public $ordersToday;
+    public $ordersThisMonth;
     public $totalCustomers;
     public $totalProducts;
     public $averageOrderValue;
     public $pendingOrders;
     public $revenueThisMonth;
+    public $revenueToday;
+    public $revenueThisWeek;
     public $activeShippingMethods;
     public $recentOrders;
     public $topProducts;
+    public $newCustomersThisMonth;
+    public $lowStockProducts;
+    public $outOfStockCount;
+    public $recentProducts;
+    public $currencySymbol;
 
     public function mount()
     {
+        $this->currencySymbol = Currency::getActive()->symbol;
         // Total Sales: Sum of all order totals
         $this->totalSales = Order::sum('total');
 
         // Total Orders
         $this->totalOrders = Order::count();
+        $this->ordersToday = Order::whereDate('created_at', Carbon::today())->count();
+        $this->ordersThisMonth = Order::whereBetween('created_at', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth()
+        ])->count();
 
         // Total Customers
         $this->totalCustomers = User::count();
@@ -50,8 +66,33 @@ class DashboardAnalytics extends Component
             Carbon::now()->endOfMonth()
         ])->sum('total');
 
+        // Revenue Today
+        $this->revenueToday = Order::whereDate('created_at', Carbon::today())->sum('total');
+
+        // Revenue This Week
+        $this->revenueThisWeek = Order::whereBetween('created_at', [
+            Carbon::now()->startOfWeek(),
+            Carbon::now()->endOfWeek()
+        ])->sum('total');
+
         // Active Shipping Methods
         $this->activeShippingMethods = ShippingMethod::where('active', true)->count();
+
+        // New Customers This Month
+        $this->newCustomersThisMonth = User::whereBetween('created_at', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth()
+        ])->count();
+
+        // Low Stock Products (<= 5, > 0)
+        $this->lowStockProducts = Product::where('stock', '>', 0)
+            ->where('stock', '<=', 5)
+            ->orderBy('stock', 'asc')
+            ->take(5)
+            ->get();
+
+        // Out of Stock Count
+        $this->outOfStockCount = Product::where('stock', '<=', 0)->count();
 
         // Recent Orders: Last 5 orders with customer name, total, status
         $this->recentOrders = Order::with('user')
@@ -84,7 +125,12 @@ class DashboardAnalytics extends Component
                     'total_sales' => (float) $item->total_sales,
                 ];
             });
-            }
+
+        // Recent Products
+        $this->recentProducts = Product::orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+    }
 
     public function render()
     {
