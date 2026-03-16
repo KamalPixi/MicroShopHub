@@ -1,14 +1,19 @@
 <aside id="sidebar" class="w-56 bg-slate-900 text-slate-100 p-4 flex flex-col fixed top-0 bottom-0 border-r border-slate-800">
     <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-800">
-        <div class="flex items-center">
-            <svg class="w-5 h-5 mr-2 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z"></path>
-            </svg>
-            <h1 class="text-lg font-semibold tracking-tight">E-commerce</h1>
+        <div class="flex items-center gap-2">
+            <div class="h-9 w-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+                <svg class="w-4.5 h-4.5 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-sm font-semibold tracking-tight text-slate-100 leading-none">Store Name</h1>
+                <p class="text-[11px] text-slate-400">Admin Panel</p>
+            </div>
         </div>
-        <button id="toggle-sidebar" class="text-slate-200 hover:bg-slate-800 p-1 rounded">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        <button id="toggle-sidebar" class="text-slate-200 hover:bg-slate-800 p-1.5 rounded-md" aria-label="Collapse sidebar">
+            <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5l8 7-8 7"></path>
             </svg>
         </button>
     </div>
