@@ -52,11 +52,27 @@
                         Current: {{ ucfirst($order->status) }}
                     </span>
                 </div>
-                <div class="flex flex-wrap gap-2">
-                    <button type="button" wire:click="updateStatus('pending')" wire:confirm="Mark this order as Pending?" class="px-3 py-1.5 rounded text-xs font-semibold border border-gray-300 text-gray-600 hover:bg-gray-50">Mark Pending</button>
-                    <button type="button" wire:click="updateStatus('processing')" wire:confirm="Mark this order as Processing?" class="px-3 py-1.5 rounded text-xs font-semibold border border-blue-200 text-blue-700 hover:bg-blue-50">Mark Processing</button>
-                    <button type="button" wire:click="updateStatus('delivered')" wire:confirm="Mark this order as Delivered?" class="px-3 py-1.5 rounded text-xs font-semibold border border-green-200 text-green-700 hover:bg-green-50">Mark Delivered</button>
-                    <button type="button" wire:click="updateStatus('cancelled')" wire:confirm="Cancel this order?" class="px-3 py-1.5 rounded text-xs font-semibold border border-red-200 text-red-700 hover:bg-red-50">Mark Cancelled</button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">Update Status</label>
+                        <select wire:model.live="statusSelection" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-primary appearance-none bg-white">
+                            <option value="">Select status</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        @error('statusSelection') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="flex items-center gap-2 md:pt-6">
+                        <input id="notifyCustomer" type="checkbox" wire:model="notifyCustomer" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
+                        <label for="notifyCustomer" class="text-xs text-gray-600">Notify customer</label>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="button" wire:click="saveOrderAction" wire:confirm="Save this order action?" class="w-full md:w-auto bg-primary text-white text-xs font-semibold rounded-lg px-4 py-2 hover:bg-primary">
+                        Save Action
+                    </button>
                 </div>
             </div>
 
@@ -170,6 +186,31 @@
                             {{ $order->billingAddress?->city ?? '' }} {{ $order->billingAddress?->state ?? '' }} {{ $order->billingAddress?->postal_code ?? '' }}
                         </p>
                     </div>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+                <h2 class="text-sm font-bold text-gray-800 mb-3">Message Customer</h2>
+                <div class="space-y-3 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">To</label>
+                        <p class="text-sm text-gray-800">
+                            {{ $order->user?->email ?? ($order->billingAddress?->email ?? '—') }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">Subject</label>
+                        <input type="text" wire:model.live="emailSubject" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-primary" placeholder="Order update">
+                        @error('emailSubject') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">Message</label>
+                        <textarea rows="5" wire:model.live="emailMessage" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-primary" placeholder="Write your message..."></textarea>
+                        @error('emailMessage') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <button type="button" wire:click="sendCustomerEmail" wire:loading.attr="disabled" class="w-full bg-primary text-white text-sm font-semibold rounded-lg px-4 py-2 hover:bg-primary">
+                        Send Email
+                    </button>
                 </div>
             </div>
         </div>
