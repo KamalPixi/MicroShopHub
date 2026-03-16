@@ -147,6 +147,59 @@
 
     <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="rounded-lg border border-gray-200 p-3">
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">Related Products</h4>
+            <div class="flex flex-wrap gap-1">
+                @forelse ($product->relatedProducts as $related)
+                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full max-w-full truncate" title="{{ $related->name }}">
+                        {{ $related->name }}
+                    </span>
+                @empty
+                    <span class="text-xs text-gray-500">None</span>
+                @endforelse
+            </div>
+        </div>
+
+        <div class="rounded-lg border border-gray-200 p-3">
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">Variations</h4>
+            @if ($product->has_variations && $product->variations->isNotEmpty())
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs border border-gray-200 rounded-lg overflow-hidden">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="text-left px-2 py-2 font-medium text-gray-700">Options</th>
+                                <th class="text-left px-2 py-2 font-medium text-gray-700">SKU</th>
+                                <th class="text-left px-2 py-2 font-medium text-gray-700">Price</th>
+                                <th class="text-left px-2 py-2 font-medium text-gray-700">Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($product->variations as $variation)
+                                <tr class="border-t border-gray-200">
+                                    <td class="px-2 py-2 align-top">
+                                        <div class="flex flex-wrap gap-1">
+                                            @foreach ($variation->values as $value)
+                                                <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full">
+                                                    {{ $value->attribute->name }}: {{ $value->value }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </td>
+                                    <td class="px-2 py-2 text-gray-700">{{ $variation->sku ?: '-' }}</td>
+                                    <td class="px-2 py-2 text-gray-700">{{ $product->currency_symbol }}{{ number_format($variation->price, 2) }}</td>
+                                    <td class="px-2 py-2 text-gray-700">{{ $variation->stock }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="text-xs text-gray-500">No variations</p>
+            @endif
+        </div>
+    </div>
+
+    <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded-lg border border-gray-200 p-3">
             <h4 class="text-sm font-semibold text-gray-800 mb-2">Sales Performance</h4>
             <div class="grid grid-cols-2 gap-2">
                 <div class="rounded-md border border-gray-200 p-2">
@@ -210,59 +263,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-
-    <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="rounded-lg border border-gray-200 p-3">
-            <h4 class="text-sm font-semibold text-gray-800 mb-2">Related Products</h4>
-            <div class="flex flex-wrap gap-1">
-                @forelse ($product->relatedProducts as $related)
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full max-w-full truncate" title="{{ $related->name }}">
-                        {{ $related->name }}
-                    </span>
-                @empty
-                    <span class="text-xs text-gray-500">None</span>
-                @endforelse
-            </div>
-        </div>
-
-        <div class="rounded-lg border border-gray-200 p-3">
-            <h4 class="text-sm font-semibold text-gray-800 mb-2">Variations</h4>
-            @if ($product->has_variations && $product->variations->isNotEmpty())
-                <div class="overflow-x-auto">
-                    <table class="w-full text-xs border border-gray-200 rounded-lg overflow-hidden">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="text-left px-2 py-2 font-medium text-gray-700">Options</th>
-                                <th class="text-left px-2 py-2 font-medium text-gray-700">SKU</th>
-                                <th class="text-left px-2 py-2 font-medium text-gray-700">Price</th>
-                                <th class="text-left px-2 py-2 font-medium text-gray-700">Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($product->variations as $variation)
-                                <tr class="border-t border-gray-200">
-                                    <td class="px-2 py-2 align-top">
-                                        <div class="flex flex-wrap gap-1">
-                                            @foreach ($variation->values as $value)
-                                                <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full">
-                                                    {{ $value->attribute->name }}: {{ $value->value }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                    </td>
-                                    <td class="px-2 py-2 text-gray-700">{{ $variation->sku ?: '-' }}</td>
-                                    <td class="px-2 py-2 text-gray-700">{{ $product->currency_symbol }}{{ number_format($variation->price, 2) }}</td>
-                                    <td class="px-2 py-2 text-gray-700">{{ $variation->stock }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <p class="text-xs text-gray-500">No variations</p>
-            @endif
         </div>
     </div>
 </div>
