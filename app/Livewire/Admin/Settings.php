@@ -105,6 +105,7 @@ class Settings extends Component
     public $savedSection = '';
     public $telegramChatOptions = [];
     public $telegramFetchMessage = '';
+    public $telegramWebhookMessage = '';
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -518,6 +519,39 @@ class Settings extends Component
             $this->telegramFetchMessage = $options ? 'Select a Chat ID below.' : 'No chats found. Send a message to the bot or in the group, then try again.';
         } catch (\Throwable $e) {
             $this->telegramFetchMessage = 'Error fetching chats. Try again.';
+        }
+    }
+
+    public function setTelegramWebhook(): void
+    {
+        $this->telegramWebhookMessage = '';
+        $token = $this->settings['admin_telegram_bot_token'] ?? '';
+        if (! $token) {
+            $this->telegramWebhookMessage = 'Enter a bot token first.';
+            return;
+        }
+
+        $appUrl = rtrim(config('app.url'), '/');
+        if (! str_starts_with($appUrl, 'https://')) {
+            $this->telegramWebhookMessage = 'APP_URL must be HTTPS and publicly accessible.';
+            return;
+        }
+
+        try {
+            $secret = config('services.telegram.webhook_secret');
+            $payload = ['url' => $appUrl.'/telegram/webhook'];
+            if ($secret) {
+                $payload['secret_token'] = $secret;
+            }
+            $response = Http::asForm()->post("https://api.telegram.org/bot{$token}/setWebhook", $payload);
+            if (! $response->ok()) {
+                $this->telegramWebhookMessage = 'Failed to set webhook. Check token and URL.';
+                return;
+            }
+            $data = $response->json();
+            $this->telegramWebhookMessage = ! empty($data['ok']) ? 'Webhook set successfully.' : 'Failed to set webhook.';
+        } catch (\Throwable $e) {
+            $this->telegramWebhookMessage = 'Error setting webhook. Try again.';
         }
     }
 

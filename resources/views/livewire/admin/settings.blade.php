@@ -592,9 +592,19 @@
                             <label class="block text-xs font-semibold text-gray-600">Bot Token</label>
                             <input wire:model="settings.admin_telegram_bot_token" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="123456:ABC-DEF...">
                             <div class="mt-2 flex items-center gap-2">
+                                <span class="text-[11px] text-gray-500">Step 3</span>
                                 <button type="button" wire:click="fetchTelegramChatIds" class="text-xs font-semibold text-primary hover:underline">Fetch Chat ID</button>
+                                <span class="text-[11px] text-gray-400">Pulls recent chats after the bot receives a message.</span>
                                 @if($telegramFetchMessage)
                                     <span class="text-[11px] text-gray-500">{{ $telegramFetchMessage }}</span>
+                                @endif
+                            </div>
+                            <div class="mt-2 flex items-center gap-2">
+                                <span class="text-[11px] text-gray-500">Step 4</span>
+                                <button type="button" wire:click="setTelegramWebhook" class="text-xs font-semibold text-primary hover:underline">Set Webhook</button>
+                                <span class="text-[11px] text-gray-400">Registers your public site URL with Telegram.</span>
+                                @if($telegramWebhookMessage)
+                                    <span class="text-[11px] text-gray-500">{{ $telegramWebhookMessage }}</span>
                                 @endif
                             </div>
                         </div>
