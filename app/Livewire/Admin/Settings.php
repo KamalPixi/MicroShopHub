@@ -8,6 +8,7 @@ use App\Models\Currency;
 use App\Models\Country;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class Settings extends Component
 {
@@ -102,6 +103,8 @@ class Settings extends Component
 
     public $logo;
     public $savedSection = '';
+    public $telegramChatOptions = [];
+    public $telegramFetchMessage = '';
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -466,6 +469,56 @@ class Settings extends Component
             'settings.admin_telegram_chat_id' => $this->rules['settings.admin_telegram_chat_id'],
             'settings.live_chat_enabled' => $this->rules['settings.live_chat_enabled'],
         ], false, 'notifications');
+    }
+
+    public function fetchTelegramChatIds(): void
+    {
+        $this->telegramFetchMessage = '';
+        $token = $this->settings['admin_telegram_bot_token'] ?? '';
+        if (! $token) {
+            $this->telegramFetchMessage = 'Enter a bot token first.';
+            return;
+        }
+
+        try {
+            $response = Http::get("https://api.telegram.org/bot{$token}/getUpdates", [
+                'limit' => 50,
+            ]);
+
+            if (! $response->ok()) {
+                $this->telegramFetchMessage = 'Unable to fetch updates. Check the token.';
+                return;
+            }
+
+            $data = $response->json();
+            $updates = $data['result'] ?? [];
+            $seen = [];
+            $options = [];
+
+            foreach ($updates as $update) {
+                $chat = $update['message']['chat'] ?? null;
+                if (! $chat || ! isset($chat['id'])) {
+                    continue;
+                }
+
+                $chatId = (string) $chat['id'];
+                if (isset($seen[$chatId])) {
+                    continue;
+                }
+
+                $label = $chat['title'] ?? $chat['username'] ?? $chat['first_name'] ?? 'Chat';
+                $options[] = [
+                    'id' => $chatId,
+                    'label' => $label,
+                ];
+                $seen[$chatId] = true;
+            }
+
+            $this->telegramChatOptions = $options;
+            $this->telegramFetchMessage = $options ? 'Select a Chat ID below.' : 'No chats found. Send a message to the bot or in the group, then try again.';
+        } catch (\Throwable $e) {
+            $this->telegramFetchMessage = 'Error fetching chats. Try again.';
+        }
     }
 
     public function saveAll()

@@ -591,10 +591,24 @@
                         <div>
                             <label class="block text-xs font-semibold text-gray-600">Bot Token</label>
                             <input wire:model="settings.admin_telegram_bot_token" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="123456:ABC-DEF...">
+                            <div class="mt-2 flex items-center gap-2">
+                                <button type="button" wire:click="fetchTelegramChatIds" class="text-xs font-semibold text-primary hover:underline">Fetch Chat ID</button>
+                                @if($telegramFetchMessage)
+                                    <span class="text-[11px] text-gray-500">{{ $telegramFetchMessage }}</span>
+                                @endif
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600">Chat ID</label>
                             <input wire:model="settings.admin_telegram_chat_id" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="-1001234567890">
+                            @if(!empty($telegramChatOptions))
+                                <select wire:model="settings.admin_telegram_chat_id" class="mt-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2 bg-white">
+                                    <option value="">Select from recent chats</option>
+                                    @foreach($telegramChatOptions as $chat)
+                                        <option value="{{ $chat['id'] }}">{{ $chat['label'] }} ({{ $chat['id'] }})</option>
+                                    @endforeach
+                                </select>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -608,7 +622,8 @@
                     <ol class="mt-2 text-[11px] text-gray-500 list-decimal list-inside space-y-1">
                         <li>Open Telegram and start a chat with <span class="font-semibold">@BotFather</span>.</li>
                         <li>Create a bot with <span class="font-semibold">/newbot</span> and copy the Bot Token.</li>
-                        <li>Open your Telegram group or user chat where alerts should go, then get the Chat ID.</li>
+                        <li>Create a Telegram group: tap New Message → New Group → add a contact → name the group.</li>
+                        <li>Add your bot to the group and send a test message, then get the Chat ID for that group.</li>
                         <li>Paste Bot Token and Chat ID above, save settings, then enable Live Chat.</li>
                     </ol>
                 </div>
