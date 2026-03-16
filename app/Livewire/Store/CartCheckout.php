@@ -282,7 +282,13 @@ class CartCheckout extends Component
             foreach ($this->cart as $key => $item) {
                 $parts = explode('-', $key);
                 $productId = $parts[0];
-                $variationId = $parts[1] ?? null;
+                $rawVariationId = $parts[1] ?? null;
+
+                $product = Product::find($productId);
+                $variationId = null;
+                if ($product && $product->has_variations && $rawVariationId && ctype_digit((string) $rawVariationId)) {
+                    $variationId = (int) $rawVariationId;
+                }
 
                 $order->items()->create([
                     'product_id' => $productId,
@@ -290,10 +296,9 @@ class CartCheckout extends Component
                     'name' => $item['name'],
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
-                    'attributes' => json_encode($item['attributes'] ?? []),
+                    'attributes' => $item['attributes'] ?? [],
                 ]);
 
-                $product = Product::find($productId);
                 if ($product) {
                     if ($variationId && $product->has_variations) {
                         $var = $product->variations()->find($variationId);
