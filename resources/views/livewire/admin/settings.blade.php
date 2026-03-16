@@ -469,8 +469,8 @@
         </section>
 
         <section class="rounded-xl border border-gray-200 p-5 bg-white">
-            <h4 class="text-base font-bold text-gray-800">Campaign Email Settings</h4>
-            <p class="text-xs text-gray-500 mt-1 mb-4">Configure SMTP details for sending campaign emails.</p>
+            <h4 class="text-base font-bold text-gray-800">Email Settings</h4>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Configure SMTP details used across the system for all email sending.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -571,7 +571,7 @@
                 <input type="checkbox" wire:model="settings.live_chat_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
                 <div>
                     <p class="text-sm font-semibold text-gray-800">Enable Live Chat Widget</p>
-                    <p class="text-xs text-gray-500">Show live chat on the storefront and forward messages to Telegram.</p>
+                    <p class="text-xs text-gray-500">Adds a storefront chat widget so customers can message you instantly. Messages are forwarded to Telegram and replies are delivered back to the customer.</p>
                 </div>
             </div>
 
