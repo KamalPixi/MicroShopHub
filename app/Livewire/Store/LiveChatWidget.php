@@ -76,7 +76,17 @@ class LiveChatWidget extends Component
             return;
         }
 
-        $session->update(['customer_name' => $name]);
+        $newToken = $this->generateShortToken($name);
+        if ($newToken && $newToken !== $session->session_token) {
+            $session->update([
+                'customer_name' => $name,
+                'session_token' => $newToken,
+            ]);
+            $this->sessionToken = $newToken;
+            session(['live_chat_token' => $newToken]);
+        } else {
+            $session->update(['customer_name' => $name]);
+        }
         $this->nameCaptured = true;
     }
 
@@ -195,6 +205,22 @@ class LiveChatWidget extends Component
         }
 
         app(TelegramBotService::class)->sendMessage($botToken, $chatId, $text);
+    }
+
+    protected function generateShortToken(string $name): ?string
+    {
+        $prefix = strtoupper(preg_replace('/[^A-Z0-9]/', '', strtoupper($name)));
+        $prefix = $prefix !== '' ? substr($prefix, 0, 4) : 'USER';
+
+        for ($i = 0; $i < 5; $i++) {
+            $suffix = strtoupper(substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ23456789'), 0, 4));
+            $token = $prefix.'-'.$suffix;
+            if (! LiveChatSession::where('session_token', $token)->exists()) {
+                return $token;
+            }
+        }
+
+        return null;
     }
 
     public function render()
