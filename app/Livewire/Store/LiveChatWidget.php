@@ -111,6 +111,13 @@ class LiveChatWidget extends Component
         }
 
         $text = trim($this->message);
+        if (! is_string($text)) {
+            return;
+        }
+        if (mb_strlen($text) > 500) {
+            $this->message = mb_substr($text, 0, 500);
+            return;
+        }
         if ($text === '') {
             return;
         }

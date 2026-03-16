@@ -11,7 +11,9 @@
                 <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                     <div>
                         <p class="text-sm font-semibold text-gray-900">Live Chat</p>
-                        <p class="text-xs text-gray-500">We typically reply within a few minutes.</p>
+                        <p class="text-xs text-gray-500">
+                            {{ $nameCaptured ? 'You: ' . $customerName : 'We typically reply within a few minutes.' }}
+                        </p>
                     </div>
                     <button type="button" wire:click="toggle" class="text-gray-500 hover:text-gray-700">×</button>
                 </div>
@@ -55,7 +57,15 @@
                 <div class="px-4 py-3 border-t border-gray-100">
                     <div class="flex gap-2">
                         <input type="text" wire:model.live="message" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:border-primary focus:ring-primary" placeholder="Type a message..." {{ $nameCaptured ? '' : 'disabled' }}>
-                        <button type="button" wire:click="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold" {{ $nameCaptured ? '' : 'disabled' }}>Send</button>
+                        <button type="button" wire:click="sendMessage" wire:loading.attr="disabled" wire:target="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold flex items-center justify-center" {{ $nameCaptured ? '' : 'disabled' }}>
+                            <span wire:loading.remove wire:target="sendMessage">Send</span>
+                            <span wire:loading wire:target="sendMessage">
+                                <svg class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
+                                </svg>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
