@@ -211,10 +211,10 @@
             toggleButtonFloating.classList.toggle('show-floating');
             if (sidebar.classList.contains('sidebar-collapsed')) {
                 mainContent.classList.remove('ml-56');
-                toggleButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>';
+                toggleButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6h8M6 12h8M6 18h8M16 6l4 6-4 6"></path>';
             } else {
                 mainContent.classList.add('ml-56');
-                toggleButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>';
+                toggleButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5l-4 7 4 7M20 6H9M20 12H9M20 18H9"></path>';
             }
         }
 
