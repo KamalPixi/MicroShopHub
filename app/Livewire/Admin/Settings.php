@@ -21,6 +21,7 @@ class Settings extends Component
         'shop_logo' => '',
         'branding_color' => '#000000',
         'secondary_color' => '#6B7280',
+        'accent_color' => '#F59E0B',
         'shop_name' => '',
         'site_title' => '',
         
@@ -88,6 +89,7 @@ class Settings extends Component
         'logo' => 'nullable|image|max:2048',
         'settings.branding_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         'settings.secondary_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+        'settings.accent_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         'settings.shop_name' => 'nullable|string|max:255',
         'settings.site_title' => 'nullable|string|max:255',
         'settings.meta_description' => 'nullable|string|max:500',
@@ -224,6 +226,7 @@ class Settings extends Component
             'site_title',
             'branding_color',
             'secondary_color',
+            'accent_color',
             'shop_logo',
         ], [
             'logo' => $this->rules['logo'],
@@ -231,6 +234,7 @@ class Settings extends Component
             'settings.site_title' => $this->rules['settings.site_title'],
             'settings.branding_color' => $this->rules['settings.branding_color'],
             'settings.secondary_color' => $this->rules['settings.secondary_color'],
+            'settings.accent_color' => $this->rules['settings.accent_color'],
         ]);
     }
 
@@ -287,6 +291,71 @@ class Settings extends Component
             'settings.stripe_label' => $this->rules['settings.stripe_label'],
             'settings.paypal_api_key' => $this->rules['settings.paypal_api_key'],
             'settings.paypal_label' => $this->rules['settings.paypal_label'],
+            'settings.bkash_base_url' => $this->rules['settings.bkash_base_url'],
+            'settings.bkash_app_key' => $this->rules['settings.bkash_app_key'],
+            'settings.bkash_app_secret' => $this->rules['settings.bkash_app_secret'],
+            'settings.bkash_username' => $this->rules['settings.bkash_username'],
+            'settings.bkash_password' => $this->rules['settings.bkash_password'],
+        ]);
+    }
+
+    public function saveCodGateway()
+    {
+        $this->saveSettings([
+            'cod_label',
+            'cod_enabled',
+        ], [
+            'settings.cod_label' => $this->rules['settings.cod_label'],
+            'settings.cod_enabled' => $this->rules['settings.cod_enabled'],
+        ]);
+    }
+
+    public function saveSslCommerzGateway()
+    {
+        $this->saveSettings([
+            'sslcommerz_store_id',
+            'sslcommerz_api_key',
+            'sslcommerz_label',
+            'sslcommerz_sandbox',
+        ], [
+            'settings.sslcommerz_store_id' => $this->rules['settings.sslcommerz_store_id'],
+            'settings.sslcommerz_api_key' => $this->rules['settings.sslcommerz_api_key'],
+            'settings.sslcommerz_label' => $this->rules['settings.sslcommerz_label'],
+            'settings.sslcommerz_sandbox' => $this->rules['settings.sslcommerz_sandbox'],
+        ]);
+    }
+
+    public function saveStripeGateway()
+    {
+        $this->saveSettings([
+            'stripe_api_key',
+            'stripe_label',
+        ], [
+            'settings.stripe_api_key' => $this->rules['settings.stripe_api_key'],
+            'settings.stripe_label' => $this->rules['settings.stripe_label'],
+        ]);
+    }
+
+    public function savePaypalGateway()
+    {
+        $this->saveSettings([
+            'paypal_api_key',
+            'paypal_label',
+        ], [
+            'settings.paypal_api_key' => $this->rules['settings.paypal_api_key'],
+            'settings.paypal_label' => $this->rules['settings.paypal_label'],
+        ]);
+    }
+
+    public function saveBkashGateway()
+    {
+        $this->saveSettings([
+            'bkash_base_url',
+            'bkash_app_key',
+            'bkash_app_secret',
+            'bkash_username',
+            'bkash_password',
+        ], [
             'settings.bkash_base_url' => $this->rules['settings.bkash_base_url'],
             'settings.bkash_app_key' => $this->rules['settings.bkash_app_key'],
             'settings.bkash_app_secret' => $this->rules['settings.bkash_app_secret'],

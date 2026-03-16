@@ -43,7 +43,7 @@
                     @error('logo') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label for="branding_color" class="block text-sm font-semibold text-gray-700">Primary Color</label>
                         <div class="flex items-center mt-1">
@@ -58,6 +58,13 @@
                             <input wire:model="settings.secondary_color" type="text" class="ml-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono uppercase" placeholder="#6B7280">
                         </div>
                     </div>
+                    <div>
+                        <label for="accent_color" class="block text-sm font-semibold text-gray-700">Accent Color</label>
+                        <div class="flex items-center mt-1">
+                            <input wire:model="settings.accent_color" type="color" id="accent_color" class="h-9 w-12 border border-gray-300 rounded p-0.5 cursor-pointer">
+                            <input wire:model="settings.accent_color" type="text" class="ml-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono uppercase" placeholder="#F59E0B">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -65,7 +72,7 @@
                 <button
                     wire:click="saveGeneral"
                     wire:loading.attr="disabled"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
                 >
                     Save General
                 </button>
@@ -91,7 +98,7 @@
                 <button
                     wire:click="saveSeo"
                     wire:loading.attr="disabled"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
                 >
                     Save SEO
                 </button>
@@ -136,7 +143,7 @@
                 <button
                     wire:click="saveAuth"
                     wire:loading.attr="disabled"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
                 >
                     Save Authentication
                 </button>
@@ -164,6 +171,12 @@
                             <input wire:model="settings.cod_enabled" type="checkbox" id="cod_enabled" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                             <label for="cod_enabled" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">Enable Cash on Delivery</label>
                         </div>
+                    </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button wire:click="saveCodGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            Save COD
+                        </button>
                     </div>
                 </div>
 
@@ -199,6 +212,12 @@
                             <label for="ssl_sandbox" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">Enable Sandbox Mode (Test Mode)</label>
                         </div>
                     </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button wire:click="saveSslCommerzGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            Save SSLCommerz
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
@@ -216,6 +235,12 @@
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Secret Key</label>
                             <input wire:model="settings.stripe_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="sk_live_...">
                         </div>
+                    </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button wire:click="saveStripeGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            Save Stripe
+                        </button>
                     </div>
                 </div>
 
@@ -257,6 +282,12 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button wire:click="saveBkashGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            Save bKash
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
@@ -275,18 +306,15 @@
                             <input wire:model="settings.paypal_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="PayPal Secret Key">
                         </div>
                     </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button wire:click="savePaypalGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            Save PayPal
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-5 flex justify-end">
-                <button
-                    wire:click="savePayments"
-                    wire:loading.attr="disabled"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
-                >
-                    Save Payments
-                </button>
-            </div>
         </section>
 
         <section class="rounded-xl border border-gray-200 p-5 bg-white">
@@ -383,7 +411,7 @@
                 <button
                     wire:click="saveOperations"
                     wire:loading.attr="disabled"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
                 >
                     Save Operations
                 </button>
@@ -433,7 +461,7 @@
                 <button
                     wire:click="saveSocial"
                     wire:loading.attr="disabled"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
                 >
                     Save Contact & Social
                 </button>
