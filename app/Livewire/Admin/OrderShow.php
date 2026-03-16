@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Order;
+use App\Models\OrderEmailLog;
 use App\Models\Setting;
 use Livewire\Component;
 use Illuminate\Support\Facades\Mail;
@@ -27,6 +28,7 @@ class OrderShow extends Component
             'shippingMethod',
             'billingAddress',
             'shippingAddress',
+            'emailLogs',
         ])->findOrFail($id);
 
         if ($this->order->user_id) {
@@ -114,6 +116,15 @@ class OrderShow extends Component
             $message->to($toEmail);
             $message->subject($subject);
         });
+
+        OrderEmailLog::create([
+            'order_id' => $this->order->id,
+            'admin_id' => auth('admin')->id(),
+            'to_email' => $toEmail,
+            'subject' => $subject,
+            'message' => $messageBody,
+            'sent_at' => now(),
+        ]);
     }
 
     public function render()

@@ -213,6 +213,34 @@
                     </button>
                 </div>
             </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+                <h2 class="text-sm font-bold text-gray-800 mb-3">Email History</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="p-2 font-semibold text-gray-700">Sent At</th>
+                                <th class="p-2 font-semibold text-gray-700">To</th>
+                                <th class="p-2 font-semibold text-gray-700">Subject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($order->emailLogs->sortByDesc('sent_at') as $log)
+                                <tr class="border-t">
+                                    <td class="p-2">{{ $log->sent_at?->format('Y-m-d H:i') ?? $log->created_at?->format('Y-m-d H:i') }}</td>
+                                    <td class="p-2">{{ $log->to_email }}</td>
+                                    <td class="p-2">{{ $log->subject }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="p-3 text-gray-500">No emails sent yet.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div class="space-y-5">
