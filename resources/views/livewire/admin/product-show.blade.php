@@ -147,6 +147,74 @@
 
     <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="rounded-lg border border-gray-200 p-3">
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">Sales Performance</h4>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="rounded-md border border-gray-200 p-2">
+                    <p class="text-[11px] text-gray-500 uppercase">Total Units</p>
+                    <p class="text-sm font-semibold text-gray-900">{{ $salesSummary['total_units'] }}</p>
+                </div>
+                <div class="rounded-md border border-gray-200 p-2">
+                    <p class="text-[11px] text-gray-500 uppercase">Total Revenue</p>
+                    <p class="text-sm font-semibold text-gray-900">{{ $product->currency_symbol }}{{ number_format($salesSummary['total_revenue'], 2) }}</p>
+                </div>
+                <div class="rounded-md border border-gray-200 p-2">
+                    <p class="text-[11px] text-gray-500 uppercase">Last 7 Days</p>
+                    <p class="text-sm font-semibold text-gray-900">{{ $salesSummary['last7_units'] }} units</p>
+                    <p class="text-xs text-gray-500">{{ $product->currency_symbol }}{{ number_format($salesSummary['last7_revenue'], 2) }}</p>
+                </div>
+                <div class="rounded-md border border-gray-200 p-2">
+                    <p class="text-[11px] text-gray-500 uppercase">Last 30 Days</p>
+                    <p class="text-sm font-semibold text-gray-900">{{ $salesSummary['last30_units'] }} units</p>
+                    <p class="text-xs text-gray-500">{{ $product->currency_symbol }}{{ number_format($salesSummary['last30_revenue'], 2) }}</p>
+                </div>
+            </div>
+            <div class="mt-2 text-xs text-gray-600">
+                30-day revenue change:
+                <span class="{{ $salesSummary['revenue_change'] >= 0 ? 'text-green-700' : 'text-red-700' }} font-semibold">
+                    {{ number_format($salesSummary['revenue_change'], 1) }}%
+                </span>
+                vs previous 30 days
+            </div>
+        </div>
+
+        <div class="rounded-lg border border-gray-200 p-3">
+            <h4 class="text-sm font-semibold text-gray-800 mb-2">Recent Sales</h4>
+            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                <table class="w-full text-xs">
+                    <thead class="bg-gray-50 text-gray-600">
+                        <tr>
+                            <th class="text-left px-2 py-2">Order</th>
+                            <th class="text-left px-2 py-2">Customer</th>
+                            <th class="text-left px-2 py-2">Qty</th>
+                            <th class="text-left px-2 py-2">Total</th>
+                            <th class="text-left px-2 py-2">Status</th>
+                            <th class="text-left px-2 py-2">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($recentSales as $sale)
+                            <tr class="border-t">
+                                <td class="px-2 py-2">#{{ $sale['order_id'] }}</td>
+                                <td class="px-2 py-2">{{ $sale['customer'] }}</td>
+                                <td class="px-2 py-2">{{ $sale['quantity'] }}</td>
+                                <td class="px-2 py-2">{{ $product->currency_symbol }}{{ number_format($sale['total'], 2) }}</td>
+                                <td class="px-2 py-2">{{ ucfirst($sale['status']) }}</td>
+                                <td class="px-2 py-2">{{ $sale['created_at'] }}</td>
+                            </tr>
+                        @endforeach
+                        @if ($recentSales->isEmpty())
+                            <tr>
+                                <td colspan="6" class="px-2 py-3 text-center text-gray-500">No sales yet for this product.</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded-lg border border-gray-200 p-3">
             <h4 class="text-sm font-semibold text-gray-800 mb-2">Related Products</h4>
             <div class="flex flex-wrap gap-1">
                 @forelse ($product->relatedProducts as $related)
