@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
 Route::prefix('payment')->name('payment.')->group(function () {    
     // Initiate Payment (Frontend posts here with 'gateway' name)
     Route::post('/pay', [PaymentController::class, 'pay'])->name('pay');
+    Route::any('/bkash/callback', [PaymentController::class, 'bkashCallback'])->name('bkash.callback');
 
     // Global Callbacks (Dynamic {gateway} param)
     // URL Example: /payment/sslcommerz/success
@@ -122,4 +123,3 @@ Route::prefix('admin')
             Route::resource('users', UserController::class)->only(['index']);
         });
     });
-

@@ -25,6 +25,9 @@ class PaymentController extends Controller
             case 'cod': // Handle COD
                 return $this->processCod($request);
 
+            case 'bkash':
+                return $this->payWithBkash($request);
+
             case 'stripe':
                 return redirect()->back()->with('error', 'Stripe not implemented yet.');
 
@@ -101,6 +104,87 @@ class PaymentController extends Controller
         // Order::create([... 'payment_method' => 'cod', 'payment_status' => 'pending' ...]);
 
         return redirect()->route('store.index')->with('success', 'Order placed successfully via Cash on Delivery!');
+    }
+
+    // --- 3.5. GATEWAY SPECIFIC LOGIC (bKash Checkout URL) ---
+    private function payWithBkash(Request $request)
+    {
+        $settings = Setting::whereIn('key', [
+            'bkash_base_url',
+            'bkash_app_key',
+            'bkash_app_secret',
+            'bkash_username',
+            'bkash_password',
+        ])->pluck('value', 'key');
+
+        $baseUrl = rtrim((string) ($settings['bkash_base_url'] ?? ''), '/');
+        $appKey = $settings['bkash_app_key'] ?? null;
+        $appSecret = $settings['bkash_app_secret'] ?? null;
+        $username = $settings['bkash_username'] ?? null;
+        $password = $settings['bkash_password'] ?? null;
+
+        if (! $baseUrl || ! $appKey || ! $appSecret || ! $username || ! $password) {
+            return redirect()->back()->with('error', 'bKash credentials are missing.');
+        }
+
+        $currencyCode = Currency::getActive()->code;
+        $amount = (string) $request->input('amount', 0);
+        $payerReference = (string) $request->input('payer_reference', 'customer');
+
+        if ($amount <= 0) {
+            return redirect()->back()->with('error', 'Invalid payment amount.');
+        }
+
+        $tokenUrl = $baseUrl . '/tokenized/checkout/token/grant';
+        $createUrl = $baseUrl . '/tokenized/checkout/create';
+
+        $tokenResponse = Http::withHeaders([
+            'username' => $username,
+            'password' => $password,
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ])->post($tokenUrl, [
+            'app_key' => $appKey,
+            'app_secret' => $appSecret,
+        ]);
+
+        $tokenData = $tokenResponse->json();
+        $idToken = $tokenData['id_token'] ?? null;
+
+        if (! $idToken) {
+            return redirect()->back()->with('error', 'bKash token grant failed.');
+        }
+
+        $createResponse = Http::withHeaders([
+            'Authorization' => $idToken,
+            'X-APP-Key' => $appKey,
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ])->post($createUrl, [
+            'mode' => '0011',
+            'payerReference' => $payerReference,
+            'callbackURL' => route('payment.bkash.callback'),
+            'amount' => $amount,
+            'currency' => $currencyCode,
+            'intent' => 'sale',
+            'merchantInvoiceNumber' => 'INV-' . strtoupper(uniqid()),
+        ]);
+
+        $createData = $createResponse->json();
+        $bkashUrl = $createData['bkashURL'] ?? null;
+        $paymentId = $createData['paymentID'] ?? null;
+
+        if (! $bkashUrl || ! $paymentId) {
+            return redirect()->back()->with('error', 'bKash payment creation failed.');
+        }
+
+        session()->put("bkash.payment.{$paymentId}", [
+            'id_token' => $idToken,
+            'app_key' => $appKey,
+            'base_url' => $baseUrl,
+        ]);
+
+        return redirect()->away($bkashUrl);
     }
 
     // --- 4. GLOBAL CALLBACK HANDLERS ---
@@ -194,5 +278,47 @@ class PaymentController extends Controller
         }
 
         return response()->json(['status' => 'Validation Failed'], 400);
+    }
+
+    // --- 5. bKash Callback ---
+    public function bkashCallback(Request $request)
+    {
+        $paymentId = $request->input('paymentID');
+        $status = strtolower((string) $request->input('status', ''));
+
+        if (! $paymentId) {
+            return redirect()->route('store.index')->with('error', 'Invalid bKash callback.');
+        }
+
+        if ($status !== 'success') {
+            return redirect()->route('store.index')->with('warning', 'bKash payment cancelled or failed.');
+        }
+
+        $sessionKey = "bkash.payment.{$paymentId}";
+        $paymentSession = session()->get($sessionKey);
+        if (! $paymentSession) {
+            return redirect()->route('store.index')->with('error', 'bKash session expired.');
+        }
+
+        $executeUrl = rtrim($paymentSession['base_url'], '/') . '/tokenized/checkout/execute';
+        $executeResponse = Http::withHeaders([
+            'Authorization' => $paymentSession['id_token'],
+            'X-APP-Key' => $paymentSession['app_key'],
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ])->post($executeUrl, [
+            'paymentID' => $paymentId,
+        ]);
+
+        $executeData = $executeResponse->json();
+        $statusCode = $executeData['statusCode'] ?? null;
+
+        session()->forget($sessionKey);
+
+        if ($statusCode === '0000') {
+            return redirect()->route('store.index')->with('success', 'bKash payment successful.');
+        }
+
+        return redirect()->route('store.index')->with('error', 'bKash payment execution failed.');
     }
 }

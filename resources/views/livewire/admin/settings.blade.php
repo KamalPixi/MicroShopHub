@@ -221,6 +221,46 @@
 
                 <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
                     <div class="flex items-center mb-4 justify-between">
+                        <div class="flex items-center">
+                            <span class="font-bold text-gray-800 text-sm">bKash</span>
+                            <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-pink-100 text-pink-700 border border-pink-200">BDT</span>
+                        </div>
+                        <span class="text-xs text-pink-600 font-semibold">Checkout URL</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Base URL</label>
+                            <input wire:model="settings.bkash_base_url" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="https://tokenized.sandbox.bka.sh/v1.2.0-beta">
+                            <p class="text-[10px] text-gray-400 mt-1">Use sandbox or production base URL from bKash docs.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">App Key</label>
+                                <input wire:model="settings.bkash_app_key" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="app_key">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">App Secret</label>
+                                <input wire:model="settings.bkash_app_secret" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="app_secret">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Username</label>
+                                <input wire:model="settings.bkash_username" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="username">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Password</label>
+                                <input wire:model="settings.bkash_password" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="password">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <div class="flex items-center mb-4 justify-between">
                         <span class="font-bold text-gray-800 text-sm">PayPal</span>
                         <svg class="h-5 w-auto text-blue-800" viewBox="0 0 18 18" fill="currentColor"><path d="M15.3 5.4c-.6-2.4-3-3.6-6.6-3.6h-4.2c-.3 0-.6.3-.6.6v12.6c0 .3.3.6.6.6h2.1c.3 0 .6-.3.6-.6v-2.4h1.2c3.9 0 6.6-1.5 6.9-6.6zM6.6 3.6h1.8c2.4 0 3.9.6 4.2 2.1.3 1.5-.6 3-3.6 3h-2.4V3.6z"/></svg>
                     </div>

@@ -45,6 +45,13 @@ class Settings extends Component
         'sslcommerz_api_key' => '',
         'sslcommerz_label' => '',
         'sslcommerz_sandbox' => false,
+
+        // bKash
+        'bkash_base_url' => '',
+        'bkash_app_key' => '',
+        'bkash_app_secret' => '',
+        'bkash_username' => '',
+        'bkash_password' => '',
         
         // Cash on Delivery
         'cod_label' => 'Cash on Delivery',
@@ -101,6 +108,11 @@ class Settings extends Component
         'settings.sslcommerz_sandbox' => 'boolean',
         'settings.cod_label' => 'nullable|string|max:255',
         'settings.cod_enabled' => 'boolean',
+        'settings.bkash_base_url' => 'nullable|string|max:255',
+        'settings.bkash_app_key' => 'nullable|string|max:255',
+        'settings.bkash_app_secret' => 'nullable|string|max:255',
+        'settings.bkash_username' => 'nullable|string|max:255',
+        'settings.bkash_password' => 'nullable|string|max:255',
         
         'settings.currency' => 'nullable|string|exists:currencies,code',
         'settings.tax_rate' => 'nullable|numeric|min:0|max:100',
@@ -259,6 +271,11 @@ class Settings extends Component
             'stripe_label',
             'paypal_api_key',
             'paypal_label',
+            'bkash_base_url',
+            'bkash_app_key',
+            'bkash_app_secret',
+            'bkash_username',
+            'bkash_password',
         ], [
             'settings.cod_label' => $this->rules['settings.cod_label'],
             'settings.cod_enabled' => $this->rules['settings.cod_enabled'],
@@ -270,6 +287,11 @@ class Settings extends Component
             'settings.stripe_label' => $this->rules['settings.stripe_label'],
             'settings.paypal_api_key' => $this->rules['settings.paypal_api_key'],
             'settings.paypal_label' => $this->rules['settings.paypal_label'],
+            'settings.bkash_base_url' => $this->rules['settings.bkash_base_url'],
+            'settings.bkash_app_key' => $this->rules['settings.bkash_app_key'],
+            'settings.bkash_app_secret' => $this->rules['settings.bkash_app_secret'],
+            'settings.bkash_username' => $this->rules['settings.bkash_username'],
+            'settings.bkash_password' => $this->rules['settings.bkash_password'],
         ]);
     }
 
