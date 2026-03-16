@@ -52,7 +52,7 @@
                         Current: {{ ucfirst($order->status) }}
                     </span>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
                     <div>
                         <label class="block text-xs font-semibold text-gray-600">Update Status</label>
                         <select wire:model.live="statusSelection" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-primary appearance-none bg-white">
