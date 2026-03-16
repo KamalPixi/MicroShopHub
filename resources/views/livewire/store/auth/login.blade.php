@@ -51,13 +51,13 @@
                                     <button type="button" wire:click="showForgotPasswordForm" class="text-sm font-medium text-primary hover:underline">Forgot password?</button>
                                 </div>
 
-                                <button type="submit" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700">Sign In</button>
+                                <button type="submit" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary">Sign In</button>
                             </form>
                         @endif
 
                         @if($activeMethod === 'otp' && $authSettings['email_otp_enabled'])
                             @if(!$otpSent)
-                                <button type="button" wire:click="sendOtp" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700">Send Login Code</button>
+                                <button type="button" wire:click="sendOtp" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary">Send Login Code</button>
                             @else
                                 <form wire:submit.prevent="verifyOtp" class="space-y-4">
                                     <div>
@@ -66,7 +66,7 @@
                                         @error('otp') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <button type="submit" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700">Verify & Login</button>
+                                    <button type="submit" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary">Verify & Login</button>
                                     <button type="button" wire:click="resetLoginState" class="w-full text-sm font-medium text-gray-500 hover:text-primary">Resend / Change Email</button>
                                 </form>
                             @endif
@@ -82,7 +82,7 @@
                         </div>
 
                         @if(!$resetOtpSent)
-                            <button type="button" wire:click="sendPasswordResetOtp" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700">Send Reset Code</button>
+                            <button type="button" wire:click="sendPasswordResetOtp" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary">Send Reset Code</button>
                         @else
                             <div>
                                 <label class="block text-sm font-bold text-gray-700">Reset code</label>
@@ -102,7 +102,7 @@
                                 @error('newPasswordConfirmation') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                             </div>
 
-                            <button type="button" wire:click="resetPassword" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700">Update Password</button>
+                            <button type="button" wire:click="resetPassword" class="w-full flex justify-center py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary">Update Password</button>
                         @endif
 
                         <button type="button" wire:click="hideForgotPasswordForm" class="w-full text-sm font-medium text-gray-500 hover:text-primary">Back to Login</button>
@@ -110,5 +110,12 @@
                 @endif
             @endif
         </div>
+
+        @if($authSettings['email_password_enabled'])
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">New here?</p>
+                <a href="{{ route('register') }}" class="text-sm font-medium text-primary hover:underline">Create a customer account</a>
+            </div>
+        @endif
     </div>
 </div>

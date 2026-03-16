@@ -13,6 +13,11 @@ class AuthController extends Controller
         return view('store.login');
     }
 
+    public function register()
+    {
+        return view('store.register');
+    }
+
     public function logout(): RedirectResponse
     {
         Auth::guard('web')->logout();
