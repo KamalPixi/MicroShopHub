@@ -60,6 +60,16 @@
                     </div>
                 </div>
             </div>
+
+            <div class="mt-5 flex justify-end">
+                <button
+                    wire:click="saveGeneral"
+                    wire:loading.attr="disabled"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                >
+                    Save General
+                </button>
+            </div>
         </section>
 
         <section class="rounded-xl border border-gray-200 p-5 bg-white">
@@ -75,6 +85,16 @@
                     <label for="meta_keywords" class="block text-sm font-semibold text-gray-700">Meta Keywords</label>
                     <input wire:model="settings.meta_keywords" type="text" id="meta_keywords" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
                 </div>
+            </div>
+
+            <div class="mt-5 flex justify-end">
+                <button
+                    wire:click="saveSeo"
+                    wire:loading.attr="disabled"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                >
+                    Save SEO
+                </button>
             </div>
         </section>
 
@@ -111,6 +131,16 @@
             @error('settings.customer_auth_email_password_enabled')
                 <span class="text-red-600 text-xs block mt-2">{{ $message }}</span>
             @enderror
+
+            <div class="mt-5 flex justify-end">
+                <button
+                    wire:click="saveAuth"
+                    wire:loading.attr="disabled"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                >
+                    Save Authentication
+                </button>
+            </div>
         </section>
 
         <section class="rounded-xl border border-gray-200 p-5 bg-white">
@@ -207,6 +237,16 @@
                     </div>
                 </div>
             </div>
+
+            <div class="mt-5 flex justify-end">
+                <button
+                    wire:click="savePayments"
+                    wire:loading.attr="disabled"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                >
+                    Save Payments
+                </button>
+            </div>
         </section>
 
         <section class="rounded-xl border border-gray-200 p-5 bg-white">
@@ -298,6 +338,16 @@
                     </div>
                 </div>
             </div>
+
+            <div class="mt-5 flex justify-end">
+                <button
+                    wire:click="saveOperations"
+                    wire:loading.attr="disabled"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                >
+                    Save Operations
+                </button>
+            </div>
         </section>
 
         <section class="rounded-xl border border-gray-200 p-5 bg-white">
@@ -338,23 +388,16 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
 
-    <div class="mt-8 pt-5 border-t border-gray-200 flex justify-end">
-        <button
-            wire:click="save"
-            wire:loading.attr="disabled"
-            class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 text-sm font-bold shadow-md transition flex items-center"
-        >
-            <span wire:loading.remove class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                Save Changes
-            </span>
-            <span wire:loading class="flex items-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                Saving...
-            </span>
-        </button>
+            <div class="mt-5 flex justify-end">
+                <button
+                    wire:click="saveSocial"
+                    wire:loading.attr="disabled"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs font-semibold shadow-sm transition"
+                >
+                    Save Contact & Social
+                </button>
+            </div>
+        </section>
     </div>
 </div>

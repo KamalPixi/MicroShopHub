@@ -202,33 +202,143 @@ class Settings extends Component
 
     public function save()
     {
-        $this->validate();
+        $this->saveAll();
+    }
 
-        if (
-            ! $this->settings['customer_auth_email_otp_enabled']
-            && ! $this->settings['customer_auth_email_password_enabled']
-            && ! $this->settings['customer_auth_guest_checkout_enabled']
-        ) {
-            $this->addError('settings.customer_auth_email_password_enabled', 'Enable at least one customer auth/checkout method.');
-            return;
+    public function saveGeneral()
+    {
+        $this->saveSettings([
+            'shop_name',
+            'site_title',
+            'branding_color',
+            'secondary_color',
+            'shop_logo',
+        ], [
+            'logo' => $this->rules['logo'],
+            'settings.shop_name' => $this->rules['settings.shop_name'],
+            'settings.site_title' => $this->rules['settings.site_title'],
+            'settings.branding_color' => $this->rules['settings.branding_color'],
+            'settings.secondary_color' => $this->rules['settings.secondary_color'],
+        ]);
+    }
+
+    public function saveSeo()
+    {
+        $this->saveSettings([
+            'meta_description',
+            'meta_keywords',
+        ], [
+            'settings.meta_description' => $this->rules['settings.meta_description'],
+            'settings.meta_keywords' => $this->rules['settings.meta_keywords'],
+        ]);
+    }
+
+    public function saveAuth()
+    {
+        $this->saveSettings([
+            'customer_auth_email_otp_enabled',
+            'customer_auth_email_password_enabled',
+            'customer_auth_guest_checkout_enabled',
+        ], [
+            'settings.customer_auth_email_otp_enabled' => $this->rules['settings.customer_auth_email_otp_enabled'],
+            'settings.customer_auth_email_password_enabled' => $this->rules['settings.customer_auth_email_password_enabled'],
+            'settings.customer_auth_guest_checkout_enabled' => $this->rules['settings.customer_auth_guest_checkout_enabled'],
+        ], true);
+    }
+
+    public function savePayments()
+    {
+        $this->saveSettings([
+            'cod_label',
+            'cod_enabled',
+            'sslcommerz_store_id',
+            'sslcommerz_api_key',
+            'sslcommerz_label',
+            'sslcommerz_sandbox',
+            'stripe_api_key',
+            'stripe_label',
+            'paypal_api_key',
+            'paypal_label',
+        ], [
+            'settings.cod_label' => $this->rules['settings.cod_label'],
+            'settings.cod_enabled' => $this->rules['settings.cod_enabled'],
+            'settings.sslcommerz_store_id' => $this->rules['settings.sslcommerz_store_id'],
+            'settings.sslcommerz_api_key' => $this->rules['settings.sslcommerz_api_key'],
+            'settings.sslcommerz_label' => $this->rules['settings.sslcommerz_label'],
+            'settings.sslcommerz_sandbox' => $this->rules['settings.sslcommerz_sandbox'],
+            'settings.stripe_api_key' => $this->rules['settings.stripe_api_key'],
+            'settings.stripe_label' => $this->rules['settings.stripe_label'],
+            'settings.paypal_api_key' => $this->rules['settings.paypal_api_key'],
+            'settings.paypal_label' => $this->rules['settings.paypal_label'],
+        ]);
+    }
+
+    public function saveOperations()
+    {
+        $this->saveSettings([
+            'currency',
+            'tax_rate',
+        ], [
+            'settings.currency' => $this->rules['settings.currency'],
+            'settings.tax_rate' => $this->rules['settings.tax_rate'],
+        ]);
+    }
+
+    public function saveSocial()
+    {
+        $this->saveSettings([
+            'email',
+            'phone',
+            'social_facebook',
+            'social_twitter',
+            'social_instagram',
+            'social_linkedin',
+        ], [
+            'settings.email' => $this->rules['settings.email'],
+            'settings.phone' => $this->rules['settings.phone'],
+            'settings.social_facebook' => $this->rules['settings.social_facebook'],
+            'settings.social_twitter' => $this->rules['settings.social_twitter'],
+            'settings.social_instagram' => $this->rules['settings.social_instagram'],
+            'settings.social_linkedin' => $this->rules['settings.social_linkedin'],
+        ]);
+    }
+
+    public function saveAll()
+    {
+        $this->saveSettings(array_keys($this->settings), $this->rules, true);
+    }
+
+    protected function saveSettings(array $keys, array $rules, bool $checkAuth = false): void
+    {
+        $this->validate($rules);
+
+        if ($checkAuth) {
+            if (
+                ! $this->settings['customer_auth_email_otp_enabled']
+                && ! $this->settings['customer_auth_email_password_enabled']
+                && ! $this->settings['customer_auth_guest_checkout_enabled']
+            ) {
+                $this->addError('settings.customer_auth_email_password_enabled', 'Enable at least one customer auth/checkout method.');
+                return;
+            }
         }
 
-        if ($this->logo) {
+        if (in_array('shop_logo', $keys, true) && $this->logo) {
             if ($oldLogo = Setting::where('key', 'shop_logo')->value('value')) {
                 Storage::disk('public')->delete($oldLogo);
             }
             $this->settings['shop_logo'] = $this->logo->store('logos', 'public');
+            $this->logo = null;
         }
 
         // Country list is now sourced from the countries table only.
         Setting::where('key', 'supported_countries')->delete();
 
-        foreach ($this->settings as $key => $value) {
+        foreach ($keys as $key) {
+            $value = $this->settings[$key] ?? null;
 
-            //Sync Currency Table when 'currency' setting changes
             if ($key === 'currency') {
                 Currency::query()->update(['is_default' => false]);
-                // Set selected to true
                 Currency::where('code', $value)->update(['is_default' => true]);
             }
 
@@ -242,7 +352,6 @@ class Settings extends Component
             );
         }
 
-        $this->logo = null;
         session()->flash('message', 'Shop settings updated successfully.');
     }
 
