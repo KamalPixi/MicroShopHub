@@ -1,7 +1,7 @@
 <header class="bg-white shadow p-3 mb-2 rounded-lg flex justify-between items-center">
     <h2 class="text-lg font-semibold text-gray-800 flex items-center">
         <!-- Floating Toggle Button (Visible when sidebar is collapsed) -->
-        <button id="toggle-sidebar-floating" class="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border border-gray-200 rounded-md p-1.5 z-10" aria-label="Expand sidebar">
+        <button id="toggle-sidebar-floating" class="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border border-gray-200 rounded-md p-1.5 z-10 mr-2" aria-label="Expand sidebar">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h8M4 12h8M4 18h8M14 6l6 6-6 6"></path>
             </svg>
