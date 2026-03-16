@@ -6,7 +6,7 @@
         </div>
         <div class="flex items-center gap-2">
             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
-                {{ $order->status === 'delivered' ? 'bg-green-100 text-green-700' : ($order->status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
+                {{ $order->status === 'delivered' ? 'bg-green-100 text-green-700' : ($order->status === 'cancelled' ? 'bg-red-100 text-red-700' : ($order->status === 'processing' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700')) }}">
                 {{ ucfirst($order->status) }}
             </span>
             <a href="{{ route('admin.orders.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">Back to Orders</a>
@@ -54,6 +54,7 @@
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <button type="button" wire:click="updateStatus('pending')" wire:confirm="Mark this order as Pending?" class="px-3 py-1.5 rounded text-xs font-semibold border border-gray-300 text-gray-600 hover:bg-gray-50">Mark Pending</button>
+                    <button type="button" wire:click="updateStatus('processing')" wire:confirm="Mark this order as Processing?" class="px-3 py-1.5 rounded text-xs font-semibold border border-blue-200 text-blue-700 hover:bg-blue-50">Mark Processing</button>
                     <button type="button" wire:click="updateStatus('delivered')" wire:confirm="Mark this order as Delivered?" class="px-3 py-1.5 rounded text-xs font-semibold border border-green-200 text-green-700 hover:bg-green-50">Mark Delivered</button>
                     <button type="button" wire:click="updateStatus('cancelled')" wire:confirm="Cancel this order?" class="px-3 py-1.5 rounded text-xs font-semibold border border-red-200 text-red-700 hover:bg-red-50">Mark Cancelled</button>
                 </div>

@@ -31,7 +31,7 @@ class OrderShow extends Component
 
     public function updateStatus(string $status): void
     {
-        if (! in_array($status, ['pending', 'delivered', 'cancelled'], true)) {
+        if (! in_array($status, ['pending', 'processing', 'delivered', 'cancelled'], true)) {
             return;
         }
 
