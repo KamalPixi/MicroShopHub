@@ -48,6 +48,8 @@
 
     @include('store.partials.footer')
 
+    @livewire('store.live-chat-widget')
+
     @livewireScripts
 </body>
 </html>

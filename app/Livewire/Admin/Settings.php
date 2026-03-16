@@ -79,6 +79,7 @@ class Settings extends Component
         'admin_notify_telegram_enabled' => false,
         'admin_telegram_bot_token' => '',
         'admin_telegram_chat_id' => '',
+        'live_chat_enabled' => false,
 
         // Customer Authentication
         'customer_auth_email_otp_enabled' => false,
@@ -148,6 +149,7 @@ class Settings extends Component
         'settings.admin_notify_telegram_enabled' => 'boolean',
         'settings.admin_telegram_bot_token' => 'nullable|string|max:255',
         'settings.admin_telegram_chat_id' => 'nullable|string|max:255',
+        'settings.live_chat_enabled' => 'boolean',
         'settings.customer_auth_email_otp_enabled' => 'boolean',
         'settings.customer_auth_email_password_enabled' => 'boolean',
         'settings.customer_auth_guest_checkout_enabled' => 'boolean',
@@ -171,6 +173,7 @@ class Settings extends Component
         $this->settings['customer_auth_guest_checkout_enabled'] = filter_var($this->settings['customer_auth_guest_checkout_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['admin_notify_email_enabled'] = filter_var($this->settings['admin_notify_email_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['admin_notify_telegram_enabled'] = filter_var($this->settings['admin_notify_telegram_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['live_chat_enabled'] = filter_var($this->settings['live_chat_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if (! $this->settings['currency'] && $this->currencies->isNotEmpty()) {
             $this->settings['currency'] = $this->currencies->first()->code;
@@ -453,12 +456,14 @@ class Settings extends Component
             'admin_notify_telegram_enabled',
             'admin_telegram_bot_token',
             'admin_telegram_chat_id',
+            'live_chat_enabled',
         ], [
             'settings.admin_notify_email_enabled' => $this->rules['settings.admin_notify_email_enabled'],
             'settings.admin_notify_email_address' => $this->rules['settings.admin_notify_email_address'],
             'settings.admin_notify_telegram_enabled' => $this->rules['settings.admin_notify_telegram_enabled'],
             'settings.admin_telegram_bot_token' => $this->rules['settings.admin_telegram_bot_token'],
             'settings.admin_telegram_chat_id' => $this->rules['settings.admin_telegram_chat_id'],
+            'settings.live_chat_enabled' => $this->rules['settings.live_chat_enabled'],
         ]);
     }
 

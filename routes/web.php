@@ -12,6 +12,7 @@ use App\Http\Controllers\Store\CustomerController;
 use App\Http\Controllers\Store\AuthController;
 use App\Http\Controllers\Store\PaymentController;
 use App\Http\Controllers\Store\NewsletterController;
+use App\Http\Controllers\Store\TelegramWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,8 @@ Route::prefix('payment')->name('payment.')->group(function () {
         Route::any('/ipn', [PaymentController::class, 'ipn'])->name('ipn');
     });
 });
+
+Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle'])->name('telegram.webhook');
 
 /*
 |--------------------------------------------------------------------------

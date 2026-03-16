@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Controllers\Store;
+
+use App\Http\Controllers\Controller;
+use App\Models\LiveChatMessage;
+use App\Models\LiveChatSession;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+class TelegramWebhookController extends Controller
+{
+    public function handle(Request $request)
+    {
+        $secret = config('services.telegram.webhook_secret');
+        $provided = $request->header('X-Telegram-Bot-Api-Secret-Token');
+        if ($secret && $provided !== $secret) {
+            return response()->json(['ok' => false], 403);
+        }
+
+        $message = $request->input('message');
+        if (! $message || empty($message['text'])) {
+            return response()->json(['ok' => true]);
+        }
+
+        $text = trim((string) $message['text']);
+        if (! str_starts_with($text, '/reply')) {
+            return response()->json(['ok' => true]);
+        }
+
+        // Format: /reply <session_token> <message>
+        $parts = explode(' ', $text, 3);
+        if (count($parts) < 3) {
+            return response()->json(['ok' => true]);
+        }
+
+        $sessionToken = trim($parts[1]);
+        $replyText = trim($parts[2]);
+        if (! $sessionToken || ! $replyText) {
+            return response()->json(['ok' => true]);
+        }
+
+        $session = LiveChatSession::where('session_token', $sessionToken)->first();
+        if (! $session) {
+            return response()->json(['ok' => true]);
+        }
+
+        LiveChatMessage::create([
+            'session_id' => $session->id,
+            'sender' => 'admin',
+            'message' => $replyText,
+        ]);
+
+        $session->update(['last_message_at' => now()]);
+
+        return response()->json(['ok' => true]);
+    }
+}

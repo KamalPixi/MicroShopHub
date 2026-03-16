@@ -13,7 +13,7 @@ use App\Services\CartService;
 use App\Services\CustomerAuthService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+use App\Services\TelegramBotService;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
@@ -366,10 +366,7 @@ class CartCheckout extends Component
             $chatId = $settings['admin_telegram_chat_id'] ?? null;
             if ($botToken && $chatId) {
                 try {
-                    Http::asForm()->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-                        'chat_id' => $chatId,
-                        'text' => $messageText,
-                    ]);
+                    app(TelegramBotService::class)->sendMessage($botToken, $chatId, $messageText);
                 } catch (\Throwable $e) {
                     // Silent failure to avoid blocking checkout
                 }

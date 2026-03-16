@@ -567,6 +567,14 @@
                 </div>
             </div>
 
+            <div class="mt-4 flex items-start gap-3">
+                <input type="checkbox" wire:model="settings.live_chat_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
+                <div>
+                    <p class="text-sm font-semibold text-gray-800">Enable Live Chat Widget</p>
+                    <p class="text-xs text-gray-500">Show live chat on the storefront and forward messages to Telegram.</p>
+                </div>
+            </div>
+
             <div class="mt-5 flex justify-end">
                 <button
                     wire:click="saveAdminNotifications"
