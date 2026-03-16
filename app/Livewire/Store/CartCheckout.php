@@ -260,7 +260,7 @@ class CartCheckout extends Component
                 'discount' => $this->discountAmount,
                 'shipping_cost' => $this->shippingCost,
                 'total' => $this->total,
-                'currency_code' => $currency?->code ?? 'USD',
+                'currency_code' => $currency?->code ?? 'BDT',
                 'exchange_rate' => $currency?->exchange_rate ?? 1.0000,
                 'shipping_method_id' => $this->selectedShippingMethod,
                 'payment_method' => $this->paymentMethod,
