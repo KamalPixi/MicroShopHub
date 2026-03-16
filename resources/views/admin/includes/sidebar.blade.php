@@ -13,7 +13,7 @@
         </div>
         <button id="toggle-sidebar" class="text-slate-200 hover:bg-slate-800 p-1.5 rounded-md" aria-label="Collapse sidebar">
             <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5l8 7-8 7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5l-4 7 4 7M20 6H9M20 12H9M20 18H9"></path>
             </svg>
         </button>
     </div>
