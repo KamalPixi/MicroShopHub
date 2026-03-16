@@ -71,7 +71,7 @@
                 </div>
                 <div class="mt-3">
                     <button type="button" wire:click="saveOrderAction" wire:confirm="Save this order action?" class="w-full md:w-auto bg-primary text-white text-xs font-semibold rounded-lg px-4 py-2 hover:bg-primary">
-                        Save Action
+                        Change Order Status
                     </button>
                 </div>
             </div>
