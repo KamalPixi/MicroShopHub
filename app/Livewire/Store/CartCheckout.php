@@ -13,6 +13,8 @@ use App\Services\CartService;
 use App\Services\CustomerAuthService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class CartCheckout extends Component
@@ -316,8 +318,63 @@ class CartCheckout extends Component
             $this->cart = [];
             $this->dispatch('cartUpdated');
 
+            $this->notifyAdminNewOrder($order);
             session()->flash('order_success', "Order #{$order->order_number} placed successfully!");
         });
+    }
+
+    protected function notifyAdminNewOrder(Order $order): void
+    {
+        $settings = Setting::whereIn('key', [
+            'admin_notify_email_enabled',
+            'admin_notify_email_address',
+            'admin_notify_telegram_enabled',
+            'admin_telegram_bot_token',
+            'admin_telegram_chat_id',
+            'mail_from_address',
+            'mail_from_name',
+        ])->pluck('value', 'key');
+
+        $orderTotal = number_format((float) $order->total, 2);
+        $currencyCode = $order->currency_code ?? 'BDT';
+        $messageText = "New order received\\n".
+            "Order: {$order->order_number}\\n".
+            "Total: {$currencyCode} {$orderTotal}\\n".
+            "Payment: ".($order->payment_method ?? 'N/A');
+
+        if (filter_var($settings['admin_notify_email_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
+            $toEmail = $settings['admin_notify_email_address'] ?? null;
+            if ($toEmail) {
+                $fromAddress = $settings['mail_from_address'] ?? config('mail.from.address');
+                $fromName = $settings['mail_from_name'] ?? config('mail.from.name');
+                try {
+                    Mail::raw($messageText, function ($message) use ($toEmail, $fromAddress, $fromName) {
+                        if ($fromAddress) {
+                            $message->from($fromAddress, $fromName ?: null);
+                        }
+                        $message->to($toEmail);
+                        $message->subject('New order received');
+                    });
+                } catch (\Throwable $e) {
+                    // Silent failure to avoid blocking checkout
+                }
+            }
+        }
+
+        if (filter_var($settings['admin_notify_telegram_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
+            $botToken = $settings['admin_telegram_bot_token'] ?? null;
+            $chatId = $settings['admin_telegram_chat_id'] ?? null;
+            if ($botToken && $chatId) {
+                try {
+                    Http::asForm()->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+                        'chat_id' => $chatId,
+                        'text' => $messageText,
+                    ]);
+                } catch (\Throwable $e) {
+                    // Silent failure to avoid blocking checkout
+                }
+            }
+        }
     }
 
     public function setAuthMethod(string $method): void

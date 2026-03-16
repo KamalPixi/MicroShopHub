@@ -517,5 +517,65 @@
                 </button>
             </div>
         </section>
+
+        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+            <h4 class="text-base font-bold text-gray-800">Admin Notifications</h4>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Notify admins when new orders are placed.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-start gap-3">
+                    <input type="checkbox" wire:model="settings.admin_notify_email_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">Email Notifications</p>
+                        <p class="text-xs text-gray-500">Send a summary email on each new order.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <input type="checkbox" wire:model="settings.admin_notify_telegram_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">Telegram Notifications</p>
+                        <p class="text-xs text-gray-500">Send a message to a Telegram chat.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h5 class="text-sm font-semibold text-gray-800">Email Config</h5>
+                        <span class="text-[10px] text-gray-500">Admin alerts</span>
+                    </div>
+                    <label class="block text-xs font-semibold text-gray-600">Admin Email</label>
+                    <input wire:model="settings.admin_notify_email_address" type="email" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="admin@example.com">
+                </div>
+
+                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h5 class="text-sm font-semibold text-gray-800">Telegram Config</h5>
+                        <span class="text-[10px] text-gray-500">Bot & chat</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600">Bot Token</label>
+                            <input wire:model="settings.admin_telegram_bot_token" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="123456:ABC-DEF...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600">Chat ID</label>
+                            <input wire:model="settings.admin_telegram_chat_id" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="-1001234567890">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 flex justify-end">
+                <button
+                    wire:click="saveAdminNotifications"
+                    wire:loading.attr="disabled"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
+                >
+                    Save Notifications
+                </button>
+            </div>
+        </section>
     </div>
 </div>

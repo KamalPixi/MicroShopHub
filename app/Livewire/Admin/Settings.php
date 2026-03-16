@@ -73,6 +73,13 @@ class Settings extends Component
         'mail_from_address' => '',
         'mail_from_name' => '',
 
+        // Admin Notifications
+        'admin_notify_email_enabled' => false,
+        'admin_notify_email_address' => '',
+        'admin_notify_telegram_enabled' => false,
+        'admin_telegram_bot_token' => '',
+        'admin_telegram_chat_id' => '',
+
         // Customer Authentication
         'customer_auth_email_otp_enabled' => false,
         'customer_auth_email_password_enabled' => true,
@@ -136,6 +143,11 @@ class Settings extends Component
         'settings.mail_encryption' => 'nullable|string|in:tls,ssl,none',
         'settings.mail_from_address' => 'nullable|email|max:255',
         'settings.mail_from_name' => 'nullable|string|max:255',
+        'settings.admin_notify_email_enabled' => 'boolean',
+        'settings.admin_notify_email_address' => 'nullable|email|max:255',
+        'settings.admin_notify_telegram_enabled' => 'boolean',
+        'settings.admin_telegram_bot_token' => 'nullable|string|max:255',
+        'settings.admin_telegram_chat_id' => 'nullable|string|max:255',
         'settings.customer_auth_email_otp_enabled' => 'boolean',
         'settings.customer_auth_email_password_enabled' => 'boolean',
         'settings.customer_auth_guest_checkout_enabled' => 'boolean',
@@ -157,6 +169,8 @@ class Settings extends Component
         $this->settings['customer_auth_email_otp_enabled'] = filter_var($this->settings['customer_auth_email_otp_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['customer_auth_email_password_enabled'] = filter_var($this->settings['customer_auth_email_password_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $this->settings['customer_auth_guest_checkout_enabled'] = filter_var($this->settings['customer_auth_guest_checkout_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['admin_notify_email_enabled'] = filter_var($this->settings['admin_notify_email_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['admin_notify_telegram_enabled'] = filter_var($this->settings['admin_notify_telegram_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if (! $this->settings['currency'] && $this->currencies->isNotEmpty()) {
             $this->settings['currency'] = $this->currencies->first()->code;
@@ -428,6 +442,23 @@ class Settings extends Component
             'settings.mail_encryption' => $this->rules['settings.mail_encryption'],
             'settings.mail_from_address' => $this->rules['settings.mail_from_address'],
             'settings.mail_from_name' => $this->rules['settings.mail_from_name'],
+        ]);
+    }
+
+    public function saveAdminNotifications()
+    {
+        $this->saveSettings([
+            'admin_notify_email_enabled',
+            'admin_notify_email_address',
+            'admin_notify_telegram_enabled',
+            'admin_telegram_bot_token',
+            'admin_telegram_chat_id',
+        ], [
+            'settings.admin_notify_email_enabled' => $this->rules['settings.admin_notify_email_enabled'],
+            'settings.admin_notify_email_address' => $this->rules['settings.admin_notify_email_address'],
+            'settings.admin_notify_telegram_enabled' => $this->rules['settings.admin_notify_telegram_enabled'],
+            'settings.admin_telegram_bot_token' => $this->rules['settings.admin_telegram_bot_token'],
+            'settings.admin_telegram_chat_id' => $this->rules['settings.admin_telegram_chat_id'],
         ]);
     }
 
