@@ -11,7 +11,7 @@
                 <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                     <div>
                         <p class="text-sm font-semibold text-gray-900">Live Chat</p>
-                        <p class="text-xs text-gray-500">We reply via Telegram</p>
+                        <p class="text-xs text-gray-500">We typically reply within a few minutes.</p>
                     </div>
                     <button type="button" wire:click="toggle" class="text-gray-500 hover:text-gray-700">×</button>
                 </div>

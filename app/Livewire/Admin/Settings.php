@@ -101,6 +101,7 @@ class Settings extends Component
     ];
 
     public $logo;
+    public $savedSection = '';
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -268,7 +269,7 @@ class Settings extends Component
             'settings.branding_color' => $this->rules['settings.branding_color'],
             'settings.secondary_color' => $this->rules['settings.secondary_color'],
             'settings.accent_color' => $this->rules['settings.accent_color'],
-        ]);
+        ], false, 'general');
     }
 
     public function saveSeo()
@@ -279,7 +280,7 @@ class Settings extends Component
         ], [
             'settings.meta_description' => $this->rules['settings.meta_description'],
             'settings.meta_keywords' => $this->rules['settings.meta_keywords'],
-        ]);
+        ], false, 'seo');
     }
 
     public function saveAuth()
@@ -292,7 +293,7 @@ class Settings extends Component
             'settings.customer_auth_email_otp_enabled' => $this->rules['settings.customer_auth_email_otp_enabled'],
             'settings.customer_auth_email_password_enabled' => $this->rules['settings.customer_auth_email_password_enabled'],
             'settings.customer_auth_guest_checkout_enabled' => $this->rules['settings.customer_auth_guest_checkout_enabled'],
-        ], true);
+        ], true, 'auth');
     }
 
     public function savePayments()
@@ -329,7 +330,7 @@ class Settings extends Component
             'settings.bkash_app_secret' => $this->rules['settings.bkash_app_secret'],
             'settings.bkash_username' => $this->rules['settings.bkash_username'],
             'settings.bkash_password' => $this->rules['settings.bkash_password'],
-        ]);
+        ], false, 'payments');
     }
 
     public function saveCodGateway()
@@ -340,7 +341,7 @@ class Settings extends Component
         ], [
             'settings.cod_label' => $this->rules['settings.cod_label'],
             'settings.cod_enabled' => $this->rules['settings.cod_enabled'],
-        ]);
+        ], false, 'cod');
     }
 
     public function saveSslCommerzGateway()
@@ -355,7 +356,7 @@ class Settings extends Component
             'settings.sslcommerz_api_key' => $this->rules['settings.sslcommerz_api_key'],
             'settings.sslcommerz_label' => $this->rules['settings.sslcommerz_label'],
             'settings.sslcommerz_sandbox' => $this->rules['settings.sslcommerz_sandbox'],
-        ]);
+        ], false, 'sslcommerz');
     }
 
     public function saveStripeGateway()
@@ -366,7 +367,7 @@ class Settings extends Component
         ], [
             'settings.stripe_api_key' => $this->rules['settings.stripe_api_key'],
             'settings.stripe_label' => $this->rules['settings.stripe_label'],
-        ]);
+        ], false, 'stripe');
     }
 
     public function savePaypalGateway()
@@ -377,7 +378,7 @@ class Settings extends Component
         ], [
             'settings.paypal_api_key' => $this->rules['settings.paypal_api_key'],
             'settings.paypal_label' => $this->rules['settings.paypal_label'],
-        ]);
+        ], false, 'paypal');
     }
 
     public function saveBkashGateway()
@@ -394,7 +395,7 @@ class Settings extends Component
             'settings.bkash_app_secret' => $this->rules['settings.bkash_app_secret'],
             'settings.bkash_username' => $this->rules['settings.bkash_username'],
             'settings.bkash_password' => $this->rules['settings.bkash_password'],
-        ]);
+        ], false, 'bkash');
     }
 
     public function saveOperations()
@@ -405,7 +406,7 @@ class Settings extends Component
         ], [
             'settings.currency' => $this->rules['settings.currency'],
             'settings.tax_rate' => $this->rules['settings.tax_rate'],
-        ]);
+        ], false, 'operations');
     }
 
     public function saveSocial()
@@ -424,7 +425,7 @@ class Settings extends Component
             'settings.social_twitter' => $this->rules['settings.social_twitter'],
             'settings.social_instagram' => $this->rules['settings.social_instagram'],
             'settings.social_linkedin' => $this->rules['settings.social_linkedin'],
-        ]);
+        ], false, 'social');
     }
 
     public function saveEmailSettings()
@@ -445,7 +446,7 @@ class Settings extends Component
             'settings.mail_encryption' => $this->rules['settings.mail_encryption'],
             'settings.mail_from_address' => $this->rules['settings.mail_from_address'],
             'settings.mail_from_name' => $this->rules['settings.mail_from_name'],
-        ]);
+        ], false, 'email');
     }
 
     public function saveAdminNotifications()
@@ -464,15 +465,15 @@ class Settings extends Component
             'settings.admin_telegram_bot_token' => $this->rules['settings.admin_telegram_bot_token'],
             'settings.admin_telegram_chat_id' => $this->rules['settings.admin_telegram_chat_id'],
             'settings.live_chat_enabled' => $this->rules['settings.live_chat_enabled'],
-        ]);
+        ], false, 'notifications');
     }
 
     public function saveAll()
     {
-        $this->saveSettings(array_keys($this->settings), $this->rules, true);
+        $this->saveSettings(array_keys($this->settings), $this->rules, true, 'all');
     }
 
-    protected function saveSettings(array $keys, array $rules, bool $checkAuth = false): void
+    protected function saveSettings(array $keys, array $rules, bool $checkAuth = false, string $sectionKey = ''): void
     {
         $this->validate($rules);
 
@@ -516,6 +517,7 @@ class Settings extends Component
             );
         }
 
+        $this->savedSection = $sectionKey;
         session()->flash('message', 'Shop settings updated successfully.');
     }
 

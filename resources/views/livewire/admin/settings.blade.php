@@ -68,7 +68,10 @@
                 </div>
             </div>
 
-            <div class="mt-5 flex justify-end">
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'general')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
                 <button
                     wire:click="saveGeneral"
                     wire:loading.attr="disabled"
@@ -94,7 +97,10 @@
                 </div>
             </div>
 
-            <div class="mt-5 flex justify-end">
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'seo')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
                 <button
                     wire:click="saveSeo"
                     wire:loading.attr="disabled"
@@ -139,7 +145,10 @@
                 <span class="text-red-600 text-xs block mt-2">{{ $message }}</span>
             @enderror
 
-            <div class="mt-5 flex justify-end">
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'auth')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
                 <button
                     wire:click="saveAuth"
                     wire:loading.attr="disabled"
@@ -173,7 +182,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 flex justify-end">
+                    <div class="mt-4 flex items-center justify-end gap-3">
+                        @if($savedSection === 'cod')
+                            <span class="text-xs font-semibold text-green-600">Saved</span>
+                        @endif
                         <button wire:click="saveCodGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
                             Save COD
                         </button>
@@ -213,7 +225,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 flex justify-end">
+                    <div class="mt-4 flex items-center justify-end gap-3">
+                        @if($savedSection === 'sslcommerz')
+                            <span class="text-xs font-semibold text-green-600">Saved</span>
+                        @endif
                         <button wire:click="saveSslCommerzGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
                             Save SSLCommerz
                         </button>
@@ -237,7 +252,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 flex justify-end">
+                    <div class="mt-4 flex items-center justify-end gap-3">
+                        @if($savedSection === 'stripe')
+                            <span class="text-xs font-semibold text-green-600">Saved</span>
+                        @endif
                         <button wire:click="saveStripeGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
                             Save Stripe
                         </button>
@@ -283,7 +301,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 flex justify-end">
+                    <div class="mt-4 flex items-center justify-end gap-3">
+                        @if($savedSection === 'bkash')
+                            <span class="text-xs font-semibold text-green-600">Saved</span>
+                        @endif
                         <button wire:click="saveBkashGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
                             Save bKash
                         </button>
@@ -307,7 +328,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 flex justify-end">
+                    <div class="mt-4 flex items-center justify-end gap-3">
+                        @if($savedSection === 'paypal')
+                            <span class="text-xs font-semibold text-green-600">Saved</span>
+                        @endif
                         <button wire:click="savePaypalGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
                             Save PayPal
                         </button>
@@ -407,7 +431,10 @@
                 </div>
             </div>
 
-            <div class="mt-5 flex justify-end">
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'operations')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
                 <button
                     wire:click="saveOperations"
                     wire:loading.attr="disabled"
@@ -457,7 +484,10 @@
                 </div>
             </div>
 
-            <div class="mt-5 flex justify-end">
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'social')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
                 <button
                     wire:click="saveSocial"
                     wire:loading.attr="disabled"
@@ -507,7 +537,10 @@
                 </div>
             </div>
 
-            <div class="mt-5 flex justify-end">
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'email')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
                 <button
                     wire:click="saveEmailSettings"
                     wire:loading.attr="disabled"
@@ -571,11 +604,20 @@
                 <input type="checkbox" wire:model="settings.live_chat_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
                 <div>
                     <p class="text-sm font-semibold text-gray-800">Enable Live Chat Widget</p>
-                    <p class="text-xs text-gray-500">Adds a storefront chat widget so customers can message you instantly. Messages are forwarded to Telegram and replies are delivered back to the customer.</p>
+                    <p class="text-xs text-gray-500">Adds a storefront chat widget so customers can message you instantly. Set Telegram Config first, then enable this to forward messages and deliver replies.</p>
+                    <ol class="mt-2 text-[11px] text-gray-500 list-decimal list-inside space-y-1">
+                        <li>Open Telegram and start a chat with <span class="font-semibold">@BotFather</span>.</li>
+                        <li>Create a bot with <span class="font-semibold">/newbot</span> and copy the Bot Token.</li>
+                        <li>Open your Telegram group or user chat where alerts should go, then get the Chat ID.</li>
+                        <li>Paste Bot Token and Chat ID above, save settings, then enable Live Chat.</li>
+                    </ol>
                 </div>
             </div>
 
-            <div class="mt-5 flex justify-end">
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'notifications')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
                 <button
                     wire:click="saveAdminNotifications"
                     wire:loading.attr="disabled"
