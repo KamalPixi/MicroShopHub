@@ -67,12 +67,12 @@
                         
                         <div class="mb-6 space-y-4">
                             @if(!auth()->check() && $authSettings['guest_checkout_enabled'])
-                                <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                                    <p class="text-sm font-semibold text-blue-900">You can order as guest.</p>
-                                    <p class="text-xs text-blue-700 mt-1">No login or registration required. Just enter your email and shipping address below.</p>
+                                <div class="rounded-lg border border-primary/20 bg-primary/10 p-4">
+                                    <p class="text-sm font-semibold text-primary">You can order as guest.</p>
+                                    <p class="text-xs text-primary mt-1">No login or registration required. Just enter your email and shipping address below.</p>
                                     @if($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled'])
-                                        <p class="text-xs text-blue-700 mt-2">Want faster checkout and order history? Use optional login/register below.</p>
-                                        <button wire:click="toggleAuthSection" type="button" class="mt-3 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 border border-blue-200 hover:bg-blue-100">
+                                        <p class="text-xs text-primary mt-2">Want faster checkout and order history? Use optional login/register below.</p>
+                                        <button wire:click="toggleAuthSection" type="button" class="mt-3 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-primary border border-primary/20 hover:bg-primary/10">
                                             {{ $showAuthSection ? 'Hide Login / Register' : 'Show Login / Register' }}
                                         </button>
                                     @endif
@@ -90,7 +90,7 @@
                                             {{ $authSettings['guest_checkout_enabled'] ? 'Optional Account Access' : 'Login Required' }}
                                         </p>
                                         @if($authSettings['guest_checkout_enabled'])
-                                            <button wire:click="toggleAuthSection" type="button" class="text-[11px] px-2 py-1 rounded bg-blue-100 text-blue-700 font-semibold hover:bg-blue-200">Hide</button>
+                                            <button wire:click="toggleAuthSection" type="button" class="text-[11px] px-2 py-1 rounded bg-primary/10 text-primary font-semibold hover:bg-primary/20">Hide</button>
                                         @endif
                                     </div>
 
@@ -138,7 +138,7 @@
                                                         <input wire:model="loginRemember" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary mr-2">
                                                         Remember me
                                                     </label>
-                                                    <button wire:click="loginWithPasswordInline" type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
+                                                    <button wire:click="loginWithPasswordInline" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
                                                         Login
                                                     </button>
                                                 </div>
@@ -148,7 +148,7 @@
                                         @if($authMethod === 'otp' && $authSettings['email_otp_enabled'])
                                             <div class="space-y-2">
                                                 @if(!$loginOtpSent)
-                                                    <button wire:click="sendLoginOtp" type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
+                                                    <button wire:click="sendLoginOtp" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
                                                         Send OTP
                                                     </button>
                                                 @else
@@ -158,7 +158,7 @@
                                                             Verify
                                                         </button>
                                                     </div>
-                                                    @if(session('otp_message')) <p class="text-xs text-blue-700">{{ session('otp_message') }}</p> @endif
+                                                    @if(session('otp_message')) <p class="text-xs text-primary">{{ session('otp_message') }}</p> @endif
                                                     @error('loginOtp') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                                 @endif
                                             </div>
@@ -209,7 +209,7 @@
                                             @foreach($savedAddresses as $addr)
                                                 <div wire:click="useSavedAddress({{ $addr->id }})" 
                                                     class="cursor-pointer relative p-2.5 rounded-lg border transition-all duration-200 group h-full flex flex-col justify-between
-                                                    {{ $selectedAddressId == $addr->id ? 'border-primary bg-blue-50 ring-1 ring-primary shadow-sm' : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50' }}">
+                                                    {{ $selectedAddressId == $addr->id ? 'border-primary bg-primary/10 ring-1 ring-primary shadow-sm' : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50' }}">
                                                     
                                                     <div class="flex items-center justify-between mb-1.5">
                                                         <span class="text-[10px] font-bold text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded uppercase tracking-wider">{{ $addr->type ?? 'Home' }}</span>
@@ -228,7 +228,7 @@
 
                                             <div wire:click="clearAddressSelection"
                                                 class="cursor-pointer relative p-2.5 rounded-lg border border-dashed border-gray-300 hover:border-primary hover:bg-gray-50 transition-all flex flex-col items-center justify-center text-center h-full min-h-[85px]
-                                                {{ $selectedAddressId === 'new' ? 'border-primary bg-blue-50 ring-1 ring-primary' : '' }}">
+                                                {{ $selectedAddressId === 'new' ? 'border-primary bg-primary/10 ring-1 ring-primary' : '' }}">
                                                 <div class="bg-gray-100 rounded-full p-1.5 mb-1 group-hover:bg-white transition-colors">
                                                     <svg class="w-4 h-4 text-gray-500 group-hover:text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                                 </div>
@@ -386,7 +386,7 @@
                                 <label class="relative cursor-pointer group">
                                     <input wire:model.live="selectedShippingMethod" type="radio" value="{{ $method->id }}" class="peer sr-only">
                                     
-                                    <div class="p-3 rounded-lg border border-gray-200 hover:border-primary/50 transition-all duration-200 peer-checked:border-primary peer-checked:bg-blue-50 peer-checked:ring-1 peer-checked:ring-primary flex items-center justify-between">
+                                    <div class="p-3 rounded-lg border border-gray-200 hover:border-primary/50 transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:ring-1 peer-checked:ring-primary flex items-center justify-between">
                                         
                                         <div class="flex flex-col">
                                             <span class="text-sm font-bold text-gray-900">{{ $method->name }}</span>
@@ -483,15 +483,15 @@
                                     <button type="button"
                                             wire:click="$set('paymentMethod','sslcommerz')"
                                             class="group w-full flex items-center justify-between p-4 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
-                                                   {{ $paymentMethod === 'sslcommerz' ? 'border-blue-600 ring-1 ring-blue-200' : 'border-gray-200 hover:border-blue-600' }}">
+                                                   {{ $paymentMethod === 'sslcommerz' ? 'border-primary ring-1 ring-primary/20' : 'border-gray-200 hover:border-primary' }}">
                                         <div class="flex flex-col items-start text-left">
                                             <img src="https://securepay.sslcommerz.com/public/image/sslcommerz.png" alt="SSLCommerz" class="h-6 mb-2 opacity-90 group-hover:opacity-100 transition-opacity">
-                                            <span class="text-sm font-bold text-gray-800 group-hover:text-blue-700 transition-colors">
+                                            <span class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
                                                 {{ $settings['sslcommerz_label'] ?: 'Pay with SSLCommerz' }}
                                             </span>
                                             <span class="text-[10px] text-gray-500">bKash / Cards / Banking</span>
                                         </div>
-                                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors text-gray-400">
+                                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-gray-400">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                         </div>
                                     </button>
@@ -503,13 +503,13 @@
                                             class="group w-full flex items-center justify-between p-4 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                    {{ $paymentMethod === 'stripe' ? 'border-indigo-600 ring-1 ring-indigo-200' : 'border-gray-200 hover:border-indigo-600' }}">
                                         <div class="flex flex-col items-start text-left">
-                                            <svg class="h-6 mb-2 text-indigo-600" viewBox="0 0 40 17" fill="currentColor"><path d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z"/></svg>
-                                            <span class="text-sm font-bold text-gray-800 group-hover:text-indigo-700 transition-colors">
+                                            <svg class="h-6 mb-2 text-primary" viewBox="0 0 40 17" fill="currentColor"><path d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z"/></svg>
+                                            <span class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
                                                 {{ $settings['stripe_label'] ?: 'Credit / Debit Card' }}
                                             </span>
                                             <span class="text-[10px] text-gray-500">International</span>
                                         </div>
-                                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors text-gray-400">
+                                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-gray-400">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                         </div>
                                     </button>
@@ -539,7 +539,7 @@
                         @if($paymentMethod === 'cod')
                             <button wire:click="placeOrder" 
                                     wire:loading.attr="disabled"
-                                    class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-blue-700 transition-all flex justify-center items-center
+                                    class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center
                                            {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? 'opacity-70 cursor-not-allowed' : '' }}">
                                 <span wire:loading.remove>
                                     {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? 'Log in to Order' : 'Complete Order' }}
@@ -553,7 +553,7 @@
                                 <input type="hidden" name="amount" value="{{ number_format($total, 2, '.', '') }}">
                                 <input type="hidden" name="payer_reference" value="{{ $phone }}">
                                 <button type="submit"
-                                        class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-blue-700 transition-all flex justify-center items-center">
+                                        class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center">
                                     Proceed to Payment
                                 </button>
                             </form>
@@ -574,7 +574,7 @@
                     <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 </div>
                 <h2 class="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
-                <a href="{{ route('store.index') }}" class="px-6 py-2 bg-primary text-white text-sm font-bold rounded hover:bg-blue-700 transition">Start Shopping</a>
+                <a href="{{ route('store.index') }}" class="px-6 py-2 bg-primary text-white text-sm font-bold rounded hover:bg-primary transition">Start Shopping</a>
             </div>
         @endif
 
@@ -586,7 +586,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Order Placed!</h3>
                     <p class="text-gray-600 mb-6">{{ session('order_success') }}</p>
-                    <a href="{{ route('store.index') }}" class="block w-full bg-primary text-white py-2 rounded font-bold hover:bg-blue-700">Continue Shopping</a>
+                    <a href="{{ route('store.index') }}" class="block w-full bg-primary text-white py-2 rounded font-bold hover:bg-primary">Continue Shopping</a>
                 </div>
             </div>
         @endif
