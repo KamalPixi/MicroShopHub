@@ -1,7 +1,7 @@
 @extends('admin.layouts.default')
 
 @section('content')
-<div class="max-w-6xl mx-auto">
+<div class="mx-auto">
     <div class="flex items-center justify-between mb-6">
         <div>
             <h1 class="text-xl font-bold text-gray-900">Order #{{ $order->order_number ?? $order->id }}</h1>
