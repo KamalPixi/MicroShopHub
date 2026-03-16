@@ -21,7 +21,7 @@
                    wire:keydown.enter="performSearch"
                    type="text" 
                    placeholder="Search products..."
-                   class="w-full pl-10 pr-4 py-2 border-none focus:ring-0 h-full text-gray-700 placeholder-gray-400"
+                   class="w-full pl-10 pr-12 py-2 border-none focus:ring-0 h-full text-gray-700 placeholder-gray-400"
                    autocomplete="off">
             
             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -29,6 +29,19 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </div>
+
+            @if(!empty($query))
+                <button type="button"
+                        wire:loading.remove
+                        wire:target="query"
+                        wire:click="$set('query','')"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                        aria-label="Clear search">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            @endif
 
             <div wire:loading wire:target="query" class="absolute right-3 top-1/2 -translate-y-1/2">
                 <svg class="animate-spin h-4 w-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -45,7 +58,7 @@
                 <ul class="divide-y divide-gray-100">
                     @foreach($results as $product)
                         <li class="hover:bg-gray-50 transition-colors">
-                            <a href="#" class="flex items-center px-4 py-3 group">
+                            <a href="{{ route('store.product.show', $product->slug) }}" class="flex items-center px-4 py-3 group">
                                 <div class="flex-shrink-0 h-10 w-10 border border-gray-200 rounded overflow-hidden bg-gray-100">
                                      <img src="{{ $product->thumbnail ? (Str::startsWith($product->thumbnail, ['http']) ? $product->thumbnail : Storage::url($product->thumbnail)) : 'https://placehold.co/50' }}" 
                                           alt="{{ $product->name }}" 
