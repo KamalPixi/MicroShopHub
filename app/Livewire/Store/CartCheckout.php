@@ -251,6 +251,7 @@ class CartCheckout extends Component
         $this->validate();
 
         DB::transaction(function () {
+            $currency = Currency::getActive();
             $order = Order::create([
                 'user_id' => Auth::id(),
                 'order_number' => 'ORD-'.strtoupper(uniqid()),
@@ -259,8 +260,8 @@ class CartCheckout extends Component
                 'discount' => $this->discountAmount,
                 'shipping_cost' => $this->shippingCost,
                 'total' => $this->total,
-                'currency_code' => 'USD',
-                'exchange_rate' => 1.0000,
+                'currency_code' => $currency?->code ?? 'USD',
+                'exchange_rate' => $currency?->exchange_rate ?? 1.0000,
                 'shipping_method_id' => $this->selectedShippingMethod,
                 'payment_method' => $this->paymentMethod,
                 'payment_status' => 'pending',
