@@ -23,11 +23,11 @@ class OrderList extends Component
     public function render()
     {
         $orders = Order::query()
-            ->with('customer') // Eager load customer relationship
+            ->with('user')
             ->when($this->search, function ($query) {
                 $query->where('id', 'like', '%' . $this->search . '%')
                       ->orWhere('status', 'like', '%' . $this->search . '%')
-                      ->orWhereHas('customer', function ($q) {
+                      ->orWhereHas('user', function ($q) {
                           $q->where('name', 'like', '%' . $this->search . '%');
                       });
             })
