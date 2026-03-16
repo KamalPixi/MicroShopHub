@@ -17,24 +17,34 @@
                 </div>
 
                 <div class="p-4 space-y-2 max-h-72 overflow-y-auto" wire:poll.6s="pollMessages">
-                    @forelse($messages as $msg)
-                        <div class="flex {{ $msg['sender'] === 'customer' ? 'justify-end' : 'justify-start' }}">
-                            <div class="max-w-[75%] rounded-lg px-3 py-2 text-xs {{ $msg['sender'] === 'customer' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700' }}">
-                                <p>{{ $msg['message'] }}</p>
-                                <p class="mt-1 text-[10px] opacity-70">{{ $msg['created_at'] }}</p>
-                                @if(!empty($msg['meta']['product']))
-                                    <div class="mt-1 text-[10px] opacity-90">
-                                        Product: {{ $msg['meta']['product']['name'] }}
-                                    </div>
-                                @endif
+                    @if(!$nameCaptured)
+                        <div class="space-y-3">
+                            <p class="text-xs text-gray-500">Please enter your name to start the chat.</p>
+                            <div class="flex gap-2">
+                                <input type="text" wire:model.live="customerName" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:border-primary focus:ring-primary" placeholder="Your name">
+                                <button type="button" wire:click="saveName" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold">Start</button>
                             </div>
                         </div>
-                    @empty
-                        <p class="text-xs text-gray-500">Ask us anything.</p>
-                    @endforelse
+                    @else
+                        @forelse($messages as $msg)
+                            <div class="flex {{ $msg['sender'] === 'customer' ? 'justify-end' : 'justify-start' }}">
+                                <div class="max-w-[75%] rounded-lg px-3 py-2 text-xs {{ $msg['sender'] === 'customer' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700' }}">
+                                    <p>{{ $msg['message'] }}</p>
+                                    <p class="mt-1 text-[10px] opacity-70">{{ $msg['created_at'] }}</p>
+                                    @if(!empty($msg['meta']['product']))
+                                        <div class="mt-1 text-[10px] opacity-90">
+                                            Product: {{ $msg['meta']['product']['name'] }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-xs text-gray-500">Ask us anything.</p>
+                        @endforelse
+                    @endif
                 </div>
 
-                @if($currentProduct)
+                @if($currentProduct && $nameCaptured)
                     <div class="px-4 py-2 border-t border-gray-100">
                         <button type="button" wire:click="shareProduct" class="text-xs text-primary font-semibold hover:underline">
                             Share this product
@@ -44,8 +54,8 @@
 
                 <div class="px-4 py-3 border-t border-gray-100">
                     <div class="flex gap-2">
-                        <input type="text" wire:model.live="message" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:border-primary focus:ring-primary" placeholder="Type a message...">
-                        <button type="button" wire:click="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold">Send</button>
+                        <input type="text" wire:model.live="message" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:border-primary focus:ring-primary" placeholder="Type a message..." {{ $nameCaptured ? '' : 'disabled' }}>
+                        <button type="button" wire:click="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold" {{ $nameCaptured ? '' : 'disabled' }}>Send</button>
                     </div>
                 </div>
             </div>

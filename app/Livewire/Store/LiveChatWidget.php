@@ -19,6 +19,8 @@ class LiveChatWidget extends Component
     public array $messages = [];
     public int $lastMessageId = 0;
     public ?array $currentProduct = null;
+    public string $customerName = '';
+    public bool $nameCaptured = false;
 
     public function mount(?int $productId = null): void
     {
@@ -39,11 +41,14 @@ class LiveChatWidget extends Component
             session(['live_chat_token' => $this->sessionToken]);
         }
 
-        LiveChatSession::firstOrCreate([
+        $session = LiveChatSession::firstOrCreate([
             'session_token' => $this->sessionToken,
         ], [
             'status' => 'open',
         ]);
+
+        $this->customerName = (string) ($session->customer_name ?? '');
+        $this->nameCaptured = $this->customerName !== '';
 
         if ($productId) {
             $product = Product::select('id', 'name', 'slug')->find($productId);
@@ -59,6 +64,22 @@ class LiveChatWidget extends Component
         $this->loadMessages();
     }
 
+    public function saveName(): void
+    {
+        $name = trim($this->customerName);
+        if ($name === '') {
+            return;
+        }
+
+        $session = LiveChatSession::where('session_token', $this->sessionToken)->first();
+        if (! $session) {
+            return;
+        }
+
+        $session->update(['customer_name' => $name]);
+        $this->nameCaptured = true;
+    }
+
     public function toggle(): void
     {
         $this->open = ! $this->open;
@@ -72,6 +93,10 @@ class LiveChatWidget extends Component
     public function sendMessage(): void
     {
         if (! $this->enabled) {
+            return;
+        }
+
+        if (! $this->nameCaptured) {
             return;
         }
 
@@ -157,7 +182,9 @@ class LiveChatWidget extends Component
             return;
         }
 
+        $customerName = $session->customer_name ?: 'Anonymous';
         $text = "<b>New live chat message</b>\n".
+            "Name: {$customerName}\n".
             "Session: <code>{$session->session_token}</code>\n".
             "Message: {$message->message}";
 
