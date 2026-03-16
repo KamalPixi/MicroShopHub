@@ -386,7 +386,7 @@
                                 <label class="relative cursor-pointer group">
                                     <input wire:model.live="selectedShippingMethod" type="radio" value="{{ $method->id }}" class="peer sr-only">
                                     
-                                    <div class="p-3 rounded-lg border border-gray-200 hover:border-primary transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:ring-1 peer-checked:ring-primary flex items-center justify-between">
+                                    <div class="p-3 rounded-lg border border-gray-200 hover:border-primary transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:ring-1 peer-checked:ring-primary/20 flex items-center justify-between">
                                         
                                         <div class="flex flex-col">
                                             <span class="text-sm font-bold text-gray-900">{{ $method->name }}</span>
@@ -415,7 +415,7 @@
                 </div>
 
                 <div class="lg:col-span-4 mt-8 lg:mt-0">
-                    <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-5 sticky top-24">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sticky top-24">
                         <h2 class="text-base font-bold text-gray-900 mb-4 border-b pb-2">Order Summary</h2>
 
                         <div class="space-y-3 text-sm mb-6">
