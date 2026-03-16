@@ -212,6 +212,11 @@
 </head>
 
 <body class="bg-gray-50 font-sans antialiased flex flex-col min-h-screen">
+    <div id="admin-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden">
+        <div class="bg-primary text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-lg">
+            <span id="admin-toast-text">Copied to clipboard</span>
+        </div>
+    </div>
     <!-- Main Dashboard Layout -->
     <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar -->
@@ -232,6 +237,18 @@
 
     <!-- JavaScript for Sidebar Toggle -->
     <script>
+        function showAdminToast(message) {
+            const toast = document.getElementById('admin-toast');
+            const text = document.getElementById('admin-toast-text');
+            if (!toast || !text) return;
+            text.textContent = message || 'Done';
+            toast.classList.remove('hidden');
+            clearTimeout(window.__adminToastTimer);
+            window.__adminToastTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 1600);
+        }
+
         const sidebar = document.getElementById('sidebar');
         const toggleButton = document.getElementById('toggle-sidebar');
         const toggleButtonFloating = document.getElementById('toggle-sidebar-floating');
