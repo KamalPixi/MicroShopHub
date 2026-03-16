@@ -26,4 +26,12 @@ class DashboardController extends Controller
     public function homepageSettings() {
         return view('admin.homepage-settings');
     }
+
+    public function marketingSubscriptions() {
+        return view('admin.marketing-subscriptions');
+    }
+
+    public function marketingCampaigns() {
+        return view('admin.marketing-campaigns');
+    }
 }

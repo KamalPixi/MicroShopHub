@@ -11,6 +11,7 @@ use App\Http\Controllers\Store\StoreController;
 use App\Http\Controllers\Store\CustomerController;
 use App\Http\Controllers\Store\AuthController;
 use App\Http\Controllers\Store\PaymentController;
+use App\Http\Controllers\Store\NewsletterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ Route::name('store.')->group(function () {
     Route::get('/search', [StoreController::class, 'search'])->name('search');
     Route::get('/product/{slug}', [StoreController::class, 'show'])->name('product.show');
     Route::get('/cart', [StoreController::class, 'cart'])->name('cart.index');
+    Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
 
 
@@ -114,6 +116,8 @@ Route::prefix('admin')
             Route::get('/categories', [DashboardController::class, 'categories'])->name('categories');
             Route::get('/shipping-methods', [DashboardController::class, 'shippingMethods'])->name('shipping.methods');
             Route::get('/homepage-settings', [DashboardController::class, 'homepageSettings'])->name('homepage.settings');
+            Route::get('/marketing/subscriptions', [DashboardController::class, 'marketingSubscriptions'])->name('marketing.subscriptions');
+            Route::get('/marketing/campaigns', [DashboardController::class, 'marketingCampaigns'])->name('marketing.campaigns');
 
             // Resources
             Route::resource('products', ProductController::class)->except(['destroy']);

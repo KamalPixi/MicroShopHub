@@ -102,6 +102,39 @@
             </li>
 
             @php
+                $isMarketingOpen = request()->routeIs('admin.marketing.*');
+            @endphp
+            <li>
+                <button 
+                    class="flex items-center text-sm px-2.5 py-2 rounded-md w-full {{ $isMarketingOpen ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}" 
+                    onclick="document.getElementById('marketing-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                >
+                    <svg class="w-4.5 h-4.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h7M11 9h7M3 5h4v4H3V5zm0 6h4v4H3v-4zm0 6h4v4H3v-4z"></path>
+                    </svg>
+                    Marketing
+                    <svg class="chevron ml-auto w-4 h-4 transform transition-transform {{ $isMarketingOpen ? 'rotate-90' : '' }}" 
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+                <ul id="marketing-submenu" class="ml-6 mt-1 space-y-1 {{ $isMarketingOpen ? '' : 'hidden' }}">
+                    <li>
+                        <a href="{{ route('admin.marketing.subscriptions') }}" 
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.marketing.subscriptions') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Subscriptions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.marketing.campaigns') }}" 
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.marketing.campaigns') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Campaigns
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            @php
                 $isSettingsOpen = request()->routeIs('admin.settings*', 'admin.homepage-settings*', 'admin.shipping-methods*');
             @endphp
             <li>
