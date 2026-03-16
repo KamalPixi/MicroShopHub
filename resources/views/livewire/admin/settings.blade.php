@@ -368,7 +368,7 @@
                         @error('newCurrency.exchange_rate') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div class="flex items-end">
-                        <button wire:click="addCurrency" type="button" class="w-full bg-gray-900 text-white rounded-lg px-3 py-2 text-sm font-semibold hover:bg-black">
+                        <button wire:click="addCurrency" type="button" class="w-full bg-secondary text-white rounded-lg px-3 py-2 text-sm font-semibold hover:bg-secondary">
                             Add Currency
                         </button>
                     </div>
@@ -400,7 +400,7 @@
                         @error('newCountry.name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div class="flex items-end">
-                        <button wire:click="addCountry" type="button" class="w-full bg-gray-900 text-white rounded-lg px-3 py-2 text-sm font-semibold hover:bg-black">
+                        <button wire:click="addCountry" type="button" class="w-full bg-secondary text-white rounded-lg px-3 py-2 text-sm font-semibold hover:bg-secondary">
                             Add Country
                         </button>
                     </div>
