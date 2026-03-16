@@ -22,6 +22,11 @@
         >
     </div>
 
+    @php
+        $defaultCurrency = \App\Models\Currency::getActive();
+        $defaultSymbol = $defaultCurrency?->symbol ?? '$';
+        $defaultCode = $defaultCurrency?->code ?? 'USD';
+    @endphp
     <div class="overflow-x-auto">
         <table class="table-field w-full text-left text-sm">
             <thead>
@@ -29,6 +34,7 @@
                     <th class="font-medium text-gray-700 p-2">Order ID</th>
                     <th class="font-medium text-gray-700 p-2">Customer</th>
                     <th class="font-medium text-gray-700 p-2">Status</th>
+                    <th class="font-medium text-gray-700 p-2">Currency</th>
                     <th class="font-medium text-gray-700 p-2">Total</th>
                     <th class="font-medium text-gray-700 p-2">Shipping Cost</th>
                     <th class="font-medium text-gray-700 p-2">Created At</th>
@@ -55,8 +61,19 @@
                             </span>
 
                         </td>
-                        <td class="p-2">${{ number_format($order->total, 2) }}</td>
-                        <td class="p-2">${{ number_format($order->shipping_cost, 2) }}</td>
+                        @php
+                            $currencySymbol = $order->currency?->symbol ?? '';
+                            $currencyCode = $order->currency_code ?? '';
+                            $resolvedCode = $currencyCode ?: $defaultCode;
+                            $displaySymbol = $currencySymbol ?: ($resolvedCode ? $resolvedCode . ' ' : $defaultSymbol);
+                        @endphp
+                        <td class="p-2">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                                {{ $resolvedCode ?: 'N/A' }}
+                            </span>
+                        </td>
+                        <td class="p-2">{{ $displaySymbol }}{{ number_format($order->total, 2) }}</td>
+                        <td class="p-2">{{ $displaySymbol }}{{ number_format($order->shipping_cost, 2) }}</td>
                         <td class="p-2">{{ $order->created_at->format('Y-m-d H:i') }}</td>
                         <td class="p-2 text-end space-x-1">
                             <!-- View -->
@@ -82,7 +99,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center text-gray-500 py-4">No orders found.</td>
+                        <td colspan="8" class="text-center text-gray-500 py-4">No orders found.</td>
                     </tr>
                 @endforelse
             </tbody>

@@ -23,10 +23,11 @@ class OrderList extends Component
     public function render()
     {
         $orders = Order::query()
-            ->with('user')
+            ->with(['user', 'currency'])
             ->when($this->search, function ($query) {
                 $query->where('id', 'like', '%' . $this->search . '%')
                       ->orWhere('status', 'like', '%' . $this->search . '%')
+                      ->orWhere('currency_code', 'like', '%' . $this->search . '%')
                       ->orWhereHas('user', function ($q) {
                           $q->where('name', 'like', '%' . $this->search . '%');
                       });
