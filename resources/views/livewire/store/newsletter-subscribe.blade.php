@@ -6,6 +6,9 @@
     @error('email')
         <p class="mt-2 text-sm text-white/90">{{ $message }}</p>
     @enderror
+    @if($errorMessage)
+        <p class="mt-2 text-sm text-white/90">{{ $errorMessage }}</p>
+    @endif
     @if($successMessage)
         <p class="mt-3 text-sm text-white/90">{{ $successMessage }}</p>
     @endif

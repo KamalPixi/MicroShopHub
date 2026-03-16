@@ -64,6 +64,15 @@ class Settings extends Component
         'email' => '',
         'phone' => '',
 
+        // Email (Campaigns)
+        'mail_host' => '',
+        'mail_port' => '',
+        'mail_username' => '',
+        'mail_password' => '',
+        'mail_encryption' => 'tls',
+        'mail_from_address' => '',
+        'mail_from_name' => '',
+
         // Customer Authentication
         'customer_auth_email_otp_enabled' => false,
         'customer_auth_email_password_enabled' => true,
@@ -120,6 +129,13 @@ class Settings extends Component
         'settings.tax_rate' => 'nullable|numeric|min:0|max:100',
         'settings.email' => 'nullable|email|max:255',
         'settings.phone' => 'nullable|string|max:50',
+        'settings.mail_host' => 'nullable|string|max:255',
+        'settings.mail_port' => 'nullable|numeric|min:1|max:65535',
+        'settings.mail_username' => 'nullable|string|max:255',
+        'settings.mail_password' => 'nullable|string|max:255',
+        'settings.mail_encryption' => 'nullable|string|in:tls,ssl,none',
+        'settings.mail_from_address' => 'nullable|email|max:255',
+        'settings.mail_from_name' => 'nullable|string|max:255',
         'settings.customer_auth_email_otp_enabled' => 'boolean',
         'settings.customer_auth_email_password_enabled' => 'boolean',
         'settings.customer_auth_guest_checkout_enabled' => 'boolean',
@@ -391,6 +407,27 @@ class Settings extends Component
             'settings.social_twitter' => $this->rules['settings.social_twitter'],
             'settings.social_instagram' => $this->rules['settings.social_instagram'],
             'settings.social_linkedin' => $this->rules['settings.social_linkedin'],
+        ]);
+    }
+
+    public function saveEmailSettings()
+    {
+        $this->saveSettings([
+            'mail_host',
+            'mail_port',
+            'mail_username',
+            'mail_password',
+            'mail_encryption',
+            'mail_from_address',
+            'mail_from_name',
+        ], [
+            'settings.mail_host' => $this->rules['settings.mail_host'],
+            'settings.mail_port' => $this->rules['settings.mail_port'],
+            'settings.mail_username' => $this->rules['settings.mail_username'],
+            'settings.mail_password' => $this->rules['settings.mail_password'],
+            'settings.mail_encryption' => $this->rules['settings.mail_encryption'],
+            'settings.mail_from_address' => $this->rules['settings.mail_from_address'],
+            'settings.mail_from_name' => $this->rules['settings.mail_from_name'],
         ]);
     }
 

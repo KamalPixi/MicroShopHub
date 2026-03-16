@@ -426,11 +426,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="email" class="block text-sm font-semibold text-gray-700">Support Email</label>
-                        <input wire:model="settings.email" type="email" id="email" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="support@example.com">
+                        <input wire:model="settings.email" type="email" id="email" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="support@example.com">
                     </div>
                     <div>
                         <label for="phone" class="block text-sm font-semibold text-gray-700">Support Phone</label>
-                        <input wire:model="settings.phone" type="text" id="phone" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="+1 234 567 890">
+                        <input wire:model="settings.phone" type="text" id="phone" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="+1 234 567 890">
                     </div>
                 </div>
 
@@ -439,19 +439,19 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex rounded-md shadow-sm">
                             <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-xs">FB</span>
-                            <input wire:model="settings.social_facebook" type="url" class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2" placeholder="https://facebook.com/...">
+                            <input wire:model="settings.social_facebook" type="url" class="focus:ring-primary focus:border-primary block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2" placeholder="https://facebook.com/...">
                         </div>
                         <div class="flex rounded-md shadow-sm">
                             <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-xs">TW</span>
-                            <input wire:model="settings.social_twitter" type="url" class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2" placeholder="https://twitter.com/...">
+                            <input wire:model="settings.social_twitter" type="url" class="focus:ring-primary focus:border-primary block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2" placeholder="https://twitter.com/...">
                         </div>
                         <div class="flex rounded-md shadow-sm">
                             <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-xs">IG</span>
-                            <input wire:model="settings.social_instagram" type="url" class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2" placeholder="https://instagram.com/...">
+                            <input wire:model="settings.social_instagram" type="url" class="focus:ring-primary focus:border-primary block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2" placeholder="https://instagram.com/...">
                         </div>
                         <div class="flex rounded-md shadow-sm">
                             <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-xs">IN</span>
-                            <input wire:model="settings.social_linkedin" type="url" class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2" placeholder="https://linkedin.com/in/...">
+                            <input wire:model="settings.social_linkedin" type="url" class="focus:ring-primary focus:border-primary block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2" placeholder="https://linkedin.com/in/...">
                         </div>
                     </div>
                 </div>
@@ -464,6 +464,56 @@
                     class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
                 >
                     Save Contact & Social
+                </button>
+            </div>
+        </section>
+
+        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+            <h4 class="text-base font-bold text-gray-800">Campaign Email Settings</h4>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Configure SMTP details for sending campaign emails.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">SMTP Host</label>
+                    <input wire:model="settings.mail_host" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="smtp.example.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">SMTP Port</label>
+                    <input wire:model="settings.mail_port" type="number" min="1" max="65535" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="587">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">SMTP Username</label>
+                    <input wire:model="settings.mail_username" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="user@example.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">SMTP Password</label>
+                    <input wire:model="settings.mail_password" type="password" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="••••••••">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">Encryption</label>
+                    <select wire:model="settings.mail_encryption" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2">
+                        <option value="tls">TLS</option>
+                        <option value="ssl">SSL</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700">From Name</label>
+                    <input wire:model="settings.mail_from_name" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="ShopHub">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700">From Address</label>
+                    <input wire:model="settings.mail_from_address" type="email" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="no-reply@example.com">
+                </div>
+            </div>
+
+            <div class="mt-5 flex justify-end">
+                <button
+                    wire:click="saveEmailSettings"
+                    wire:loading.attr="disabled"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
+                >
+                    Save Email Settings
                 </button>
             </div>
         </section>
