@@ -76,7 +76,7 @@
                         <td class="p-2">{{ $displaySymbol }}{{ number_format($order->total, 2) }}</td>
                         <td class="p-2">{{ $displaySymbol }}{{ number_format($order->shipping_cost, 2) }}</td>
                         <td class="p-2">{{ $order->created_at->format('Y-m-d H:i') }}</td>
-                        <td class="p-2 text-end space-x-1">
+                        <td class="p-2 text-end space-x-3">
                             <!-- View -->
                             <a href="{{ route('admin.orders.show', ['order' => $order->id]) }}" class="inline-flex items-center py-1 text-blue-600 hover:text-blue-800 rounded" title="View">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
