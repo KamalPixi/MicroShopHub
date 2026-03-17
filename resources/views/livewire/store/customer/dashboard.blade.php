@@ -24,6 +24,7 @@
                         </div>
                         <h2 class="font-bold text-gray-900 truncate w-full">{{ auth()->user()->name }}</h2>
                         <p class="text-xs text-gray-500 truncate w-full mb-2">{{ auth()->user()->email }}</p>
+                        <p class="text-[11px] text-gray-400">Member since {{ auth()->user()->created_at?->format('M Y') }}</p>
                     </div>
 
                     <nav class="p-2 space-y-1">
@@ -36,7 +37,7 @@
                             <button wire:click="switchTab('{{ $key }}')"
                                     class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium
                                     {{ $activeTab === $key 
-                                        ? 'bg-primary text-white shadow-md' 
+                                        ? 'bg-primary text-white shadow-sm' 
                                         : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
                                 <svg class="w-5 h-5 {{ $activeTab === $key ? 'text-white' : 'text-gray-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}" />
@@ -60,6 +61,67 @@
                 
                 @if($activeTab === 'overview')
                     <div class="space-y-6 animate-fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                                <p class="text-xs font-semibold text-gray-500 uppercase">Total Orders</p>
+                                <div class="mt-2 text-2xl font-bold text-gray-900">{{ $stats['total_orders'] }}</div>
+                                <p class="text-xs text-gray-400 mt-1">All-time orders</p>
+                            </div>
+                            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                                <p class="text-xs font-semibold text-gray-500 uppercase">Total Spend</p>
+                                <div class="mt-2 text-2xl font-bold text-gray-900">{{ $currencyCode }} {{ number_format($stats['total_spend'], 2) }}</div>
+                                <p class="text-xs text-gray-400 mt-1">Across all orders</p>
+                            </div>
+                            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                                <p class="text-xs font-semibold text-gray-500 uppercase">Last Order</p>
+                                <div class="mt-2 text-sm font-semibold text-gray-900">
+                                    @if($stats['last_order'])
+                                        #{{ $stats['last_order']->order_number }}
+                                    @else
+                                        No orders yet
+                                    @endif
+                                </div>
+                                <p class="text-xs text-gray-400 mt-1">
+                                    {{ $stats['last_order']?->created_at?->format('M d, Y') ?? '—' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-gray-100 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-gray-900">Profile Overview</h3>
+                                <button wire:click="switchTab('profile')" class="text-xs font-semibold text-primary hover:underline">Edit Profile</button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">Name</p>
+                                    <p class="font-semibold text-gray-900 mt-1">{{ $user->name }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">Email</p>
+                                    <p class="text-gray-700 mt-1">{{ $user->email }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">Phone</p>
+                                    <p class="text-gray-700 mt-1">{{ $user->phone ?? '—' }}</p>
+                                </div>
+                                <div class="md:col-span-3">
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">Default Address</p>
+                                    <p class="text-gray-700 mt-1">
+                                        {{ $user->defaultAddress?->address_line1 ?? 'No default address set.' }}
+                                        @if($user->defaultAddress?->city)
+                                            , {{ $user->defaultAddress?->city }}
+                                        @endif
+                                        @if($user->defaultAddress?->state)
+                                            , {{ $user->defaultAddress?->state }}
+                                        @endif
+                                        @if($user->defaultAddress?->postal_code)
+                                            , {{ $user->defaultAddress?->postal_code }}
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                         
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                             <h3 class="font-bold text-gray-900 mb-4">My Orders</h3>
@@ -95,8 +157,11 @@
                                 </button>
 
                                 <button wire:click="switchOrderTab('completed')" class="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 hover:bg-blue-50 transition group">
-                                    <div class="mb-2">
+                                    <div class="relative mb-2">
                                         <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        @if($stats['completed'] > 0)
+                                            <span class="absolute -top-1 -right-1 bg-green-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $stats['completed'] }}</span>
+                                        @endif
                                     </div>
                                     <span class="text-xs font-medium text-gray-600 group-hover:text-primary">Completed</span>
                                 </button>
@@ -120,8 +185,11 @@
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-sm font-bold text-primary">${{ number_format($order->total, 2) }}</p>
-                                            <p class="text-xs font-medium capitalize {{ $order->status == 'completed' ? 'text-green-600' : 'text-orange-500' }}">{{ $order->status }}</p>
+                                            @php
+                                                $orderSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
+                                            @endphp
+                                            <p class="text-sm font-bold text-primary">{{ $orderSymbol }}{{ number_format($order->total, 2) }}</p>
+                                            <p class="text-xs font-medium capitalize {{ $order->status == 'delivered' ? 'text-green-600' : ($order->status == 'cancelled' ? 'text-red-500' : 'text-orange-500') }}">{{ $order->status }}</p>
                                         </div>
                                     </div>
                                 @empty
@@ -156,11 +224,17 @@
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <span class="px-2.5 py-0.5 rounded text-xs font-bold uppercase
-                                                {{ $order->status == 'completed' ? 'bg-green-100 text-green-700' : 
+                                                {{ $order->status == 'delivered' ? 'bg-green-100 text-green-700' : 
                                                   ($order->status == 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700') }}">
                                                 {{ $order->status }}
                                             </span>
+                                            <span class="px-2.5 py-0.5 rounded text-xs font-semibold uppercase bg-gray-100 text-gray-600">
+                                                {{ $order->payment_status ?? 'pending' }}
+                                            </span>
                                         </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mb-3">
+                                        Payment: <span class="font-semibold text-gray-700">{{ $order->payment_method ?? '—' }}</span>
                                     </div>
 
                                     <div class="space-y-3 mb-4">
@@ -173,7 +247,10 @@
                                                     <p class="text-xs text-gray-500">x{{ $item->quantity }}</p>
                                                 </div>
                                                 <div class="text-sm font-medium text-gray-900">
-                                                    {{ number_format($item->price, 2) }}
+                                                    @php
+                                                        $itemSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
+                                                    @endphp
+                                                    {{ $itemSymbol }}{{ number_format($item->price, 2) }}
                                                 </div>
                                             </div>
                                         @endforeach
@@ -184,11 +261,14 @@
 
                                     <div class="flex items-center justify-between pt-2 border-t border-dashed border-gray-200">
                                         <div class="text-sm">
-                                            Total: <span class="font-bold text-xl text-primary">${{ number_format($order->total, 2) }}</span>
+                                            @php
+                                                $totalSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
+                                            @endphp
+                                            Total: <span class="font-bold text-xl text-primary">{{ $totalSymbol }}{{ number_format($order->total, 2) }}</span>
                                         </div>
                                         <div class="flex gap-2">
                                             @if($order->status == 'pending')
-                                                <button class="px-4 py-2 bg-primary text-white text-xs font-bold rounded hover:bg-blue-700 transition">Pay Now</button>
+                                                <button class="px-4 py-2 bg-primary text-white text-xs font-bold rounded hover:bg-primary transition">Pay Now</button>
                                             @endif
                                             <button wire:click="viewOrder({{ $order->id }})" class="px-4 py-2 border border-gray-300 text-gray-700 text-xs font-bold rounded hover:bg-gray-50 transition">View Details</button>
                                         </div>
@@ -216,10 +296,72 @@
                     <div class="space-y-6 animate-fade-in">
                         <div class="flex justify-between items-center">
                             <h3 class="font-bold text-gray-900 text-lg">Saved Addresses</h3>
-                            <button class="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-black transition">
-                                + Add New
+                            <button wire:click="toggleAddressForm" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary transition">
+                                {{ $showAddressForm ? 'Close' : '+ Add New' }}
                             </button>
                         </div>
+                        @if(session('address_success'))
+                            <div class="bg-green-50 text-green-700 p-3 rounded-lg text-sm">{{ session('address_success') }}</div>
+                        @endif
+                        @if($showAddressForm)
+                            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                                <h4 class="text-sm font-bold text-gray-900 mb-4">New Address</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600">Label</label>
+                                        <input wire:model="newAddress.type" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Home / Office">
+                                        @error('newAddress.type') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600">Full Name</label>
+                                        <input wire:model="newAddress.name" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        @error('newAddress.name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600">Phone</label>
+                                        <input wire:model="newAddress.phone" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        @error('newAddress.phone') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600">City</label>
+                                        <input wire:model="newAddress.city" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        @error('newAddress.city') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs font-semibold text-gray-600">Street Address</label>
+                                        <input wire:model="newAddress.address_line1" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        @error('newAddress.address_line1') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs font-semibold text-gray-600">Apartment / Suite</label>
+                                        <input wire:model="newAddress.address_line2" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        @error('newAddress.address_line2') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600">State</label>
+                                        <input wire:model="newAddress.state" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        @error('newAddress.state') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600">Postal Code</label>
+                                        <input wire:model="newAddress.postal_code" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        @error('newAddress.postal_code') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600">Country</label>
+                                        <input wire:model="newAddress.country" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        @error('newAddress.country') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <input wire:model="newAddress.is_default" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                        <span class="text-xs text-gray-600">Set as default</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex justify-end">
+                                    <button wire:click="addAddress" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary transition">Save Address</button>
+                                </div>
+                            </div>
+                        @endif
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @forelse($addresses as $addr)
                                 <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative group hover:border-primary/50 transition-colors">
@@ -229,12 +371,23 @@
                                     </div>
                                     <p class="font-bold text-gray-900">{{ $addr->name }}</p>
                                     <p class="text-sm text-gray-600 mt-1">{{ $addr->address_line1 }}</p>
+                                    @if($addr->address_line2)
+                                        <p class="text-sm text-gray-600">{{ $addr->address_line2 }}</p>
+                                    @endif
                                     <p class="text-sm text-gray-600">{{ $addr->city }}, {{ $addr->state }} {{ $addr->postal_code }}</p>
+                                    @if($addr->country)
+                                        <p class="text-sm text-gray-600">{{ $addr->country }}</p>
+                                    @endif
                                 </div>
                             @empty
                                 <div class="col-span-2 text-center py-10 bg-white rounded-xl border border-dashed border-gray-300"><p class="text-gray-500">No addresses saved.</p></div>
                             @endforelse
                         </div>
+                        @if(method_exists($addresses, 'links'))
+                            <div class="pt-2">
+                                {{ $addresses->links() }}
+                            </div>
+                        @endif
                     </div>
                 @endif
 
@@ -283,7 +436,7 @@
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-1">Email</label>
                                     <input value="{{ $email }}" type="email" disabled class="w-full bg-gray-50 border-gray-200 rounded-lg shadow-sm text-gray-500 cursor-not-allowed h-10">
-                                    <span class="text-[10px] text-primary cursor-pointer hover:underline float-right mt-1">Change Email</span>
+                                    <span class="text-[10px] text-gray-400 float-right mt-1">Email changes are not supported yet.</span>
                                 </div>
 
                                 <div>
@@ -294,12 +447,19 @@
 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-1">Gender</label>
-                                    <select wire:model="gender" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary h-10">
-                                        <option value="">Select Gender</option>
-                                        <option value="1">Male</option>
-                                        <option value="2">Female</option>
-                                        <option value="3">Other</option>
-                                    </select>
+                                    <div class="relative">
+                                        <select wire:model="gender" class="w-full appearance-none border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary h-10 pr-8 bg-white">
+                                            <option value="">Select Gender</option>
+                                            <option value="1">Male</option>
+                                            <option value="2">Female</option>
+                                            <option value="3">Other</option>
+                                        </select>
+                                        <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
+                                            <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
+                                            </svg>
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div>
@@ -309,7 +469,7 @@
                             </div>
 
                             <div class="pt-6 border-t border-gray-100 flex justify-end">
-                                <button type="submit" class="bg-primary text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:bg-blue-700 hover:shadow-xl transition transform active:scale-95">
+                                <button type="submit" class="bg-primary text-white px-8 py-3 rounded-lg font-bold shadow-sm hover:bg-primary transition">
                                     Save Changes
                                 </button>
                             </div>
@@ -329,6 +489,23 @@
                     <button wire:click="$set('showOrderModal', false)" class="text-gray-400 hover:text-gray-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                 </div>
                 <div class="p-6 space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-600">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <div class="font-semibold text-gray-700">Status</div>
+                            <div class="mt-1 capitalize">{{ $selectedOrder->status }}</div>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <div class="font-semibold text-gray-700">Payment</div>
+                            <div class="mt-1 capitalize">{{ $selectedOrder->payment_status }}</div>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <div class="font-semibold text-gray-700">Placed</div>
+                            <div class="mt-1">{{ $selectedOrder->created_at?->format('M d, Y') }}</div>
+                        </div>
+                    </div>
+                    @php
+                        $modalSymbol = $selectedOrder->currency?->symbol ?: ($selectedOrder->currency_code ? $selectedOrder->currency_code . ' ' : $currencySymbol);
+                    @endphp
                     <div class="space-y-4">
                         @foreach($selectedOrder->items as $item)
                             <div class="flex items-center justify-between">
@@ -336,14 +513,32 @@
                                     <div class="w-12 h-12 bg-gray-100 rounded-lg mr-4 overflow-hidden border border-gray-200"></div>
                                     <div><p class="text-sm font-bold text-gray-900">{{ $item->name }}</p><p class="text-xs text-gray-500">Qty: {{ $item->quantity }}</p></div>
                                 </div>
-                                <p class="text-sm font-bold text-gray-900">{{$product->currency_symbol}}{{ number_format($item->price, 2) }}</p>
+                                <p class="text-sm font-bold text-gray-900">{{ $modalSymbol }}{{ number_format($item->price, 2) }}</p>
                             </div>
                         @endforeach
                     </div>
                     <div class="border-t border-gray-100 pt-4 space-y-2">
-                        <div class="flex justify-between text-sm text-gray-600"><span>Subtotal</span><span>${{ number_format($selectedOrder->subtotal, 2) }}</span></div>
-                        <div class="flex justify-between text-sm text-gray-600"><span>Shipping</span><span>${{ number_format($selectedOrder->shipping_cost, 2) }}</span></div>
-                        <div class="flex justify-between text-base font-bold text-gray-900 pt-2 border-t border-dashed border-gray-200"><span>Total</span><span class="text-primary">${{ number_format($selectedOrder->total, 2) }}</span></div>
+                        <div class="flex justify-between text-sm text-gray-600"><span>Subtotal</span><span>{{ $modalSymbol }}{{ number_format($selectedOrder->subtotal, 2) }}</span></div>
+                        <div class="flex justify-between text-sm text-gray-600"><span>Shipping</span><span>{{ $modalSymbol }}{{ number_format($selectedOrder->shipping_cost, 2) }}</span></div>
+                        <div class="flex justify-between text-base font-bold text-gray-900 pt-2 border-t border-dashed border-gray-200"><span>Total</span><span class="text-primary">{{ $modalSymbol }}{{ number_format($selectedOrder->total, 2) }}</span></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-600">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <div class="font-semibold text-gray-700">Shipping Address</div>
+                            <div class="mt-1">
+                                {{ $selectedOrder->shippingAddress?->name ?? '—' }}<br>
+                                {{ $selectedOrder->shippingAddress?->address_line1 ?? '' }}<br>
+                                {{ $selectedOrder->shippingAddress?->city ?? '' }} {{ $selectedOrder->shippingAddress?->state ?? '' }} {{ $selectedOrder->shippingAddress?->postal_code ?? '' }}
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <div class="font-semibold text-gray-700">Billing Address</div>
+                            <div class="mt-1">
+                                {{ $selectedOrder->billingAddress?->name ?? '—' }}<br>
+                                {{ $selectedOrder->billingAddress?->address_line1 ?? '' }}<br>
+                                {{ $selectedOrder->billingAddress?->city ?? '' }} {{ $selectedOrder->billingAddress?->state ?? '' }} {{ $selectedOrder->billingAddress?->postal_code ?? '' }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

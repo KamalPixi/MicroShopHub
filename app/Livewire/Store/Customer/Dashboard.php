@@ -4,14 +4,17 @@ namespace App\Livewire\Store\Customer;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Order;
 use App\Models\Address;
+use App\Models\Currency;
 
 class Dashboard extends Component
 {
     use WithFileUploads;
+    use WithPagination;
 
     // Navigation
     public $activeTab = 'overview'; 
@@ -31,6 +34,21 @@ class Dashboard extends Component
     // Order View Modal
     public $selectedOrder = null;
     public $showOrderModal = false;
+    public $currencySymbol = '$';
+    public $currencyCode = 'USD';
+    public $showAddressForm = false;
+    public $newAddress = [
+        'type' => 'home',
+        'name' => '',
+        'phone' => '',
+        'address_line1' => '',
+        'address_line2' => '',
+        'city' => '',
+        'state' => '',
+        'postal_code' => '',
+        'country' => '',
+        'is_default' => false,
+    ];
 
     public function mount()
     {
@@ -47,6 +65,10 @@ class Dashboard extends Component
         // Handle deep linking
         $this->activeTab = request()->query('tab', 'overview');
         $this->activeOrderTab = request()->query('status', 'all');
+
+        $currency = Currency::getActive();
+        $this->currencySymbol = $currency?->symbol ?? '$';
+        $this->currencyCode = $currency?->code ?? 'USD';
     }
 
     // --- Tab Switching ---
@@ -54,12 +76,19 @@ class Dashboard extends Component
     public function switchTab($tab)
     {
         $this->activeTab = $tab;
+        if ($tab !== 'orders') {
+            $this->resetPage('ordersPage');
+        }
+        if ($tab !== 'addresses') {
+            $this->resetPage('addressesPage');
+        }
     }
 
     public function switchOrderTab($status)
     {
         $this->activeOrderTab = $status;
         $this->activeTab = 'orders'; // Ensure we are on the orders tab
+        $this->resetPage('ordersPage');
     }
 
     // --- Profile Logic ---
@@ -104,7 +133,11 @@ class Dashboard extends Component
 
     public function getOrdersProperty()
     {
-        $query = $this->user->orders()->latest();
+        $query = $this->user->orders()
+            ->with(['items' => function ($q) {
+                $q->limit(3);
+            }])
+            ->latest();
 
         switch ($this->activeOrderTab) {
             case 'to_pay':
@@ -123,19 +156,24 @@ class Dashboard extends Component
                 $query->where('status', 'shipped');
                 break;
             case 'completed':
-                $query->where('status', 'completed');
+                $query->where('status', 'delivered');
                 break;
             case 'cancelled':
                 $query->whereIn('status', ['cancelled', 'refunded']);
                 break;
         }
 
-        return $query->paginate(10);
+        return $query->paginate(8, ['*'], 'ordersPage');
     }
 
     public function viewOrder($orderId)
     {
-        $this->selectedOrder = Order::with('items')->find($orderId);
+        $this->selectedOrder = Order::with([
+            'items',
+            'billingAddress',
+            'shippingAddress',
+            'currency',
+        ])->find($orderId);
         if($this->selectedOrder && $this->selectedOrder->user_id == Auth::id()) {
             $this->showOrderModal = true;
         }
@@ -150,18 +188,72 @@ class Dashboard extends Component
         }
     }
 
+    public function toggleAddressForm(): void
+    {
+        $this->showAddressForm = ! $this->showAddressForm;
+    }
+
+    public function addAddress(): void
+    {
+        $validated = $this->validate([
+            'newAddress.type' => 'nullable|string|max:50',
+            'newAddress.name' => 'required|string|max:255',
+            'newAddress.phone' => 'nullable|string|max:50',
+            'newAddress.address_line1' => 'required|string|max:255',
+            'newAddress.address_line2' => 'nullable|string|max:255',
+            'newAddress.city' => 'required|string|max:100',
+            'newAddress.state' => 'nullable|string|max:100',
+            'newAddress.postal_code' => 'nullable|string|max:30',
+            'newAddress.country' => 'nullable|string|max:100',
+            'newAddress.is_default' => 'boolean',
+        ]);
+
+        if (! empty($validated['newAddress']['is_default'])) {
+            $this->user->addresses()->update(['is_default' => false]);
+        }
+
+        $this->user->addresses()->create($validated['newAddress']);
+
+        $this->newAddress = [
+            'type' => 'home',
+            'name' => '',
+            'phone' => '',
+            'address_line1' => '',
+            'address_line2' => '',
+            'city' => '',
+            'state' => '',
+            'postal_code' => '',
+            'country' => '',
+            'is_default' => false,
+        ];
+        $this->showAddressForm = false;
+        session()->flash('address_success', 'Address added.');
+    }
+
     public function render()
     {
+        $statsQuery = $this->user->orders();
+        $totalOrders = (clone $statsQuery)->count();
+        $pendingPayment = (clone $statsQuery)->where('status', 'pending')->where('payment_status', 'pending')->count();
+        $toShip = (clone $statsQuery)->where('status', 'processing')->count();
+        $toReceive = (clone $statsQuery)->where('status', 'shipped')->count();
+        $completed = (clone $statsQuery)->where('status', 'delivered')->count();
+        $totalSpend = (clone $statsQuery)->sum('total');
+        $lastOrder = (clone $statsQuery)->latest()->first();
+
         return view('livewire.store.customer.dashboard', [
             'orders' => $this->activeTab === 'orders' ? $this->orders : [], // Uses the computed property above
-            'addresses' => $this->activeTab === 'addresses' ? $this->user->addresses()->latest()->get() : [],
+            'addresses' => $this->activeTab === 'addresses' ? $this->user->addresses()->latest()->paginate(6, ['*'], 'addressesPage') : [],
             'recentOrders' => $this->user->orders()->latest()->take(5)->get(),
             'stats' => [
-                'total_orders' => $this->user->orders()->count(),
-                'pending_payment' => $this->user->orders()->where('status', 'pending')->where('payment_status', 'pending')->count(),
-                'to_ship' => $this->user->orders()->where('status', 'processing')->count(),
-                'to_receive' => $this->user->orders()->where('status', 'shipped')->count(),
-            ]
+                'total_orders' => $totalOrders,
+                'pending_payment' => $pendingPayment,
+                'to_ship' => $toShip,
+                'to_receive' => $toReceive,
+                'completed' => $completed,
+                'total_spend' => $totalSpend,
+                'last_order' => $lastOrder,
+            ],
         ]);
     }
 }
