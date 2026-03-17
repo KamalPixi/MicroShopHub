@@ -36,27 +36,41 @@
         </div>
         <div>
             <label for="status" class="block text-xs font-medium text-gray-700">Status</label>
-            <select
-                wire:model.live="status"
-                id="status"
-                class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2"
-            >
-                <option value="">All</option>
-                <option value="subscribed">Subscribed</option>
-                <option value="unsubscribed">Unsubscribed</option>
-            </select>
+            <div class="relative mt-1">
+                <select
+                    wire:model.live="status"
+                    id="status"
+                    class="block w-full appearance-none border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 bg-white pr-8 focus:outline-none focus:ring-0 focus:border-gray-300"
+                >
+                    <option value="">All</option>
+                    <option value="subscribed">Subscribed</option>
+                    <option value="unsubscribed">Unsubscribed</option>
+                </select>
+                <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
+                    <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
+                    </svg>
+                </span>
+            </div>
         </div>
         <div>
             <label for="perPage" class="block text-xs font-medium text-gray-700">Per page</label>
-            <select
-                wire:model.live="perPage"
-                id="perPage"
-                class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2"
-            >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-            </select>
+            <div class="relative mt-1">
+                <select
+                    wire:model.live="perPage"
+                    id="perPage"
+                    class="block w-full appearance-none border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 bg-white pr-8 focus:outline-none focus:ring-0 focus:border-gray-300"
+                >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+                <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
+                    <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
+                    </svg>
+                </span>
+            </div>
         </div>
     </div>
 
