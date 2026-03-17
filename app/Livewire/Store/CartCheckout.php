@@ -152,6 +152,9 @@ class CartCheckout extends Component
 
         if (Auth::check()) {
             $this->fillFromAuthenticatedUser();
+            $this->restoreUserDraft();
+        } else {
+            $this->restoreGuestDraft();
         }
 
         $this->calculateTotals();
@@ -193,6 +196,31 @@ class CartCheckout extends Component
     public function updatedSelectedShippingMethod(): void
     {
         $this->calculateTotals();
+    }
+
+    public function updatedEmail(): void
+    {
+        $this->saveGuestDraft();
+    }
+
+    public function updatedPhone(): void
+    {
+        $this->saveGuestDraft();
+    }
+
+    public function updatedBilling(): void
+    {
+        $this->saveGuestDraft();
+    }
+
+    public function updatedShipping(): void
+    {
+        $this->saveGuestDraft();
+    }
+
+    public function updatedShipToDifferentAddress(): void
+    {
+        $this->saveGuestDraft();
     }
 
     public function applyCoupon(): void
@@ -356,6 +384,7 @@ class CartCheckout extends Component
             $this->cartService->clearCart();
             $this->cart = [];
             $this->dispatch('cartUpdated');
+            session()->forget(['guest_checkout', 'auth_checkout']);
 
             $this->notifyAdminNewOrder($order);
             session()->flash('order_success', "Order #{$order->order_number} placed successfully!");
@@ -523,6 +552,56 @@ class CartCheckout extends Component
         } else {
             $this->billing['name'] = $user->name;
         }
+    }
+
+    public function saveGuestDraft(): void
+    {
+        $key = Auth::check() ? 'auth_checkout' : 'guest_checkout';
+        session([
+            $key => [
+                'email' => $this->email,
+                'phone' => $this->phone,
+                'billing' => $this->billing,
+                'shipping' => $this->shipping,
+                'ship_to_different' => (bool) $this->shipToDifferentAddress,
+            ],
+        ]);
+    }
+
+    protected function restoreGuestDraft(): void
+    {
+        $draft = session('guest_checkout', []);
+        if (! is_array($draft)) {
+            return;
+        }
+
+        $this->email = (string) ($draft['email'] ?? $this->email);
+        $this->phone = (string) ($draft['phone'] ?? $this->phone);
+        if (isset($draft['billing']) && is_array($draft['billing'])) {
+            $this->billing = array_merge($this->billing, $draft['billing']);
+        }
+        if (isset($draft['shipping']) && is_array($draft['shipping'])) {
+            $this->shipping = array_merge($this->shipping, $draft['shipping']);
+        }
+        $this->shipToDifferentAddress = (bool) ($draft['ship_to_different'] ?? $this->shipToDifferentAddress);
+    }
+
+    protected function restoreUserDraft(): void
+    {
+        $draft = session('auth_checkout', []);
+        if (! is_array($draft)) {
+            return;
+        }
+
+        $this->email = (string) ($draft['email'] ?? $this->email);
+        $this->phone = (string) ($draft['phone'] ?? $this->phone);
+        if (isset($draft['billing']) && is_array($draft['billing'])) {
+            $this->billing = array_merge($this->billing, $draft['billing']);
+        }
+        if (isset($draft['shipping']) && is_array($draft['shipping'])) {
+            $this->shipping = array_merge($this->shipping, $draft['shipping']);
+        }
+        $this->shipToDifferentAddress = (bool) ($draft['ship_to_different'] ?? $this->shipToDifferentAddress);
     }
 
     public function useSavedAddress($addressId): void
