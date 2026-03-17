@@ -12,6 +12,8 @@ class TelegramWebhookController extends Controller
 {
     public function handle(Request $request)
     {
+        Log::info('telegram webhook', [$request->all()]);
+
         $secret = config('services.telegram.webhook_secret');
         $provided = $request->header('X-Telegram-Bot-Api-Secret-Token');
         if ($secret && $provided !== $secret) {
@@ -24,18 +26,26 @@ class TelegramWebhookController extends Controller
         }
 
         $text = trim((string) $message['text']);
-        if (! str_starts_with($text, '/reply')) {
-            return response()->json(['ok' => true]);
+        $sessionToken = '';
+        $replyText = '';
+
+        if (str_starts_with($text, '/reply')) {
+            // Format: /reply <session_token> <message>
+            $parts = explode(' ', $text, 3);
+            if (count($parts) < 3) {
+                return response()->json(['ok' => true]);
+            }
+            $sessionToken = trim($parts[1]);
+            $replyText = trim($parts[2]);
+        } elseif (! empty($message['reply_to_message']['text'])) {
+            // Replying directly to the bot message
+            $replyText = $text;
+            $sourceText = (string) $message['reply_to_message']['text'];
+            if (preg_match('/Session:\\s*([A-Z0-9\\-]+)/', $sourceText, $matches)) {
+                $sessionToken = $matches[1] ?? '';
+            }
         }
 
-        // Format: /reply <session_token> <message>
-        $parts = explode(' ', $text, 3);
-        if (count($parts) < 3) {
-            return response()->json(['ok' => true]);
-        }
-
-        $sessionToken = trim($parts[1]);
-        $replyText = trim($parts[2]);
         if (! $sessionToken || ! $replyText) {
             return response()->json(['ok' => true]);
         }
