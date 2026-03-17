@@ -624,7 +624,25 @@
                 </div>
             </div>
 
-            <div class="mt-4 flex items-start gap-3">
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'notifications')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
+                <button
+                    wire:click="saveAdminNotifications"
+                    wire:loading.attr="disabled"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
+                >
+                    Save Notifications
+                </button>
+            </div>
+        </section>
+
+        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+            <h4 class="text-base font-bold text-gray-800">Live Chat</h4>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Enable customer live chat on the storefront.</p>
+
+            <div class="flex items-start gap-3">
                 <input type="checkbox" wire:model="settings.live_chat_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
                 <div>
                     <p class="text-sm font-semibold text-gray-800">Enable Live Chat Widget</p>
@@ -636,6 +654,9 @@
                         <li>Add your bot to the group and send a test message, then get the Chat ID for that group.</li>
                         <li>Paste Bot Token and Chat ID above, save settings, then enable Live Chat.</li>
                     </ol>
+                    @error('settings.live_chat_enabled')
+                        <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
@@ -648,7 +669,7 @@
                     wire:loading.attr="disabled"
                     class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
                 >
-                    Save Notifications
+                    Save Live Chat
                 </button>
             </div>
         </section>

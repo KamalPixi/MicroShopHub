@@ -455,6 +455,16 @@ class Settings extends Component
 
     public function saveAdminNotifications()
     {
+        if (! empty($this->settings['live_chat_enabled'])) {
+            $botToken = trim((string) ($this->settings['admin_telegram_bot_token'] ?? ''));
+            $chatId = trim((string) ($this->settings['admin_telegram_chat_id'] ?? ''));
+            if ($botToken === '' || $chatId === '') {
+                $this->addError('settings.live_chat_enabled', 'Set Telegram Bot Token and Chat ID before enabling Live Chat.');
+                $this->savedSection = 'notifications';
+                return;
+            }
+        }
+
         $this->saveSettings([
             'admin_notify_email_enabled',
             'admin_notify_email_address',
