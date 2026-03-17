@@ -104,10 +104,10 @@
 
                                     @if($authSettings['email_password_enabled'])
                                         <div class="grid grid-cols-2 gap-2 rounded-lg bg-gray-100 p-1">
-                                            <button type="button" wire:click="setAuthPanel('login')" class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'login' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-700' }}">
+                                            <button type="button" wire:click="setAuthPanel('login')" class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'login' ? 'bg-primary text-white shadow-sm' : 'text-gray-700' }}">
                                                 Login
                                             </button>
-                                            <button type="button" wire:click="setAuthPanel('register')" class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'register' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-700' }}">
+                                            <button type="button" wire:click="setAuthPanel('register')" class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'register' ? 'bg-primary text-white shadow-sm' : 'text-gray-700' }}">
                                                 Register
                                             </button>
                                         </div>
@@ -116,10 +116,10 @@
                                     @if($authPanel === 'login')
                                         @if($authSettings['email_password_enabled'] && $authSettings['email_otp_enabled'])
                                             <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-1 border border-gray-200">
-                                                <button type="button" wire:click="setAuthMethod('password')" class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'password' ? 'bg-gray-900 text-white' : 'text-gray-700' }}">
+                                                <button type="button" wire:click="setAuthMethod('password')" class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'password' ? 'bg-primary text-white' : 'text-gray-700' }}">
                                                     Email + Password
                                                 </button>
-                                                <button type="button" wire:click="setAuthMethod('otp')" class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'otp' ? 'bg-gray-900 text-white' : 'text-gray-700' }}">
+                                                <button type="button" wire:click="setAuthMethod('otp')" class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'otp' ? 'bg-primary text-white' : 'text-gray-700' }}">
                                                     Email OTP
                                                 </button>
                                             </div>
@@ -154,7 +154,7 @@
                                                 @else
                                                     <div class="flex gap-2">
                                                         <input wire:model="loginOtp" type="text" maxlength="6" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3 tracking-widest text-center font-mono" placeholder="123456">
-                                                        <button wire:click="verifyLoginOtp" type="button" class="bg-green-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-green-700 transition">
+                                                        <button wire:click="verifyLoginOtp" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
                                                             Verify
                                                         </button>
                                                     </div>
@@ -174,7 +174,7 @@
                                             <input wire:model="registerPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Create password">
                                             @error('registerPassword') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
-                                            <button wire:click="registerInline" type="button" class="bg-gray-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-black transition">
+                                            <button wire:click="registerInline" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
                                                 Create Account & Continue
                                             </button>
                                         </div>
@@ -186,7 +186,7 @@
                                 <div class="grid grid-cols-1 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">Email <span class="text-red-500">*</span></label>
-                                        <input wire:model="email" type="email" {{ auth()->check() ? 'disabled' : '' }}
+                                        <input wire:model="email" wire:change="saveGuestDraft" type="email" {{ auth()->check() ? 'disabled' : '' }}
                                                class="w-full text-sm border border-gray-300 {{ auth()->check() ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white' }} focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
                                                placeholder="you@example.com">
                                         @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -247,7 +247,8 @@
 
                                         <div class="relative">
                                             <select 
-                                                wire:model.live="billing.country_code" 
+                                                wire:model.live="billing.country_code"
+                                                wire:change="saveGuestDraft"
                                                 class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10"
                                             >
                                                 @foreach($supportedCountries as $country)
@@ -268,13 +269,13 @@
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">Full Name <span class="text-red-500">*</span></label>
-                                        <input wire:model="billing.name" type="text" 
+                                        <input wire:model="billing.name" wire:change="saveGuestDraft" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">Phone <span class="text-gray-400">(Optional)</span></label>
-                                        <input wire:model="phone" type="text"
+                                        <input wire:model="phone" wire:change="saveGuestDraft" type="text"
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
                                                placeholder="+123456789">
                                         @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -283,7 +284,7 @@
 
                             <div>
                                     <label class="block text-xs font-bold text-gray-600 mb-1">Street Address <span class="text-red-500">*</span></label>
-                                    <input wire:model="billing.address_line1" type="text" 
+                                    <input wire:model="billing.address_line1" wire:change="saveGuestDraft" type="text" 
                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400" 
                                            placeholder="123 Main St, Apt 4B">
                                     @error('billing.address_line1') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -292,20 +293,20 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">City <span class="text-red-500">*</span></label>
-                                        <input wire:model="billing.city" type="text" 
+                                        <input wire:model="billing.city" wire:change="saveGuestDraft" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.city') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">State / Province</label>
-                                        <input wire:model="billing.state" type="text" 
+                                        <input wire:model="billing.state" wire:change="saveGuestDraft" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
                                                placeholder="NY, CA, etc">
                                         @error('billing.state') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">Zip / Postal Code</label>
-                                        <input wire:model="billing.postal_code" type="text" 
+                                        <input wire:model="billing.postal_code" wire:change="saveGuestDraft" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.postal_code') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
@@ -313,7 +314,7 @@
 
                             <div class="pt-2">
                                     <label class="inline-flex items-center cursor-pointer">
-                                        <input wire:model.live="shipToDifferentAddress" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                        <input wire:model.live="shipToDifferentAddress" wire:change="saveGuestDraft" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
                                         <span class="ml-2 text-sm text-gray-700 font-medium">Ship to a different address?</span>
                                     </label>
                             </div>
@@ -329,7 +330,8 @@
 
                                                 <div class="relative">
                                                     <select 
-                                                        wire:model.live="shipping.country_code" 
+                                                        wire:model.live="shipping.country_code"
+                                                        wire:change="saveGuestDraft"
                                                         class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10"
                                                     >
                                                         @foreach($supportedCountries as $country)
@@ -350,27 +352,27 @@
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-600 mb-1">Recipient Name</label>
-                                                <input wire:model="shipping.name" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                                <input wire:model="shipping.name" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                         </div>
 
                                         <div>
                                             <label class="block text-xs font-bold text-gray-600 mb-1">Address</label>
-                                            <input wire:model="shipping.address_line1" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                            <input wire:model="shipping.address_line1" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         </div>
 
                                         <div class="grid grid-cols-3 gap-4">
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-600 mb-1">City</label>
-                                                <input wire:model="shipping.city" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                                <input wire:model="shipping.city" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-600 mb-1">State</label>
-                                                <input wire:model="shipping.state" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                                <input wire:model="shipping.state" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-600 mb-1">Zip Code</label>
-                                                <input wire:model="shipping.postal_code" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
+                                                <input wire:model="shipping.postal_code" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                         </div>
                                 </div>
@@ -646,13 +648,18 @@
 
         @if (session()->has('order_success'))
             <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" x-data>
-                <div class="bg-white rounded-lg p-8 max-w-sm w-full text-center shadow-2xl">
+                <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl border border-gray-100">
                     <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Order Placed!</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Order Placed Successfully</h3>
                     <p class="text-gray-600 mb-6">{{ session('order_success') }}</p>
-                    <a href="{{ route('store.index') }}" class="block w-full bg-primary text-white py-2 rounded font-bold hover:bg-primary">Continue Shopping</a>
+                    <div class="grid grid-cols-1 gap-3">
+                        <a href="{{ route('store.index') }}" class="block w-full bg-primary text-white py-2 rounded-lg font-bold hover:bg-primary">Continue Shopping</a>
+                        <a href="{{ route('store.index') }}" class="block w-full border border-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-50">Visit Home</a>
+                    </div>
                 </div>
             </div>
         @endif
