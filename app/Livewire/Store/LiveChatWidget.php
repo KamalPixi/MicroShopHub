@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Store;
 
+use App\Events\LiveChatMessageCreated;
 use App\Models\LiveChatMessage;
 use App\Models\LiveChatSession;
 use App\Models\Setting;
@@ -21,6 +22,10 @@ class LiveChatWidget extends Component
     public ?array $currentProduct = null;
     public string $customerName = '';
     public bool $nameCaptured = false;
+    public bool $newAdminMessage = false;
+    protected $listeners = [
+        'live-chat-receive' => 'receiveBroadcast',
+    ];
 
     public function mount(?int $productId = null): void
     {
@@ -84,6 +89,7 @@ class LiveChatWidget extends Component
             ]);
             $this->sessionToken = $newToken;
             session(['live_chat_token' => $newToken]);
+            $this->dispatch('live-chat-token', token: $this->sessionToken);
         } else {
             $session->update(['customer_name' => $name]);
         }
@@ -93,11 +99,6 @@ class LiveChatWidget extends Component
     public function toggle(): void
     {
         $this->open = ! $this->open;
-    }
-
-    public function pollMessages(): void
-    {
-        $this->loadMessages();
     }
 
     public function sendMessage(): void
@@ -139,8 +140,10 @@ class LiveChatWidget extends Component
 
         $this->message = '';
         $this->loadMessages();
+        $this->dispatch('live-chat-scroll');
 
         $this->notifyTelegram($session, $msg);
+        event(new LiveChatMessageCreated($msg));
     }
 
     public function shareProduct(): void
@@ -157,6 +160,7 @@ class LiveChatWidget extends Component
 
     protected function loadMessages(): void
     {
+        $this->newAdminMessage = false;
         $session = LiveChatSession::where('session_token', $this->sessionToken)->first();
         if (! $session) {
             return;
@@ -182,7 +186,36 @@ class LiveChatWidget extends Component
                 'meta' => $item->meta,
                 'created_at' => $item->created_at?->format('H:i'),
             ];
+            if ($item->sender === 'admin') {
+                $this->newAdminMessage = true;
+            }
             $this->lastMessageId = $item->id;
+        }
+    }
+
+    public function receiveBroadcast($payload = null): void
+    {
+        if (! is_array($payload) || ($payload['session_token'] ?? '') !== $this->sessionToken) {
+            return;
+        }
+
+        $message = $payload['message'] ?? null;
+        if (! is_array($message) || ! isset($message['id'])) {
+            return;
+        }
+
+        foreach ($this->messages as $existing) {
+            if (($existing['id'] ?? null) === $message['id']) {
+                return;
+            }
+        }
+
+        $this->messages[] = $message;
+        $this->lastMessageId = max($this->lastMessageId, (int) $message['id']);
+
+        if (($message['sender'] ?? '') === 'admin') {
+            $this->open = true;
+            $this->dispatch('live-chat-scroll');
         }
     }
 

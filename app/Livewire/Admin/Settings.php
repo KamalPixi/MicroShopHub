@@ -83,6 +83,10 @@ class Settings extends Component
         'admin_telegram_chat_id' => '',
         'live_chat_enabled' => false,
         'admin_telegram_webhook_set' => false,
+        'pusher_app_id' => '',
+        'pusher_app_key' => '',
+        'pusher_app_secret' => '',
+        'pusher_app_cluster' => 'mt1',
 
         // Customer Authentication
         'customer_auth_email_otp_enabled' => false,
@@ -160,6 +164,10 @@ class Settings extends Component
         'settings.admin_telegram_chat_id' => 'nullable|string|max:255',
         'settings.live_chat_enabled' => 'boolean',
         'settings.admin_telegram_webhook_set' => 'boolean',
+        'settings.pusher_app_id' => 'nullable|string|max:255',
+        'settings.pusher_app_key' => 'nullable|string|max:255',
+        'settings.pusher_app_secret' => 'nullable|string|max:255',
+        'settings.pusher_app_cluster' => 'nullable|string|max:255',
         'settings.customer_auth_email_otp_enabled' => 'boolean',
         'settings.customer_auth_email_password_enabled' => 'boolean',
         'settings.customer_auth_guest_checkout_enabled' => 'boolean',
@@ -471,6 +479,15 @@ class Settings extends Component
                 $this->savedSection = 'notifications';
                 return;
             }
+
+            $pusherId = trim((string) ($this->settings['pusher_app_id'] ?? ''));
+            $pusherKey = trim((string) ($this->settings['pusher_app_key'] ?? ''));
+            $pusherSecret = trim((string) ($this->settings['pusher_app_secret'] ?? ''));
+            if ($pusherId === '' || $pusherKey === '' || $pusherSecret === '') {
+                $this->addError('settings.pusher_app_key', 'Set Pusher credentials before enabling Live Chat.');
+                $this->savedSection = 'notifications';
+                return;
+            }
         }
 
         $this->saveSettings([
@@ -488,6 +505,21 @@ class Settings extends Component
             'settings.admin_telegram_chat_id' => $this->rules['settings.admin_telegram_chat_id'],
             'settings.live_chat_enabled' => $this->rules['settings.live_chat_enabled'],
         ], false, 'notifications');
+    }
+
+    public function saveRealtimeSettings()
+    {
+        $this->saveSettings([
+            'pusher_app_id',
+            'pusher_app_key',
+            'pusher_app_secret',
+            'pusher_app_cluster',
+        ], [
+            'settings.pusher_app_id' => $this->rules['settings.pusher_app_id'],
+            'settings.pusher_app_key' => $this->rules['settings.pusher_app_key'],
+            'settings.pusher_app_secret' => $this->rules['settings.pusher_app_secret'],
+            'settings.pusher_app_cluster' => $this->rules['settings.pusher_app_cluster'],
+        ], false, 'realtime');
     }
 
     public function fetchTelegramChatIds(): void

@@ -638,6 +638,47 @@
             <h4 class="text-base font-bold text-gray-800">Live Chat</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Enable customer live chat on the storefront.</p>
 
+            <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                <div>
+                    <p class="text-sm font-semibold text-gray-800">Realtime (Pusher)</p>
+                    <p class="text-xs text-gray-500">Required to deliver live chat messages instantly without polling. Create a Pusher app and paste the credentials here.</p>
+                </div>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">App ID</label>
+                        <input type="text" wire:model="settings.pusher_app_id" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">App Key</label>
+                        <input type="text" wire:model="settings.pusher_app_key" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">App Secret</label>
+                        <input type="password" wire:model="settings.pusher_app_secret" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">Cluster</label>
+                        <input type="text" wire:model="settings.pusher_app_cluster" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-xs">
+                    </div>
+                </div>
+                @error('settings.pusher_app_key')
+                    <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                @enderror
+                <div class="mt-4 flex items-center justify-end gap-3">
+                    @if($savedSection === 'realtime')
+                        <span class="text-xs font-semibold text-green-600">Saved</span>
+                    @endif
+                    <button
+                        type="button"
+                        wire:click="saveRealtimeSettings"
+                        wire:loading.attr="disabled"
+                        class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
+                    >
+                        Save Realtime
+                    </button>
+                </div>
+            </div>
+
             <div class="flex items-start gap-3">
                 <input type="checkbox" wire:model="settings.live_chat_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
                 <div>

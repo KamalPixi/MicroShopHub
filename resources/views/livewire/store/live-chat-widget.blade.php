@@ -1,4 +1,4 @@
-<div>
+<div id="live-chat-root" data-session-token="{{ $sessionToken }}">
     @if($enabled)
         <div class="fixed bottom-6 right-6 z-50">
             <button type="button" wire:click="toggle" class="bg-primary text-white rounded-full shadow-lg px-4 py-3 text-sm font-semibold">
@@ -18,7 +18,7 @@
                     <button type="button" wire:click="toggle" class="text-gray-500 hover:text-gray-700">×</button>
                 </div>
 
-                <div id="live-chat-messages" class="p-4 space-y-2 max-h-72 overflow-y-auto" wire:poll.6s="pollMessages">
+                <div id="live-chat-messages" class="p-4 space-y-2 max-h-72 overflow-y-auto">
                     @if(!$nameCaptured)
                         <div class="space-y-3">
                             <p class="text-xs text-gray-500">Please enter your name to start the chat.</p>
@@ -75,11 +75,17 @@
 </div>
 
 <script>
-    function scrollLiveChatToBottom() {
-        const anchor = document.getElementById('live-chat-bottom');
-        if (anchor) {
-            anchor.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    function scrollLiveChatToBottom(retry = 0) {
+        const container = document.getElementById('live-chat-messages');
+        if (!container) {
+            if (retry < 8) {
+                setTimeout(() => scrollLiveChatToBottom(retry + 1), 120);
+            }
+            return;
         }
+        setTimeout(() => {
+            container.scrollTop = container.scrollHeight;
+        }, 30);
     }
 
     function initLiveChatObserver() {
@@ -95,11 +101,65 @@
         scrollLiveChatToBottom();
     }
 
-    document.addEventListener('livewire:initialized', initLiveChatObserver);
-    document.addEventListener('livewire:navigated', initLiveChatObserver);
-    window.addEventListener('load', initLiveChatObserver);
+    function initLiveChatRealtime() {
+        const root = document.getElementById('live-chat-root');
+        if (!root || root.dataset.realtime === 'true') {
+            return;
+        }
+        const token = root.dataset.sessionToken;
+        if (!token || !window.LiveChatEcho) {
+            return;
+        }
+        root.dataset.realtime = 'true';
+        window.LiveChatEcho.channel(`live-chat.${token}`)
+            .listen('.live-chat.message', (event) => {
+                if (!event || !event.message) {
+                    return;
+                }
+                if (!window.Livewire || !window.Livewire.find) {
+                    return;
+                }
+                const componentId = root.getAttribute('wire:id');
+                if (!componentId) {
+                    return;
+                }
+                window.Livewire.find(componentId).call('receiveBroadcast', {
+                    session_token: token,
+                    message: event.message
+                });
+            });
+    }
+
+    document.addEventListener('livewire:initialized', () => {
+        initLiveChatObserver();
+        initLiveChatRealtime();
+    });
+    document.addEventListener('livewire:navigated', () => {
+        initLiveChatObserver();
+        initLiveChatRealtime();
+    });
+    window.addEventListener('load', () => {
+        initLiveChatObserver();
+        initLiveChatRealtime();
+    });
+    window.addEventListener('live-chat-scroll', () => {
+        scrollLiveChatToBottom();
+    });
+    window.addEventListener('live-chat-token', (event) => {
+        const root = document.getElementById('live-chat-root');
+        if (root && event?.detail?.token) {
+            const previousToken = root.dataset.sessionToken;
+            if (previousToken && window.LiveChatEcho) {
+                window.LiveChatEcho.leave(`live-chat.${previousToken}`);
+            }
+            root.dataset.sessionToken = event.detail.token;
+            root.dataset.realtime = 'false';
+            initLiveChatRealtime();
+        }
+    });
     const bodyObserver = new MutationObserver(() => {
         initLiveChatObserver();
+        initLiveChatRealtime();
     });
     bodyObserver.observe(document.body, { childList: true, subtree: true });
 </script>

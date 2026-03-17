@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
+use App\Events\LiveChatMessageCreated;
 use App\Models\LiveChatMessage;
 use App\Models\LiveChatSession;
 use Illuminate\Http\Request;
@@ -62,13 +63,14 @@ class TelegramWebhookController extends Controller
             return response()->json(['ok' => true]);
         }
 
-        LiveChatMessage::create([
+        $created = LiveChatMessage::create([
             'session_id' => $session->id,
             'sender' => 'admin',
             'message' => $replyText,
         ]);
 
         $session->update(['last_message_at' => now()]);
+        event(new LiveChatMessageCreated($created));
 
         return response()->json(['ok' => true]);
     }

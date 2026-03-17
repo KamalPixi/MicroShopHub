@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Category;
+use App\Models\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,32 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         try {
+            $settings = Setting::whereIn('key', [
+                'pusher_app_id',
+                'pusher_app_key',
+                'pusher_app_secret',
+                'pusher_app_cluster',
+            ])->pluck('value', 'key');
+
+            $pusherId = trim((string) ($settings['pusher_app_id'] ?? ''));
+            $pusherKey = trim((string) ($settings['pusher_app_key'] ?? ''));
+            $pusherSecret = trim((string) ($settings['pusher_app_secret'] ?? ''));
+            $pusherCluster = trim((string) ($settings['pusher_app_cluster'] ?? '')) ?: 'mt1';
+
+            if ($pusherId && $pusherKey && $pusherSecret) {
+                config([
+                    'broadcasting.default' => 'pusher',
+                    'broadcasting.connections.pusher.app_id' => $pusherId,
+                    'broadcasting.connections.pusher.key' => $pusherKey,
+                    'broadcasting.connections.pusher.secret' => $pusherSecret,
+                    'broadcasting.connections.pusher.options.cluster' => $pusherCluster,
+                    'services.pusher.app_id' => $pusherId,
+                    'services.pusher.key' => $pusherKey,
+                    'services.pusher.secret' => $pusherSecret,
+                    'services.pusher.cluster' => $pusherCluster,
+                ]);
+            }
+
             $navbarCategories = Category::whereNull('parent_id')
                 ->with('children')
                 ->orderBy('name')
