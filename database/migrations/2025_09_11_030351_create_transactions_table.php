@@ -16,8 +16,8 @@ return new class extends Migration
          */
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('payment_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignId('order_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('payment_id')->nullable()->constrained()->restrictOnDelete();
+            $table->foreignId('order_id')->nullable()->constrained()->restrictOnDelete();
             $table->enum('type', ['credit', 'debit']); // money in or out
             $table->decimal('amount', 12, 2);
             $table->string('note')->nullable();

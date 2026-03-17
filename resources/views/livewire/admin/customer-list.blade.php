@@ -1,59 +1,87 @@
-<div class="bg-white p-4 rounded-lg shadow table-container mx-auto">
-    <div class="flex justify-between">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-            </svg>
-            Customer List
-        </h3>
+<div class="bg-white p-5 rounded-xl border border-gray-200 table-container mx-auto">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+            <h3 class="text-base font-bold text-gray-800">Customers</h3>
+            <p class="text-xs text-gray-500">Manage customer profiles and order activity.</p>
+        </div>
+        <div class="text-xs text-gray-500">
+            Total: <span class="font-semibold text-gray-700">{{ $customers->total() }}</span>
+        </div>
     </div>
     
     {{-- success/failed message --}}
     @include('admin.includes.message')
 
-    <div class="mb-4">
-        <label for="search" class="block text-sm font-medium text-gray-700">Search Customers</label>
-        <input 
-            wire:model.live="search" 
-            type="text" 
-            id="search" 
-            class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-            placeholder="Search by name, email, or phone"
-        >
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+        <div class="flex-1 min-w-[220px]">
+            <label for="search" class="block text-xs font-semibold text-gray-600">Search Customers</label>
+            <input 
+                wire:model.live="search" 
+                type="text" 
+                id="search" 
+                class="input-field mt-1 block w-full border border-gray-300 rounded-lg text-xs px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" 
+                placeholder="Search by name, email, or phone"
+            >
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-gray-600">Per Page</label>
+            <select wire:model.live="perPage" class="mt-1 border border-gray-300 rounded-lg text-xs px-3 py-2 bg-white">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+            </select>
+        </div>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="table-field w-full text-left text-sm">
+        <table class="table-field w-full text-left text-xs">
             <thead>
                 <tr class="bg-gray-50">
-                    <th class="font-medium text-gray-700 p-2">ID</th>
-                    <th class="font-medium text-gray-700 p-2">Name</th>
-                    <th class="font-medium text-gray-700 p-2">Email</th>
-                    <th class="font-medium text-gray-700 p-2">Phone</th>
-                    <th class="font-medium text-gray-700 p-2">Address</th>
-                    <th class="font-medium text-gray-700 p-2">Created At</th>
+                    <th class="font-medium text-gray-700 p-2">Customer</th>
+                    <th class="font-medium text-gray-700 p-2">Contact</th>
+                    <th class="font-medium text-gray-700 p-2">Default Address</th>
+                    <th class="font-medium text-gray-700 p-2">Orders</th>
+                    <th class="font-medium text-gray-700 p-2">Joined</th>
                     <th class="font-medium text-gray-700 p-2 text-end">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($customers as $customer)
                     <tr class="border-t">
-                        <td class="p-2">{{ $customer->id }}</td>
-                        <td class="p-2">{{ $customer->name }}</td>
-                        <td class="p-2">{{ $customer->email }}</td>
-                        <td class="p-2">{{ $customer->phone ?? 'N/A' }}</td>
-                        <td class="p-2">{{ $customer->address ?? 'N/A' }}</td>
-                        <td class="p-2">{{ $customer->created_at?->format('Y-m-d H:i') }}</td>
-                        <td class="p-2 text-end space-x-1">
+                        <td class="p-2">
+                            <div class="font-semibold text-gray-800">{{ $customer->name ?? 'Unnamed' }}</div>
+                            <div class="text-[11px] text-gray-500">#{{ $customer->id }}</div>
+                        </td>
+                        <td class="p-2">
+                            <div>{{ $customer->email ?? 'N/A' }}</div>
+                            <div class="text-[11px] text-gray-500">{{ $customer->phone ?? 'No phone' }}</div>
+                        </td>
+                        <td class="p-2 text-[11px] text-gray-600">
+                            @if($customer->defaultAddress)
+                                {{ $customer->defaultAddress->address_line1 ?? '' }}
+                                {{ $customer->defaultAddress->address_line2 ? ', '.$customer->defaultAddress->address_line2 : '' }}
+                                {{ $customer->defaultAddress->city ? ', '.$customer->defaultAddress->city : '' }}
+                                {{ $customer->defaultAddress->postal_code ? ', '.$customer->defaultAddress->postal_code : '' }}
+                                {{ $customer->defaultAddress->country ? ', '.$customer->defaultAddress->country : '' }}
+                            @else
+                                No address
+                            @endif
+                        </td>
+                        <td class="p-2">
+                            <div class="font-semibold text-gray-800">{{ $customer->orders_count }}</div>
+                            <div class="text-[11px] text-gray-500">Total {{ number_format((float) ($customer->orders_sum_total ?? 0), 2) }}</div>
+                        </td>
+                        <td class="p-2 text-gray-600">{{ $customer->created_at?->format('M d, Y') }}</td>
+                        <td class="p-2 text-end space-x-3">
                             <!-- View -->
-                            <a href="{{ route('admin.customers.show', $customer->id) }}" class="inline-flex items-center py-1 text-blue-600 hover:text-blue-800 rounded" title="View">
+                            <a href="{{ route('admin.customers.show', $customer->id) }}" class="inline-flex items-center py-1 text-primary hover:text-primary rounded" title="View">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
                             </a>
                             <!-- Edit -->
-                            <a href="{{ route('admin.customers.edit', $customer->id) }}" class="inline-flex items-center py-1 text-green-600 hover:text-green-800 rounded" title="Edit">
+                            <a href="{{ route('admin.customers.edit', $customer->id) }}" class="inline-flex items-center py-1 text-emerald-600 hover:text-emerald-800 rounded" title="Edit">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                                 </svg>
@@ -62,7 +90,7 @@
                             <button 
                                 wire:click="deleteCustomer({{ $customer->id }})" 
                                 wire:loading.attr="disabled" 
-                                wire:confirm="Are you sure you want to delete this customer?" 
+                                onclick="return confirm('Are you sure you want to delete this customer?')"
                                 class="inline-flex items-center py-1 text-red-600 hover:text-red-800 rounded" 
                                 title="Delete"
                             >

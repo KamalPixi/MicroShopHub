@@ -28,6 +28,9 @@ class CustomerList extends Component
                       ->orWhere('email', 'like', '%' . $this->search . '%')
                       ->orWhere('phone', 'like', '%' . $this->search . '%');
             })
+            ->with('defaultAddress')
+            ->withCount('orders')
+            ->withSum('orders', 'total')
             ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);
 
