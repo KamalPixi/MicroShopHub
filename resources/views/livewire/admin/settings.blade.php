@@ -592,9 +592,8 @@
                             <label class="block text-xs font-semibold text-gray-600">Bot Token</label>
                             <input wire:model="settings.admin_telegram_bot_token" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="123456:ABC-DEF...">
                             <div class="mt-2 flex items-center gap-2">
-                                <span class="text-[11px] text-gray-500">Step 3</span>
                                 <button type="button" wire:click="fetchTelegramChatIds" class="text-xs font-semibold text-primary hover:underline">Fetch Chat ID</button>
-                                <span class="text-[11px] text-gray-400">Pulls recent chats after the bot receives a message.</span>
+                                <span class="text-[11px] text-gray-400">Automatically retrieve your Chat IDs to select where you want to receive notifications.</span>
                                 @if($telegramFetchMessage)
                                     <span class="text-[11px] text-gray-500">{{ $telegramFetchMessage }}</span>
                                 @endif
@@ -656,7 +655,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-semibold text-gray-800">Webhook</p>
-                        <p class="text-xs text-gray-500">Required so Telegram can deliver replies back to your site.</p>
+                        <p class="text-xs text-gray-500">Required for Telegram to deliver your admin replies back to the customer on your site.</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <button type="button" wire:click="setTelegramWebhook" class="text-xs font-semibold text-primary hover:underline">Set Webhook</button>
@@ -664,11 +663,10 @@
                             <span class="text-[11px] text-gray-500">{{ $telegramWebhookMessage }}</span>
                         @endif
                         @if($telegramWebhookSet || (!empty($settings['admin_telegram_webhook_set']) && $settings['admin_telegram_webhook_set']))
-                            <span class="text-[11px] font-semibold text-green-600">Saved</span>
+                            <span class="text-[11px] font-semibold text-green-600">[Saved]</span>
                         @endif
                     </div>
                 </div>
-                <p class="mt-2 text-[11px] text-gray-500">Uses your APP_URL to register the webhook. It must be HTTPS and publicly accessible.</p>
             </div>
 
             <div class="mt-5 flex items-center justify-end gap-3">
