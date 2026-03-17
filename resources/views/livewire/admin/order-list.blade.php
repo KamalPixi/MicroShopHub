@@ -1,25 +1,36 @@
-<div class="bg-white p-4 rounded-lg shadow table-container mx-auto">
-    <div class="flex justify-between">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-            Order List
-        </h3>
+<div class="bg-white p-5 rounded-xl border border-gray-200 table-container mx-auto">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+            <h3 class="text-base font-bold text-gray-800">Orders</h3>
+            <p class="text-xs text-gray-500">Track and manage customer orders.</p>
+        </div>
+        <div class="text-xs text-gray-500">
+            Total: <span class="font-semibold text-gray-700">{{ $orders->total() }}</span>
+        </div>
     </div>
     
     {{-- success/failed message --}}
     @include('admin.includes.message')
 
-    <div class="mb-4">
-        <label for="search" class="block text-sm font-medium text-gray-700">Search Orders</label>
-        <input 
-            wire:model.live="search" 
-            type="text" 
-            id="search" 
-            class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-            placeholder="Search by order ID, customer name, or status"
-        >
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+        <div class="flex-1 min-w-[220px]">
+            <label for="search" class="block text-xs font-semibold text-gray-600">Search Orders</label>
+            <input 
+                wire:model.live="search" 
+                type="text" 
+                id="search" 
+                class="input-field mt-1 block w-full border border-gray-300 rounded-lg text-xs px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" 
+                placeholder="Search by order ID, customer name, or status"
+            >
+        </div>
+        <div>
+            <label class="block text-xs font-semibold text-gray-600">Per Page</label>
+            <select wire:model.live="perPage" class="mt-1 border border-gray-300 rounded-lg text-xs px-3 py-2 bg-white">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+            </select>
+        </div>
     </div>
 
     @php
@@ -28,10 +39,10 @@
         $defaultCode = $defaultCurrency?->code ?? 'USD';
     @endphp
     <div class="overflow-x-auto">
-        <table class="table-field w-full text-left text-sm">
+        <table class="table-field w-full text-left text-xs">
             <thead>
                 <tr class="bg-gray-50">
-                    <th class="font-medium text-gray-700 p-2">Order ID</th>
+                    <th class="font-medium text-gray-700 p-2">Order</th>
                     <th class="font-medium text-gray-700 p-2">Customer</th>
                     <th class="font-medium text-gray-700 p-2">Status</th>
                     <th class="font-medium text-gray-700 p-2">Currency</th>
@@ -43,9 +54,15 @@
             </thead>
             <tbody>
                 @forelse ($orders as $order)
-                    <tr class="border-t">
-                        <td class="p-2">#{{ $order->id }}</td>
-                        <td class="p-2">{{ $order->user ? $order->user->name : 'Guest' }}</td>
+                    <tr class="border-t hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('admin.orders.show', ['order' => $order->id]) }}'">
+                        <td class="p-2">
+                            <div class="font-semibold text-gray-800">#{{ $order->order_number ?? $order->id }}</div>
+                            <div class="text-[11px] text-gray-500">{{ $order->payment_method ?? '—' }}</div>
+                        </td>
+                        <td class="p-2">
+                            <div class="font-semibold text-gray-800">{{ $order->user ? $order->user->name : 'Guest' }}</div>
+                            <div class="text-[11px] text-gray-500">{{ $order->user?->email ?? '—' }}</div>
+                        </td>
                         <td class="p-2">
                             @php
                                 $statusColors = [
@@ -76,9 +93,9 @@
                         <td class="p-2">{{ $displaySymbol }}{{ number_format($order->total, 2) }}</td>
                         <td class="p-2">{{ $displaySymbol }}{{ number_format($order->shipping_cost, 2) }}</td>
                         <td class="p-2">{{ $order->created_at->format('Y-m-d H:i') }}</td>
-                        <td class="p-2 text-end space-x-3">
+                        <td class="p-2 text-end space-x-3" onclick="event.stopPropagation()">
                             <!-- View -->
-                            <a href="{{ route('admin.orders.show', ['order' => $order->id]) }}" class="inline-flex items-center py-1 text-blue-600 hover:text-blue-800 rounded" title="View">
+                            <a href="{{ route('admin.orders.show', ['order' => $order->id]) }}" class="inline-flex items-center py-1 text-primary hover:text-primary rounded" title="View">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -88,7 +105,7 @@
                             <button 
                                 wire:click="deleteOrder({{ $order->id }})" 
                                 wire:loading.attr="disabled" 
-                                wire:confirm="Are you sure you want to delete this order?" 
+                                onclick="return confirm('Are you sure you want to delete this order?')" 
                                 class="inline-flex items-center py-1 text-red-600 hover:text-red-800 rounded" 
                                 title="Delete"
                             >
