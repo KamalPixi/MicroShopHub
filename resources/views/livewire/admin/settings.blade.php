@@ -594,10 +594,12 @@
                             <div class="mt-2 flex items-center gap-2">
                                 <button type="button" wire:click="fetchTelegramChatIds" class="text-xs font-semibold text-primary hover:underline">Fetch Chat ID</button>
                                 <span class="text-[11px] text-gray-400">Automatically retrieve your Chat IDs to select where you want to receive notifications.</span>
-                                @if($telegramFetchMessage)
-                                    <span class="text-[11px] text-gray-500">{{ $telegramFetchMessage }}</span>
-                                @endif
                             </div>
+                            @if($telegramFetchMessage)
+                                <p class="mt-1 text-[11px] {{ str_contains($telegramFetchMessage, 'Webhook is active') ? 'text-red-600' : 'text-gray-500' }}">
+                                    {{ $telegramFetchMessage }}
+                                </p>
+                            @endif
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600">Chat ID</label>
@@ -610,6 +612,9 @@
                                     @endforeach
                                 </select>
                             @endif
+                            @error('settings.admin_telegram_chat_id')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -640,10 +645,12 @@
                     <p class="text-xs text-gray-500">Adds a storefront chat widget so customers can message you instantly. Set Telegram Config first, then enable this to forward messages and deliver replies.</p>
                     <ol class="mt-2 text-[11px] text-gray-500 list-decimal list-inside space-y-1">
                         <li>Open Telegram and search for <span class="font-semibold">@BotFather</span>.</li>
-                        <li>Create a bot with Sending the command <span class="font-semibold">/newbot</span></li>
-                        <li>Follow the prompts: Give it a Display Name (e.g., "My Notifier") and a Username (must end in bot, e.g., MyNotifierBot).</li>
-                        <li>Save the API Token: It looks like 123456789:ABCDefGhIJKlmNoPQRstuv. Keep this private.</li>
-                        <li>Paste Bot Token above, set Chat ID (You can fetch chat ID also to set one), save settings, then set the webhook below.</li>
+                        <li>Create a bot by sending <span class="font-semibold">/newbot</span>.</li>
+                        <li>Follow the prompts to set a name and username (username must end with <span class="font-semibold">bot</span>).</li>
+                        <li>Save the Bot Token (looks like 123456789:ABCDefGhIJKlmNoPQRstuv).</li>
+                        <li>Create a Telegram group and add your bot.</li>
+                        <li>Turn on Topics in the group settings and make the bot an admin with permission to manage topics.</li>
+                        <li>Paste Bot Token above, set Chat ID (you can fetch it), save settings, then set the webhook below.</li>
                     </ol>
                     @error('settings.live_chat_enabled')
                         <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -665,8 +672,10 @@
                         @if($telegramWebhookSet || (!empty($settings['admin_telegram_webhook_set']) && $settings['admin_telegram_webhook_set']))
                             <span class="text-[11px] font-semibold text-green-600">[Saved]</span>
                         @endif
+                        <button type="button" wire:click="clearTelegramWebhook" class="text-xs font-semibold text-gray-500 hover:text-gray-700">Clear</button>
                     </div>
                 </div>
+                <p class="mt-2 text-[11px] text-gray-500">Tip: Clear webhook before fetching Chat ID.</p>
             </div>
 
             <div class="mt-5 flex items-center justify-end gap-3">

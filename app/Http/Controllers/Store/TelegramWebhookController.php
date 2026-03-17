@@ -29,7 +29,14 @@ class TelegramWebhookController extends Controller
         $sessionToken = '';
         $replyText = '';
 
-        if (str_starts_with($text, '/reply')) {
+        $threadId = $message['message_thread_id'] ?? null;
+        if ($threadId) {
+            $session = LiveChatSession::where('telegram_thread_id', $threadId)->first();
+            if ($session) {
+                $sessionToken = $session->session_token;
+                $replyText = $text;
+            }
+        } elseif (str_starts_with($text, '/reply')) {
             // Format: /reply <session_token> <message>
             $parts = explode(' ', $text, 3);
             if (count($parts) < 3) {

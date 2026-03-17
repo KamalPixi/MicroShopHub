@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('live_chat_sessions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('telegram_thread_id')->nullable()->index();
             $table->string('session_token')->unique();
             $table->string('customer_name')->nullable();
             $table->string('customer_email')->nullable();

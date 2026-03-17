@@ -461,6 +461,8 @@ class Settings extends Component
 
     public function saveAdminNotifications()
     {
+        $this->resetErrorBag();
+        $this->telegramFetchMessage = '';
         if (! empty($this->settings['live_chat_enabled'])) {
             $botToken = trim((string) ($this->settings['admin_telegram_bot_token'] ?? ''));
             $chatId = trim((string) ($this->settings['admin_telegram_chat_id'] ?? ''));
@@ -491,9 +493,15 @@ class Settings extends Component
     public function fetchTelegramChatIds(): void
     {
         $this->telegramFetchMessage = '';
+        $this->resetErrorBag('settings.admin_telegram_chat_id');
         $token = $this->settings['admin_telegram_bot_token'] ?? '';
         if (! $token) {
             $this->telegramFetchMessage = 'Enter a bot token first.';
+            return;
+        }
+
+        if (! empty($this->settings['admin_telegram_webhook_set'])) {
+            $this->telegramFetchMessage = 'Webhook is active. Clear webhook before fetching chat IDs.';
             return;
         }
 
@@ -574,6 +582,30 @@ class Settings extends Component
             }
         } catch (\Throwable $e) {
             $this->telegramWebhookMessage = 'Error setting webhook. Try again.';
+        }
+    }
+
+    public function clearTelegramWebhook(): void
+    {
+        $this->telegramWebhookMessage = '';
+        $this->telegramWebhookSet = false;
+        $token = $this->settings['admin_telegram_bot_token'] ?? '';
+        if (! $token) {
+            $this->telegramWebhookMessage = 'Enter a bot token first.';
+            return;
+        }
+
+        try {
+            $response = Http::asForm()->post("https://api.telegram.org/bot{$token}/deleteWebhook");
+            if (! $response->ok()) {
+                $this->telegramWebhookMessage = 'Failed to clear webhook.';
+                return;
+            }
+            Setting::updateOrCreate(['key' => 'admin_telegram_webhook_set'], ['value' => '0']);
+            $this->settings['admin_telegram_webhook_set'] = false;
+            $this->telegramWebhookMessage = 'Webhook cleared. You can fetch chat IDs now.';
+        } catch (\Throwable $e) {
+            $this->telegramWebhookMessage = 'Error clearing webhook. Try again.';
         }
     }
 

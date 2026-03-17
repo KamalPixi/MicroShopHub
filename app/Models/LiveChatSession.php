@@ -13,6 +13,7 @@ class LiveChatSession extends Model
         'customer_phone',
         'status',
         'last_message_at',
+        'telegram_thread_id',
     ];
 
     protected $casts = [

@@ -211,7 +211,19 @@ class LiveChatWidget extends Component
             $text .= "\n".route('store.product.show', $product['slug']);
         }
 
-        app(TelegramBotService::class)->sendMessage($botToken, $chatId, $text);
+        $threadId = $session->telegram_thread_id;
+        if (! $threadId) {
+            $topicName = $customerName.' - '.$session->session_token;
+            $threadId = app(TelegramBotService::class)->createForumTopic($botToken, $chatId, $topicName);
+            if ($threadId) {
+                $session->update(['telegram_thread_id' => $threadId]);
+            }
+        }
+
+        $sent = app(TelegramBotService::class)->sendMessage($botToken, $chatId, $text, $threadId);
+        if (! $sent && $threadId) {
+            app(TelegramBotService::class)->sendMessage($botToken, $chatId, $text);
+        }
     }
 
     protected function generateShortToken(string $name): ?string
