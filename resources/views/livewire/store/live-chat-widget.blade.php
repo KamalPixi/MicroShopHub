@@ -18,7 +18,7 @@
                     <button type="button" wire:click="toggle" class="text-gray-500 hover:text-gray-700">×</button>
                 </div>
 
-                <div class="p-4 space-y-2 max-h-72 overflow-y-auto" wire:poll.6s="pollMessages">
+                <div id="live-chat-messages" class="p-4 space-y-2 max-h-72 overflow-y-auto" wire:poll.6s="pollMessages">
                     @if(!$nameCaptured)
                         <div class="space-y-3">
                             <p class="text-xs text-gray-500">Please enter your name to start the chat.</p>
@@ -43,6 +43,7 @@
                         @empty
                             <p class="text-xs text-gray-500">Ask us anything.</p>
                         @endforelse
+                        <div id="live-chat-bottom"></div>
                     @endif
                 </div>
 
@@ -72,3 +73,33 @@
         @endif
     @endif
 </div>
+
+<script>
+    function scrollLiveChatToBottom() {
+        const anchor = document.getElementById('live-chat-bottom');
+        if (anchor) {
+            anchor.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+    }
+
+    function initLiveChatObserver() {
+        const container = document.getElementById('live-chat-messages');
+        if (!container || container.dataset.observing === 'true') {
+            return;
+        }
+        container.dataset.observing = 'true';
+        const observer = new MutationObserver(() => {
+            scrollLiveChatToBottom();
+        });
+        observer.observe(container, { childList: true, subtree: true });
+        scrollLiveChatToBottom();
+    }
+
+    document.addEventListener('livewire:initialized', initLiveChatObserver);
+    document.addEventListener('livewire:navigated', initLiveChatObserver);
+    window.addEventListener('load', initLiveChatObserver);
+    const bodyObserver = new MutationObserver(() => {
+        initLiveChatObserver();
+    });
+    bodyObserver.observe(document.body, { childList: true, subtree: true });
+</script>
