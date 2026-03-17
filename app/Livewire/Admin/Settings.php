@@ -81,6 +81,7 @@ class Settings extends Component
         'admin_telegram_bot_token' => '',
         'admin_telegram_chat_id' => '',
         'live_chat_enabled' => false,
+        'admin_telegram_webhook_set' => false,
 
         // Customer Authentication
         'customer_auth_email_otp_enabled' => false,
@@ -106,6 +107,7 @@ class Settings extends Component
     public $telegramChatOptions = [];
     public $telegramFetchMessage = '';
     public $telegramWebhookMessage = '';
+    public bool $telegramWebhookSet = false;
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -155,6 +157,7 @@ class Settings extends Component
         'settings.admin_telegram_bot_token' => 'nullable|string|max:255',
         'settings.admin_telegram_chat_id' => 'nullable|string|max:255',
         'settings.live_chat_enabled' => 'boolean',
+        'settings.admin_telegram_webhook_set' => 'boolean',
         'settings.customer_auth_email_otp_enabled' => 'boolean',
         'settings.customer_auth_email_password_enabled' => 'boolean',
         'settings.customer_auth_guest_checkout_enabled' => 'boolean',
@@ -179,6 +182,7 @@ class Settings extends Component
         $this->settings['admin_notify_email_enabled'] = filter_var($this->settings['admin_notify_email_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['admin_notify_telegram_enabled'] = filter_var($this->settings['admin_notify_telegram_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['live_chat_enabled'] = filter_var($this->settings['live_chat_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['admin_telegram_webhook_set'] = filter_var($this->settings['admin_telegram_webhook_set'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if (! $this->settings['currency'] && $this->currencies->isNotEmpty()) {
             $this->settings['currency'] = $this->currencies->first()->code;
@@ -535,6 +539,7 @@ class Settings extends Component
     public function setTelegramWebhook(): void
     {
         $this->telegramWebhookMessage = '';
+        $this->telegramWebhookSet = false;
         $token = $this->settings['admin_telegram_bot_token'] ?? '';
         if (! $token) {
             $this->telegramWebhookMessage = 'Enter a bot token first.';
@@ -559,7 +564,12 @@ class Settings extends Component
                 return;
             }
             $data = $response->json();
-            $this->telegramWebhookMessage = ! empty($data['ok']) ? 'Webhook set successfully.' : 'Failed to set webhook.';
+            $this->telegramWebhookSet = ! empty($data['ok']);
+            $this->telegramWebhookMessage = $this->telegramWebhookSet ? 'Webhook set successfully.' : 'Failed to set webhook.';
+            if ($this->telegramWebhookSet) {
+                Setting::updateOrCreate(['key' => 'admin_telegram_webhook_set'], ['value' => '1']);
+                $this->settings['admin_telegram_webhook_set'] = true;
+            }
         } catch (\Throwable $e) {
             $this->telegramWebhookMessage = 'Error setting webhook. Try again.';
         }

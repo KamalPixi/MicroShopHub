@@ -599,14 +599,6 @@
                                     <span class="text-[11px] text-gray-500">{{ $telegramFetchMessage }}</span>
                                 @endif
                             </div>
-                            <div class="mt-2 flex items-center gap-2">
-                                <span class="text-[11px] text-gray-500">Step 4</span>
-                                <button type="button" wire:click="setTelegramWebhook" class="text-xs font-semibold text-primary hover:underline">Set Webhook</button>
-                                <span class="text-[11px] text-gray-400">Registers your public site URL with Telegram.</span>
-                                @if($telegramWebhookMessage)
-                                    <span class="text-[11px] text-gray-500">{{ $telegramWebhookMessage }}</span>
-                                @endif
-                            </div>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600">Chat ID</label>
@@ -652,12 +644,31 @@
                         <li>Create a bot with <span class="font-semibold">/newbot</span> and copy the Bot Token.</li>
                         <li>Create a Telegram group: tap New Message → New Group → add a contact → name the group.</li>
                         <li>Add your bot to the group and send a test message, then get the Chat ID for that group.</li>
-                        <li>Paste Bot Token and Chat ID above, save settings, then enable Live Chat.</li>
+                        <li>Paste Bot Token and Chat ID above, save settings, then set the webhook below.</li>
                     </ol>
                     @error('settings.live_chat_enabled')
                         <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+            </div>
+
+            <div class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">Webhook</p>
+                        <p class="text-xs text-gray-500">Required so Telegram can deliver replies back to your site.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" wire:click="setTelegramWebhook" class="text-xs font-semibold text-primary hover:underline">Set Webhook</button>
+                        @if($telegramWebhookMessage)
+                            <span class="text-[11px] text-gray-500">{{ $telegramWebhookMessage }}</span>
+                        @endif
+                        @if($telegramWebhookSet || (!empty($settings['admin_telegram_webhook_set']) && $settings['admin_telegram_webhook_set']))
+                            <span class="text-[11px] font-semibold text-green-600">Saved</span>
+                        @endif
+                    </div>
+                </div>
+                <p class="mt-2 text-[11px] text-gray-500">Uses your APP_URL to register the webhook. It must be HTTPS and publicly accessible.</p>
             </div>
 
             <div class="mt-5 flex items-center justify-end gap-3">
