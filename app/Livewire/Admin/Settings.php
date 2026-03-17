@@ -114,6 +114,7 @@ class Settings extends Component
     public $telegramWebhookMessage = '';
     public bool $telegramWebhookSet = false;
     public string $queueTestMessage = '';
+    public array $offlinePaymentMethods = [];
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -182,6 +183,10 @@ class Settings extends Component
         foreach ($this->settings as $key => $value) {
             $this->settings[$key] = $existingSettings[$key] ?? $value;
         }
+
+        $rawOffline = $existingSettings['offline_payment_methods'] ?? '[]';
+        $decoded = is_string($rawOffline) ? json_decode($rawOffline, true) : $rawOffline;
+        $this->offlinePaymentMethods = is_array($decoded) ? $decoded : [];
 
         // Force Boolean for Checkboxes
         $this->settings['sslcommerz_sandbox'] = filter_var($this->settings['sslcommerz_sandbox'], FILTER_VALIDATE_BOOLEAN);
@@ -651,6 +656,46 @@ class Settings extends Component
     public function saveAll()
     {
         $this->saveSettings(array_keys($this->settings), $this->rules, true, 'all');
+    }
+
+    public function addOfflinePaymentMethod(): void
+    {
+        $this->offlinePaymentMethods[] = [
+            'name' => '',
+            'instructions' => '',
+            'active' => true,
+        ];
+    }
+
+    public function removeOfflinePaymentMethod(int $index): void
+    {
+        unset($this->offlinePaymentMethods[$index]);
+        $this->offlinePaymentMethods = array_values($this->offlinePaymentMethods);
+    }
+
+    public function saveOfflinePaymentMethods(): void
+    {
+        $clean = [];
+        foreach ($this->offlinePaymentMethods as $method) {
+            $name = trim((string) ($method['name'] ?? ''));
+            if ($name === '') {
+                continue;
+            }
+            $clean[] = [
+                'name' => $name,
+                'instructions' => trim((string) ($method['instructions'] ?? '')),
+                'active' => ! empty($method['active']),
+            ];
+        }
+
+        Setting::updateOrCreate(
+            ['key' => 'offline_payment_methods'],
+            ['value' => json_encode($clean)]
+        );
+
+        $this->offlinePaymentMethods = $clean;
+        $this->savedSection = 'offline_payments';
+        session()->flash('message', 'Offline payment methods updated.');
     }
 
     protected function saveSettings(array $keys, array $rules, bool $checkAuth = false, string $sectionKey = ''): void

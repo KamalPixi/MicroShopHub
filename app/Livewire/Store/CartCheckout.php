@@ -15,9 +15,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\SendAdminOrderNotification;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class CartCheckout extends Component
 {
+    use WithFileUploads;
     protected CartService $cartService;
     protected CustomerAuthService $customerAuthService;
 
@@ -36,6 +38,10 @@ class CartCheckout extends Component
     public $couponCode = '';
     public $appliedCoupon = null;
     public $paymentMethod = 'cod';
+    public $offlinePaymentMethods = [];
+    public $offlinePaymentMethodId = '';
+    public $offlineReference = '';
+    public $offlineProof;
 
     public $email = '';
     public $phone = '';
@@ -107,6 +113,15 @@ class CartCheckout extends Component
 
         $this->settings = Setting::pluck('value', 'key')->toArray();
         $this->codEnabled = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $rawOffline = $this->settings['offline_payment_methods'] ?? '[]';
+        $decodedOffline = is_string($rawOffline) ? json_decode($rawOffline, true) : $rawOffline;
+        $this->offlinePaymentMethods = collect(is_array($decodedOffline) ? $decodedOffline : [])
+            ->filter(fn ($method) => ! empty($method['active']))
+            ->values()
+            ->all();
+        if (! empty($this->offlinePaymentMethods)) {
+            $this->offlinePaymentMethodId = (string) (0);
+        }
         $this->supportedCountries = Country::query()
             ->where('active', true)
             ->orderBy('name')
@@ -250,6 +265,17 @@ class CartCheckout extends Component
         }
 
         $this->validate();
+        if ($this->paymentMethod === 'offline') {
+            $this->validate([
+                'offlinePaymentMethodId' => 'required',
+                'offlineReference' => 'nullable|string|max:100',
+                'offlineProof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
+            ]);
+            if (trim((string) $this->offlineReference) === '' && ! $this->offlineProof) {
+                $this->addError('offlineReference', 'Provide a reference or upload a proof.');
+                return;
+            }
+        }
 
         DB::transaction(function () {
             $currency = Currency::getActive();
@@ -265,7 +291,7 @@ class CartCheckout extends Component
                 'exchange_rate' => $currency?->exchange_rate ?? 1.0000,
                 'shipping_method_id' => $this->selectedShippingMethod,
                 'payment_method' => $this->paymentMethod,
-                'payment_status' => 'pending',
+                'payment_status' => $this->paymentMethod === 'offline' ? 'pending_verification' : 'pending',
             ]);
 
             $order->addresses()->create(array_merge($this->billing, [
@@ -311,6 +337,20 @@ class CartCheckout extends Component
                         $product->decrement('stock', $item['quantity']);
                     }
                 }
+            }
+
+            if ($this->paymentMethod === 'offline') {
+                $methodIndex = (int) $this->offlinePaymentMethodId;
+                $selectedMethod = $this->offlinePaymentMethods[$methodIndex] ?? null;
+                $attachmentPath = $this->offlineProof?->store('offline-payments', 'public');
+                $order->offlinePayments()->create([
+                    'method_name' => $selectedMethod['name'] ?? 'Offline Payment',
+                    'instructions' => $selectedMethod['instructions'] ?? null,
+                    'reference' => $this->offlineReference ?: null,
+                    'amount' => $this->total,
+                    'attachment_path' => $attachmentPath,
+                    'status' => 'pending',
+                ]);
             }
 
             $this->cartService->clearCart();

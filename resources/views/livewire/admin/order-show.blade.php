@@ -241,6 +241,45 @@
                     </table>
                 </div>
             </div>
+
+            @if($order->offlinePayments->isNotEmpty())
+                <div class="bg-white border border-gray-200 rounded-lg p-5">
+                    <h2 class="text-sm font-bold text-gray-800 mb-3">Offline Payment Proof</h2>
+                    <div class="space-y-3 text-sm">
+                        @foreach($order->offlinePayments as $payment)
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-semibold text-gray-800">{{ $payment->method_name }}</div>
+                                        <div class="text-xs text-gray-500">Status: {{ ucfirst($payment->status) }}</div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        @if($payment->attachment_path)
+                                            <a href="{{ asset('storage/'.$payment->attachment_path) }}" target="_blank" class="text-xs text-primary hover:underline">View Proof</a>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-xs text-gray-600">
+                                    <div>Amount: {{ $displaySymbol }}{{ number_format($payment->amount, 2) }}</div>
+                                    @if($payment->reference)
+                                        <div>Reference: {{ $payment->reference }}</div>
+                                    @endif
+                                    @if($payment->instructions)
+                                        <div>Instructions: {{ $payment->instructions }}</div>
+                                    @endif
+                                    @if($payment->reviewed_at)
+                                        <div>Reviewed: {{ $payment->reviewed_at->format('Y-m-d H:i') }}</div>
+                                    @endif
+                                </div>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <button type="button" wire:click="approveOfflinePayment({{ $payment->id }})" wire:confirm="Approve this offline payment?" class="text-xs font-semibold text-green-600 border border-green-200 rounded-lg px-3 py-1.5 hover:bg-green-50">Approve</button>
+                                    <button type="button" wire:click="rejectOfflinePayment({{ $payment->id }})" wire:confirm="Reject this offline payment?" class="text-xs font-semibold text-red-600 border border-red-200 rounded-lg px-3 py-1.5 hover:bg-red-50">Reject</button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div class="space-y-5">

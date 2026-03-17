@@ -29,6 +29,7 @@ class OrderShow extends Component
             'billingAddress',
             'shippingAddress',
             'emailLogs',
+            'offlinePayments',
         ])->findOrFail($id);
 
         if ($this->order->user_id) {
@@ -77,6 +78,44 @@ class OrderShow extends Component
         $this->statusSelection = '';
         $this->notifyCustomer = false;
         session()->flash('message', 'Order action saved.');
+    }
+
+    public function approveOfflinePayment(int $paymentId): void
+    {
+        $payment = $this->order->offlinePayments()->where('id', $paymentId)->first();
+        if (! $payment) {
+            return;
+        }
+
+        $payment->update([
+            'status' => 'approved',
+            'reviewed_by' => auth('admin')->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        $this->order->update([
+            'payment_status' => 'paid',
+        ]);
+
+        $this->order->refresh();
+        session()->flash('message', 'Offline payment approved.');
+    }
+
+    public function rejectOfflinePayment(int $paymentId): void
+    {
+        $payment = $this->order->offlinePayments()->where('id', $paymentId)->first();
+        if (! $payment) {
+            return;
+        }
+
+        $payment->update([
+            'status' => 'rejected',
+            'reviewed_by' => auth('admin')->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        $this->order->refresh();
+        session()->flash('message', 'Offline payment rejected.');
     }
 
     public function sendCustomerEmail(): void

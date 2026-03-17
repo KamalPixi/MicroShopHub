@@ -337,6 +337,45 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <div class="flex items-center mb-4 justify-between">
+                        <span class="font-bold text-gray-800 text-sm">Offline Payments</span>
+                        <span class="text-[10px] font-semibold text-gray-500">Bank transfer / bKash / Nagad / Rocket / USDT</span>
+                    </div>
+                    <div class="space-y-3">
+                        @foreach($offlinePaymentMethods as $index => $method)
+                            <div class="border border-gray-200 rounded-lg p-3 bg-white space-y-2">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    <div class="md:col-span-1">
+                                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Method Name</label>
+                                        <input wire:model="offlinePaymentMethods.{{ $index }}.name" type="text" class="input-field block w-full border border-gray-300 rounded-lg text-sm px-3 py-2" placeholder="bKash Personal / Bank Transfer">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Instructions</label>
+                                        <textarea wire:model="offlinePaymentMethods.{{ $index }}.instructions" rows="1" class="input-field block w-full border border-gray-300 rounded-lg text-sm px-3 py-2" placeholder="Account number, wallet number, or steps"></textarea>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <label class="flex items-center gap-2 text-xs text-gray-600">
+                                        <input type="checkbox" wire:model="offlinePaymentMethods.{{ $index }}.active" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                        Active
+                                    </label>
+                                    <button type="button" wire:click="removeOfflinePaymentMethod({{ $index }})" class="text-xs text-red-600 hover:text-red-700">Remove</button>
+                                </div>
+                            </div>
+                        @endforeach
+                        <button type="button" wire:click="addOfflinePaymentMethod" class="text-xs font-semibold text-primary hover:underline">+ Add method</button>
+                    </div>
+                    <div class="mt-4 flex items-center justify-end gap-3">
+                        @if($savedSection === 'offline_payments')
+                            <span class="text-xs font-semibold text-green-600">Saved</span>
+                        @endif
+                        <button wire:click="saveOfflinePaymentMethods" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            Save Offline Methods
+                        </button>
+                    </div>
+                </div>
             </div>
 
         </section>

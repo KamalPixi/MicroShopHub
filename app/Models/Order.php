@@ -69,4 +69,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderEmailLog::class);
     }
+
+    public function offlinePayments()
+    {
+        return $this->hasMany(OrderOfflinePayment::class);
+    }
 }

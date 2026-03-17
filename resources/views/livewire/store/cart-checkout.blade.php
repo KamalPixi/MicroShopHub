@@ -533,10 +533,76 @@
                                     </button>
                                 @endif
 
+                                @if(!empty($offlinePaymentMethods))
+                                    <button type="button"
+                                            wire:click="$set('paymentMethod','offline')"
+                                            class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                                   {{ $paymentMethod === 'offline' ? 'border-primary ring-1 ring-primary/20' : 'border-gray-200 hover:border-primary' }}">
+                                        <div class="flex flex-col items-start text-left">
+                                            <div class="h-7 w-7 mb-1 text-primary bg-blue-50 rounded-lg flex items-center justify-center">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M5 7V5a2 2 0 012-2h10a2 2 0 012 2v2M5 7v12a2 2 0 002 2h10a2 2 0 002-2V7"/>
+                                                </svg>
+                                            </div>
+                                            <span class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
+                                                Offline Payment
+                                            </span>
+                                            <span class="text-[10px] text-gray-500">Bank transfer / wallets</span>
+                                        </div>
+                                        <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-gray-400">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                        </div>
+                                    </button>
+                                @endif
+
                             </div>
                         </div>
 
-                        @if($paymentMethod === 'cod')
+                        @if($paymentMethod === 'offline')
+                            <div class="mb-4 space-y-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600">Select Method</label>
+                                    <div class="relative mt-1">
+                                        <select wire:model.live="offlinePaymentMethodId" class="block w-full appearance-none border border-gray-300 rounded-lg text-sm px-3 py-2 bg-white pr-8 focus:outline-none focus:ring-0 focus:border-gray-300">
+                                            @foreach($offlinePaymentMethods as $index => $method)
+                                                <option value="{{ $index }}">{{ $method['name'] }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
+                                            <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    @error('offlinePaymentMethodId') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                </div>
+                                @php
+                                    $methodIndex = (int) $offlinePaymentMethodId;
+                                    $selectedMethod = $offlinePaymentMethods[$methodIndex] ?? null;
+                                @endphp
+                                @if($selectedMethod)
+                                    <div class="text-[11px] text-gray-600 bg-gray-50 border border-gray-200 rounded-lg p-3 whitespace-pre-line">{{ $selectedMethod['instructions'] ?? 'Follow the payment instructions and upload the proof.' }}</div>
+                                @endif
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600">Reference (optional)</label>
+                                    <input type="text" wire:model.live="offlineReference" class="mt-1 block w-full border border-gray-300 rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" placeholder="Transaction ID or note">
+                                    @error('offlineReference') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600">Upload Payment Proof (optional)</label>
+                                    <input type="file" wire:model="offlineProof" class="mt-1 block w-full text-sm text-gray-600">
+                                    @error('offlineProof') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    <p class="text-[11px] text-amber-700 mt-2 flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-md px-2 py-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86l-7.1 12.29A1.5 1.5 0 004.5 18h15a1.5 1.5 0 001.31-2.25l-7.1-12.29a1.5 1.5 0 00-2.62 0z"></path>
+                                        </svg>
+                                        Provide at least one: reference or proof.
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($paymentMethod === 'cod' || $paymentMethod === 'offline')
                             <button wire:click="placeOrder" 
                                     wire:loading.attr="disabled"
                                     class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center
