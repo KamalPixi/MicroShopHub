@@ -679,7 +679,7 @@
                 </div>
             </div>
 
-            <div class="flex items-start gap-3">
+            <div class="flex items-start gap-3 mt-4">
                 <input type="checkbox" wire:model="settings.live_chat_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
                 <div>
                     <p class="text-sm font-semibold text-gray-800">Enable Live Chat Widget</p>
