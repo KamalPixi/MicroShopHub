@@ -35,7 +35,7 @@
                                     <div class="mt-1 text-[10px] opacity-70 flex items-center gap-2">
                                         <span>{{ $msg['created_at'] }}</span>
                                         @if($msg['sender'] === 'customer')
-                                            <span class="uppercase">{{ $msg['delivery_status'] === 'delivered' ? 'Delivered' : 'Sent' }}</span>
+                                            <span>{{ $msg['delivery_status'] === 'delivered' ? 'Delivered' : 'Sent' }}</span>
                                         @endif
                                     </div>
                                     @if(!empty($msg['meta']['product']))
