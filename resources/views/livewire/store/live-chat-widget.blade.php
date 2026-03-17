@@ -1,8 +1,14 @@
 <div id="live-chat-root" data-session-token="{{ $sessionToken }}">
     @if($enabled)
         <div class="fixed bottom-6 right-6 z-50">
-            <button type="button" wire:click="toggle" class="bg-primary text-white rounded-full shadow-lg px-4 py-3 text-sm font-semibold">
-                {{ $open ? 'Close Chat' : 'Live Chat' }}
+            <button type="button" wire:click="toggle" wire:loading.attr="disabled" wire:target="toggle" class="bg-primary text-white rounded-full shadow-lg px-4 py-3 text-sm font-semibold flex items-center gap-2">
+                <span wire:loading.remove wire:target="toggle">{{ $open ? 'Close Chat' : 'Live Chat' }}</span>
+                <span wire:loading wire:target="toggle">
+                    <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
+                    </svg>
+                </span>
             </button>
         </div>
 
@@ -15,7 +21,15 @@
                             {{ $nameCaptured ? 'You: ' . $customerName : 'We typically reply within a few minutes.' }}
                         </p>
                     </div>
-                    <button type="button" wire:click="toggle" class="text-gray-500 hover:text-gray-700">×</button>
+                    <button type="button" wire:click="toggle" wire:loading.attr="disabled" wire:target="toggle" class="text-gray-500 hover:text-gray-700 flex items-center justify-center">
+                        <span wire:loading.remove wire:target="toggle">×</span>
+                        <span wire:loading wire:target="toggle">
+                            <svg class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
+                            </svg>
+                        </span>
+                    </button>
                 </div>
 
                 <div id="live-chat-messages" class="p-4 space-y-2 max-h-72 overflow-y-auto">
