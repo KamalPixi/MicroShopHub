@@ -682,5 +682,33 @@
                 </button>
             </div>
         </section>
+
+        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+            <h4 class="text-base font-bold text-gray-800">Cron & Queue Setup</h4>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Use cron to process queued jobs on shared hosting and VPS.</p>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600">Cron Command</label>
+                    <div class="mt-1 flex items-center gap-2">
+                        <input type="text" readonly value="* * * * * php {{ base_path('artisan') }} schedule:run >> /dev/null 2>&1" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-xs bg-gray-50">
+                    </div>
+                    <p class="text-[11px] text-gray-500 mt-1">Set this in your hosting cron manager (runs every minute).</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600">Queue Driver</label>
+                    <input type="text" readonly value="QUEUE_CONNECTION=database" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-xs bg-gray-50">
+                </div>
+                <div class="flex items-center gap-3">
+                    <button type="button" wire:click="sendQueueTest" class="bg-primary text-white text-xs font-semibold rounded-lg px-3 py-2 hover:bg-primary">Send Test Job</button>
+                    @if($queueTestMessage)
+                        <span class="text-[11px] text-gray-500">{{ $queueTestMessage }}</span>
+                    @endif
+                </div>
+                <div class="text-[11px] text-gray-500">
+                    Last processed at: {{ \App\Models\Setting::where('key','queue_last_processed_at')->value('value') ?? 'Not yet processed' }}
+                </div>
+            </div>
+        </section>
     </div>
 </div>

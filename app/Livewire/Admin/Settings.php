@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Setting;
 use App\Models\Currency;
 use App\Models\Country;
+use App\Jobs\TestQueueJob;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
@@ -108,6 +109,7 @@ class Settings extends Component
     public $telegramFetchMessage = '';
     public $telegramWebhookMessage = '';
     public bool $telegramWebhookSet = false;
+    public string $queueTestMessage = '';
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -573,6 +575,13 @@ class Settings extends Component
         } catch (\Throwable $e) {
             $this->telegramWebhookMessage = 'Error setting webhook. Try again.';
         }
+    }
+
+    public function sendQueueTest(): void
+    {
+        $this->queueTestMessage = '';
+        TestQueueJob::dispatch();
+        $this->queueTestMessage = 'Test job queued. Wait 1–2 minutes and refresh to see updated status.';
     }
 
     public function saveAll()
