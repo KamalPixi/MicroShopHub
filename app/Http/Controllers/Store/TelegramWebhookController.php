@@ -67,6 +67,8 @@ class TelegramWebhookController extends Controller
             'session_id' => $session->id,
             'sender' => 'admin',
             'message' => $replyText,
+            'delivery_status' => 'delivered',
+            'delivered_at' => now(),
         ]);
 
         $session->update(['last_message_at' => now()]);

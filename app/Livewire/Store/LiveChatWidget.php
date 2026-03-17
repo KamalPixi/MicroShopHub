@@ -133,6 +133,7 @@ class LiveChatWidget extends Component
             'message' => $text,
             'product_id' => $this->currentProduct['id'] ?? null,
             'meta' => $this->currentProduct ? ['product' => $this->currentProduct] : null,
+            'delivery_status' => 'sent',
         ]);
 
         $session->update(['last_message_at' => now()]);
@@ -184,6 +185,7 @@ class LiveChatWidget extends Component
                 'message' => $item->message,
                 'meta' => $item->meta,
                 'created_at' => $item->created_at?->format('H:i'),
+                'delivery_status' => $item->delivery_status,
             ];
             if ($item->sender === 'admin') {
                 $this->newAdminMessage = true;
@@ -203,8 +205,9 @@ class LiveChatWidget extends Component
             return;
         }
 
-        foreach ($this->messages as $existing) {
+        foreach ($this->messages as $index => $existing) {
             if (($existing['id'] ?? null) === $message['id']) {
+                $this->messages[$index] = array_merge($existing, $message);
                 return;
             }
         }

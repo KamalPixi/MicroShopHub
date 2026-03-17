@@ -13,6 +13,8 @@ return new class extends Migration
             $table->foreignId('session_id')->constrained('live_chat_sessions')->cascadeOnDelete();
             $table->string('sender'); // customer|admin
             $table->text('message');
+            $table->string('delivery_status', 20)->default('sent');
+            $table->timestamp('delivered_at')->nullable();
             $table->unsignedBigInteger('product_id')->nullable();
             $table->json('meta')->nullable();
             $table->timestamps();

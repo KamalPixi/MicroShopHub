@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
+use App\Events\LiveChatMessageCreated;
 use App\Models\LiveChatMessage;
 use App\Models\LiveChatSession;
 use App\Models\Setting;
@@ -67,6 +68,13 @@ class LiveChatTelegramController extends Controller
         $sent = app(TelegramBotService::class)->sendMessage($botToken, $chatId, $text, $threadId);
         if (! $sent && $threadId) {
             app(TelegramBotService::class)->sendMessage($botToken, $chatId, $text);
+        }
+        if ($sent) {
+            $message->update([
+                'delivery_status' => 'delivered',
+                'delivered_at' => now(),
+            ]);
+            event(new LiveChatMessageCreated($message->fresh()));
         }
 
         return response()->noContent();

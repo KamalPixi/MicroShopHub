@@ -32,7 +32,12 @@
                             <div class="flex {{ $msg['sender'] === 'customer' ? 'justify-end' : 'justify-start' }}">
                                 <div class="max-w-[75%] rounded-lg px-3 py-2 text-xs {{ $msg['sender'] === 'customer' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700' }}">
                                     <p>{{ $msg['message'] }}</p>
-                                    <p class="mt-1 text-[10px] opacity-70">{{ $msg['created_at'] }}</p>
+                                    <div class="mt-1 text-[10px] opacity-70 flex items-center gap-2">
+                                        <span>{{ $msg['created_at'] }}</span>
+                                        @if($msg['sender'] === 'customer')
+                                            <span class="uppercase">{{ $msg['delivery_status'] === 'delivered' ? 'Delivered' : 'Sent' }}</span>
+                                        @endif
+                                    </div>
                                     @if(!empty($msg['meta']['product']))
                                         <div class="mt-1 text-[10px] opacity-90">
                                             Product: {{ $msg['meta']['product']['name'] }}

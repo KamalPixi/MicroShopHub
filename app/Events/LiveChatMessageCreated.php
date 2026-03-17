@@ -27,6 +27,7 @@ class LiveChatMessageCreated implements ShouldBroadcastNow
             'message' => $message->message,
             'meta' => $message->meta,
             'created_at' => $message->created_at?->format('H:i'),
+            'delivery_status' => $message->delivery_status,
         ];
     }
 
