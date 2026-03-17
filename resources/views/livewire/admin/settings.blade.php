@@ -639,11 +639,11 @@
                     <p class="text-sm font-semibold text-gray-800">Enable Live Chat Widget</p>
                     <p class="text-xs text-gray-500">Adds a storefront chat widget so customers can message you instantly. Set Telegram Config first, then enable this to forward messages and deliver replies.</p>
                     <ol class="mt-2 text-[11px] text-gray-500 list-decimal list-inside space-y-1">
-                        <li>Open Telegram and start a chat with <span class="font-semibold">@BotFather</span>.</li>
-                        <li>Create a bot with <span class="font-semibold">/newbot</span> and copy the Bot Token.</li>
-                        <li>Create a Telegram group: tap New Message → New Group → add a contact → name the group.</li>
-                        <li>Add your bot to the group and send a test message, then get the Chat ID for that group.</li>
-                        <li>Paste Bot Token and Chat ID above, save settings, then set the webhook below.</li>
+                        <li>Open Telegram and search for <span class="font-semibold">@BotFather</span>.</li>
+                        <li>Create a bot with Sending the command <span class="font-semibold">/newbot</span></li>
+                        <li>Follow the prompts: Give it a Display Name (e.g., "My Notifier") and a Username (must end in bot, e.g., MyNotifierBot).</li>
+                        <li>Save the API Token: It looks like 123456789:ABCDefGhIJKlmNoPQRstuv. Keep this private.</li>
+                        <li>Paste Bot Token above, set Chat ID (You can fetch chat ID also to set one), save settings, then set the webhook below.</li>
                     </ol>
                     @error('settings.live_chat_enabled')
                         <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
