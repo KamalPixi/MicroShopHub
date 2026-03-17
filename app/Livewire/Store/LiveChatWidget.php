@@ -7,7 +7,6 @@ use App\Models\LiveChatMessage;
 use App\Models\LiveChatSession;
 use App\Models\Setting;
 use App\Models\Product;
-use App\Services\TelegramBotService;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -142,7 +141,7 @@ class LiveChatWidget extends Component
         $this->loadMessages();
         $this->dispatch('live-chat-scroll');
 
-        $this->notifyTelegram($session, $msg);
+        $this->dispatch('live-chat-telegram', messageId: $msg->id, sessionToken: $this->sessionToken);
         event(new LiveChatMessageCreated($msg));
     }
 
@@ -216,46 +215,6 @@ class LiveChatWidget extends Component
         if (($message['sender'] ?? '') === 'admin') {
             $this->open = true;
             $this->dispatch('live-chat-scroll');
-        }
-    }
-
-    protected function notifyTelegram(LiveChatSession $session, LiveChatMessage $message): void
-    {
-        $settings = Setting::whereIn('key', [
-            'admin_telegram_bot_token',
-            'admin_telegram_chat_id',
-        ])->pluck('value', 'key');
-
-        $botToken = $settings['admin_telegram_bot_token'] ?? null;
-        $chatId = $settings['admin_telegram_chat_id'] ?? null;
-        if (! $botToken || ! $chatId) {
-            return;
-        }
-
-        $customerName = $session->customer_name ?: 'Anonymous';
-        $text = "<b>New live chat message</b>\n".
-            "Name: {$customerName}\n".
-            "Session: <code>{$session->session_token}</code>\n".
-            "Message: {$message->message}";
-
-        if (! empty($message->meta['product'])) {
-            $product = $message->meta['product'];
-            $text .= "\nProduct: {$product['name']}";
-            $text .= "\n".route('store.product.show', $product['slug']);
-        }
-
-        $threadId = $session->telegram_thread_id;
-        if (! $threadId) {
-            $topicName = $customerName.' - '.$session->session_token;
-            $threadId = app(TelegramBotService::class)->createForumTopic($botToken, $chatId, $topicName);
-            if ($threadId) {
-                $session->update(['telegram_thread_id' => $threadId]);
-            }
-        }
-
-        $sent = app(TelegramBotService::class)->sendMessage($botToken, $chatId, $text, $threadId);
-        if (! $sent && $threadId) {
-            app(TelegramBotService::class)->sendMessage($botToken, $chatId, $text);
         }
     }
 

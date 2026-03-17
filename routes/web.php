@@ -12,6 +12,7 @@ use App\Http\Controllers\Store\CustomerController;
 use App\Http\Controllers\Store\AuthController;
 use App\Http\Controllers\Store\PaymentController;
 use App\Http\Controllers\Store\NewsletterController;
+use App\Http\Controllers\Store\LiveChatTelegramController;
 use App\Http\Controllers\Store\TelegramWebhookController;
 
 /*
@@ -80,6 +81,7 @@ Route::prefix('payment')->name('payment.')->group(function () {
 });
 
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle'])->name('telegram.webhook');
+Route::post('/live-chat/telegram', [LiveChatTelegramController::class, 'handle'])->name('live-chat.telegram');
 
 /*
 |--------------------------------------------------------------------------

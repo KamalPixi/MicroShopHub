@@ -23,7 +23,7 @@
                         <div class="space-y-3">
                             <p class="text-xs text-gray-500">Please enter your name to start the chat.</p>
                             <div class="flex gap-2">
-                                <input type="text" wire:model.live="customerName" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:border-primary focus:ring-primary" placeholder="Your name">
+                                <input type="text" wire:model.live="customerName" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Your name">
                                 <button type="button" wire:click="saveName" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold">Start</button>
                             </div>
                         </div>
@@ -57,10 +57,10 @@
 
                 <div class="px-4 py-3 border-t border-gray-100">
                     <div class="flex gap-2">
-                        <input type="text" wire:model.live="message" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:border-primary focus:ring-primary" placeholder="Type a message..." {{ $nameCaptured ? '' : 'disabled' }}>
-                        <button type="button" wire:click="sendMessage" wire:loading.attr="disabled" wire:target="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold flex items-center justify-center" {{ $nameCaptured ? '' : 'disabled' }}>
+                        <input type="text" wire:model.live="message" wire:keydown.enter.prevent="sendMessage" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Type a message..." {{ $nameCaptured ? '' : 'disabled' }}>
+                        <button type="button" wire:click="sendMessage" wire:loading.attr="disabled" wire:target="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold flex items-center justify-center min-w-[64px]" {{ $nameCaptured ? '' : 'disabled' }}>
                             <span wire:loading.remove wire:target="sendMessage">Send</span>
-                            <span wire:loading wire:target="sendMessage">
+                            <span wire:loading.delay.longer wire:target="sendMessage">
                                 <svg class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
@@ -155,6 +155,32 @@
             root.dataset.sessionToken = event.detail.token;
             root.dataset.realtime = 'false';
             initLiveChatRealtime();
+        }
+    });
+    window.addEventListener('live-chat-telegram', (event) => {
+        const detail = event?.detail || {};
+        if (!detail.messageId || !detail.sessionToken) {
+            return;
+        }
+        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!token) {
+            return;
+        }
+        try {
+            fetch('/live-chat/telegram', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({
+                    message_id: detail.messageId,
+                    session_token: detail.sessionToken
+                }),
+                keepalive: true
+            });
+        } catch (e) {
+            // ignore client-side errors
         }
     });
     const bodyObserver = new MutationObserver(() => {
