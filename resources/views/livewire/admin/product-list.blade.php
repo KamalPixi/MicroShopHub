@@ -27,8 +27,7 @@
         <table class="table-field w-full min-w-[1100px] text-left text-xs">
             <thead>
                 <tr class="bg-gray-50">
-                    <th class="font-medium text-gray-700 px-2 py-2">Name</th>
-                    <th class="font-medium text-gray-700 px-2 py-2">Slug</th>
+                    <th class="font-medium text-gray-700 px-2 py-2" width="20%">Name</th>
                     <th class="font-medium text-gray-700 px-2 py-2">Categories</th>
                     <th class="font-medium text-gray-700 px-2 py-2">Sold Amount</th>
                     <th class="font-medium text-gray-700 px-2 py-2 w-[240px]">Attributes</th>
@@ -42,15 +41,12 @@
                 @forelse ($products as $product)
                 <tr class="border-t">
                     <td class="px-2 py-2 align-top">
-                        <p class="font-medium text-gray-900 leading-5 max-w-[180px] truncate">{{ $product->name }}</p>
-                    </td>
-                    <td class="px-2 py-2 align-top">
-                        <p class="text-gray-600 max-w-[160px] truncate">{{ $product->slug }}</p>
+                        <p class="font-medium text-gray-900 leading-5 whitespace-normal break-words">{{ $product->name }}</p>
                     </td>
                     <td class="px-2 py-2 align-top w-[240px]">
                         <div class="flex flex-wrap gap-1">
                             @foreach ($product->categories->take(2) as $category)
-                                <span class="badge bg-blue-100 text-blue-800">{{ $category->name }}</span>
+                                <span class="badge bg-blue-100 text-blue-800 whitespace-normal break-words">{{ $category->name }}</span>
                             @endforeach
                             @if ($product->categories->count() > 2)
                                 <span class="badge bg-gray-100 text-gray-700">+{{ $product->categories->count() - 2 }} more</span>
@@ -60,7 +56,7 @@
                             @endif
                         </div>
                     </td>
-                    <td class="px-2 py-2 align-top">
+                    <td class="py-2 align-top">
                         @php
                             $soldAmount = (float) ($product->sold_amount ?? 0);
                         @endphp
@@ -129,6 +125,12 @@
                         @endif
                     </td>
                     <td class="text-end space-x-1 px-2 py-2 align-top whitespace-nowrap">
+                        <a href="{{ route('store.product.show', $product->slug) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center h-7 w-7 border border-gray-200 text-gray-600 hover:text-primary hover:bg-gray-50 rounded" title="Open product on website">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7v7M10 14L21 3M21 14v7h-7M3 10V3h7M3 21l7-7" />
+                            </svg>
+                        </a>
+
                         <!-- View -->
                         <a href="{{ route('admin.products.show', $product->id) }}" class="inline-flex items-center justify-center h-7 w-7 border border-blue-200 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -155,7 +157,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="9" class="text-center text-gray-500 py-4">No products found.</td>
+                    <td colspan="8" class="text-center text-gray-500 py-4">No products found.</td>
                 </tr>
                 @endforelse
             </tbody>
