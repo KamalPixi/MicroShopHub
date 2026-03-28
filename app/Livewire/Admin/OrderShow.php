@@ -146,8 +146,8 @@ class OrderShow extends Component
             return;
         }
 
-        $fromAddress = Setting::where('key', 'mail_from_address')->value('value') ?: config('mail.from.address');
-        $fromName = Setting::where('key', 'mail_from_name')->value('value') ?: config('mail.from.name');
+        $fromAddress = trim((string) Setting::where('key', 'mail_from_address')->value('value'));
+        $fromName = trim((string) Setting::where('key', 'mail_from_name')->value('value'));
 
         Mail::raw($messageBody, function ($message) use ($toEmail, $subject, $fromAddress, $fromName) {
             if ($fromAddress) {

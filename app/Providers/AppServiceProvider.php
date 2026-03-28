@@ -37,11 +37,40 @@ class AppServiceProvider extends ServiceProvider
             });
 
             $settings = Setting::whereIn('key', [
+                'mail_host',
+                'mail_port',
+                'mail_username',
+                'mail_password',
+                'mail_encryption',
+                'mail_from_address',
+                'mail_from_name',
                 'pusher_app_id',
                 'pusher_app_key',
                 'pusher_app_secret',
                 'pusher_app_cluster',
             ])->pluck('value', 'key');
+
+            $mailHost = trim((string) ($settings['mail_host'] ?? ''));
+            $mailPort = (int) ($settings['mail_port'] ?? 0);
+            $mailUsername = trim((string) ($settings['mail_username'] ?? ''));
+            $mailPassword = (string) ($settings['mail_password'] ?? '');
+            $mailEncryption = trim((string) ($settings['mail_encryption'] ?? 'tls')) ?: 'tls';
+            $mailFromAddress = trim((string) ($settings['mail_from_address'] ?? ''));
+            $mailFromName = trim((string) ($settings['mail_from_name'] ?? ''));
+
+            if ($mailHost !== '' && $mailPort > 0) {
+                config([
+                    'mail.default' => 'smtp',
+                    'mail.mailers.smtp.transport' => 'smtp',
+                    'mail.mailers.smtp.host' => $mailHost,
+                    'mail.mailers.smtp.port' => $mailPort,
+                    'mail.mailers.smtp.username' => $mailUsername ?: null,
+                    'mail.mailers.smtp.password' => $mailPassword ?: null,
+                    'mail.mailers.smtp.encryption' => $mailEncryption !== 'none' ? $mailEncryption : null,
+                    'mail.from.address' => $mailFromAddress ?: '',
+                    'mail.from.name' => $mailFromName ?: '',
+                ]);
+            }
 
             $pusherId = trim((string) ($settings['pusher_app_id'] ?? ''));
             $pusherKey = trim((string) ($settings['pusher_app_key'] ?? ''));

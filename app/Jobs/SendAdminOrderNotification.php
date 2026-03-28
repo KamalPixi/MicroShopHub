@@ -50,8 +50,8 @@ class SendAdminOrderNotification implements ShouldQueue
         if (filter_var($settings['admin_notify_email_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
             $toEmail = $settings['admin_notify_email_address'] ?? null;
             if ($toEmail) {
-                $fromAddress = $settings['mail_from_address'] ?? config('mail.from.address');
-                $fromName = $settings['mail_from_name'] ?? config('mail.from.name');
+                $fromAddress = trim((string) ($settings['mail_from_address'] ?? ''));
+                $fromName = trim((string) ($settings['mail_from_name'] ?? ''));
                 Mail::raw($messageText, function ($message) use ($toEmail, $fromAddress, $fromName) {
                     if ($fromAddress) {
                         $message->from($fromAddress, $fromName ?: null);
