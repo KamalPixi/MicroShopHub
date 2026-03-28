@@ -170,7 +170,10 @@
                                     {{ ucfirst($order['status']) }}
                                 </span>
                             </td>
-                            <td class="p-2">{{ $order['created_at'] }}</td>
+                            <td class="p-2">
+                                <div class="text-xs font-medium leading-tight text-gray-800">{{ $order['created_at_human'] }}</div>
+                                <div class="text-[10px] leading-tight text-gray-500">{{ $order['created_at_time'] }}</div>
+                            </td>
                         </tr>
                     @endforeach
                     @if ($recentOrders->isEmpty())

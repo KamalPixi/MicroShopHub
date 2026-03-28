@@ -109,7 +109,8 @@ class DashboardAnalytics extends Component
                     'customer_name' => $order->user ? $order->user->name : 'Guest',
                     'total' => $order->total,
                     'status' => $order->status,
-                    'created_at' => $order->created_at->format('Y-m-d H:i'),
+                    'created_at_human' => $order->created_at?->diffForHumans(),
+                    'created_at_time' => $order->created_at?->format('d M Y, h:i A'),
                 ];
             });
 
