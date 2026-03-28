@@ -1,8 +1,9 @@
 <div class="space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-lg font-semibold text-gray-900">Dashboard</h2>
-            <p class="text-sm text-gray-500">Overview of sales, orders, customers, and inventory.</p>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-500">Admin Dashboard</p>
+            <h2 class="text-lg font-semibold text-gray-900">{{ $shopName }}</h2>
+            <p class="text-sm text-gray-500">{{ $shopName }} overview of sales, orders, customers, and inventory.</p>
         </div>
     </div>
     <!-- Analytics Cards -->

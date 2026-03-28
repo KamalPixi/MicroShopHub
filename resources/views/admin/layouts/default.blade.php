@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-commerce Admin Dashboard</title>
     @php
+        $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title'])->pluck('value', 'key');
+        $storeName = $sidebarSettings['shop_name'] ?: ($sidebarSettings['site_title'] ?: config('app.name', 'Store Name'));
         $brandSettings = \App\Models\Setting::whereIn('key', [
             'branding_color',
             'secondary_color',
@@ -15,6 +16,7 @@
         $secondaryColor = $brandSettings['secondary_color'] ?? '#64748b';
         $accentColor = $brandSettings['accent_color'] ?? '#f59e0b';
     @endphp
+    <title>{{ $storeName }} Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {

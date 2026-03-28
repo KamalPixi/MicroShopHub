@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\Currency;
+use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -33,10 +34,13 @@ class DashboardAnalytics extends Component
     public $outOfStockCount;
     public $recentProducts;
     public $currencySymbol;
+    public $shopName;
 
     public function mount()
     {
         $this->currencySymbol = Currency::getActive()->symbol;
+        $settings = Setting::whereIn('key', ['shop_name', 'site_title'])->pluck('value', 'key');
+        $this->shopName = $settings['shop_name'] ?: ($settings['site_title'] ?: config('app.name', 'Store Name'));
         // Total Sales: Sum of all order totals
         $this->totalSales = Order::sum('total');
 
