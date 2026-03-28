@@ -1,14 +1,24 @@
 <aside id="sidebar" class="w-56 bg-slate-900 text-slate-100 p-4 flex flex-col fixed top-0 bottom-0 border-r border-slate-800">
-    @php
-        $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title'])->pluck('value', 'key');
+@php
+        $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title', 'shop_logo'])->pluck('value', 'key');
         $sidebarStoreName = $sidebarSettings['shop_name'] ?: ($sidebarSettings['site_title'] ?: config('app.name', 'Store Name'));
+        $sidebarStoreLogo = $sidebarSettings['shop_logo'] ?? null;
+        $sidebarStoreLogoUrl = $sidebarStoreLogo
+            ? (\Illuminate\Support\Str::startsWith($sidebarStoreLogo, ['http://', 'https://'])
+                ? $sidebarStoreLogo
+                : \Illuminate\Support\Facades\Storage::url($sidebarStoreLogo))
+            : null;
     @endphp
     <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-800">
         <div class="flex items-center gap-2">
-            <div class="h-9 w-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
-                <svg class="w-4.5 h-4.5 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z"></path>
-                </svg>
+            <div class="h-9 w-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden">
+                @if($sidebarStoreLogoUrl)
+                    <img src="{{ $sidebarStoreLogoUrl }}" alt="{{ $sidebarStoreName }} logo" class="h-full w-full object-contain p-1">
+                @else
+                    <svg class="w-4.5 h-4.5 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z"></path>
+                    </svg>
+                @endif
             </div>
             <div>
                 <h1 class="text-sm font-semibold tracking-tight text-slate-100 leading-none">{{ $sidebarStoreName }}</h1>
