@@ -83,7 +83,7 @@
                     if (this.slides.length > 1) {
                         this.timer = setInterval(() => {
                             this.active = (this.active + 1) % this.slides.length
-                        }, 4500)
+                        }, 3800)
                     }
                 },
                 go(index) { this.active = index }
@@ -97,6 +97,12 @@
                         x-show="active === index"
                         :href="slide.link_url || '#'"
                         class="absolute inset-0 block"
+                        x-transition:enter="transition ease-out duration-700"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave="transition ease-in duration-700"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
                         x-cloak
                     >
                         <img :src="slide.image_url" :alt="slide.alt || 'Homepage banner'" class="h-full w-full object-cover">
@@ -165,7 +171,7 @@
                     if (this.slides.length > 1) {
                         this.timer = setInterval(() => {
                             this.active = (this.active + 1) % this.slides.length
-                        }, 4500)
+                        }, 3800)
                     }
                 },
                 go(index) { this.active = index }
@@ -179,6 +185,12 @@
                         x-show="active === index"
                         :href="slide.link_url || '#'"
                         class="absolute inset-0 block"
+                        x-transition:enter="transition ease-out duration-700"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave="transition ease-in duration-700"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
                         x-cloak
                     >
                         <img :src="slide.image_url" :alt="slide.alt || 'Homepage banner'" class="h-full w-full object-cover">
