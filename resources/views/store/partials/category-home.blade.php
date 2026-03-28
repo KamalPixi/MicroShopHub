@@ -7,6 +7,18 @@
         this.$refs.container.scrollBy({ left: this.scrollAmount, behavior: 'smooth' });
     }
 }">
+    @php
+        $fallbackGradients = [
+            'from-sky-500 to-indigo-600',
+            'from-emerald-500 to-teal-600',
+            'from-rose-500 to-fuchsia-600',
+            'from-amber-400 to-orange-600',
+            'from-violet-500 to-purple-700',
+            'from-cyan-500 to-blue-600',
+            'from-lime-500 to-green-600',
+            'from-pink-500 to-red-600',
+        ];
+    @endphp
     <div class="mb-3 px-1">
         <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_shop_by_category_title'] ?? 'Shop by Category' }}</h2>
     </div>
@@ -24,11 +36,14 @@
 
                 @if(isset($homeCategories) && $homeCategories->count() > 0)
                     @foreach($homeCategories as $category)
+                        @php
+                            $gradient = $fallbackGradients[$loop->index % count($fallbackGradients)];
+                        @endphp
                         <a href="{{ route('store.search', ['category' => $category->id]) }}" 
                            class="flex-none w-64 md:w-72 snap-start relative overflow-hidden rounded-lg bg-white shadow hover:shadow-md transition-all duration-300 cursor-pointer group/card block">
                             
                             @php
-                                $imageUrl = 'https://placehold.co/400x225?text=No+Image';
+                                $imageUrl = null;
                                 if ($category->thumbnail) {
                                     if (Str::startsWith($category->thumbnail, ['http://', 'https://'])) {
                                         $imageUrl = $category->thumbnail;
@@ -38,7 +53,15 @@
                                 }
                             @endphp
 
-                            <img src="{{ $imageUrl }}" alt="{{ $category->name }}" class="w-full h-40 object-cover">
+                            @if(!empty($imageUrl))
+                                <img src="{{ $imageUrl }}" alt="{{ $category->name }}" class="w-full h-40 object-cover">
+                            @else
+                                <div class="flex h-40 items-center justify-center bg-gradient-to-br {{ $gradient }} text-white">
+                                    <span class="text-4xl font-black tracking-tight opacity-95">
+                                        {{ strtoupper(mb_substr($category->name, 0, 1)) }}
+                                    </span>
+                                </div>
+                            @endif
                             
                             <div class="p-3">
                                 <h3 class="text-base font-semibold text-gray-900 group-hover/card:text-primary transition-colors line-clamp-1">
