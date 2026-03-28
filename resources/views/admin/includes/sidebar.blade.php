@@ -180,6 +180,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.pages.shipping') }}"
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.shipping') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Shipping Info
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.pages.cookie') }}"
                            class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.cookie') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
                             Cookie Policy

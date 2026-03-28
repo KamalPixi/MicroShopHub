@@ -46,6 +46,13 @@ class PageEditor extends Component
             'default_content' => "Refund Policy\n\nWe want every customer to feel comfortable shopping with us. If a refund is approved, it will be handled according to the rules below.\n\nWhen refunds may apply:\n- Damaged items received on delivery\n- Wrong items shipped by mistake\n- Orders cancelled before processing or shipping, where possible\n- Other cases approved by our support team\n\nWhen refunds may not apply:\n- Change of mind after an order has been processed\n- Items damaged due to customer handling\n- Requests made outside the allowed return window\n- Products that are not eligible for return or refund under store rules\n\nRefund process:\n- Contact support with your order number and proof\n- Our team will review the request\n- If approved, the refund or replacement will be arranged based on the payment method and order status\n\nTiming:\n- Refund timing depends on the payment method and processing time\n- Some payments may take additional business days to appear\n\nIf you need help with a refund request, contact our support team as soon as possible.",
             'label' => 'Refund Policy',
         ],
+        'shipping' => [
+            'title_key' => 'page_shipping_title',
+            'content_key' => 'page_shipping_content',
+            'default_title' => 'Shipping Info',
+            'default_content' => "Shipping Info\n\nThis page explains how shipping and delivery work in our store.\n\nShipping methods:\n- Available shipping methods are shown at checkout\n- Shipping cost may depend on location, weight, and delivery speed\n- Some locations may offer more than one delivery option\n\nDelivery timing:\n- Estimated delivery times are shown when available\n- Delivery time can change based on courier delays, location, and order volume\n- Processing time may be added before dispatch\n\nOrder dispatch:\n- Orders are prepared after payment confirmation or verification when needed\n- Offline payment orders may take longer while payment proof is reviewed\n- You will be notified when your order is processed or shipped\n\nTracking:\n- Tracking details may be shared if the selected courier supports it\n- Some local or offline deliveries may not include live tracking\n\nImportant notes:\n- Please provide a correct delivery address and phone number\n- We are not responsible for delays caused by incorrect shipping details\n- Customers should contact support if the order seems delayed or missing\n\nIf you have shipping questions for a specific order, contact our support team.",
+            'label' => 'Shipping Info',
+        ],
         'cookie' => [
             'title_key' => 'page_cookie_title',
             'content_key' => 'page_cookie_content',

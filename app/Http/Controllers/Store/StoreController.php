@@ -259,6 +259,16 @@ class StoreController extends Controller
         );
     }
 
+    public function shippingInfo()
+    {
+        return $this->renderStaticPage(
+            'page_shipping_title',
+            'page_shipping_content',
+            'Shipping Info',
+            'Read how shipping, delivery, and tracking work in our store.'
+        );
+    }
+
     public function cookiePolicy()
     {
         return $this->renderStaticPage(

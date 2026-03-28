@@ -39,6 +39,10 @@ class DashboardController extends Controller
         return view('admin.pages.refund-policy');
     }
 
+    public function shippingInfoPage() {
+        return view('admin.pages.shipping-info');
+    }
+
     public function cookiePolicyPage() {
         return view('admin.pages.cookie-policy');
     }

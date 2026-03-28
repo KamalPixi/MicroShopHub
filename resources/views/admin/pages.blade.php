@@ -23,6 +23,10 @@
             <p class="text-sm font-semibold text-gray-800">Refund Policy</p>
             <p class="mt-1 text-xs text-gray-500">Dedicated editor for refund policy content.</p>
         </a>
+        <a href="{{ route('admin.pages.shipping') }}" class="rounded-xl border border-gray-200 bg-white p-5 hover:border-primary">
+            <p class="text-sm font-semibold text-gray-800">Shipping Info</p>
+            <p class="mt-1 text-xs text-gray-500">Dedicated editor for shipping and delivery content.</p>
+        </a>
         <a href="{{ route('admin.pages.cookie') }}" class="rounded-xl border border-gray-200 bg-white p-5 hover:border-primary">
             <p class="text-sm font-semibold text-gray-800">Cookie Policy</p>
             <p class="mt-1 text-xs text-gray-500">Dedicated editor for cookie policy content.</p>
