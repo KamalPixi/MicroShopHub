@@ -474,7 +474,9 @@
                                     Apply
                                 </button>
                             </div>
-                            <p class="text-[11px] text-gray-500">Enter a discount code and click Apply to update your total.</p>
+                            @if(! $appliedCoupon)
+                                <p class="text-[11px] text-gray-500">Enter a discount code and click Apply to update your total.</p>
+                            @endif
                             @error('coupon') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
                             @if(session('coupon_success')) <p class="text-green-600 text-xs mt-1 font-bold">{{ session('coupon_success') }}</p> @endif
                         </div>
