@@ -62,20 +62,20 @@
 
         <div class="flex flex-col lg:flex-row gap-8">
             
-            <aside class="w-full lg:w-64 flex-shrink-0 space-y-4">
-                <form method="GET" action="{{ route('store.search') }}" class="space-y-4">
+            <aside class="w-full lg:w-64 flex-shrink-0 space-y-3">
+                <form method="GET" action="{{ route('store.search') }}" class="space-y-3">
                     @if($query) <input type="hidden" name="query" value="{{ $query }}"> @endif
                     @if($categoryId) <input type="hidden" name="category" value="{{ $categoryId }}"> @endif
                     @if($sort) <input type="hidden" name="sort" value="{{ $sort }}"> @endif
 
-                    <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm lg:hidden">
-                        <button type="button" @click="open = !open" class="flex min-h-10 w-full items-center justify-between">
+                    <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm lg:hidden">
+                        <button type="button" @click="open = !open" class="flex min-h-9 w-full items-center justify-between">
                             <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">Sort By</h3>
                             <svg class="h-4 w-4 text-gray-500 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="mt-3" x-show="open" x-cloak>
+                        <div class="mt-2.5" x-show="open" x-cloak>
                             <div class="relative">
                                 <select name="sort" onchange="this.form.submit()" class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2.5 pl-3 pr-10 text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 focus:border-gray-300 cursor-pointer">
                                     <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest Arrivals</option>
@@ -92,15 +92,15 @@
                         </div>
                     </div>
 
-                    <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-                        <button type="button" @click="open = !open" class="flex min-h-10 w-full items-center justify-between lg:pointer-events-none lg:cursor-default">
+                    <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm">
+                        <button type="button" @click="open = !open" class="flex min-h-9 w-full items-center justify-between lg:pointer-events-none lg:cursor-default">
                             <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">Price Range</h3>
                             <svg class="h-4 w-4 text-gray-500 transition-transform lg:hidden" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="mt-3 lg:mt-0" :class="open ? 'block' : 'hidden lg:block'">
-                            <div class="space-y-3">
+                        <div class="mt-2.5 lg:mt-0" :class="open ? 'block' : 'hidden lg:block'">
+                            <div class="space-y-2.5">
                                 <div class="flex items-center gap-2">
                                     <div class="relative flex-1">
                                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
@@ -122,8 +122,8 @@
                     </div>
                 </form>
 
-                <div x-data="{ expanded: false }" class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-                    <button type="button" @click="expanded = !expanded" class="flex min-h-10 w-full items-center justify-between lg:pointer-events-none lg:cursor-default">
+                <div x-data="{ expanded: false }" class="rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm">
+                    <button type="button" @click="expanded = !expanded" class="flex min-h-9 w-full items-center justify-between lg:pointer-events-none lg:cursor-default">
                         <div class="flex items-center gap-2">
                             <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">Categories</h3>
                             @if($categoryId)
@@ -135,10 +135,10 @@
                         </svg>
                     </button>
 
-                    <div class="mt-3 lg:mt-0" :class="expanded ? 'block' : 'hidden lg:block'">
+                    <div class="mt-2.5 lg:mt-0" :class="expanded ? 'block' : 'hidden lg:block'">
                         <div class="relative rounded-xl border border-gray-100 bg-gray-50/60">
-                            <div :class="expanded ? 'max-h-none' : 'max-h-72 lg:max-h-80 overflow-hidden'" class="relative space-y-2 px-3 py-3 transition-all duration-300">
-                                <ul class="space-y-2">
+                            <div :class="expanded ? 'max-h-none' : 'max-h-72 lg:max-h-80 overflow-hidden'" class="relative space-y-2 px-3 py-2.5 transition-all duration-300">
+                                <ul class="space-y-1.5">
                                     <li>
                                         <a href="{{ route('store.search', request()->except('category', 'page')) }}"
                                            class="block text-sm {{ request('category') == '' ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary' }}">
@@ -172,7 +172,7 @@
                                 <button
                                     type="button"
                                     @click="expanded = !expanded"
-                                    class="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+                                    class="inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100"
                                 >
                                     <span x-text="expanded ? 'Show fewer categories' : 'Show all categories'"></span>
                                     <svg class="h-4 w-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
