@@ -61,36 +61,57 @@
                 @error('parent_id') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <div class="md:col-span-2" x-data="imageCropper()">
-                <label class="block text-sm font-medium text-gray-700">Thumbnail (optional)</label>
-                <p class="text-xs text-gray-500 mb-2">
-                    Recommended size: <span class="font-medium">400x225px</span> (16:9 ratio)
-                </p>
-                
-                <input 
-                    type="file" 
-                    accept="image/*"
-                    @change="fileChosen"
-                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                >
+            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4" x-data="imageCropper()">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Thumbnail (optional)</label>
+                    <p class="text-xs text-gray-500 mb-2">
+                        Recommended size: <span class="font-medium">400x225px</span> (16:9 ratio)
+                    </p>
+                    
+                    <input 
+                        type="file" 
+                        accept="image/*"
+                        @change="fileChosen"
+                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    >
 
-                <div class="mt-4 flex gap-4">
-                    @if ($existingThumbnail && !$thumbnail)
-                        <div>
-                            <p class="text-xs text-gray-500 mb-1">Current:</p>
-                            <img src="{{ Storage::url($existingThumbnail) }}" class="h-24 w-auto object-cover rounded border">
-                        </div>
-                    @endif
-
-                    @if ($thumbnail)
-                        <div>
-                            <p class="text-xs text-green-600 mb-1 font-bold">New (Ready to Save):</p>
-                            <img src="{{ $thumbnail->temporaryUrl() }}" class="h-24 w-auto object-cover rounded border border-green-400">
-                        </div>
-                    @endif
+                    @error('thumbnail') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                 </div>
 
-                @error('thumbnail') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                <div class="flex items-start">
+                    <div class="pt-5">
+                        <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
+                            <input 
+                                wire:model="show_on_homepage" 
+                                type="checkbox" 
+                                class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            >
+                            <span>Show on (Shop By Category) List</span>
+                        </label>
+                        <p class="mt-1 text-xs text-gray-500">
+                            When enabled, this category appears in the storefront Shop By Category section.
+                        </p>
+                        @error('show_on_homepage') <span class="text-red-600 text-xs block mt-1">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="mt-4 flex gap-4">
+                        @if ($existingThumbnail && !$thumbnail)
+                            <div>
+                                <p class="text-xs text-gray-500 mb-1">Current:</p>
+                                <img src="{{ Storage::url($existingThumbnail) }}" class="h-24 w-auto object-cover rounded border">
+                            </div>
+                        @endif
+
+                        @if ($thumbnail)
+                            <div>
+                                <p class="text-xs text-green-600 mb-1 font-bold">New (Ready to Save):</p>
+                                <img src="{{ $thumbnail->temporaryUrl() }}" class="h-24 w-auto object-cover rounded border border-green-400">
+                            </div>
+                        @endif
+                    </div>
+                </div>
 
                 <div x-show="isCropping" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -126,16 +147,6 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Show on (Shop By Category) List</label>
-                <input 
-                    wire:model="show_on_homepage" 
-                    type="checkbox" 
-                    class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                >
-                @error('show_on_homepage') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
-            </div>
-
             <div class="md:col-span-2 flex flex-wrap gap-2">
                 <button 
                     wire:click="save" 
