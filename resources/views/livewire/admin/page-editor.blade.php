@@ -1,5 +1,5 @@
 <div class="space-y-6">
-    <section class="rounded-xl border border-primary ring-1 ring-primary bg-white p-5">
+    <section class="rounded-xl border border-gray-200 bg-white p-5">
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
                 <h3 class="text-lg font-bold text-gray-800">{{ $pageLabel }}</h3>

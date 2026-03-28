@@ -10,7 +10,7 @@
         @include('admin.includes.message')
 
         <div class="mt-5 space-y-5">
-            <div id="privacy" class="rounded-xl border border-primary ring-1 ring-primary p-4 space-y-4 bg-gray-50">
+            <div id="privacy" class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <p class="text-sm font-semibold text-gray-800">Privacy Policy</p>
@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <div id="terms" class="rounded-xl border border-primary ring-1 ring-primary p-4 space-y-4 bg-gray-50">
+            <div id="terms" class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <p class="text-sm font-semibold text-gray-800">Terms of Service</p>
@@ -60,7 +60,7 @@
                 </div>
             </div>
 
-            <div id="cookie" class="rounded-xl border border-primary ring-1 ring-primary p-4 space-y-4 bg-gray-50">
+            <div id="cookie" class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <p class="text-sm font-semibold text-gray-800">Cookie Policy</p>
