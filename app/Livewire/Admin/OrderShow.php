@@ -28,6 +28,7 @@ class OrderShow extends Component
             'shippingMethod',
             'billingAddress',
             'shippingAddress',
+            'discounts',
             'emailLogs',
             'offlinePayments',
         ])->findOrFail($id);

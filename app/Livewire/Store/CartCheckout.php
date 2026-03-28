@@ -157,6 +157,8 @@ class CartCheckout extends Component
             $this->restoreGuestDraft();
         }
 
+        $this->restoreCouponDraft();
+
         $this->calculateTotals();
     }
 
@@ -227,15 +229,13 @@ class CartCheckout extends Component
     {
         $this->resetErrorBag('coupon');
 
-        if (empty($this->couponCode)) {
+        $code = strtoupper(trim((string) $this->couponCode));
+
+        if ($code === '') {
             return;
         }
 
-        $coupon = Discount::where('code', $this->couponCode)
-            ->where('active', true)
-            ->where('starts_at', '<=', now())
-            ->where('expires_at', '>=', now())
-            ->first();
+        $coupon = $this->findValidCoupon($code);
 
         if (! $coupon) {
             $this->addError('coupon', 'Invalid or expired coupon.');
@@ -250,13 +250,16 @@ class CartCheckout extends Component
         $this->appliedCoupon = $coupon;
         $this->couponCode = '';
         $this->calculateTotals();
+        $this->saveGuestDraft();
         session()->flash('coupon_success', 'Coupon applied successfully!');
     }
 
     public function removeCoupon(): void
     {
         $this->appliedCoupon = null;
+        $this->couponCode = '';
         $this->calculateTotals();
+        $this->saveGuestDraft();
     }
 
     public function calculateTotals(): void
@@ -266,17 +269,28 @@ class CartCheckout extends Component
             $this->subtotal += $item['price'] * $item['quantity'];
         }
 
+        if ($this->appliedCoupon && ! $this->isCouponEligible($this->appliedCoupon)) {
+            $this->appliedCoupon = null;
+            $this->saveCouponDraft();
+        }
+
         $this->discountAmount = 0;
         if ($this->appliedCoupon) {
             if ($this->appliedCoupon->type === 'percentage') {
                 $this->discountAmount = ($this->subtotal * $this->appliedCoupon->value) / 100;
-            } else {
+            } elseif ($this->appliedCoupon->type === 'fixed') {
                 $this->discountAmount = $this->appliedCoupon->value;
             }
         }
 
         $method = $this->shippingMethods->find($this->selectedShippingMethod);
-        $this->shippingCost = $method ? $method->cost : 0;
+        $shippingCost = $method ? $method->cost : 0;
+        if ($this->appliedCoupon?->type === 'free_shipping') {
+            $shippingCost = 0;
+        }
+
+        $this->discountAmount = min($this->subtotal, (float) $this->discountAmount);
+        $this->shippingCost = $shippingCost;
         $this->total = max(0, ($this->subtotal - $this->discountAmount) + $this->shippingCost);
     }
 
@@ -305,6 +319,11 @@ class CartCheckout extends Component
             }
         }
 
+        if ($this->appliedCoupon && ! $this->isCouponEligible($this->appliedCoupon)) {
+            $this->addError('coupon', 'Coupon is no longer valid for this cart.');
+            return;
+        }
+
         DB::transaction(function () {
             $currency = Currency::getActive();
             $order = Order::create([
@@ -321,6 +340,12 @@ class CartCheckout extends Component
                 'payment_method' => $this->paymentMethod,
                 'payment_status' => $this->paymentMethod === 'offline' ? 'pending_verification' : 'pending',
             ]);
+
+            if ($this->appliedCoupon) {
+                $order->discounts()->attach($this->appliedCoupon->id, [
+                    'applied_value' => $this->discountAmount,
+                ]);
+            }
 
             $order->addresses()->create(array_merge($this->billing, [
                 'type' => 'billing',
@@ -384,7 +409,7 @@ class CartCheckout extends Component
             $this->cartService->clearCart();
             $this->cart = [];
             $this->dispatch('cartUpdated');
-            session()->forget(['guest_checkout', 'auth_checkout']);
+            session()->forget(['guest_checkout', 'auth_checkout', 'guest_coupon', 'auth_coupon']);
 
             $this->notifyAdminNewOrder($order);
             session()->flash('order_success', "Order #{$order->order_number} placed successfully!");
@@ -566,6 +591,8 @@ class CartCheckout extends Component
                 'ship_to_different' => (bool) $this->shipToDifferentAddress,
             ],
         ]);
+
+        $this->saveCouponDraft();
     }
 
     protected function restoreGuestDraft(): void
@@ -602,6 +629,97 @@ class CartCheckout extends Component
             $this->shipping = array_merge($this->shipping, $draft['shipping']);
         }
         $this->shipToDifferentAddress = (bool) ($draft['ship_to_different'] ?? $this->shipToDifferentAddress);
+    }
+
+    protected function restoreCouponDraft(): void
+    {
+        $couponSessionKey = Auth::check() ? 'auth_coupon' : 'guest_coupon';
+        $draft = session($couponSessionKey, []);
+
+        if (! is_array($draft)) {
+            return;
+        }
+
+        $coupon = null;
+        $couponId = (int) ($draft['coupon_id'] ?? 0);
+        $couponCode = trim((string) ($draft['coupon_code'] ?? ''));
+
+        if ($couponId > 0) {
+            $coupon = Discount::find($couponId);
+        } elseif ($couponCode !== '') {
+            $coupon = $this->findValidCoupon($couponCode);
+        }
+
+        if (! $coupon || ! $this->isCouponEligible($coupon)) {
+            session()->forget($couponSessionKey);
+            return;
+        }
+
+        $this->appliedCoupon = $coupon;
+    }
+
+    protected function saveCouponDraft(): void
+    {
+        $couponSessionKey = Auth::check() ? 'auth_coupon' : 'guest_coupon';
+
+        if (! $this->appliedCoupon) {
+            session()->forget($couponSessionKey);
+            return;
+        }
+
+        session([
+            $couponSessionKey => [
+                'coupon_id' => $this->appliedCoupon->id,
+                'coupon_code' => $this->appliedCoupon->code,
+            ],
+        ]);
+    }
+
+    protected function findValidCoupon(string $code): ?Discount
+    {
+        return Discount::whereRaw('UPPER(code) = ?', [$code])
+            ->where('active', true)
+            ->where(function ($query) {
+                $query->whereNull('starts_at')
+                    ->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>=', now());
+            })
+            ->first();
+    }
+
+    protected function isCouponEligible(Discount $coupon): bool
+    {
+        if (! $coupon->active) {
+            return false;
+        }
+
+        if ($coupon->starts_at && $coupon->starts_at->isFuture()) {
+            return false;
+        }
+
+        if ($coupon->expires_at && $coupon->expires_at->isPast()) {
+            return false;
+        }
+
+        if ($coupon->usage_limit !== null && $coupon->orders()->count() >= $coupon->usage_limit) {
+            return false;
+        }
+
+        if (Auth::check() && $coupon->per_user_limit !== null) {
+            $userUses = $coupon->orders()->where('user_id', Auth::id())->count();
+            if ($userUses >= $coupon->per_user_limit) {
+                return false;
+            }
+        }
+
+        if ($this->subtotal < (float) $coupon->min_order_amount) {
+            return false;
+        }
+
+        return true;
     }
 
     public function useSavedAddress($addressId): void

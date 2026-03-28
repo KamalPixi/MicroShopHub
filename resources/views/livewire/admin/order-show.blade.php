@@ -311,6 +311,12 @@
                         <span>Discount</span>
                         <span class="font-semibold text-gray-900">- {{ $displaySymbol }}{{ number_format($order->discount, 2) }}</span>
                     </div>
+                    @if($order->discounts->isNotEmpty())
+                        <div class="flex justify-between text-gray-600">
+                            <span>Coupon</span>
+                            <span class="font-semibold text-gray-900">{{ $order->discounts->pluck('code')->join(', ') }}</span>
+                        </div>
+                    @endif
                     <div class="flex justify-between text-gray-600">
                         <span>Shipping</span>
                         <span class="font-semibold text-gray-900">{{ $displaySymbol }}{{ number_format($order->shipping_cost, 2) }}</span>
@@ -333,6 +339,12 @@
                         <span>Discount</span>
                         <span class="font-semibold text-gray-900">- {{ $displaySymbol }}{{ number_format($order->discount, 2) }}</span>
                     </div>
+                    @if($order->discounts->isNotEmpty())
+                        <div class="flex justify-between text-gray-600">
+                            <span>Coupon</span>
+                            <span class="font-semibold text-gray-900">{{ $order->discounts->pluck('code')->join(', ') }}</span>
+                        </div>
+                    @endif
                     <div class="flex justify-between text-gray-600">
                         <span>Shipping</span>
                         <span class="font-semibold text-gray-900">{{ $displaySymbol }}{{ number_format($order->shipping_cost, 2) }}</span>
