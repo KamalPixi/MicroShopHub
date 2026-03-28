@@ -37,7 +37,11 @@
                     @endif
                     @if(!empty($footerSettings['footer_social_instagram_url'] ?? ''))
                         <a href="{{ $footerSettings['footer_social_instagram_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Instagram">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm10 2H7a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3zm-5 3.5A5.5 5.5 0 1111.5 13 5.5 5.5 0 0112 7.5zm0 2A3.5 3.5 0 1015.5 13 3.5 3.5 0 0012 9.5zM18 6.7a1.1 1.1 0 11-1.1-1.1A1.1 1.1 0 0118 6.7z"/></svg>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
+                                <path d="M8 12a4 4 0 118 0 4 4 0 01-8 0z"></path>
+                                <path d="M17.5 6.5h.01"></path>
+                            </svg>
                         </a>
                     @endif
                 </div>
