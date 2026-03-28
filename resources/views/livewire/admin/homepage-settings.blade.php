@@ -16,10 +16,16 @@
                         <p class="text-sm font-semibold text-gray-800">Hero / Banner</p>
                         <p class="text-xs text-gray-500">Choose how the storefront banner is presented.</p>
                     </div>
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
-                        <input type="checkbox" wire:model="settings.home_hero_enabled" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
-                        <span>Show banner</span>
-                    </label>
+                    <div class="flex flex-wrap items-center gap-4 text-sm text-gray-700">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" wire:model="settings.home_hero_enabled" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                            <span>Show banner</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" wire:model="settings.home_banner_autoplay_enabled" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                            <span>Auto slide banner images</span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

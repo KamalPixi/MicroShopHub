@@ -19,6 +19,7 @@ class StoreController extends Controller
         $homepageSettings = Setting::whereIn('key', [
                 'home_hero_enabled',
                 'home_banner_type',
+                'home_banner_autoplay_enabled',
                 'home_hero_title',
                 'home_hero_subtitle',
                 'home_hero_cta_label',
@@ -40,6 +41,7 @@ class StoreController extends Controller
 
         $homepageSettings['home_hero_enabled'] = filter_var($homepageSettings['home_hero_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_banner_type'] = $homepageSettings['home_banner_type'] ?? 'split';
+        $homepageSettings['home_banner_autoplay_enabled'] = filter_var($homepageSettings['home_banner_autoplay_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_shop_by_category_enabled'] = filter_var($homepageSettings['home_shop_by_category_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_featured_products_enabled'] = filter_var($homepageSettings['home_featured_products_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_new_arrivals_enabled'] = filter_var($homepageSettings['home_new_arrivals_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);

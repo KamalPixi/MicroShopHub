@@ -18,6 +18,7 @@ class HomepageSettings extends Component
     public array $defaults = [
         'home_hero_enabled' => true,
         'home_banner_type' => 'split',
+        'home_banner_autoplay_enabled' => true,
         'home_hero_title' => 'Find what fits your life',
         'home_hero_subtitle' => 'Curated products, fast delivery, and a storefront built for easy browsing.',
         'home_hero_cta_label' => 'Shop Now',
@@ -38,6 +39,7 @@ class HomepageSettings extends Component
     protected array $rules = [
         'settings.home_hero_enabled' => 'boolean',
         'settings.home_banner_type' => 'required|in:split,slider_only,text_only',
+        'settings.home_banner_autoplay_enabled' => 'boolean',
         'settings.home_hero_title' => 'nullable|string|max:255',
         'settings.home_hero_subtitle' => 'nullable|string|max:500',
         'settings.home_hero_cta_label' => 'nullable|string|max:100',

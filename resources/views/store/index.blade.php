@@ -78,9 +78,10 @@
             x-data="{
                 active: 0,
                 slides: @js($homeBannerSlides),
+                autoplay: @js($homepageSettings['home_banner_autoplay_enabled'] ?? true),
                 timer: null,
                 init() {
-                    if (this.slides.length > 1) {
+                    if (this.autoplay && this.slides.length > 1) {
                         this.timer = setInterval(() => {
                             this.active = (this.active + 1) % this.slides.length
                         }, 3800)
@@ -170,9 +171,10 @@
             x-data="{
                 active: 0,
                 slides: @js($homeBannerSlides),
+                autoplay: @js($homepageSettings['home_banner_autoplay_enabled'] ?? true),
                 timer: null,
                 init() {
-                    if (this.slides.length > 1) {
+                    if (this.autoplay && this.slides.length > 1) {
                         this.timer = setInterval(() => {
                             this.active = (this.active + 1) % this.slides.length
                         }, 3800)
