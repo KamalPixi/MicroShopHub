@@ -125,11 +125,15 @@
                     </div>
 
                     <div class="flex gap-2" x-show="slides.length > 1" x-cloak>
-                        <button type="button" @click="active = active === 0 ? slides.length - 1 : active - 1" class="rounded-full bg-white/15 px-3 py-2 text-xs font-semibold text-white hover:bg-white/25">
-                            Prev
+                        <button type="button" @click="active = active === 0 ? slides.length - 1 : active - 1" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25" aria-label="Previous slide">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+                            </svg>
                         </button>
-                        <button type="button" @click="active = (active + 1) % slides.length" class="rounded-full bg-white/15 px-3 py-2 text-xs font-semibold text-white hover:bg-white/25">
-                            Next
+                        <button type="button" @click="active = (active + 1) % slides.length" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25" aria-label="Next slide">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                            </svg>
                         </button>
                     </div>
                 </div>
