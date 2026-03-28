@@ -14,7 +14,7 @@
             @include('admin.includes.errors')
         </div>
 
-        <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input 
@@ -51,14 +51,17 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Active</label>
-                <input 
-                    wire:model="active" 
-                    type="checkbox" 
-                    class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                >
+                <label class="mt-2 inline-flex items-center gap-2 text-sm text-gray-700">
+                    <input 
+                        wire:model="active" 
+                        type="checkbox" 
+                        class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    >
+                    <span>Enable this shipping method</span>
+                </label>
                 @error('active') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
-            <div class="flex space-x-2">
+            <div class="md:col-span-2 flex flex-wrap gap-2">
                 <button 
                     wire:click="save" 
                     wire:loading.attr="disabled" 
