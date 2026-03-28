@@ -1,4 +1,4 @@
-<section class="mb-6 pt-4 relative group" x-data="{
+<section class="relative z-20 mb-8 mt-2 isolate group" x-data="{
     scrollAmount: 320,
     scrollLeft() {
         this.$refs.container.scrollBy({ left: -this.scrollAmount, behavior: 'smooth' });

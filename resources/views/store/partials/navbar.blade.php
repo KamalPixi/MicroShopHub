@@ -1,4 +1,4 @@
-<nav class="bg-white border-b border-gray-200 relative z-10" x-data="{ mobileMenuOpen: false }">
+<nav class="bg-white border-b border-gray-200 relative z-50 isolate" x-data="{ mobileMenuOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="h-14 flex items-center justify-between md:justify-center">
 
@@ -36,7 +36,7 @@
                                      x-transition:leave="transition ease-in duration-150"
                                      x-transition:leave-start="opacity-100 mt-0"
                                      x-transition:leave-end="opacity-0 mt-2"
-                                     class="absolute top-full left-1/2 -translate-x-1/2 w-48 bg-white border border-gray-100 shadow-lg rounded-b-lg py-2 min-w-[200px]">
+                                     class="absolute top-full left-1/2 -translate-x-1/2 z-50 w-48 bg-white border border-gray-100 shadow-lg rounded-b-lg py-2 min-w-[200px]">
                                     
                                     @foreach($category->children as $child)
                                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary">
@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <div x-show="mobileMenuOpen" x-cloak class="md:hidden border-t border-gray-200 bg-gray-50">
+    <div x-show="mobileMenuOpen" x-cloak class="md:hidden border-t border-gray-200 bg-gray-50 relative z-50">
         <div class="px-2 pt-2 pb-3 space-y-1">
             
             <a href="{{ route('store.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-100">All Products</a>
