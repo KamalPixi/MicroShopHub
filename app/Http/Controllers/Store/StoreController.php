@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Support\StorefrontTheme;
 use Illuminate\Support\Facades\Storage;
 
 class StoreController extends Controller
@@ -102,8 +103,7 @@ class StoreController extends Controller
             ->take(10)
             ->get();
 
-        // Pointing to 'store.index' instead of 'home.index'
-        return view('store.index', compact('homeCategories', 'featuredProducts', 'newArrivals', 'homepageSettings', 'homeBannerSlides'));
+        return view(StorefrontTheme::homepageView(), compact('homeCategories', 'featuredProducts', 'newArrivals', 'homepageSettings', 'homeBannerSlides'));
     }
 
     protected function resolveSettingImageUrl(?string $path): string

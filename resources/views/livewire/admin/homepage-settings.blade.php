@@ -13,6 +13,38 @@
             <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
+                        <p class="text-sm font-semibold text-gray-800">Storefront Theme</p>
+                        <p class="text-xs text-gray-500">Choose the visual layout customers see on the storefront. Brand colors still apply everywhere.</p>
+                    </div>
+                    <button type="button" wire:click="saveStorefrontTheme" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                        Save Theme
+                    </button>
+                </div>
+
+                @php($storefrontThemes = \App\Support\StorefrontTheme::all())
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    @foreach($storefrontThemes as $key => $theme)
+                        <label class="cursor-pointer rounded-xl border bg-white p-4 transition {{ ($settings['storefront_theme'] ?? 'default') === $key ? 'border-primary ring-1 ring-primary/20' : 'border-gray-200 hover:border-primary/40' }}">
+                            <div class="flex items-start gap-3">
+                                <input type="radio" wire:model="settings.storefront_theme" value="{{ $key }}" class="mt-1 h-4 w-4 border-gray-300 text-primary focus:ring-primary">
+                                <div class="flex-1">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="text-sm font-semibold text-gray-900">{{ $theme['label'] }}</span>
+                                        @if(($settings['storefront_theme'] ?? 'default') === $key)
+                                            <span class="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">Current</span>
+                                        @endif
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500">{{ $theme['description'] }}</p>
+                                </div>
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
                         <p class="text-sm font-semibold text-gray-800">Hero / Banner</p>
                         <p class="text-xs text-gray-500">Choose how the storefront banner is presented.</p>
                     </div>

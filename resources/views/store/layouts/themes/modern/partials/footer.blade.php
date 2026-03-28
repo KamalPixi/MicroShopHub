@@ -19,39 +19,38 @@
     $copyrightText = str_replace('{year}', $year, $footerSettings['footer_copyright_text'] ?? '© {year} ShopHub. All rights reserved.');
 @endphp
 
-<footer class="bg-gray-900 text-white mt-auto">
+<footer class="mt-auto border-t border-gray-200 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-                <div class="flex items-center gap-3 mb-4">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
+            <div class="md:col-span-1">
+                <div class="flex items-center gap-3">
                     @if(!empty($storeLogo))
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($storeLogo) }}" alt="{{ $storeName }}" class="h-10 w-10 rounded-2xl object-cover border border-gray-800 bg-gray-800/20">
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($storeLogo) }}" alt="{{ $storeName }}" class="h-10 w-10 rounded-2xl object-cover border border-gray-200 bg-gray-50">
                     @else
                         <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-white font-bold">
                             {{ strtoupper(substr($storeName, 0, 1)) }}
                         </div>
                     @endif
                     <div>
-                        <h3 class="text-lg font-bold text-white">{{ $footerTitle }}</h3>
-                        <p class="text-[11px] uppercase tracking-[0.2em] text-primary/80">Storefront</p>
+                        <h3 class="text-lg font-bold text-gray-900">{{ $footerTitle }}</h3>
+                        <p class="text-xs uppercase tracking-[0.2em] text-primary/70">Storefront</p>
                     </div>
                 </div>
-                <p class="text-gray-400 text-sm mb-4">{{ $footerDescription }}</p>
-
-                <div class="flex space-x-4">
+                <p class="mt-4 text-sm leading-6 text-gray-600">{{ $footerDescription }}</p>
+                <div class="mt-5 flex items-center gap-3">
                     @if(!empty($footerSettings['footer_social_facebook_url'] ?? ''))
-                        <a href="{{ $footerSettings['footer_social_facebook_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Facebook">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.52 1.5-3.9 3.8-3.9 1.1 0 2.25.2 2.25.2v2.48H15.2c-1.25 0-1.63.78-1.63 1.57V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
+                        <a href="{{ $footerSettings['footer_social_facebook_url'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-primary/25 hover:text-primary" aria-label="Facebook">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.52 1.5-3.9 3.8-3.9 1.1 0 2.25.2 2.25.2v2.48H15.2c-1.25 0-1.63.78-1.63 1.57V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
                         </a>
                     @endif
                     @if(!empty($footerSettings['footer_social_x_url'] ?? ''))
-                        <a href="{{ $footerSettings['footer_social_x_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="X">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.9 2H22l-6.93 7.92L23.2 22h-6.35l-4.97-6.43L6.23 22H3.1l7.46-8.52L0.8 2h6.52l4.47 5.8L18.9 2zm-1.12 18h1.72L6.42 3.96H4.57L17.78 20z"/></svg>
+                        <a href="{{ $footerSettings['footer_social_x_url'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-primary/25 hover:text-primary" aria-label="X">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.9 2H22l-6.93 7.92L23.2 22h-6.35l-4.97-6.43L6.23 22H3.1l7.46-8.52L0.8 2h6.52l4.47 5.8L18.9 2zm-1.12 18h1.72L6.42 3.96H4.57L17.78 20z"/></svg>
                         </a>
                     @endif
                     @if(!empty($footerSettings['footer_social_instagram_url'] ?? ''))
-                        <a href="{{ $footerSettings['footer_social_instagram_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Instagram">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <a href="{{ $footerSettings['footer_social_instagram_url'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-primary/25 hover:text-primary" aria-label="Instagram">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
                                 <path d="M8 12a4 4 0 118 0 4 4 0 01-8 0z"></path>
                                 <path d="M17.5 6.5h.01"></path>
@@ -62,50 +61,48 @@
             </div>
 
             <div>
-                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_links_title'] ?? 'Quick Links' }}</h4>
-                <ul class="space-y-2 text-sm">
+                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerSettings['footer_links_title'] ?? 'Quick Links' }}</h4>
+                <ul class="mt-4 space-y-2 text-sm">
                     @foreach($quickLinks as $link)
                         @if(!empty($link['label']))
-                            <li><a href="{{ url($link['url']) }}" class="text-gray-400 hover:text-primary">{{ $link['label'] }}</a></li>
+                            <li><a href="{{ url($link['url']) }}" class="text-gray-600 hover:text-primary">{{ $link['label'] }}</a></li>
                         @endif
                     @endforeach
                 </ul>
             </div>
 
             <div>
-                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_support_title'] ?? 'Customer Support' }}</h4>
-                <ul class="space-y-2 text-sm text-gray-400">
+                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerSettings['footer_support_title'] ?? 'Customer Support' }}</h4>
+                <ul class="mt-4 space-y-2 text-sm text-gray-600">
                     @if(!empty($footerSettings['footer_support_email'] ?? ''))
-                        <li>📧 {{ $footerSettings['footer_support_email'] }}</li>
+                        <li>{{ $footerSettings['footer_support_email'] }}</li>
                     @endif
                     @if(!empty($footerSettings['footer_support_phone'] ?? ''))
-                        <li>📞 {{ $footerSettings['footer_support_phone'] }}</li>
+                        <li>{{ $footerSettings['footer_support_phone'] }}</li>
                     @endif
                     @if(!empty($footerSettings['footer_support_hours_1'] ?? ''))
-                        <li>🕒 {{ $footerSettings['footer_support_hours_1'] }}</li>
+                        <li>{{ $footerSettings['footer_support_hours_1'] }}</li>
                     @endif
                     @if(!empty($footerSettings['footer_support_hours_2'] ?? ''))
-                        <li>🕒 {{ $footerSettings['footer_support_hours_2'] }}</li>
+                        <li>{{ $footerSettings['footer_support_hours_2'] }}</li>
                     @endif
                 </ul>
             </div>
 
             <div>
-                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_policy_title'] ?? 'Policies' }}</h4>
-                <ul class="space-y-2 text-sm">
+                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerSettings['footer_policy_title'] ?? 'Policies' }}</h4>
+                <ul class="mt-4 space-y-2 text-sm">
                     @foreach($policyLinks as $link)
                         @if(!empty($link['label']))
-                            <li><a href="{{ url($link['url']) }}" class="text-gray-400 hover:text-primary">{{ $link['label'] }}</a></li>
+                            <li><a href="{{ url($link['url']) }}" class="text-gray-600 hover:text-primary">{{ $link['label'] }}</a></li>
                         @endif
                     @endforeach
                 </ul>
             </div>
         </div>
 
-        <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 text-sm">
-                <p class="text-gray-400">{{ $copyrightText }}</p>
-            </div>
+        <div class="mt-10 border-t border-gray-200 pt-6 text-sm text-gray-500">
+            {{ $copyrightText }}
         </div>
     </div>
 </footer>

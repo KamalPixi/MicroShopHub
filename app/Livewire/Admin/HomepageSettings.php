@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Setting;
+use App\Support\StorefrontTheme;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use Livewire\Component;
@@ -16,6 +17,7 @@ class HomepageSettings extends Component
     public array $bannerChips = [];
 
     public array $defaults = [
+        'storefront_theme' => 'default',
         'home_hero_enabled' => true,
         'home_banner_type' => 'split',
         'home_banner_autoplay_enabled' => true,
@@ -64,6 +66,7 @@ class HomepageSettings extends Component
     ];
 
     protected array $rules = [
+        'settings.storefront_theme' => 'required|in:default,modern',
         'settings.home_hero_enabled' => 'boolean',
         'settings.home_banner_type' => 'required|in:split,slider_only,text_only',
         'settings.home_banner_autoplay_enabled' => 'boolean',
@@ -158,7 +161,20 @@ class HomepageSettings extends Component
 
     public function save(): void
     {
-        $this->saveHeroBanner();
+        $this->saveStorefrontTheme();
+    }
+
+    public function saveStorefrontTheme(): void
+    {
+        $this->validate([
+            'settings.storefront_theme' => $this->rules['settings.storefront_theme'],
+        ]);
+
+        $this->persistSettings([
+            'storefront_theme',
+        ]);
+
+        session()->flash('message', 'Storefront theme saved successfully.');
     }
 
     public function saveHeroBanner(): void

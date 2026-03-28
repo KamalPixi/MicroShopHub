@@ -10,6 +10,7 @@
             'branding_color',
             'secondary_color',
             'accent_color',
+            'storefront_theme',
             'pusher_app_id',
             'pusher_app_key',
             'pusher_app_secret',
@@ -42,9 +43,13 @@
             'footer_policy_3_url',
             'footer_copyright_text',
         ])->pluck('value', 'key');
+        $storeMeta = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title', 'shop_logo'])->pluck('value', 'key');
+        $storeName = $storeMeta['shop_name'] ?: ($storeMeta['site_title'] ?: config('app.name', 'Store Name'));
+        $storeLogo = $storeMeta['shop_logo'] ?? '';
         $primaryColor = $brandSettings['branding_color'] ?? '#2563eb';
         $secondaryColor = $brandSettings['secondary_color'] ?? '#64748b';
         $accentColor = $brandSettings['accent_color'] ?? '#f59e0b';
+        $storefrontTheme = \App\Support\StorefrontTheme::currentKey();
         $liveChatEnabled = filter_var(\App\Models\Setting::where('key', 'live_chat_enabled')->value('value'), FILTER_VALIDATE_BOOLEAN);
         $pusherKey = $brandSettings['pusher_app_key'] ?? null;
         $pusherCluster = $brandSettings['pusher_app_cluster'] ?? 'mt1';
@@ -93,15 +98,21 @@
         </script>
     @endif
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
-    @include('store.partials.header')
-    @include('store.partials.navbar')
+<body class="{{ $storefrontTheme === 'modern' ? 'bg-[#f4f7fb]' : 'bg-gray-50' }} min-h-screen flex flex-col theme-{{ $storefrontTheme }}">
+    @php
+        $storefrontHeaderView = \App\Support\StorefrontTheme::partial('header');
+        $storefrontNavbarView = \App\Support\StorefrontTheme::partial('navbar');
+        $storefrontFooterView = \App\Support\StorefrontTheme::partial('footer');
+    @endphp
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-4 md:pt-6">
+    @include($storefrontHeaderView)
+    @include($storefrontNavbarView)
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full {{ $storefrontTheme === 'modern' ? 'pt-5 md:pt-8' : 'pt-4 md:pt-6' }}">
         @yield('content')
     </main>
 
-    @include('store.partials.footer', ['footerSettings' => $footerSettings])
+    @include($storefrontFooterView, ['footerSettings' => $footerSettings, 'storeName' => $storeName, 'storeLogo' => $storeLogo])
 
     @livewire('store.live-chat-widget')
 

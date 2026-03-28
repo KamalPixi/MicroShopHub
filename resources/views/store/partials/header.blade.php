@@ -1,9 +1,21 @@
-<header class="bg-white shadow-sm sticky top-0 z-50">
+<header class="bg-white/95 backdrop-blur border-b border-gray-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
+        <div class="flex items-center justify-between h-16 gap-3">
             <div class="flex items-center flex-shrink-0">
                 <a href="{{ route('store.index') }}">
-                    <h1 class="text-2xl font-bold text-primary">ShopHub</h1>
+                    <div class="flex items-center gap-2">
+                        @if(!empty($storeLogo ?? ''))
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($storeLogo) }}" alt="{{ $storeName ?? 'Store logo' }}" class="h-9 w-9 rounded-lg object-cover border border-gray-200 bg-white">
+                        @else
+                            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white font-bold">
+                                {{ strtoupper(substr(($storeName ?? 'S'), 0, 1)) }}
+                            </div>
+                        @endif
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900 leading-none">{{ $storeName ?? 'ShopHub' }}</h1>
+                            <p class="text-[11px] font-medium uppercase tracking-[0.2em] text-primary/80">Storefront</p>
+                        </div>
+                    </div>
                 </a>
             </div>
 
@@ -11,8 +23,8 @@
                 <livewire:store.header-search />
             </div>
 
-            <div class="flex items-center space-x-4 flex-shrink-0">
-                <a href="{{ route('customer.dashboard') }}" class="p-2 text-gray-600 hover:text-primary transition-colors">
+            <div class="flex items-center gap-3 flex-shrink-0">
+                <a href="{{ route('customer.dashboard') }}" class="inline-flex items-center justify-center h-10 w-10 rounded-full border border-gray-200 text-gray-600 hover:text-primary hover:border-primary/30 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
