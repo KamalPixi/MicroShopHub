@@ -5,7 +5,74 @@
             <p class="text-xs text-gray-500">Track and manage customer orders.</p>
         </div>
         <div class="text-xs text-gray-500">
-            Total: <span class="font-semibold text-gray-700">{{ $orders->total() }}</span>
+            Showing <span class="font-semibold text-gray-700">{{ $orders->count() }}</span> of
+            <span class="font-semibold text-gray-700">{{ $orders->total() }}</span>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <div class="flex items-center justify-between gap-3 mb-3">
+            <h4 class="text-sm font-semibold text-gray-700">Today</h4>
+            <p class="text-xs text-gray-500">What needs attention right now</p>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+            <div class="rounded-xl border border-gray-200 bg-blue-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-blue-600">New Orders</p>
+                <p class="mt-1 text-xl font-bold text-blue-800">{{ $stats['today_total_orders'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-amber-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-amber-600">Pending Payment</p>
+                <p class="mt-1 text-xl font-bold text-amber-800">{{ $stats['today_pending_payment'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-indigo-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-indigo-600">To Process</p>
+                <p class="mt-1 text-xl font-bold text-indigo-800">{{ $stats['today_to_process'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-cyan-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-cyan-600">Shipped</p>
+                <p class="mt-1 text-xl font-bold text-cyan-800">{{ $stats['today_shipped'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-green-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-green-600">Delivered</p>
+                <p class="mt-1 text-xl font-bold text-green-800">{{ $stats['today_delivered'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-red-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-red-600">Cancelled</p>
+                <p class="mt-1 text-xl font-bold text-red-800">{{ $stats['today_cancelled'] }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <div class="flex items-center justify-between gap-3 mb-3">
+            <h4 class="text-sm font-semibold text-gray-700">All Time</h4>
+            <p class="text-xs text-gray-500">Overall business volume</p>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+            <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-gray-500">Total Orders</p>
+                <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['total_orders'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-amber-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-amber-600">Pending Payment</p>
+                <p class="mt-1 text-xl font-bold text-amber-800">{{ $stats['pending_payment'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-indigo-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-indigo-600">To Process</p>
+                <p class="mt-1 text-xl font-bold text-indigo-800">{{ $stats['to_process'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-cyan-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-cyan-600">Shipped</p>
+                <p class="mt-1 text-xl font-bold text-cyan-800">{{ $stats['shipped'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-green-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-green-600">Delivered</p>
+                <p class="mt-1 text-xl font-bold text-green-800">{{ $stats['delivered'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-red-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-red-600">Cancelled / Refunded</p>
+                <p class="mt-1 text-xl font-bold text-red-800">{{ $stats['cancelled'] }}</p>
+            </div>
         </div>
     </div>
     
