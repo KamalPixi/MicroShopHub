@@ -18,7 +18,57 @@
         <div class="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-2xl"></div>
     </div>
 
-    @if(($homepageSettings['home_banner_type'] ?? 'split') === 'split')
+    @if(($homepageSettings['home_banner_type'] ?? 'split') === 'text_only')
+        <div class="relative z-10 grid gap-6 px-6 py-12 md:grid-cols-[1.15fr_0.85fr] md:px-10 md:py-16">
+            <div class="flex flex-col justify-center">
+                <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85">
+                    <span class="h-2 w-2 rounded-full bg-accent"></span>
+                    Banner Type 3
+                </div>
+                <h1 class="mt-4 text-3xl md:text-6xl font-extrabold leading-tight tracking-tight">
+                    {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
+                </h1>
+                <p class="mt-4 max-w-3xl text-sm md:text-base leading-7 text-white/82">
+                    {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
+                </p>
+
+                <div class="mt-7 flex flex-wrap items-center gap-3">
+                    <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-primary shadow-sm transition hover:opacity-95">
+                        {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
+                    </a>
+                    <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-white/25 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/15">
+                        Browse Store
+                    </a>
+                </div>
+
+                <div class="mt-6 flex flex-wrap gap-2 text-xs">
+                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">Primary brand color</span>
+                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">Fast checkout</span>
+                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">Live support</span>
+                </div>
+            </div>
+
+            <div class="self-center">
+                <div class="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-sm">
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-white/70">Why customers stay</p>
+                    <div class="mt-4 space-y-3">
+                        <div class="rounded-xl bg-white/10 p-4">
+                            <p class="text-sm font-semibold">Simple browsing</p>
+                            <p class="mt-1 text-xs text-white/75">Sections are designed to help customers find products quickly.</p>
+                        </div>
+                        <div class="rounded-xl bg-white/10 p-4">
+                            <p class="text-sm font-semibold">Brand-aligned design</p>
+                            <p class="mt-1 text-xs text-white/75">Everything follows the saved primary, secondary, and accent colors.</p>
+                        </div>
+                        <div class="rounded-xl bg-white/10 p-4">
+                            <p class="text-sm font-semibold">Helpful support</p>
+                            <p class="mt-1 text-xs text-white/75">Customers can reach the store with live chat and order updates.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @elseif(($homepageSettings['home_banner_type'] ?? 'split') === 'split')
         <div
             x-data="{
                 active: 0,

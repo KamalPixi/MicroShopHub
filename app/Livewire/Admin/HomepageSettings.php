@@ -35,7 +35,7 @@ class HomepageSettings extends Component
 
     protected array $rules = [
         'settings.home_hero_enabled' => 'boolean',
-        'settings.home_banner_type' => 'required|in:split,slider_only',
+        'settings.home_banner_type' => 'required|in:split,slider_only,text_only',
         'settings.home_hero_title' => 'nullable|string|max:255',
         'settings.home_hero_subtitle' => 'nullable|string|max:500',
         'settings.home_hero_cta_label' => 'nullable|string|max:100',
@@ -112,7 +112,7 @@ class HomepageSettings extends Component
             ];
         }
 
-        if (($this->settings['home_hero_enabled'] ?? true) && empty($slides)) {
+        if (($this->settings['home_hero_enabled'] ?? true) && in_array($this->settings['home_banner_type'] ?? 'split', ['split', 'slider_only'], true) && empty($slides)) {
             $this->addError('bannerSlides', 'Add at least one banner image.');
             return;
         }
