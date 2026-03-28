@@ -102,9 +102,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="flex items-center justify-end">
+                        <button type="button" wire:click="saveHeroBanner" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                            Save Banner Settings
+                        </button>
+                    </div>
                 @else
                     <div class="rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs text-blue-700">
                         This banner type uses only sliding banner images. The text content fields below are hidden because they are not shown on the storefront.
+                    </div>
+                    <div class="flex items-center justify-end">
+                        <button type="button" wire:click="saveHeroBanner" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                            Save Banner Settings
+                        </button>
                     </div>
                 @endif
             </div>
@@ -187,6 +197,11 @@
                         </div>
                     @endforeach
                 </div>
+                <div class="flex items-center justify-end">
+                    <button type="button" wire:click="saveBannerSlides" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                        Save Banner Slides
+                    </button>
+                </div>
             </div>
             @else
             <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
@@ -241,6 +256,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="flex items-center justify-end">
+                    <button type="button" wire:click="saveHomepageSections" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                        Save Homepage Sections
+                    </button>
                 </div>
             </div>
 
@@ -374,12 +393,11 @@
                         </div>
                     </div>
                 </div>
+                <div class="flex items-center justify-end">
+                    <button type="button" wire:click="saveFooter" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                        Save Footer
+                    </button>
+                </div>
             </div>
-
-            <div class="mt-5 flex items-center justify-end gap-3">
-                <button wire:click="save" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
-                    Save Homepage Settings
-                </button>
-        </div>
     </section>
 </div>

@@ -158,7 +158,22 @@ class HomepageSettings extends Component
 
     public function save(): void
     {
-        $this->validate();
+        $this->saveHeroBanner();
+    }
+
+    public function saveHeroBanner(): void
+    {
+        $this->validate([
+            'settings.home_hero_enabled' => $this->rules['settings.home_hero_enabled'],
+            'settings.home_banner_type' => $this->rules['settings.home_banner_type'],
+            'settings.home_banner_autoplay_enabled' => $this->rules['settings.home_banner_autoplay_enabled'],
+            'settings.home_hero_title' => $this->rules['settings.home_hero_title'],
+            'settings.home_hero_subtitle' => $this->rules['settings.home_hero_subtitle'],
+            'settings.home_hero_cta_label' => $this->rules['settings.home_hero_cta_label'],
+            'settings.home_hero_cta_url' => $this->rules['settings.home_hero_cta_url'],
+            'bannerChips' => $this->rules['bannerChips'],
+            'bannerChips.*.label' => $this->rules['bannerChips.*.label'],
+        ]);
 
         $chips = [];
         foreach ($this->bannerChips as $chip) {
@@ -209,6 +224,147 @@ class HomepageSettings extends Component
         }
 
         session()->flash('message', 'Homepage settings saved successfully.');
+    }
+
+    public function saveBannerSlides(): void
+    {
+        $this->validate([
+            'bannerSlides' => $this->rules['bannerSlides'],
+            'bannerSlides.*.image_file' => $this->rules['bannerSlides.*.image_file'],
+            'bannerSlides.*.link_url' => $this->rules['bannerSlides.*.link_url'],
+            'bannerSlides.*.alt' => $this->rules['bannerSlides.*.alt'],
+        ]);
+
+        $slides = [];
+        foreach ($this->bannerSlides as $index => $slide) {
+            $slide = is_array($slide) ? $slide : [];
+            $imagePath = trim((string) ($slide['image'] ?? ''));
+
+            if (! empty($slide['image_file'])) {
+                if ($imagePath !== '') {
+                    Storage::disk('public')->delete($imagePath);
+                }
+                $imagePath = $slide['image_file']->store('homepage/banners', 'public');
+            }
+
+            if ($imagePath === '') {
+                continue;
+            }
+
+            $slides[] = [
+                'image' => $imagePath,
+                'link_url' => trim((string) ($slide['link_url'] ?? '')),
+                'alt' => trim((string) ($slide['alt'] ?? '')),
+            ];
+        }
+
+        if (($this->settings['home_hero_enabled'] ?? true) && in_array($this->settings['home_banner_type'] ?? 'split', ['split', 'slider_only'], true) && empty($slides)) {
+            $this->addError('bannerSlides', 'Add at least one banner image.');
+            return;
+        }
+
+        $this->settings['home_banner_slides'] = json_encode($slides);
+
+        Setting::updateOrCreate(
+            ['key' => 'home_banner_slides'],
+            ['value' => $this->settings['home_banner_slides']]
+        );
+
+        session()->flash('message', 'Banner slides saved successfully.');
+    }
+
+    public function saveHomepageSections(): void
+    {
+        $this->validate([
+            'settings.home_shop_by_category_enabled' => $this->rules['settings.home_shop_by_category_enabled'],
+            'settings.home_shop_by_category_title' => $this->rules['settings.home_shop_by_category_title'],
+            'settings.home_featured_products_enabled' => $this->rules['settings.home_featured_products_enabled'],
+            'settings.home_featured_products_title' => $this->rules['settings.home_featured_products_title'],
+            'settings.home_new_arrivals_enabled' => $this->rules['settings.home_new_arrivals_enabled'],
+            'settings.home_new_arrivals_title' => $this->rules['settings.home_new_arrivals_title'],
+            'settings.home_newsletter_enabled' => $this->rules['settings.home_newsletter_enabled'],
+            'settings.home_newsletter_title' => $this->rules['settings.home_newsletter_title'],
+            'settings.home_newsletter_subtitle' => $this->rules['settings.home_newsletter_subtitle'],
+        ]);
+
+        $this->persistSettings([
+            'home_shop_by_category_enabled',
+            'home_shop_by_category_title',
+            'home_featured_products_enabled',
+            'home_featured_products_title',
+            'home_new_arrivals_enabled',
+            'home_new_arrivals_title',
+            'home_newsletter_enabled',
+            'home_newsletter_title',
+            'home_newsletter_subtitle',
+        ]);
+
+        session()->flash('message', 'Homepage section settings saved successfully.');
+    }
+
+    public function saveFooter(): void
+    {
+        $this->validate([
+            'settings.footer_about_title' => $this->rules['settings.footer_about_title'],
+            'settings.footer_about_description' => $this->rules['settings.footer_about_description'],
+            'settings.footer_social_facebook_url' => $this->rules['settings.footer_social_facebook_url'],
+            'settings.footer_social_x_url' => $this->rules['settings.footer_social_x_url'],
+            'settings.footer_social_instagram_url' => $this->rules['settings.footer_social_instagram_url'],
+            'settings.footer_links_title' => $this->rules['settings.footer_links_title'],
+            'settings.footer_link_1_label' => $this->rules['settings.footer_link_1_label'],
+            'settings.footer_link_1_url' => $this->rules['settings.footer_link_1_url'],
+            'settings.footer_link_2_label' => $this->rules['settings.footer_link_2_label'],
+            'settings.footer_link_2_url' => $this->rules['settings.footer_link_2_url'],
+            'settings.footer_link_3_label' => $this->rules['settings.footer_link_3_label'],
+            'settings.footer_link_3_url' => $this->rules['settings.footer_link_3_url'],
+            'settings.footer_link_4_label' => $this->rules['settings.footer_link_4_label'],
+            'settings.footer_link_4_url' => $this->rules['settings.footer_link_4_url'],
+            'settings.footer_support_title' => $this->rules['settings.footer_support_title'],
+            'settings.footer_support_email' => $this->rules['settings.footer_support_email'],
+            'settings.footer_support_phone' => $this->rules['settings.footer_support_phone'],
+            'settings.footer_support_hours_1' => $this->rules['settings.footer_support_hours_1'],
+            'settings.footer_support_hours_2' => $this->rules['settings.footer_support_hours_2'],
+            'settings.footer_policy_title' => $this->rules['settings.footer_policy_title'],
+            'settings.footer_policy_1_label' => $this->rules['settings.footer_policy_1_label'],
+            'settings.footer_policy_1_url' => $this->rules['settings.footer_policy_1_url'],
+            'settings.footer_policy_2_label' => $this->rules['settings.footer_policy_2_label'],
+            'settings.footer_policy_2_url' => $this->rules['settings.footer_policy_2_url'],
+            'settings.footer_policy_3_label' => $this->rules['settings.footer_policy_3_label'],
+            'settings.footer_policy_3_url' => $this->rules['settings.footer_policy_3_url'],
+            'settings.footer_copyright_text' => $this->rules['settings.footer_copyright_text'],
+        ]);
+
+        $this->persistSettings([
+            'footer_about_title',
+            'footer_about_description',
+            'footer_social_facebook_url',
+            'footer_social_x_url',
+            'footer_social_instagram_url',
+            'footer_links_title',
+            'footer_link_1_label',
+            'footer_link_1_url',
+            'footer_link_2_label',
+            'footer_link_2_url',
+            'footer_link_3_label',
+            'footer_link_3_url',
+            'footer_link_4_label',
+            'footer_link_4_url',
+            'footer_support_title',
+            'footer_support_email',
+            'footer_support_phone',
+            'footer_support_hours_1',
+            'footer_support_hours_2',
+            'footer_policy_title',
+            'footer_policy_1_label',
+            'footer_policy_1_url',
+            'footer_policy_2_label',
+            'footer_policy_2_url',
+            'footer_policy_3_label',
+            'footer_policy_3_url',
+            'footer_copyright_text',
+        ]);
+
+        session()->flash('message', 'Footer settings saved successfully.');
     }
 
     public function addBannerSlide(): void
@@ -278,6 +434,21 @@ class HomepageSettings extends Component
                 'label' => $chip['label'] ?? '',
             ];
         })->values()->all();
+    }
+
+    protected function persistSettings(array $keys): void
+    {
+        foreach ($keys as $key) {
+            if (! array_key_exists($key, $this->settings)) {
+                continue;
+            }
+
+            $value = $this->settings[$key];
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => is_bool($value) ? ($value ? '1' : '0') : ($value ?? '')]
+            );
+        }
     }
 
     public function render()
