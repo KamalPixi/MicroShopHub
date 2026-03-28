@@ -51,6 +51,8 @@ Route::middleware('store.analytics')->name('store.')->group(function () {
     Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
 
+Route::get('/sitemap.xml', [StoreController::class, 'sitemap'])->name('sitemap');
+
 
 /*
 |--------------------------------------------------------------------------

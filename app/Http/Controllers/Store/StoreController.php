@@ -201,6 +201,56 @@ class StoreController extends Controller
         return view('store.cart');
     }
 
+    public function sitemap()
+    {
+        $baseUrl = rtrim(url('/'), '/');
+
+        $urls = collect([
+            ['loc' => $baseUrl . '/', 'changefreq' => 'daily', 'priority' => '1.0'],
+            ['loc' => $baseUrl . '/about', 'changefreq' => 'monthly', 'priority' => '0.6'],
+            ['loc' => $baseUrl . '/faq', 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => $baseUrl . '/contact', 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => $baseUrl . '/privacy-policy', 'changefreq' => 'yearly', 'priority' => '0.3'],
+            ['loc' => $baseUrl . '/terms', 'changefreq' => 'yearly', 'priority' => '0.3'],
+            ['loc' => $baseUrl . '/refund-policy', 'changefreq' => 'yearly', 'priority' => '0.3'],
+            ['loc' => $baseUrl . '/shipping', 'changefreq' => 'yearly', 'priority' => '0.3'],
+            ['loc' => $baseUrl . '/cookie-policy', 'changefreq' => 'yearly', 'priority' => '0.3'],
+            ['loc' => $baseUrl . '/search', 'changefreq' => 'weekly', 'priority' => '0.7'],
+        ]);
+
+        $categoryUrls = Category::select('id', 'updated_at')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($category) use ($baseUrl) {
+                return [
+                    'loc' => $baseUrl . '/search?category=' . $category->id,
+                    'changefreq' => 'weekly',
+                    'priority' => '0.6',
+                    'lastmod' => optional($category->updated_at)?->toAtomString(),
+                ];
+            });
+
+        $productUrls = Product::select('slug', 'updated_at')
+            ->where('status', 1)
+            ->orderByDesc('updated_at')
+            ->take(500)
+            ->get()
+            ->map(function ($product) use ($baseUrl) {
+                return [
+                    'loc' => $baseUrl . '/product/' . $product->slug,
+                    'changefreq' => 'weekly',
+                    'priority' => '0.8',
+                    'lastmod' => optional($product->updated_at)?->toAtomString(),
+                ];
+            });
+
+        $urls = $urls->merge($categoryUrls)->merge($productUrls);
+
+        $xml = view('store.sitemap', ['urls' => $urls])->render();
+
+        return response($xml, 200)->header('Content-Type', 'application/xml');
+    }
+
     public function about()
     {
         return $this->renderStaticPage(
