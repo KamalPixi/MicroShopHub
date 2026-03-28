@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', 'Contact Us - ShopHub')
+@section('title', ($siteStoreName ?? config('app.name', 'ShopHub')) . ' - Contact Us')
 
 @section('content')
     <div class="space-y-6">

@@ -1,5 +1,7 @@
 @extends('store.layouts.app')
 
+@section('title', ($siteStoreName ?? config('app.name', 'ShopHub')) . ' - Search')
+
 @section('content')
 <div class="bg-gray-50 min-h-screen pb-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {{-- Reduced max-width slightly for 4 columns --}}
