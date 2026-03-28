@@ -7,7 +7,7 @@
             Product List
         </h3>
         <div>
-            <a href="{{ route('admin.products.create') }}" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-sm flex items-center">
+            <a href="{{ route('admin.products.create') }}" class="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary-700 text-sm flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
