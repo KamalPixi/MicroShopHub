@@ -74,20 +74,26 @@
                     </div>
                 @endif
 
-                <div class="px-4 py-3 border-t border-gray-100">
-                    <div class="flex gap-2">
-                        <input type="text" wire:model.live="message" wire:keydown.enter.prevent="sendMessage" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Type a message..." {{ $nameCaptured ? '' : 'disabled' }}>
-                        <button type="button" wire:click="sendMessage" wire:loading.attr="disabled" wire:target="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold flex items-center justify-center min-w-[64px]" {{ $nameCaptured ? '' : 'disabled' }}>
-                            <span wire:loading.remove wire:target="sendMessage">Send</span>
-                            <span wire:loading.delay.longer wire:target="sendMessage">
-                                <svg class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
-                                </svg>
-                            </span>
-                        </button>
+                @if($nameCaptured)
+                    <div class="px-4 py-3 border-t border-gray-100">
+                        <div class="flex gap-2">
+                            <input type="text" wire:model.live="message" wire:keydown.enter.prevent="sendMessage" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Type a message...">
+                            <button type="button" wire:click="sendMessage" wire:loading.attr="disabled" wire:target="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold flex items-center justify-center min-w-[64px]">
+                                <span wire:loading.remove wire:target="sendMessage">Send</span>
+                                <span wire:loading.delay.longer wire:target="sendMessage">
+                                    <svg class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <div class="px-4 py-3 border-t border-gray-100">
+                        <p class="text-[11px] text-gray-500">Type your name above to start chatting.</p>
+                    </div>
+                @endif
             </div>
         @endif
     @endif
