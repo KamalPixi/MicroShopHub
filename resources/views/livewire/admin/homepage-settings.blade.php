@@ -68,6 +68,18 @@
                             <label class="block text-xs font-semibold text-gray-600">Button URL</label>
                             <input type="text" wire:model="settings.home_hero_cta_url" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                         </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600">Banner Chip 1</label>
+                            <input type="text" wire:model="settings.home_banner_chip_1" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600">Banner Chip 2</label>
+                            <input type="text" wire:model="settings.home_banner_chip_2" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-gray-600">Banner Chip 3</label>
+                            <input type="text" wire:model="settings.home_banner_chip_3" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
                     </div>
                 @else
                     <div class="rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs text-blue-700">
