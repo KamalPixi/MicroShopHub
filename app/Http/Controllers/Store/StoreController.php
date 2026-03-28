@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Storage;
 
 class StoreController extends Controller
 {
@@ -17,10 +18,12 @@ class StoreController extends Controller
     {
         $homepageSettings = Setting::whereIn('key', [
                 'home_hero_enabled',
+                'home_banner_type',
                 'home_hero_title',
                 'home_hero_subtitle',
                 'home_hero_cta_label',
                 'home_hero_cta_url',
+                'home_banner_slides',
                 'home_shop_by_category_enabled',
                 'home_shop_by_category_title',
                 'home_featured_products_enabled',
@@ -35,10 +38,37 @@ class StoreController extends Controller
             ->toArray();
 
         $homepageSettings['home_hero_enabled'] = filter_var($homepageSettings['home_hero_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $homepageSettings['home_banner_type'] = $homepageSettings['home_banner_type'] ?? 'split';
         $homepageSettings['home_shop_by_category_enabled'] = filter_var($homepageSettings['home_shop_by_category_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_featured_products_enabled'] = filter_var($homepageSettings['home_featured_products_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_new_arrivals_enabled'] = filter_var($homepageSettings['home_new_arrivals_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_newsletter_enabled'] = filter_var($homepageSettings['home_newsletter_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+
+        $rawSlides = $homepageSettings['home_banner_slides'] ?? '[]';
+        $bannerSlides = is_string($rawSlides) ? json_decode($rawSlides, true) : $rawSlides;
+        $homeBannerSlides = collect(is_array($bannerSlides) ? $bannerSlides : [])
+            ->map(function ($slide) {
+                $imagePath = $slide['image'] ?? '';
+
+                return [
+                    'image_url' => $this->resolveSettingImageUrl($imagePath),
+                    'link_url' => $slide['link_url'] ?? '',
+                    'alt' => $slide['alt'] ?? 'Homepage banner',
+                ];
+            })
+            ->filter(fn ($slide) => ! empty($slide['image_url']))
+            ->values()
+            ->all();
+
+        if (empty($homeBannerSlides)) {
+            $homeBannerSlides = [
+                [
+                    'image_url' => 'https://placehold.co/1600x600?text=Banner+Slide+1',
+                    'link_url' => '',
+                    'alt' => 'Banner slide',
+                ],
+            ];
+        }
 
         // 1. Shop By Category
         $homeCategories = Category::where('show_on_homepage', true)
@@ -62,7 +92,22 @@ class StoreController extends Controller
             ->get();
 
         // Pointing to 'store.index' instead of 'home.index'
-        return view('store.index', compact('homeCategories', 'featuredProducts', 'newArrivals', 'homepageSettings'));
+        return view('store.index', compact('homeCategories', 'featuredProducts', 'newArrivals', 'homepageSettings', 'homeBannerSlides'));
+    }
+
+    protected function resolveSettingImageUrl(?string $path): string
+    {
+        $path = trim((string) $path);
+
+        if ($path === '') {
+            return '';
+        }
+
+        if (preg_match('/^https?:\/\//i', $path)) {
+            return $path;
+        }
+
+        return Storage::url($path);
     }
 
     /**

@@ -43,6 +43,7 @@
         .bg-accent { background-color: var(--color-accent); }
         .text-accent { color: var(--color-accent); }
         .border-accent { border-color: var(--color-accent); }
+        [x-cloak] { display: none !important; }
     </style>
 
     @livewireStyles
