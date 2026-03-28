@@ -123,7 +123,7 @@
                                             @error("bannerChips.$index.label") <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                                         </div>
                                         <button type="button" wire:click="removeBannerChip({{ $index }})" class="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-red-600 hover:bg-red-50" title="Remove chip">
-                                            ×
+                                            x
                                         </button>
                                     </div>
                                 @empty
@@ -197,16 +197,10 @@
                                     @error("bannerSlides.$index.image_file") <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
 
                                     <div class="mt-3 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-2">
-                                        @php
-                                            $previewUrl = '';
-                                            if (!empty($slide['image_file'])) {
-                                                $previewUrl = $slide['image_file']->temporaryUrl();
-                                            } elseif (!empty($slide['image'])) {
-                                                $previewUrl = \Illuminate\Support\Facades\Storage::url($slide['image']);
-                                            }
-                                        @endphp
-                                        @if($previewUrl)
-                                            <img src="{{ $previewUrl }}" alt="Banner preview" class="h-32 w-full rounded object-cover">
+                                        @if(!empty($slide['image_file']))
+                                            <img src="{{ $slide['image_file']->temporaryUrl() }}" alt="Banner preview" class="h-32 w-full rounded object-cover">
+                                        @elseif(!empty($slide['image']))
+                                            <img src="{{ \Illuminate\Support\Facades\Storage::url($slide['image']) }}" alt="Banner preview" class="h-32 w-full rounded object-cover">
                                         @else
                                             <div class="flex h-32 items-center justify-center text-xs text-gray-400">No image selected</div>
                                         @endif
