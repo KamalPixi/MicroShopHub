@@ -89,9 +89,9 @@
                 go(index) { this.active = index }
             }"
             x-init="init()"
-            class="relative z-10 grid gap-5 px-6 py-8 md:grid-cols-[3fr_1fr] md:px-10 md:py-10"
+            class="relative z-10 grid gap-4 px-6 py-7 md:grid-cols-[3fr_1fr] md:px-10 md:py-9"
         >
-            <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 aspect-[21/8] md:aspect-[21/8] backdrop-blur-sm">
+            <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 aspect-[24/8] md:aspect-[24/8] backdrop-blur-sm">
                 <template x-for="(slide, index) in slides" :key="index">
                     <a
                         x-show="active === index"
@@ -130,14 +130,14 @@
             </div>
 
             <div class="flex flex-col justify-center md:pl-2">
-                <h1 class="text-2xl md:text-3xl font-extrabold leading-tight tracking-tight">
+                <h1 class="text-2xl md:text-[1.7rem] font-extrabold leading-tight tracking-tight">
                     {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
                 </h1>
-                <p class="mt-2 max-w-2xl text-sm md:text-[0.9rem] leading-5 text-white/82">
+                <p class="mt-2 max-w-2xl text-sm md:text-[0.85rem] leading-5 text-white/82">
                     {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
                 </p>
 
-                <div class="mt-4 flex flex-wrap items-center gap-3">
+                <div class="mt-3.5 flex flex-wrap items-center gap-3">
                     <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition hover:opacity-95">
                         {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
                     </a>
@@ -147,7 +147,7 @@
                 </div>
 
                 @if(!empty($homepageSettings['home_banner_chips'] ?? []))
-                    <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                    <div class="mt-2.5 flex flex-wrap gap-2 text-xs">
                         @foreach($homepageSettings['home_banner_chips'] as $chip)
                             <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">{{ $chip }}</span>
                         @endforeach
