@@ -716,6 +716,17 @@
                         Save Realtime
                     </button>
                 </div>
+                <div class="mt-4 rounded-lg border border-blue-100 bg-blue-50 p-3">
+                    <p class="text-xs font-semibold text-blue-800">How to get Pusher credentials</p>
+                    <ol class="mt-2 list-decimal list-inside space-y-1 text-[11px] text-blue-700">
+                        <li>Open the Pusher dashboard and create a new Channels app.</li>
+                        <li>Copy the App ID, Key, Secret, and Cluster from the app credentials page.</li>
+                        <li>Paste them here and save, then enable Live Chat Widget after Telegram config is ready.</li>
+                    </ol>
+                    <a href="https://pusher.com/channels" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex text-[11px] font-semibold text-blue-700 hover:text-blue-900">
+                        Open Pusher dashboard
+                    </a>
+                </div>
             </div>
 
             <div class="flex items-start gap-3 mt-4">
