@@ -110,7 +110,7 @@
     @include($storefrontHeaderView, ['storeName' => $storeName, 'storeLogo' => $storeLogo, 'storeSlogan' => $storeSlogan])
     @include($storefrontNavbarView)
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full {{ $storefrontTheme === 'modern' ? 'pt-3 md:pt-5' : 'pt-4 md:pt-6' }}">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full {{ $storefrontTheme === 'modern' ? 'pt-1 md:pt-2' : 'pt-2 md:pt-3' }}">
         @yield('content')
     </main>
 

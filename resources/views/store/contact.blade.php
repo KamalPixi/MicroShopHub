@@ -3,8 +3,8 @@
 @section('title', ($siteStoreName ?? config('app.name', 'ShopHub')) . ' - Contact Us')
 
 @section('content')
-    <div class="space-y-6">
-        <div class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+    <div class="space-y-4 pb-6 md:pb-8">
+        <div class="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
             <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Support</p>
                 <h1 class="mt-2 text-3xl font-extrabold text-gray-900">Contact us</h1>

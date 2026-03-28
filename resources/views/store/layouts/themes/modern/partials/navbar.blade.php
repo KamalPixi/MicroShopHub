@@ -1,6 +1,6 @@
 <nav class="relative z-40" x-data="{ mobileMenuOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="mt-3 rounded-2xl border border-gray-200 bg-white/90 shadow-sm backdrop-blur">
+        <div class="mt-2 rounded-2xl border border-gray-200 bg-white/90 shadow-sm backdrop-blur">
             <div class="flex items-center justify-between gap-4 px-4 py-3">
                 <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="md:hidden inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-primary hover:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary">
                     <span class="sr-only">Open main menu</span>
