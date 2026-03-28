@@ -62,42 +62,59 @@
                     </div>
                 </form>
 
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+                <div x-data="{ expanded: false }" class="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">Categories</h3>
                         @if($categoryId)
                             <a href="{{ route('store.search', request()->except('category', 'page')) }}" class="text-xs text-primary hover:underline">Clear</a>
                         @endif
                     </div>
-                    
-                    <ul class="space-y-2">
-                        <li>
-                            <a href="{{ route('store.search', request()->except('category', 'page')) }}" 
-                               class="block text-sm {{ request('category') == '' ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary' }}">
-                                All Categories
-                            </a>
-                        </li>
-                        @foreach($categories as $cat)
-                            <li>
-                                <a href="{{ request()->fullUrlWithQuery(['category' => $cat->id, 'page' => null]) }}" 
-                                   class="block text-sm {{ request('category') == $cat->id ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary' }}">
-                                    {{ $cat->name }}
-                                </a>
-                                @if($cat->children->isNotEmpty())
-                                    <ul class="ml-4 mt-1 space-y-1 border-l border-gray-200 pl-2">
-                                        @foreach($cat->children as $child)
-                                            <li>
-                                                <a href="{{ request()->fullUrlWithQuery(['category' => $child->id, 'page' => null]) }}" 
-                                                   class="block text-xs {{ request('category') == $child->id ? 'text-primary font-bold' : 'text-gray-500 hover:text-primary' }}">
-                                                    {{ $child->name }}
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
+
+                    <div class="relative rounded-xl border border-gray-100 bg-gray-50/60">
+                        <div :class="expanded ? 'max-h-none' : 'max-h-72 lg:max-h-80 overflow-hidden'" class="relative space-y-2 px-3 py-3 transition-all duration-300">
+                            <ul class="space-y-2">
+                                <li>
+                                    <a href="{{ route('store.search', request()->except('category', 'page')) }}"
+                                       class="block text-sm {{ request('category') == '' ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary' }}">
+                                        All Categories
+                                    </a>
+                                </li>
+                                @foreach($categories as $cat)
+                                    <li>
+                                        <a href="{{ request()->fullUrlWithQuery(['category' => $cat->id, 'page' => null]) }}"
+                                           class="block text-sm {{ request('category') == $cat->id ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary' }}">
+                                            {{ $cat->name }}
+                                        </a>
+                                        @if($cat->children->isNotEmpty())
+                                            <ul class="ml-4 mt-1 space-y-1 border-l border-gray-200 pl-2">
+                                                @foreach($cat->children as $child)
+                                                    <li>
+                                                        <a href="{{ request()->fullUrlWithQuery(['category' => $child->id, 'page' => null]) }}"
+                                                           class="block text-xs {{ request('category') == $child->id ? 'text-primary font-bold' : 'text-gray-500 hover:text-primary' }}">
+                                                            {{ $child->name }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        <div class="border-t border-gray-200 bg-white px-3 py-2">
+                            <button
+                                type="button"
+                                @click="expanded = !expanded"
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+                            >
+                                <span x-text="expanded ? 'Show fewer categories' : 'Show all categories'"></span>
+                                <svg class="h-4 w-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </aside>
 
