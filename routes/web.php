@@ -105,6 +105,9 @@ Route::prefix('admin')
         Route::middleware('guest:admin')->group(function () {
             Route::get('/', [AdminAuthController::class, 'login'])->name('login');
             Route::get('/password-request', [AdminAuthController::class, 'passwordRequest'])->name('password.request');
+            Route::post('/password-email', [AdminAuthController::class, 'sendPasswordResetLink'])->name('password.email');
+            Route::get('/reset-password/{token}', [AdminAuthController::class, 'resetPasswordForm'])->name('password.reset');
+            Route::post('/reset-password', [AdminAuthController::class, 'resetPassword'])->name('password.update');
         });
 
 

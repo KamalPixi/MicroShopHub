@@ -11,7 +11,7 @@
                 </svg>
                 Email Address
             </label>
-            <input type="email" wire:model="email" class="mt-1 block w-full p-2 text-sm border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="admin@example.com" required>
+            <input type="email" wire:model="email" class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none" placeholder="admin@example.com" required>
             @error('email')
                 <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
             @enderror
@@ -24,16 +24,20 @@
                 </svg>
                 Password
             </label>
-            <input type="password" wire:model="password" class="mt-1 block w-full p-2 text-sm border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••" required>
+            <input type="password" wire:model="password" class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none" placeholder="••••••••" required>
             @error('password')
                 <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
             @enderror
         </div>
 
+        <div class="flex items-center justify-between">
+            <label class="inline-flex items-center gap-2 text-sm text-gray-600">
+                <input type="checkbox" wire:model="remember" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>Remember me</span>
+            </label>
+        </div>
+
         <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14"></path>
-            </svg>
             Sign In
         </button>
     </form>

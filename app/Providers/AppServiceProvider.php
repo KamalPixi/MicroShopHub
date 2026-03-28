@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Admin;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Category;
 use App\Models\Setting;
+use Illuminate\Auth\Notifications\ResetPassword;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         try {
+            ResetPassword::createUrlUsing(function ($notifiable, string $token) {
+                if ($notifiable instanceof Admin) {
+                    return route('admin.password.reset', [
+                        'token' => $token,
+                        'email' => $notifiable->getEmailForPasswordReset(),
+                    ]);
+                }
+
+                return route('login');
+            });
+
             $settings = Setting::whereIn('key', [
                 'pusher_app_id',
                 'pusher_app_key',

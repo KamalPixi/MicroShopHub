@@ -108,6 +108,92 @@
             font-weight: 600; 
             color: #1f2937; 
         }
+        button.bg-blue-50,
+        button.bg-blue-100,
+        button.bg-blue-200,
+        button.bg-blue-300,
+        button.bg-blue-400,
+        button.bg-blue-500,
+        button.bg-blue-600,
+        button.bg-blue-700,
+        button.bg-blue-800,
+        button.bg-blue-900 {
+            background-color: var(--color-primary) !important;
+            color: #fff !important;
+        }
+        button.text-blue-50,
+        button.text-blue-100,
+        button.text-blue-200,
+        button.text-blue-300,
+        button.text-blue-400,
+        button.text-blue-500,
+        button.text-blue-600,
+        button.text-blue-700,
+        button.text-blue-800,
+        button.text-blue-900 {
+            color: var(--color-primary) !important;
+        }
+        button.border-blue-50,
+        button.border-blue-100,
+        button.border-blue-200,
+        button.border-blue-300,
+        button.border-blue-400,
+        button.border-blue-500,
+        button.border-blue-600,
+        button.border-blue-700,
+        button.border-blue-800,
+        button.border-blue-900 {
+            border-color: var(--color-primary) !important;
+        }
+        button.hover\:bg-blue-50:hover,
+        button.hover\:bg-blue-100:hover,
+        button.hover\:bg-blue-200:hover,
+        button.hover\:bg-blue-300:hover,
+        button.hover\:bg-blue-400:hover,
+        button.hover\:bg-blue-500:hover,
+        button.hover\:bg-blue-600:hover,
+        button.hover\:bg-blue-700:hover,
+        button.hover\:bg-blue-800:hover,
+        button.hover\:bg-blue-900:hover {
+            background-color: var(--color-primary) !important;
+            color: #fff !important;
+        }
+        button.hover\:text-blue-50:hover,
+        button.hover\:text-blue-100:hover,
+        button.hover\:text-blue-200:hover,
+        button.hover\:text-blue-300:hover,
+        button.hover\:text-blue-400:hover,
+        button.hover\:text-blue-500:hover,
+        button.hover\:text-blue-600:hover,
+        button.hover\:text-blue-700:hover,
+        button.hover\:text-blue-800:hover,
+        button.hover\:text-blue-900:hover {
+            color: var(--color-primary-700) !important;
+        }
+        button.focus\:border-blue-50:focus,
+        button.focus\:border-blue-100:focus,
+        button.focus\:border-blue-200:focus,
+        button.focus\:border-blue-300:focus,
+        button.focus\:border-blue-400:focus,
+        button.focus\:border-blue-500:focus,
+        button.focus\:border-blue-600:focus,
+        button.focus\:border-blue-700:focus,
+        button.focus\:border-blue-800:focus,
+        button.focus\:border-blue-900:focus {
+            border-color: var(--color-primary) !important;
+        }
+        button.focus\:ring-blue-50:focus,
+        button.focus\:ring-blue-100:focus,
+        button.focus\:ring-blue-200:focus,
+        button.focus\:ring-blue-300:focus,
+        button.focus\:ring-blue-400:focus,
+        button.focus\:ring-blue-500:focus,
+        button.focus\:ring-blue-600:focus,
+        button.focus\:ring-blue-700:focus,
+        button.focus\:ring-blue-800:focus,
+        button.focus\:ring-blue-900:focus {
+            --tw-ring-color: var(--color-primary) !important;
+        }
         .timestamp {
             font-size: 0.7rem;
             color: #6b7280;
