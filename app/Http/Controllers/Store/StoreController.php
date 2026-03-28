@@ -131,6 +131,11 @@ class StoreController extends Controller
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
         $sort = $request->input('sort', 'newest'); // Default to newest
+        $categoryFilterIds = [];
+
+        if ($categoryId) {
+            $categoryFilterIds = $this->resolveCategoryFilterIds((int) $categoryId);
+        }
 
         $products = Product::where('status', 1)
             // 1. Text Search
@@ -141,9 +146,9 @@ class StoreController extends Controller
                 });
             })
             // 2. Category Filter
-            ->when($categoryId, function ($q) use ($categoryId) {
-                return $q->whereHas('categories', function ($catQ) use ($categoryId) {
-                    $catQ->where('categories.id', $categoryId);
+            ->when(! empty($categoryFilterIds), function ($q) use ($categoryFilterIds) {
+                return $q->whereHas('categories', function ($catQ) use ($categoryFilterIds) {
+                    $catQ->whereIn('categories.id', $categoryFilterIds);
                 });
             })
             // 3. Price Range
@@ -172,6 +177,39 @@ class StoreController extends Controller
         $categories = Category::whereNull('parent_id')->with('children')->get();
         
         return view('store.search', compact('products', 'categories', 'query', 'categoryId', 'minPrice', 'maxPrice', 'sort'));
+    }
+
+    /**
+     * Resolve a category and all descendant category IDs for storefront filtering.
+     */
+    private function resolveCategoryFilterIds(int $categoryId): array
+    {
+        $categories = Category::select('id', 'parent_id')->get();
+        $childrenByParent = [];
+
+        foreach ($categories as $category) {
+            $parentKey = $category->parent_id ?? 0;
+            $childrenByParent[$parentKey][] = (int) $category->id;
+        }
+
+        $ids = [];
+        $stack = [$categoryId];
+
+        while (! empty($stack)) {
+            $currentId = array_pop($stack);
+
+            if (in_array($currentId, $ids, true)) {
+                continue;
+            }
+
+            $ids[] = $currentId;
+
+            foreach ($childrenByParent[$currentId] ?? [] as $childId) {
+                $stack[] = (int) $childId;
+            }
+        }
+
+        return $ids;
     }
 
     /**

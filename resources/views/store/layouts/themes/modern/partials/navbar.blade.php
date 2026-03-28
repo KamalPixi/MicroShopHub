@@ -18,12 +18,16 @@
                         @foreach($navbarCategories as $category)
                             @if($category->children->isNotEmpty())
                                 <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                                    <button class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition group-hover:border-primary/25 group-hover:text-primary focus:outline-none">
-                                        <span>{{ $category->name }}</span>
-                                        <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                        </svg>
-                                    </button>
+                                    <div class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition group-hover:border-primary/25 group-hover:text-primary focus:outline-none">
+                                        <a href="{{ route('store.search', ['category' => $category->id]) }}" class="hover:text-primary">
+                                            {{ $category->name }}
+                                        </a>
+                                        <button type="button" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
+                                            <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
                                     <div x-show="open"
                                          x-transition:enter="transition ease-out duration-200"
                                          x-transition:enter-start="opacity-0 translate-y-1"
@@ -33,14 +37,14 @@
                                          x-transition:leave-end="opacity-0 translate-y-1"
                                          class="absolute left-1/2 top-full z-50 mt-3 w-56 -translate-x-1/2 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
                                         @foreach($category->children as $child)
-                                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 transition hover:bg-primary/5 hover:text-primary">
+                                            <a href="{{ route('store.search', ['category' => $child->id]) }}" class="block px-4 py-3 text-sm text-gray-700 transition hover:bg-primary/5 hover:text-primary">
                                                 {{ $child->name }}
                                             </a>
                                         @endforeach
                                     </div>
                                 </div>
                             @else
-                                <a href="#" class="inline-flex items-center rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary/25 hover:text-primary">{{ $category->name }}</a>
+                                <a href="{{ route('store.search', ['category' => $category->id]) }}" class="inline-flex items-center rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary/25 hover:text-primary">{{ $category->name }}</a>
                             @endif
                         @endforeach
                     @endif
@@ -58,20 +62,22 @@
                 @foreach($navbarCategories as $category)
                     @if($category->children->isNotEmpty())
                         <div x-data="{ expanded: false }">
-                            <button @click="expanded = !expanded" class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary">
-                                <span>{{ $category->name }}</span>
-                                <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
+                            <div class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary">
+                                <a href="{{ route('store.search', ['category' => $category->id]) }}" class="hover:text-primary">{{ $category->name }}</a>
+                                <button type="button" @click="expanded = !expanded" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
+                                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                            </div>
                             <div x-show="expanded" x-transition class="pl-3 pt-1 space-y-1">
                                 @foreach($category->children as $child)
-                                    <a href="#" class="block rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-primary/5 hover:text-primary">{{ $child->name }}</a>
+                                    <a href="{{ route('store.search', ['category' => $child->id]) }}" class="block rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-primary/5 hover:text-primary">{{ $child->name }}</a>
                                 @endforeach
                             </div>
                         </div>
                     @else
-                        <a href="#" class="block rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary">{{ $category->name }}</a>
+                        <a href="{{ route('store.search', ['category' => $category->id]) }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary">{{ $category->name }}</a>
                     @endif
                 @endforeach
             @endif
