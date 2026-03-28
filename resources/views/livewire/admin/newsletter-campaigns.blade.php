@@ -11,7 +11,7 @@
 
     @include('admin.includes.message')
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-4">
         <div class="border border-gray-200 rounded-lg p-3">
             <p class="text-xs text-gray-500">Total</p>
             <p class="text-lg font-semibold text-gray-900">{{ $totalCount }}</p>
@@ -23,6 +23,10 @@
         <div class="border border-gray-200 rounded-lg p-3">
             <p class="text-xs text-gray-500">Sent</p>
             <p class="text-lg font-semibold text-green-600">{{ $sentCount }}</p>
+        </div>
+        <div class="border border-gray-200 rounded-lg p-3">
+            <p class="text-xs text-gray-500">Subscribers</p>
+            <p class="text-lg font-semibold text-primary">{{ $subscriberCount }}</p>
         </div>
     </div>
 
@@ -100,6 +104,11 @@
                         <td class="p-2">{{ $campaign->created_at?->format('Y-m-d H:i') }}</td>
                         <td class="p-2 text-end space-x-2">
                             <button wire:click="edit({{ $campaign->id }})" class="inline-flex items-center text-xs font-medium text-primary hover:underline">Edit</button>
+                            @if($campaign->status !== 'sent')
+                                <button wire:click="sendNow({{ $campaign->id }})" wire:confirm="Send this campaign to all active subscribers now?" class="inline-flex items-center text-xs font-medium text-green-600 hover:text-green-700">Send Now</button>
+                            @else
+                                <span class="inline-flex items-center text-xs font-medium text-green-600">Sent</span>
+                            @endif
                             <button wire:click="delete({{ $campaign->id }})" wire:confirm="Delete this campaign?" class="inline-flex items-center text-xs font-medium text-red-600 hover:text-red-700">Delete</button>
                         </td>
                     </tr>

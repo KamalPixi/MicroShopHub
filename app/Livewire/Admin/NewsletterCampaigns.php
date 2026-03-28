@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\NewsletterSubscription;
 use App\Models\NewsletterCampaign;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -71,6 +73,49 @@ class NewsletterCampaigns extends Component
         session()->flash('message', 'Campaign deleted.');
     }
 
+    public function sendNow(int $id): void
+    {
+        $campaign = NewsletterCampaign::findOrFail($id);
+
+        if ($campaign->status === 'sent' && $campaign->sent_at) {
+            session()->flash('message', 'This campaign was already sent.');
+            return;
+        }
+
+        $subscribers = NewsletterSubscription::query()
+            ->where('status', 'subscribed')
+            ->orderBy('id')
+            ->get(['email', 'name']);
+
+        if ($subscribers->isEmpty()) {
+            session()->flash('message', 'No active subscribers found.');
+            return;
+        }
+
+        $subject = trim((string) $campaign->subject);
+        $body = trim((string) ($campaign->content ?? ''));
+        $footer = "\n\n---\nYou are receiving this email because you subscribed to our newsletter.";
+
+        foreach ($subscribers as $subscriber) {
+            $personalizedBody = $body;
+            if ($subscriber->name) {
+                $personalizedBody = "Hi {$subscriber->name},\n\n" . $personalizedBody;
+            }
+
+            Mail::raw($personalizedBody . $footer, function ($message) use ($subscriber, $subject) {
+                $message->to($subscriber->email);
+                $message->subject($subject ?: 'Newsletter Update');
+            });
+        }
+
+        $campaign->forceFill([
+            'status' => 'sent',
+            'sent_at' => now(),
+        ])->save();
+
+        session()->flash('message', 'Campaign sent to ' . $subscribers->count() . ' subscribers.');
+    }
+
     public function resetForm()
     {
         $this->campaignId = null;
@@ -91,6 +136,7 @@ class NewsletterCampaigns extends Component
             'totalCount' => NewsletterCampaign::count(),
             'scheduledCount' => NewsletterCampaign::where('status', 'scheduled')->count(),
             'sentCount' => NewsletterCampaign::where('status', 'sent')->count(),
+            'subscriberCount' => NewsletterSubscription::where('status', 'subscribed')->count(),
         ]);
     }
 }
