@@ -30,6 +30,7 @@
                     <th class="font-medium text-gray-700 px-2 py-2">Name</th>
                     <th class="font-medium text-gray-700 px-2 py-2">Slug</th>
                     <th class="font-medium text-gray-700 px-2 py-2">Categories</th>
+                    <th class="font-medium text-gray-700 px-2 py-2">Sold Amount</th>
                     <th class="font-medium text-gray-700 px-2 py-2 w-[240px]">Attributes</th>
                     <th class="font-medium text-gray-700 px-2 py-2 w-[280px]">Variations</th>
                     <th class="font-medium text-gray-700 px-2 py-2 w-[240px]">Related</th>
@@ -58,6 +59,15 @@
                                 <span class="text-gray-500">None</span>
                             @endif
                         </div>
+                    </td>
+                    <td class="px-2 py-2 align-top">
+                        @php
+                            $soldAmount = (float) ($product->sold_amount ?? 0);
+                        @endphp
+                        <div class="font-semibold text-gray-900">
+                            {{ $product->currency_symbol }}{{ number_format($soldAmount, 2) }}
+                        </div>
+                        <div class="text-[11px] text-gray-500">Total revenue</div>
                     </td>
                     <td class="px-2 py-2 align-top">
                         <div class="flex flex-wrap gap-1">
@@ -145,7 +155,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="text-center text-gray-500 py-4">No products found.</td>
+                    <td colspan="9" class="text-center text-gray-500 py-4">No products found.</td>
                 </tr>
                 @endforelse
             </tbody>
