@@ -181,9 +181,9 @@
                 go(index) { this.active = index }
             }"
             x-init="init()"
-            class="relative z-10 px-4 py-4 md:px-8 md:py-8"
+            class="relative z-10 px-4 py-3 md:px-8 md:py-5"
         >
-            <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 aspect-[16/9] backdrop-blur-sm">
+            <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 aspect-[32/8] backdrop-blur-sm">
                 <template x-for="(slide, index) in slides" :key="index">
                     <a
                         x-show="active === index"
