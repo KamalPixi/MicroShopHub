@@ -9,12 +9,12 @@
 <div class="bg-gray-50 min-h-screen {{ $isModernTheme ? 'pt-2 pb-8 md:pt-3 md:pb-10' : 'pb-8' }}">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {{-- Reduced max-width slightly for 4 columns --}}
         
-        <div class="mb-4 rounded-2xl border border-gray-200 bg-white/90 p-3 shadow-sm backdrop-blur sm:p-4">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-                <div class="space-y-2">
+        <div class="mb-3 rounded-2xl border border-gray-200 bg-white/90 p-3 shadow-sm backdrop-blur sm:p-4">
+            <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div class="space-y-1.5">
                     <div>
                         <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">Browse catalog</p>
-                        <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-[2rem]">Search Results</h1>
+                        <h1 class="mt-0.5 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-[2rem]">Search Results</h1>
                     </div>
                     <p class="text-sm text-gray-600">
                         Found <span class="font-bold text-gray-900">{{ $products->total() }}</span> products
@@ -65,9 +65,9 @@
             </div>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-8">
+        <div class="flex flex-col lg:flex-row gap-6 lg:items-start">
             
-            <aside class="w-full lg:w-64 flex-shrink-0 space-y-3">
+            <aside class="w-full lg:w-64 flex-shrink-0 space-y-2.5 lg:pt-0.5">
                 <form method="GET" action="{{ route('store.search') }}" class="space-y-3">
                     @if($query) <input type="hidden" name="query" value="{{ $query }}"> @endif
                     @if($categoryId) <input type="hidden" name="category" value="{{ $categoryId }}"> @endif
@@ -190,7 +190,7 @@
                 </div>
             </aside>
 
-            <div class="flex-1">
+            <div class="flex-1 lg:pt-2">
                 @if($products->count() > 0)
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         @foreach($products as $product)
