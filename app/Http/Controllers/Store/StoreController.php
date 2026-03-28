@@ -200,4 +200,46 @@ class StoreController extends Controller
     {
         return view('store.cart');
     }
+
+    public function privacyPolicy()
+    {
+        return $this->renderStaticPage(
+            'page_privacy_title',
+            'page_privacy_content',
+            'Privacy Policy',
+            'We respect your privacy and handle your information carefully.'
+        );
+    }
+
+    public function terms()
+    {
+        return $this->renderStaticPage(
+            'page_terms_title',
+            'page_terms_content',
+            'Terms of Service',
+            'Please read these terms before placing an order.'
+        );
+    }
+
+    public function cookiePolicy()
+    {
+        return $this->renderStaticPage(
+            'page_cookie_title',
+            'page_cookie_content',
+            'Cookie Policy',
+            'This page explains how we use cookies and similar tools.'
+        );
+    }
+
+    protected function renderStaticPage(string $titleKey, string $contentKey, string $fallbackTitle, string $fallbackIntro)
+    {
+        $pageSettings = Setting::whereIn('key', [$titleKey, $contentKey])
+            ->pluck('value', 'key')
+            ->toArray();
+
+        return view('store.page', [
+            'pageTitle' => $pageSettings[$titleKey] ?? $fallbackTitle,
+            'pageContent' => $pageSettings[$contentKey] ?? $fallbackIntro,
+        ]);
+    }
 }

@@ -39,6 +39,9 @@ Route::name('store.')->group(function () {
     Route::get('/', [StoreController::class, 'index'])->name('index');
     Route::get('/search', [StoreController::class, 'search'])->name('search');
     Route::get('/product/{slug}', [StoreController::class, 'show'])->name('product.show');
+    Route::get('/privacy-policy', [StoreController::class, 'privacyPolicy'])->name('privacy-policy');
+    Route::get('/terms', [StoreController::class, 'terms'])->name('terms');
+    Route::get('/cookie-policy', [StoreController::class, 'cookiePolicy'])->name('cookie-policy');
     Route::get('/cart', [StoreController::class, 'cart'])->name('cart.index');
     Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
@@ -118,6 +121,7 @@ Route::prefix('admin')
             // Dashboard
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
             Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
+            Route::get('/pages', [DashboardController::class, 'pages'])->name('pages');
 
             Route::get('/categories', [DashboardController::class, 'categories'])->name('categories');
             Route::get('/shipping-methods', [DashboardController::class, 'shippingMethods'])->name('shipping.methods');

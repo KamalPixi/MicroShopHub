@@ -105,6 +105,16 @@
                 </a>
             </li>
 
+            <li>
+                <a href="{{ route('admin.pages') }}"
+                   class="flex items-center text-sm px-2.5 py-2 rounded-md {{ request()->routeIs('admin.pages*') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                    <svg class="w-4.5 h-4.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h6l4 4v14H7V3zM13 3v5h5"></path>
+                    </svg>
+                    Pages
+                </a>
+            </li>
+
             @php
                 $isMarketingOpen = request()->routeIs('admin.marketing.*');
             @endphp
