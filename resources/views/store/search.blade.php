@@ -3,7 +3,10 @@
 @section('title', ($siteStoreName ?? config('app.name', 'ShopHub')) . ' - Search')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen pb-8">
+@php
+    $isModernTheme = \App\Support\StorefrontTheme::currentKey() === 'modern';
+@endphp
+<div class="bg-gray-50 min-h-screen {{ $isModernTheme ? 'pt-2 pb-8 md:pt-3 md:pb-10' : 'pb-8' }}">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {{-- Reduced max-width slightly for 4 columns --}}
         
         <div class="mb-4 rounded-2xl border border-gray-200 bg-white/90 p-3 shadow-sm backdrop-blur sm:p-4">
