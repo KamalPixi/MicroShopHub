@@ -28,6 +28,7 @@
             @error('password')
                 <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
             @enderror
+            <p class="mt-1 text-xs text-gray-500">After 5 wrong attempts, login is locked for 1 hour.</p>
         </div>
 
         <div class="flex items-center justify-between">

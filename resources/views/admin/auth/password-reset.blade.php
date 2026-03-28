@@ -3,9 +3,6 @@
 @section('content')
     <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg mx-auto mt-10">
         <div class="flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z"></path>
-            </svg>
             <h1 class="text-2xl font-bold text-gray-800">Set New Password</h1>
         </div>
 
@@ -18,6 +15,7 @@
         <form action="{{ route('admin.password.update') }}" method="POST" class="space-y-4">
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
+            <p class="text-xs text-gray-500">After 5 wrong attempts, the reset form is paused for a short time.</p>
 
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Admin Email</label>

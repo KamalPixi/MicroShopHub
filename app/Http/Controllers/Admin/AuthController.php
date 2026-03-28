@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
@@ -27,10 +28,19 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
         ]);
 
+        $key = $this->passwordResetRequestThrottleKey($validated['email'], $request->ip());
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            $seconds = RateLimiter::availableIn($key);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => 'Too many reset requests. Please try again in ' . $this->formatWaitTime($seconds) . '.']);
+        }
+
         $status = Password::broker('admins')->sendResetLink($validated);
 
         return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', __($status))
+            ? tap(back()->with('status', __($status)), fn () => RateLimiter::hit($key, 900))
             : back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
     }
 
@@ -50,6 +60,15 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $key = $this->passwordResetAttemptThrottleKey($validated['email'], $request->ip());
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => 'Too many wrong reset attempts. Try again in ' . $this->formatWaitTime($seconds) . '.']);
+        }
+
         $status = Password::broker('admins')->reset(
             $validated,
             function ($admin, string $password) {
@@ -61,8 +80,32 @@ class AuthController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('admin.login')->with('status', __($status))
-            : back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
+            ? tap(redirect()->route('admin.login')->with('status', __($status)), fn () => RateLimiter::clear($key))
+            : tap(
+                back()->withInput($request->only('email'))->withErrors(['email' => __($status)]),
+                fn () => RateLimiter::hit($key, 900)
+            );
+    }
+
+    protected function passwordResetRequestThrottleKey(string $email, string $ip): string
+    {
+        return 'admin-password-reset-request|' . Str::lower($email) . '|' . $ip;
+    }
+
+    protected function passwordResetAttemptThrottleKey(string $email, string $ip): string
+    {
+        return 'admin-password-reset-attempt|' . Str::lower($email) . '|' . $ip;
+    }
+
+    protected function formatWaitTime(int $seconds): string
+    {
+        if ($seconds < 60) {
+            return $seconds . ' seconds';
+        }
+
+        $minutes = (int) ceil($seconds / 60);
+
+        return $minutes . ' minute' . ($minutes === 1 ? '' : 's');
     }
 
     public function logout(Request $request) {
