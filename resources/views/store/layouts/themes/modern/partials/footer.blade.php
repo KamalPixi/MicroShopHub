@@ -15,6 +15,7 @@
         ['label' => $footerSettings['footer_policy_1_label'] ?? 'Privacy Policy', 'url' => $footerSettings['footer_policy_1_url'] ?? '/privacy-policy'],
         ['label' => $footerSettings['footer_policy_2_label'] ?? 'Terms of Service', 'url' => $footerSettings['footer_policy_2_url'] ?? '/terms'],
         ['label' => $footerSettings['footer_policy_3_label'] ?? 'Cookie Policy', 'url' => $footerSettings['footer_policy_3_url'] ?? '/cookie-policy'],
+        ['label' => $footerSettings['footer_policy_4_label'] ?? 'Refund Policy', 'url' => $footerSettings['footer_policy_4_url'] ?? '/refund-policy'],
     ];
     $copyrightText = str_replace('{year}', $year, $footerSettings['footer_copyright_text'] ?? '© {year} ShopHub. All rights reserved.');
 @endphp

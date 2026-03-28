@@ -115,6 +115,16 @@
                 </a>
             </li>
 
+            <li>
+                <a href="{{ route('admin.contact.messages') }}"
+                   class="flex items-center text-sm px-2.5 py-2 rounded-md {{ request()->routeIs('admin.contact.messages*') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                    <svg class="w-4.5 h-4.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h8m-8 4h5m-9 5h14a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Contact
+                </a>
+            </li>
+
             @php
                 $isPagesOpen = request()->routeIs('admin.pages*');
             @endphp
@@ -140,15 +150,33 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.pages.about') }}"
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.about') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            About Us
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.pages.privacy') }}"
                            class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.privacy') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
                             Privacy Policy
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.pages.faq') }}"
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.faq') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            FAQ
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.pages.terms') }}"
                            class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.terms') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
                             Terms of Service
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.pages.refund') }}"
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.refund') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Refund Policy
                         </a>
                     </li>
                     <li>

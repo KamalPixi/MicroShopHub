@@ -39,9 +39,13 @@ Route::middleware('store.analytics')->name('store.')->group(function () {
     Route::get('/', [StoreController::class, 'index'])->name('index');
     Route::get('/search', [StoreController::class, 'search'])->name('search');
     Route::get('/product/{slug}', [StoreController::class, 'show'])->name('product.show');
+    Route::get('/about', [StoreController::class, 'about'])->name('about');
+    Route::get('/faq', [StoreController::class, 'faq'])->name('faq');
     Route::get('/privacy-policy', [StoreController::class, 'privacyPolicy'])->name('privacy-policy');
     Route::get('/terms', [StoreController::class, 'terms'])->name('terms');
+    Route::get('/refund-policy', [StoreController::class, 'refundPolicy'])->name('refund-policy');
     Route::get('/cookie-policy', [StoreController::class, 'cookiePolicy'])->name('cookie-policy');
+    Route::get('/contact', [StoreController::class, 'contact'])->name('contact');
     Route::get('/cart', [StoreController::class, 'cart'])->name('cart.index');
     Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
@@ -127,9 +131,13 @@ Route::prefix('admin')
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
             Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
             Route::get('/pages', [DashboardController::class, 'pages'])->name('pages');
+            Route::get('/pages/about', [DashboardController::class, 'aboutPage'])->name('pages.about');
+            Route::get('/pages/faq', [DashboardController::class, 'faqPage'])->name('pages.faq');
             Route::get('/pages/privacy-policy', [DashboardController::class, 'privacyPolicyPage'])->name('pages.privacy');
             Route::get('/pages/terms', [DashboardController::class, 'termsPage'])->name('pages.terms');
+            Route::get('/pages/refund-policy', [DashboardController::class, 'refundPolicyPage'])->name('pages.refund');
             Route::get('/pages/cookie-policy', [DashboardController::class, 'cookiePolicyPage'])->name('pages.cookie');
+            Route::get('/contact-messages', [DashboardController::class, 'contactMessages'])->name('contact.messages');
 
             Route::get('/categories', [DashboardController::class, 'categories'])->name('categories');
             Route::get('/shipping-methods', [DashboardController::class, 'shippingMethods'])->name('shipping.methods');

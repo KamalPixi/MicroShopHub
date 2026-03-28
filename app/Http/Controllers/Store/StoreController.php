@@ -201,6 +201,34 @@ class StoreController extends Controller
         return view('store.cart');
     }
 
+    public function about()
+    {
+        return $this->renderStaticPage(
+            'page_about_title',
+            'page_about_content',
+            'About Us',
+            'Learn more about our store, values, and commitment to customers.'
+        );
+    }
+
+    public function faq()
+    {
+        return $this->renderStaticPage(
+            'page_faq_title',
+            'page_faq_content',
+            'FAQ',
+            'Find answers to common questions about shopping with us.'
+        );
+    }
+
+    public function contact()
+    {
+        $supportEmail = Setting::where('key', 'email')->value('value');
+        $supportPhone = Setting::where('key', 'phone')->value('value');
+
+        return view('store.contact', compact('supportEmail', 'supportPhone'));
+    }
+
     public function privacyPolicy()
     {
         return $this->renderStaticPage(
@@ -218,6 +246,16 @@ class StoreController extends Controller
             'page_terms_content',
             'Terms of Service',
             'Please read these terms before placing an order.'
+        );
+    }
+
+    public function refundPolicy()
+    {
+        return $this->renderStaticPage(
+            'page_refund_title',
+            'page_refund_content',
+            'Refund Policy',
+            'Read how refunds are handled and when they may apply.'
         );
     }
 

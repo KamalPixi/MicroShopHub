@@ -10,6 +10,31 @@
         @include('admin.includes.message')
 
         <div class="mt-5 space-y-5">
+            <div id="about" class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">About Us</p>
+                        <p class="text-xs text-gray-500">Shown on the storefront about page and footer link.</p>
+                    </div>
+                    <button type="button" wire:click="saveAbout" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                        Save About
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">Title</label>
+                        <input type="text" wire:model="settings.page_about_title" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        @error('settings.page_about_title') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600">Content</label>
+                        <textarea wire:model="settings.page_about_content" rows="12" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></textarea>
+                        @error('settings.page_about_content') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+            </div>
+
             <div id="privacy" class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
                 <div class="flex items-center justify-between gap-3">
                     <div>

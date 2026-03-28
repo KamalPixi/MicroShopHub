@@ -62,6 +62,8 @@ class HomepageSettings extends Component
         'footer_policy_2_url' => '/terms',
         'footer_policy_3_label' => 'Cookie Policy',
         'footer_policy_3_url' => '/cookie-policy',
+        'footer_policy_4_label' => 'Refund Policy',
+        'footer_policy_4_url' => '/refund-policy',
         'footer_copyright_text' => '© {year} ShopHub. All rights reserved.',
     ];
 
@@ -115,6 +117,8 @@ class HomepageSettings extends Component
         'settings.footer_policy_2_url' => 'nullable|string|max:255',
         'settings.footer_policy_3_label' => 'nullable|string|max:100',
         'settings.footer_policy_3_url' => 'nullable|string|max:255',
+        'settings.footer_policy_4_label' => 'nullable|string|max:100',
+        'settings.footer_policy_4_url' => 'nullable|string|max:255',
         'settings.footer_copyright_text' => 'nullable|string|max:255',
     ];
 
@@ -347,6 +351,8 @@ class HomepageSettings extends Component
             'settings.footer_policy_2_url' => $this->rules['settings.footer_policy_2_url'],
             'settings.footer_policy_3_label' => $this->rules['settings.footer_policy_3_label'],
             'settings.footer_policy_3_url' => $this->rules['settings.footer_policy_3_url'],
+            'settings.footer_policy_4_label' => $this->rules['settings.footer_policy_4_label'],
+            'settings.footer_policy_4_url' => $this->rules['settings.footer_policy_4_url'],
             'settings.footer_copyright_text' => $this->rules['settings.footer_copyright_text'],
         ]);
 
@@ -377,6 +383,8 @@ class HomepageSettings extends Component
             'footer_policy_2_url',
             'footer_policy_3_label',
             'footer_policy_3_url',
+            'footer_policy_4_label',
+            'footer_policy_4_url',
             'footer_copyright_text',
         ]);
 

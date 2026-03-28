@@ -19,12 +19,24 @@ class DashboardController extends Controller
         return view('admin.pages');
     }
 
+    public function aboutPage() {
+        return view('admin.pages.about');
+    }
+
+    public function faqPage() {
+        return view('admin.pages.faq');
+    }
+
     public function privacyPolicyPage() {
         return view('admin.pages.privacy-policy');
     }
 
     public function termsPage() {
         return view('admin.pages.terms');
+    }
+
+    public function refundPolicyPage() {
+        return view('admin.pages.refund-policy');
     }
 
     public function cookiePolicyPage() {
@@ -49,5 +61,9 @@ class DashboardController extends Controller
 
     public function marketingCampaigns() {
         return view('admin.marketing-campaigns');
+    }
+
+    public function contactMessages() {
+        return view('admin.contact-messages');
     }
 }

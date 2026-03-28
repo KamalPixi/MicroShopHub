@@ -422,6 +422,13 @@
                                     <input type="text" wire:model="settings.footer_policy_3_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
                                 </div>
                             </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Policy 4</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <input type="text" wire:model="settings.footer_policy_4_label" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Label">
+                                    <input type="text" wire:model="settings.footer_policy_4_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
