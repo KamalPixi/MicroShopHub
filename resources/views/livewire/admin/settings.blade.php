@@ -675,7 +675,7 @@
 
         <section class="rounded-xl border border-gray-200 p-5 bg-white">
             <h4 class="text-base font-bold text-gray-800">Live Chat</h4>
-            <p class="text-xs text-gray-500 mt-1 mb-4">Enable customer live chat on the storefront.</p>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Enable storefront live chat so customers can message the admin team and receive replies from Telegram. The conversation stays between the customer and admin only.</p>
 
             <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
                 <div>
@@ -722,7 +722,7 @@
                 <input type="checkbox" wire:model="settings.live_chat_enabled" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1">
                 <div>
                     <p class="text-sm font-semibold text-gray-800">Enable Live Chat Widget</p>
-                    <p class="text-xs text-gray-500">Adds a storefront chat widget so customers can message you instantly. Set Telegram Config first, then enable this to forward messages and deliver replies.</p>
+                    <p class="text-xs text-gray-500">Adds a storefront chat widget so customers can talk to the admin team in real time. Admin replies are sent from Telegram, so set Telegram Config first before enabling this widget.</p>
                     <ol class="mt-2 text-[11px] text-gray-500 list-decimal list-inside space-y-1">
                         <li>Open Telegram and search for <span class="font-semibold">@BotFather</span>.</li>
                         <li>Create a bot by sending <span class="font-semibold">/newbot</span>.</li>
