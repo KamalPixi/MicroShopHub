@@ -49,8 +49,8 @@ class DashboardAnalytics extends Component
     public function mount()
     {
         $this->currencySymbol = Currency::getActive()->symbol;
-        $settings = Setting::whereIn('key', ['shop_name', 'site_title'])->pluck('value', 'key');
-        $this->shopName = $settings['shop_name'] ?: ($settings['site_title'] ?: config('app.name', 'Store Name'));
+        $settings = Setting::whereIn('key', ['shop_name'])->pluck('value', 'key');
+        $this->shopName = $settings['shop_name'] ?: config('app.name', 'Store Name');
         // Total Sales: Sum of all order totals
         $this->totalSales = Order::sum('total');
 

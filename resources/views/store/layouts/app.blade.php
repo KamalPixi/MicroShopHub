@@ -43,7 +43,8 @@
             'footer_copyright_text',
         ])->pluck('value', 'key');
         $storeMeta = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title', 'shop_logo'])->pluck('value', 'key');
-        $storeName = $storeMeta['shop_name'] ?: ($storeMeta['site_title'] ?: config('app.name', 'Store Name'));
+        $storeName = $storeMeta['shop_name'] ?: config('app.name', 'Store Name');
+        $storeSlogan = $storeMeta['site_title'] ?? '';
         $storeLogo = $storeMeta['shop_logo'] ?? '';
         $primaryColor = $brandSettings['branding_color'] ?? '#2563eb';
         $secondaryColor = $brandSettings['secondary_color'] ?? '#64748b';
@@ -106,14 +107,14 @@
         $storefrontFooterView = \App\Support\StorefrontTheme::partial('footer');
     @endphp
 
-    @include($storefrontHeaderView, ['storeName' => $storeName, 'storeLogo' => $storeLogo])
+    @include($storefrontHeaderView, ['storeName' => $storeName, 'storeLogo' => $storeLogo, 'storeSlogan' => $storeSlogan])
     @include($storefrontNavbarView)
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full {{ $storefrontTheme === 'modern' ? 'pt-5 md:pt-8' : 'pt-4 md:pt-6' }}">
         @yield('content')
     </main>
 
-    @include($storefrontFooterView, ['footerSettings' => $footerSettings, 'storeName' => $storeName, 'storeLogo' => $storeLogo])
+    @include($storefrontFooterView, ['footerSettings' => $footerSettings, 'storeName' => $storeName, 'storeLogo' => $storeLogo, 'storeSlogan' => $storeSlogan])
 
     @livewire('store.live-chat-widget')
 

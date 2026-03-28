@@ -2,6 +2,7 @@
     $footerSettings = $footerSettings ?? [];
     $storeName = $storeName ?? 'ShopHub';
     $storeLogo = $storeLogo ?? '';
+    $storeSlogan = $storeSlogan ?? '';
     $year = date('Y');
     $footerTitle = $footerSettings['footer_about_title'] ?? $storeName;
     $footerDescription = $footerSettings['footer_about_description'] ?? 'Your trusted marketplace for clothing, health products, and unique handmade items.';
@@ -34,7 +35,9 @@
                     @endif
                     <div>
                         <h3 class="text-lg font-bold text-gray-900">{{ $footerTitle }}</h3>
-                        <p class="text-xs uppercase tracking-[0.2em] text-primary/70">Storefront</p>
+                        @if(!empty($storeSlogan))
+                            <p class="mt-1 text-xs uppercase tracking-[0.2em] text-primary/70">{{ $storeSlogan }}</p>
+                        @endif
                     </div>
                 </div>
                 <p class="mt-4 text-sm leading-6 text-gray-600">{{ $footerDescription }}</p>

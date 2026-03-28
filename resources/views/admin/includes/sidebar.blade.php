@@ -1,13 +1,14 @@
 <aside id="sidebar" class="w-56 bg-slate-900 text-slate-100 p-4 flex flex-col fixed top-0 bottom-0 border-r border-slate-800">
 @php
         $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title', 'shop_logo'])->pluck('value', 'key');
-        $sidebarStoreName = $sidebarSettings['shop_name'] ?: ($sidebarSettings['site_title'] ?: config('app.name', 'Store Name'));
+        $sidebarStoreName = $sidebarSettings['shop_name'] ?: config('app.name', 'Store Name');
         $sidebarStoreLogo = $sidebarSettings['shop_logo'] ?? null;
         $sidebarStoreLogoUrl = $sidebarStoreLogo
             ? (\Illuminate\Support\Str::startsWith($sidebarStoreLogo, ['http://', 'https://'])
                 ? $sidebarStoreLogo
                 : \Illuminate\Support\Facades\Storage::url($sidebarStoreLogo))
             : null;
+        $sidebarStoreSlogan = $sidebarSettings['site_title'] ?? '';
     @endphp
     <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-800">
         <div class="flex items-center gap-2">
@@ -22,7 +23,11 @@
             </div>
             <div>
                 <h1 class="text-sm font-semibold tracking-tight text-slate-100 leading-none">{{ $sidebarStoreName }}</h1>
-                <p class="text-[11px] text-slate-400">Admin Panel</p>
+                @if(!empty($sidebarStoreSlogan))
+                    <p class="mt-0.5 text-[11px] uppercase tracking-[0.18em] text-slate-400">{{ $sidebarStoreSlogan }}</p>
+                @else
+                    <p class="text-[11px] text-slate-400">Admin Panel</p>
+                @endif
             </div>
         </div>
         <button id="toggle-sidebar" class="text-slate-200 hover:bg-slate-800 p-1.5 rounded-md" aria-label="Collapse sidebar">

@@ -98,14 +98,17 @@ class AppServiceProvider extends ServiceProvider
 
             $storeMeta = Setting::whereIn('key', ['shop_name', 'site_title'])
                 ->pluck('value', 'key');
-            $siteStoreName = trim((string) ($storeMeta['shop_name'] ?? '')) ?: trim((string) ($storeMeta['site_title'] ?? '')) ?: config('app.name', 'ShopHub');
+            $siteStoreName = trim((string) ($storeMeta['shop_name'] ?? '')) ?: config('app.name', 'ShopHub');
+            $siteStoreSlogan = trim((string) ($storeMeta['site_title'] ?? ''));
             
             View::share('navbarCategories', $navbarCategories);
             View::share('siteStoreName', $siteStoreName);
+            View::share('siteStoreSlogan', $siteStoreSlogan);
         } catch (\Exception $e) {
             // Failsafe in case database isn't ready yet (e.g., during migration)
             View::share('navbarCategories', collect());
             View::share('siteStoreName', config('app.name', 'ShopHub'));
+            View::share('siteStoreSlogan', '');
         }
     }
 }

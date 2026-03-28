@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @php
-        $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title'])->pluck('value', 'key');
-        $storeName = $sidebarSettings['shop_name'] ?: ($sidebarSettings['site_title'] ?: config('app.name', 'Store Name'));
+        $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name'])->pluck('value', 'key');
+        $storeName = $sidebarSettings['shop_name'] ?: config('app.name', 'Store Name');
         $brandSettings = \App\Models\Setting::whereIn('key', [
             'branding_color',
             'secondary_color',

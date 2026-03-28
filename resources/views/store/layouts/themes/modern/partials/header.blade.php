@@ -11,6 +11,9 @@
                 @endif
                 <div class="leading-tight">
                     <h1 class="text-lg font-bold text-gray-900">{{ $storeName ?? 'ShopHub' }}</h1>
+                    @if(!empty($storeSlogan ?? ''))
+                        <p class="mt-1 text-[11px] uppercase tracking-[0.22em] text-primary/70">{{ $storeSlogan }}</p>
+                    @endif
                 </div>
             </a>
 

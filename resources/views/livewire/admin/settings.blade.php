@@ -24,7 +24,8 @@
                         @error('settings.shop_name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label for="site_title" class="block text-sm font-semibold text-gray-700">Site Title</label>
+                        <label for="site_title" class="block text-sm font-semibold text-gray-700">Slogan</label>
+                        <p class="mt-1 text-[11px] text-gray-500">Shown under your shop name on the storefront header and footer.</p>
                         <input wire:model="settings.site_title" type="text" id="site_title" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. Best Deals Online">
                         @error('settings.site_title') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
