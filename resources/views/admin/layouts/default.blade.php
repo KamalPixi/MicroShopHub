@@ -255,16 +255,22 @@
         const toggleButton = document.getElementById('toggle-sidebar');
         const toggleButtonFloating = document.getElementById('toggle-sidebar-floating');
         const mainContent = document.querySelector('main');
+        const breadcrumbIcon = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 6h10M5 12h14M5 18h8"></path>';
 
         function toggleSidebar() {
             sidebar.classList.toggle('sidebar-collapsed');
             toggleButtonFloating.classList.toggle('show-floating');
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
             if (sidebar.classList.contains('sidebar-collapsed')) {
                 mainContent.classList.remove('ml-56');
-                toggleButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6h8M6 12h8M6 18h8M16 6l4 6-4 6"></path>';
             } else {
                 mainContent.classList.add('ml-56');
-                toggleButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5l-4 7 4 7M20 6H9M20 12H9M20 18H9"></path>';
+            }
+            if (toggleButton) {
+                toggleButton.querySelector('svg').innerHTML = breadcrumbIcon;
+            }
+            if (toggleButtonFloating) {
+                toggleButtonFloating.querySelector('svg').innerHTML = breadcrumbIcon;
             }
         }
 
