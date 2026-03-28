@@ -75,68 +75,50 @@
         </div>
     @elseif(($homepageSettings['home_banner_type'] ?? 'split') === 'split')
         <div
-            x-data="{
-                active: 0,
-                slides: @js($homeBannerSlides),
-                autoplay: @js($homepageSettings['home_banner_autoplay_enabled'] ?? true),
-                timer: null,
-                init() {
-                    if (this.autoplay && this.slides.length > 1) {
-                        this.timer = setInterval(() => {
-                            this.active = (this.active + 1) % this.slides.length
-                        }, 3800)
-                    }
-                },
-                go(index) { this.active = index }
-            }"
-            x-init="init()"
-            class="relative z-10 grid gap-4 px-6 py-7 md:grid-cols-[3fr_1fr] md:px-10 md:py-9"
+            class="relative z-10 grid gap-4 px-6 py-7 md:grid-cols-[3fr_1fr] md:px-10 md:py-9 js-home-banner-slider"
+            data-autoplay="{{ ($homepageSettings['home_banner_autoplay_enabled'] ?? true) ? '1' : '0' }}"
         >
             <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 aspect-[24/8] md:aspect-[24/8] backdrop-blur-sm">
-                <template x-for="(slide, index) in slides" :key="index">
+                @foreach($homeBannerSlides as $index => $slide)
                     <a
-                        x-show="active === index"
-                        :href="slide.link_url || '#'"
-                        class="absolute inset-0 block"
-                        x-transition:enter="transition ease-out duration-700"
-                        x-transition:enter-start="opacity-0"
-                        x-transition:enter-end="opacity-100"
-                        x-transition:leave="transition ease-in duration-700"
-                        x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        x-cloak
+                        href="{{ $slide['link_url'] ?: '#' }}"
+                        data-home-banner-slide
+                        data-slide-index="{{ $index }}"
+                        class="absolute inset-0 block transition-opacity duration-700 ease-out {{ $index === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }}"
                     >
-                        <img :src="slide.image_url" :alt="slide.alt || 'Homepage banner'" class="h-full w-full object-cover">
+                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? 'Homepage banner' }}" class="h-full w-full object-cover">
                     </a>
-                </template>
+                @endforeach
 
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent pointer-events-none"></div>
 
                 <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3">
                     <div class="flex gap-2">
-                        <template x-for="(_, index) in slides" :key="index">
+                        @foreach($homeBannerSlides as $index => $slide)
                             <button
                                 type="button"
-                                @click="go(index)"
-                                class="h-2.5 rounded-full transition-all duration-300"
-                                :class="active === index ? 'w-8 bg-white' : 'w-2.5 bg-white/45'"
-                                aria-label="Go to slide"
+                                data-home-banner-dot
+                                data-slide-index="{{ $index }}"
+                                class="h-2.5 rounded-full transition-all duration-300 {{ $index === 0 ? 'w-8 bg-white' : 'w-2.5 bg-white/45' }}"
+                                aria-label="Go to slide {{ $index + 1 }}"
                             ></button>
-                        </template>
+                        @endforeach
                     </div>
 
-                    <div class="flex gap-2" x-show="slides.length > 1" x-cloak>
-                        <button type="button" @click="active = active === 0 ? slides.length - 1 : active - 1" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25" aria-label="Previous slide">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
-                            </svg>
-                        </button>
-                        <button type="button" @click="active = (active + 1) % slides.length" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25" aria-label="Next slide">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
-                    </div>
+                    @if(count($homeBannerSlides) > 1)
+                        <div class="flex gap-2">
+                            <button type="button" data-home-banner-prev class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25" aria-label="Previous slide">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <button type="button" data-home-banner-next class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25" aria-label="Next slide">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -168,53 +150,33 @@
         </div>
     @else
         <div
-            x-data="{
-                active: 0,
-                slides: @js($homeBannerSlides),
-                autoplay: @js($homepageSettings['home_banner_autoplay_enabled'] ?? true),
-                timer: null,
-                init() {
-                    if (this.autoplay && this.slides.length > 1) {
-                        this.timer = setInterval(() => {
-                            this.active = (this.active + 1) % this.slides.length
-                        }, 3800)
-                    }
-                },
-                go(index) { this.active = index }
-            }"
-            x-init="init()"
-            class="relative z-10 px-4 py-3 md:px-8 md:py-5"
+            class="relative z-10 px-4 py-3 md:px-8 md:py-5 js-home-banner-slider"
+            data-autoplay="{{ ($homepageSettings['home_banner_autoplay_enabled'] ?? true) ? '1' : '0' }}"
         >
             <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 aspect-[32/8] backdrop-blur-sm">
-                <template x-for="(slide, index) in slides" :key="index">
+                @foreach($homeBannerSlides as $index => $slide)
                     <a
-                        x-show="active === index"
-                        :href="slide.link_url || '#'"
-                        class="absolute inset-0 block"
-                        x-transition:enter="transition ease-out duration-700"
-                        x-transition:enter-start="opacity-0"
-                        x-transition:enter-end="opacity-100"
-                        x-transition:leave="transition ease-in duration-700"
-                        x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        x-cloak
+                        href="{{ $slide['link_url'] ?: '#' }}"
+                        data-home-banner-slide
+                        data-slide-index="{{ $index }}"
+                        class="absolute inset-0 block transition-opacity duration-700 ease-out {{ $index === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }}"
                     >
-                        <img :src="slide.image_url" :alt="slide.alt || 'Homepage banner'" class="h-full w-full object-cover">
+                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? 'Homepage banner' }}" class="h-full w-full object-cover">
                     </a>
-                </template>
+                @endforeach
 
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950/25 via-transparent to-transparent pointer-events-none"></div>
 
                 <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                    <template x-for="(_, index) in slides" :key="index">
+                    @foreach($homeBannerSlides as $index => $slide)
                         <button
                             type="button"
-                            @click="go(index)"
-                            class="h-2.5 rounded-full transition-all duration-300"
-                            :class="active === index ? 'w-8 bg-white' : 'w-2.5 bg-white/45'"
-                            aria-label="Go to slide"
+                            data-home-banner-dot
+                            data-slide-index="{{ $index }}"
+                            class="h-2.5 rounded-full transition-all duration-300 {{ $index === 0 ? 'w-8 bg-white' : 'w-2.5 bg-white/45' }}"
+                            aria-label="Go to slide {{ $index + 1 }}"
                         ></button>
-                    </template>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -241,5 +203,75 @@
     <livewire:store.newsletter-subscribe />
 </section>
 @endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.js-home-banner-slider').forEach((slider) => {
+            const slides = Array.from(slider.querySelectorAll('[data-home-banner-slide]'));
+            const dots = Array.from(slider.querySelectorAll('[data-home-banner-dot]'));
+            const prev = slider.querySelector('[data-home-banner-prev]');
+            const next = slider.querySelector('[data-home-banner-next]');
+            const autoplay = slider.dataset.autoplay === '1';
+
+            if (!slides.length) {
+                return;
+            }
+
+            let active = 0;
+            let timer = null;
+
+            const showSlide = (index) => {
+                active = (index + slides.length) % slides.length;
+                slides.forEach((slide, slideIndex) => {
+                    const visible = slideIndex === active;
+                    slide.classList.toggle('opacity-100', visible);
+                    slide.classList.toggle('opacity-0', !visible);
+                    slide.classList.toggle('pointer-events-none', !visible);
+                });
+                dots.forEach((dot, dotIndex) => {
+                    const visible = dotIndex === active;
+                    dot.classList.toggle('w-8', visible);
+                    dot.classList.toggle('w-2.5', !visible);
+                    dot.classList.toggle('bg-white', visible);
+                    dot.classList.toggle('bg-white/45', !visible);
+                });
+            };
+
+            const nextSlide = () => showSlide(active + 1);
+            const prevSlide = () => showSlide(active - 1);
+
+            dots.forEach((dot, dotIndex) => {
+                dot.addEventListener('click', () => showSlide(dotIndex));
+            });
+
+            if (next) {
+                next.addEventListener('click', nextSlide);
+            }
+
+            if (prev) {
+                prev.addEventListener('click', prevSlide);
+            }
+
+            if (autoplay && slides.length > 1) {
+                timer = window.setInterval(nextSlide, 3800);
+
+                slider.addEventListener('mouseenter', () => {
+                    if (timer) {
+                        window.clearInterval(timer);
+                        timer = null;
+                    }
+                });
+
+                slider.addEventListener('mouseleave', () => {
+                    if (!timer && slides.length > 1) {
+                        timer = window.setInterval(nextSlide, 3800);
+                    }
+                });
+            }
+
+            showSlide(0);
+        });
+    });
+</script>
 
 @endsection

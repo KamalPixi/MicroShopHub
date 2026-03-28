@@ -1,4 +1,9 @@
 <div class="space-y-6">
+    @php
+        $activeCurrency = \App\Models\Currency::getActive();
+        $currencySymbol = $activeCurrency?->symbol ?? '৳';
+        $currencyCode = $activeCurrency?->code ?? 'BDT';
+    @endphp
     <!-- Form Section -->
     <div class="bg-white p-4 rounded-lg shadow">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -34,7 +39,7 @@
             </div>
             @if ($type !== 'free_shipping')
                 <div>
-                        <label for="value" class="block text-sm font-medium text-gray-700">Value {{ $type === 'percentage' ? '(%)' : '($)' }}</label>
+                        <label for="value" class="block text-sm font-medium text-gray-700">Value {{ $type === 'percentage' ? '(%)' : "({$currencyCode})" }}</label>
                     <input 
                         wire:model="value" 
                         type="number" 
@@ -47,7 +52,7 @@
                 </div>
             @endif
             <div>
-                <label for="min_order_amount" class="block text-sm font-medium text-gray-700">Minimum Order Amount ($)</label>
+                <label for="min_order_amount" class="block text-sm font-medium text-gray-700">Minimum Order Amount ({{ $currencyCode }})</label>
                 <input 
                     wire:model="min_order_amount" 
                     type="number" 
@@ -195,9 +200,9 @@
                                 </span>
                             </td>
                             <td class="p-2">
-                                {{ $discount->value ? ($discount->type === 'percentage' ? $discount->value . '%' : '$' . number_format($discount->value, 2)) : 'N/A' }}
+                                {{ $discount->value ? ($discount->type === 'percentage' ? $discount->value . '%' : $currencySymbol . number_format($discount->value, 2)) : 'N/A' }}
                             </td>
-                            <td class="p-2">${{ number_format($discount->min_order_amount, 2) }}</td>
+                            <td class="p-2">{{ $currencySymbol }}{{ number_format($discount->min_order_amount, 2) }}</td>
                             <td class="p-2">{{ $discount->usage_limit ?? 'Unlimited' }}</td>
                             <td class="p-2">{{ $discount->per_user_limit ?? 'Unlimited' }}</td>
                             <td class="p-2">{{ $discount->starts_at ? $discount->starts_at->format('Y-m-d H:i') : 'N/A' }}</td>
