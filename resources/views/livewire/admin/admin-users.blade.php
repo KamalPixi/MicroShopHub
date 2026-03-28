@@ -7,7 +7,7 @@
             </svg>
             {{ $editingId ? 'Edit Admin' : 'Add Admin' }}
         </h3>
-        <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input 
@@ -56,7 +56,7 @@
                 </select>
                 @error('role') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
-            <div class="flex space-x-2">
+            <div class="md:col-span-2 flex flex-wrap gap-2">
                 <button 
                     wire:click="save" 
                     wire:loading.attr="disabled" 
