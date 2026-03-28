@@ -12,7 +12,7 @@
                 <div class="leading-tight">
                     <h1 class="text-lg font-bold text-gray-900">{{ $storeName ?? 'ShopHub' }}</h1>
                     @if(!empty($storeSlogan ?? ''))
-                        <p class="mt-0.5 text-[9px] uppercase tracking-[0.16em] text-primary/70">{{ $storeSlogan }}</p>
+                        <p class="mt-0 text-[9px] uppercase tracking-[0.16em] leading-none text-primary/70">{{ $storeSlogan }}</p>
                     @endif
                 </div>
             </a>
