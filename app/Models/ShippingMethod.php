@@ -10,4 +10,9 @@ class ShippingMethod extends Model
     protected $casts = [
         'active' => 'boolean',
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

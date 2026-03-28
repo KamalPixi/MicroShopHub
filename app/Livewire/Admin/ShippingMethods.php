@@ -84,14 +84,32 @@ class ShippingMethods extends Component
     public function render()
     {
         $shippingMethods = ShippingMethod::query()
+            ->withCount('orders')
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
             ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);
 
+        $statsBase = ShippingMethod::query()->withCount('orders');
+        $usedMethods = (clone $statsBase)->has('orders')->count();
+        $inactiveMethods = (clone $statsBase)->where('active', false)->count();
+        $mostUsedMethod = (clone $statsBase)->orderByDesc('orders_count')->first();
+
+        $stats = [
+            'total_methods' => (clone $statsBase)->count(),
+            'active_methods' => (clone $statsBase)->where('active', true)->count(),
+            'used_methods' => $usedMethods,
+            'unused_methods' => (clone $statsBase)->doesntHave('orders')->count(),
+            'inactive_methods' => $inactiveMethods,
+            'total_orders_using_shipping' => \App\Models\Order::query()->whereNotNull('shipping_method_id')->count(),
+            'most_used_method_name' => $mostUsedMethod?->name,
+            'most_used_method_count' => $mostUsedMethod?->orders_count ?? 0,
+        ];
+
         return view('livewire.admin.shipping-methods', [
             'shippingMethods' => $shippingMethods,
+            'stats' => $stats,
         ]);
     }
 }

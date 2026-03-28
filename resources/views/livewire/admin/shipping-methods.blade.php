@@ -94,6 +94,36 @@
                 Shipping Methods List
             </h3>
         </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+            <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-gray-500">Total Methods</p>
+                <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['total_methods'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-green-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-green-600">Active Methods</p>
+                <p class="mt-1 text-xl font-bold text-green-800">{{ $stats['active_methods'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-blue-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-blue-600">Used in Orders</p>
+                <p class="mt-1 text-xl font-bold text-blue-800">{{ $stats['used_methods'] }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-amber-50 px-4 py-3">
+                <p class="text-[11px] uppercase tracking-wide text-amber-600">Unused Methods</p>
+                <p class="mt-1 text-xl font-bold text-amber-800">{{ $stats['unused_methods'] }}</p>
+            </div>
+        </div>
+        <div class="mb-4 rounded-xl border border-gray-200 bg-slate-50 px-4 py-3">
+            <p class="text-[11px] uppercase tracking-wide text-slate-500">Most Used Method</p>
+            <p class="mt-1 text-sm font-semibold text-gray-800">
+                {{ $stats['most_used_method_name'] ?? 'No orders yet' }}
+                @if($stats['most_used_method_name'])
+                    <span class="text-gray-500 font-normal">- {{ $stats['most_used_method_count'] }} orders</span>
+                @endif
+            </p>
+            <p class="mt-1 text-xs text-gray-500">
+                {{ $stats['total_orders_using_shipping'] }} orders have selected a shipping method so far.
+            </p>
+        </div>
         <div class="mb-4">
             <label for="search" class="block text-sm font-medium text-gray-700">Search Shipping Methods</label>
             <input 
@@ -119,6 +149,7 @@
                         <th class="font-medium text-gray-700 p-2">Name</th>
                         <th class="font-medium text-gray-700 p-2">Cost</th>
                         <th class="font-medium text-gray-700 p-2">Estimated Days</th>
+                        <th class="font-medium text-gray-700 p-2">Used in Orders</th>
                         <th class="font-medium text-gray-700 p-2">Active</th>
                         <th class="font-medium text-gray-700 p-2 text-end">Action</th>
                     </tr>
@@ -130,6 +161,11 @@
                             <td class="p-2">{{ $method->name }}</td>
                             <td class="p-2">${{ number_format($method->cost, 2) }}</td>
                             <td class="p-2">{{ $method->estimated_days ?? 'N/A' }}</td>
+                            <td class="p-2">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                                    {{ $method->orders_count ?? 0 }} orders
+                                </span>
+                            </td>
                             <td class="p-2">
                                 <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full 
                                     {{ $method->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
@@ -163,7 +199,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-gray-500 py-4">No shipping methods found.</td>
+                            <td colspan="7" class="text-center text-gray-500 py-4">No shipping methods found.</td>
                         </tr>
                     @endforelse
                 </tbody>
