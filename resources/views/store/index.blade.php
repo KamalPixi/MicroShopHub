@@ -19,25 +19,25 @@
     </div>
 
     @if(($homepageSettings['home_banner_type'] ?? 'split') === 'text_only')
-        <div class="relative z-10 grid gap-4 px-6 py-8 md:grid-cols-[1.15fr_0.85fr] md:px-10 md:py-10">
+        <div class="relative z-10 grid gap-3 px-6 py-6 md:grid-cols-[1.15fr_0.85fr] md:px-10 md:py-8">
             <div class="flex flex-col justify-center">
-                <h1 class="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
+                <h1 class="text-2xl md:text-4xl font-extrabold leading-tight tracking-tight">
                     {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
                 </h1>
-                <p class="mt-3 max-w-3xl text-sm md:text-base leading-6 text-white/82">
+                <p class="mt-2 max-w-3xl text-sm md:text-base leading-5 text-white/82">
                     {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
                 </p>
 
-                <div class="mt-5 flex flex-wrap items-center gap-3">
-                    <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-primary shadow-sm transition hover:opacity-95">
+                <div class="mt-4 flex flex-wrap items-center gap-3">
+                    <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition hover:opacity-95">
                         {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
                     </a>
-                    <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-white/25 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/15">
+                    <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-white/25 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
                         Browse Store
                     </a>
                 </div>
 
-                <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                <div class="mt-3 flex flex-wrap gap-2 text-xs">
                     @foreach(($homepageSettings['home_banner_chips'] ?? []) as $chip)
                         <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">{{ $chip }}</span>
                     @endforeach
@@ -45,24 +45,24 @@
             </div>
 
             <div class="self-center">
-                <div class="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+                <div class="rounded-2xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-sm">
                     <p class="text-[11px] uppercase tracking-[0.18em] text-white/70">Quick Actions</p>
-                    <div class="mt-3 space-y-2.5">
-                        <a href="{{ route('store.search') }}" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-3 transition hover:bg-white/15">
+                    <div class="mt-2.5 space-y-2">
+                        <a href="{{ route('store.search') }}" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-2.5 transition hover:bg-white/15">
                             <div>
                                 <p class="text-sm font-semibold">Browse categories</p>
                                 <p class="mt-0.5 text-[11px] text-white/75">Jump into the catalog and explore by category.</p>
                             </div>
                             <span class="ml-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-primary font-bold transition group-hover:translate-x-0.5">→</span>
                         </a>
-                        <a href="{{ route('store.search', ['sort' => 'newest']) }}" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-3 transition hover:bg-white/15">
+                        <a href="{{ route('store.search', ['sort' => 'newest']) }}" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-2.5 transition hover:bg-white/15">
                             <div>
                                 <p class="text-sm font-semibold">See new arrivals</p>
                                 <p class="mt-0.5 text-[11px] text-white/75">View the newest items added to the store.</p>
                             </div>
                             <span class="ml-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent text-slate-900 font-bold transition group-hover:translate-x-0.5">→</span>
                         </a>
-                        <a href="#newsletter" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-3 transition hover:bg-white/15">
+                        <a href="#newsletter" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-2.5 transition hover:bg-white/15">
                             <div>
                                 <p class="text-sm font-semibold">Stay updated</p>
                                 <p class="mt-0.5 text-[11px] text-white/75">Go straight to the subscribe section for offers and updates.</p>
