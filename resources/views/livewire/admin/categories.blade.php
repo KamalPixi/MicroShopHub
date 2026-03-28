@@ -7,7 +7,7 @@
             {{ $editingId ? 'Edit Category' : 'Add Category' }}
         </h3>
 
-        <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input 
@@ -61,7 +61,7 @@
                 @error('parent_id') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <div x-data="imageCropper()">
+            <div class="md:col-span-2" x-data="imageCropper()">
                 <label class="block text-sm font-medium text-gray-700">Thumbnail (optional)</label>
                 <p class="text-xs text-gray-500 mb-2">
                     Recommended size: <span class="font-medium">400x225px</span> (16:9 ratio)
@@ -136,7 +136,7 @@
                 @error('show_on_homepage') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <div class="flex space-x-2">
+            <div class="md:col-span-2 flex flex-wrap gap-2">
                 <button 
                     wire:click="save" 
                     wire:loading.attr="disabled" 
