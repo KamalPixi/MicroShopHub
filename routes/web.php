@@ -122,6 +122,9 @@ Route::prefix('admin')
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
             Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
             Route::get('/pages', [DashboardController::class, 'pages'])->name('pages');
+            Route::get('/pages/privacy-policy', [DashboardController::class, 'privacyPolicyPage'])->name('pages.privacy');
+            Route::get('/pages/terms', [DashboardController::class, 'termsPage'])->name('pages.terms');
+            Route::get('/pages/cookie-policy', [DashboardController::class, 'cookiePolicyPage'])->name('pages.cookie');
 
             Route::get('/categories', [DashboardController::class, 'categories'])->name('categories');
             Route::get('/shipping-methods', [DashboardController::class, 'shippingMethods'])->name('shipping.methods');

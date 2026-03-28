@@ -19,6 +19,18 @@ class DashboardController extends Controller
         return view('admin.pages');
     }
 
+    public function privacyPolicyPage() {
+        return view('admin.pages.privacy-policy');
+    }
+
+    public function termsPage() {
+        return view('admin.pages.terms');
+    }
+
+    public function cookiePolicyPage() {
+        return view('admin.pages.cookie-policy');
+    }
+
     public function categories() {
         return view('admin.categories');
     }

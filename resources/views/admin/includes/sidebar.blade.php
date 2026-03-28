@@ -105,14 +105,49 @@
                 </a>
             </li>
 
+            @php
+                $isPagesOpen = request()->routeIs('admin.pages*');
+            @endphp
             <li>
-                <a href="{{ route('admin.pages') }}"
-                   class="flex items-center text-sm px-2.5 py-2 rounded-md {{ request()->routeIs('admin.pages*') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                <button
+                    class="flex items-center text-sm px-2.5 py-2 rounded-md w-full {{ $isPagesOpen ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}"
+                    onclick="document.getElementById('pages-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                >
                     <svg class="w-4.5 h-4.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h6l4 4v14H7V3zM13 3v5h5"></path>
                     </svg>
                     Pages
-                </a>
+                    <svg class="chevron ml-auto w-4 h-4 transform transition-transform {{ $isPagesOpen ? 'rotate-90' : '' }}"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+                <ul id="pages-submenu" class="ml-6 mt-1 space-y-1 {{ $isPagesOpen ? '' : 'hidden' }}">
+                    <li>
+                        <a href="{{ route('admin.pages') }}"
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Page Overview
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.pages.privacy') }}"
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.privacy') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Privacy Policy
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.pages.terms') }}"
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.terms') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Terms of Service
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.pages.cookie') }}"
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.pages.cookie') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Cookie Policy
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             @php
