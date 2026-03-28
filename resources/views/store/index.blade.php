@@ -9,7 +9,7 @@
 
 @if($homepageSettings['home_hero_enabled'] ?? true)
 <section
-    class="relative overflow-hidden rounded-3xl text-white mb-8 border border-white/10 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
+    class="relative overflow-hidden rounded-3xl text-white mb-2 border border-white/10 shadow-[0_20px_50px_rgba(15,23,42,0.18)]"
     style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 60%, var(--color-primary) 100%);"
 >
     <div class="absolute inset-0 opacity-20 pointer-events-none">
@@ -17,7 +17,7 @@
         <div class="absolute -bottom-28 -left-16 h-80 w-80 rounded-full bg-accent blur-3xl opacity-20"></div>
         <div class="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-2xl"></div>
     </div>
-    <div class="relative z-10 grid gap-8 px-6 py-10 md:grid-cols-[1.35fr_0.9fr] md:px-10 md:py-14">
+    <div class="relative z-10 grid gap-8 px-6 py-12 md:grid-cols-[1.35fr_0.9fr] md:px-10 md:py-16">
         <div class="max-w-3xl">
             <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85">
                 <span class="h-2 w-2 rounded-full bg-accent"></span>
