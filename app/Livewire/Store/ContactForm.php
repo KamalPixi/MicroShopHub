@@ -29,8 +29,8 @@ class ContactForm extends Component
             $this->phone = (string) ($user->phone ?? '');
         }
 
-        $this->supportEmail = (string) Setting::where('key', 'email')->value('value');
-        $this->supportPhone = (string) Setting::where('key', 'phone')->value('value');
+        $this->supportEmail = (string) Setting::where('key', 'footer_support_email')->value('value');
+        $this->supportPhone = (string) Setting::where('key', 'footer_support_phone')->value('value');
     }
 
     protected function rules(): array
@@ -87,14 +87,14 @@ class ContactForm extends Component
 
     protected function resolveRecipient(): ?string
     {
-        $settings = Setting::whereIn('key', ['admin_notify_email_enabled', 'admin_notify_email_address', 'email'])->pluck('value', 'key');
+        $settings = Setting::whereIn('key', ['admin_notify_email_enabled', 'admin_notify_email_address', 'footer_support_email'])->pluck('value', 'key');
 
         if (! empty($settings['admin_notify_email_enabled']) && ! empty($settings['admin_notify_email_address'])) {
             return (string) $settings['admin_notify_email_address'];
         }
 
-        if (! empty($settings['email'])) {
-            return (string) $settings['email'];
+        if (! empty($settings['footer_support_email'])) {
+            return (string) $settings['footer_support_email'];
         }
 
         return null;

@@ -60,7 +60,7 @@
     @elseif(($homepageSettings['home_banner_type'] ?? 'split') === 'split')
         <div class="grid gap-6 px-6 py-6 lg:grid-cols-[1.35fr_0.65fr] lg:px-10 lg:py-8">
             <div class="space-y-4">
-                <div class="relative overflow-hidden rounded-[1.75rem] border border-gray-200 bg-gray-50 aspect-[20/8]">
+                <div class="relative overflow-hidden rounded-[1.75rem] border border-gray-200 bg-gray-50 aspect-[24/8]">
                     <div class="absolute inset-0 js-home-banner-slider" data-autoplay="{{ ($homepageSettings['home_banner_autoplay_enabled'] ?? true) ? '1' : '0' }}">
                         @foreach($homeBannerSlides as $index => $slide)
                             <a
@@ -148,7 +148,7 @@
         </div>
     @else
         <div class="grid gap-5 px-6 py-6 lg:grid-cols-[1.3fr_0.7fr] lg:px-10 lg:py-8">
-            <div class="relative overflow-hidden rounded-[1.75rem] border border-gray-200 bg-gray-50 aspect-[32/8] js-home-banner-slider" data-autoplay="{{ ($homepageSettings['home_banner_autoplay_enabled'] ?? true) ? '1' : '0' }}">
+            <div class="relative overflow-hidden rounded-[1.75rem] border border-gray-200 bg-gray-50 aspect-[36/8] js-home-banner-slider" data-autoplay="{{ ($homepageSettings['home_banner_autoplay_enabled'] ?? true) ? '1' : '0' }}">
                 @foreach($homeBannerSlides as $index => $slide)
                     <a
                         href="{{ $slide['link_url'] ?: '#' }}"

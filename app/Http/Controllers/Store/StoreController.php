@@ -273,8 +273,10 @@ class StoreController extends Controller
 
     public function contact()
     {
-        $supportEmail = Setting::where('key', 'email')->value('value');
-        $supportPhone = Setting::where('key', 'phone')->value('value');
+        $supportEmail = Setting::where('key', 'footer_support_email')->value('value')
+            ?: Setting::where('key', 'email')->value('value');
+        $supportPhone = Setting::where('key', 'footer_support_phone')->value('value')
+            ?: Setting::where('key', 'phone')->value('value');
 
         return view('store.contact', compact('supportEmail', 'supportPhone'));
     }
