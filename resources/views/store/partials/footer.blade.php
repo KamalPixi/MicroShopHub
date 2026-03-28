@@ -18,6 +18,19 @@
         ['label' => $footerSettings['footer_policy_3_label'] ?? 'Cookie Policy', 'url' => $footerSettings['footer_policy_3_url'] ?? '/cookie-policy'],
         ['label' => $footerSettings['footer_policy_4_label'] ?? 'Refund Policy', 'url' => $footerSettings['footer_policy_4_url'] ?? '/refund-policy'],
     ];
+    $normalizeSocialUrl = function (?string $url): string {
+        $url = trim((string) $url);
+
+        if ($url === '') {
+            return '';
+        }
+
+        if (preg_match('/^(https?:)?\\/\\//i', $url) || str_starts_with($url, '/') || str_starts_with($url, '#') || str_starts_with($url, 'mailto:') || str_starts_with($url, 'tel:')) {
+            return $url;
+        }
+
+        return 'https://' . ltrim($url, '/');
+    };
     $copyrightText = str_replace('{year}', $year, $footerSettings['footer_copyright_text'] ?? '© {year} ShopHub. All rights reserved.');
 @endphp
 
@@ -44,17 +57,17 @@
 
                 <div class="flex space-x-4">
                     @if(!empty($footerSettings['footer_social_facebook_url'] ?? ''))
-                        <a href="{{ $footerSettings['footer_social_facebook_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Facebook">
+                        <a href="{{ $normalizeSocialUrl($footerSettings['footer_social_facebook_url']) }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Facebook">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.52 1.5-3.9 3.8-3.9 1.1 0 2.25.2 2.25.2v2.48H15.2c-1.25 0-1.63.78-1.63 1.57V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
                         </a>
                     @endif
                     @if(!empty($footerSettings['footer_social_x_url'] ?? ''))
-                        <a href="{{ $footerSettings['footer_social_x_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="X">
+                        <a href="{{ $normalizeSocialUrl($footerSettings['footer_social_x_url']) }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="X">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.9 2H22l-6.93 7.92L23.2 22h-6.35l-4.97-6.43L6.23 22H3.1l7.46-8.52L0.8 2h6.52l4.47 5.8L18.9 2zm-1.12 18h1.72L6.42 3.96H4.57L17.78 20z"/></svg>
                         </a>
                     @endif
                     @if(!empty($footerSettings['footer_social_instagram_url'] ?? ''))
-                        <a href="{{ $footerSettings['footer_social_instagram_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Instagram">
+                        <a href="{{ $normalizeSocialUrl($footerSettings['footer_social_instagram_url']) }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Instagram">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
                                 <path d="M8 12a4 4 0 118 0 4 4 0 01-8 0z"></path>
