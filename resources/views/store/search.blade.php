@@ -14,19 +14,26 @@
             </div>
 
             <div class="flex items-center bg-white rounded-lg shadow-sm border border-gray-200 px-3 py-2">
-                <span class="text-sm text-gray-500 mr-2">Sort by:</span>
+                <span class="text-sm text-gray-500 mr-2 shrink-0">Sort by:</span>
                 <form method="GET" action="{{ route('store.search') }}">
                     @if($query) <input type="hidden" name="query" value="{{ $query }}"> @endif
                     @if($categoryId) <input type="hidden" name="category" value="{{ $categoryId }}"> @endif
                     @if($minPrice) <input type="hidden" name="min_price" value="{{ $minPrice }}"> @endif
                     @if($maxPrice) <input type="hidden" name="max_price" value="{{ $maxPrice }}"> @endif
 
-                    <select name="sort" onchange="this.form.submit()" class="text-sm font-medium text-gray-900 bg-transparent border-none focus:ring-0 cursor-pointer">
-                        <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest Arrivals</option>
-                        <option value="price_low" {{ $sort == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                        <option value="price_high" {{ $sort == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-                        <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Oldest</option>
-                    </select>
+                    <div class="relative">
+                        <select name="sort" onchange="this.form.submit()" class="w-full appearance-none rounded-lg border border-gray-200 bg-white py-2 pl-3 pr-10 text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 focus:border-gray-200 cursor-pointer">
+                            <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest Arrivals</option>
+                            <option value="price_low" {{ $sort == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price_high" {{ $sort == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                            <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
