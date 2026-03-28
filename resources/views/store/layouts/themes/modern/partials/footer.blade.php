@@ -33,10 +33,10 @@
                             {{ strtoupper(substr($storeName, 0, 1)) }}
                         </div>
                     @endif
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-900">{{ $footerTitle }}</h3>
+                    <div class="leading-tight">
+                        <h3 class="text-lg font-bold text-gray-900 leading-tight">{{ $footerTitle }}</h3>
                         @if(!empty($storeSlogan))
-                            <p class="mt-1 text-xs uppercase tracking-[0.2em] text-primary/70">{{ $storeSlogan }}</p>
+                            <p class="mt-0.5 text-xs leading-tight uppercase tracking-[0.2em] text-primary/70">{{ $storeSlogan }}</p>
                         @endif
                     </div>
                 </div>
