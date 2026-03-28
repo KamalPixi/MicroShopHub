@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'ShopHub - Your One-Stop Shopping Destination')</title>
     @php
         $brandSettings = \App\Models\Setting::whereIn('key', [
             'branding_color',
@@ -56,6 +55,8 @@
         $pusherEnabled = $liveChatEnabled && !empty($brandSettings['pusher_app_id']) && !empty($brandSettings['pusher_app_secret']) && $pusherKey;
         $footerSettings = $brandSettings;
     @endphp
+
+    <title>@yield('title', $storeName)</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>

@@ -11,7 +11,6 @@
                 @endif
                 <div class="leading-tight">
                     <h1 class="text-lg font-bold text-gray-900">{{ $storeName ?? 'ShopHub' }}</h1>
-                    <p class="text-[11px] uppercase tracking-[0.22em] text-primary/70">Modern storefront</p>
                 </div>
             </a>
 

@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', $pageTitle . ' - ShopHub')
+@section('title', $pageTitle . ' - ' . ($siteStoreName ?? config('app.name', 'ShopHub')))
 
 @section('content')
     <div class="mx-auto max-w-4xl py-8 md:py-10">

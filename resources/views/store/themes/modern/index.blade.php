@@ -1,5 +1,5 @@
 @extends('store.layouts.app')
-@section('title', 'ShopHub - Home')
+@section('title', ($siteStoreName ?? config('app.name', 'ShopHub')) . ' - Home')
 
 @section('content')
 

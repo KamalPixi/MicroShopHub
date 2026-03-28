@@ -13,7 +13,6 @@
                         @endif
                         <div>
                             <h1 class="text-xl font-bold text-gray-900 leading-none">{{ $storeName ?? 'ShopHub' }}</h1>
-                            <p class="text-[11px] font-medium uppercase tracking-[0.2em] text-primary/80">Storefront</p>
                         </div>
                     </div>
                 </a>

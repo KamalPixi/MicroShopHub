@@ -95,11 +95,17 @@ class AppServiceProvider extends ServiceProvider
                 ->with('children')
                 ->orderBy('name')
                 ->get();
+
+            $storeMeta = Setting::whereIn('key', ['shop_name', 'site_title'])
+                ->pluck('value', 'key');
+            $siteStoreName = trim((string) ($storeMeta['shop_name'] ?? '')) ?: trim((string) ($storeMeta['site_title'] ?? '')) ?: config('app.name', 'ShopHub');
             
             View::share('navbarCategories', $navbarCategories);
+            View::share('siteStoreName', $siteStoreName);
         } catch (\Exception $e) {
             // Failsafe in case database isn't ready yet (e.g., during migration)
             View::share('navbarCategories', collect());
+            View::share('siteStoreName', config('app.name', 'ShopHub'));
         }
     }
 }
