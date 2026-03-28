@@ -91,7 +91,7 @@
             x-init="init()"
             class="relative z-10 grid gap-6 px-6 py-12 md:grid-cols-[1fr_0.95fr] md:px-10 md:py-16"
         >
-            <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 min-h-[24rem] md:min-h-[32rem] backdrop-blur-sm">
+            <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 aspect-[16/9] md:aspect-[16/9] backdrop-blur-sm">
                 <template x-for="(slide, index) in slides" :key="index">
                     <a
                         x-show="active === index"
@@ -173,7 +173,7 @@
             x-init="init()"
             class="relative z-10 px-4 py-4 md:px-8 md:py-8"
         >
-            <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 min-h-[18rem] md:min-h-[26rem] backdrop-blur-sm">
+            <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/10 aspect-[16/9] backdrop-blur-sm">
                 <template x-for="(slide, index) in slides" :key="index">
                     <a
                         x-show="active === index"

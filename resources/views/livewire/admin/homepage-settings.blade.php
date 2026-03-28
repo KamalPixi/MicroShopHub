@@ -42,9 +42,9 @@
                         <label class="block text-xs font-semibold text-gray-600">Recommended Image Size</label>
                         <div class="mt-1 rounded-lg border border-dashed border-gray-300 bg-white px-3 py-2 text-xs text-gray-600">
                             @if(($settings['home_banner_type'] ?? 'split') === 'split')
-                                Use portrait or tall images. Recommended: 900x1100 px.
+                                Use wide rectangle images. Recommended: 1600x900 px.
                             @else
-                                Use wide banner images. Recommended: 1600x600 px.
+                                Use wide rectangle images. Recommended: 1600x700 px.
                             @endif
                         </div>
                     </div>
@@ -131,9 +131,9 @@
                                     <p class="text-sm font-semibold text-gray-800">Slide {{ $index + 1 }}</p>
                                     <p class="text-xs text-gray-500">
                                         @if(($settings['home_banner_type'] ?? 'split') === 'split')
-                                            Recommended: 900x1100 px.
+                                            Recommended: 1600x900 px.
                                         @else
-                                            Recommended: 1600x600 px.
+                                            Recommended: 1600x700 px.
                                         @endif
                                     </p>
                                 </div>
