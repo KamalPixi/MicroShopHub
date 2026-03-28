@@ -244,7 +244,7 @@
                 </div>
             </div>
 
-            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
+            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4 mt-4">
                 <div>
                     <p class="text-sm font-semibold text-gray-800">Footer</p>
                     <p class="text-xs text-gray-500">Edit the storefront footer content shown across the website.</p>
