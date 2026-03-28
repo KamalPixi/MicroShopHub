@@ -4,37 +4,59 @@
 <div class="bg-gray-50 min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {{-- Reduced max-width slightly for 4 columns --}}
         
-        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Search Results</h1>
-                <p class="text-gray-600 mt-2 text-sm">
-                    Found <span class="font-bold text-gray-900">{{ $products->total() }}</span> results 
-                    @if($query) for <span class="font-semibold text-primary">"{{ $query }}"</span> @endif
-                </p>
-            </div>
+        <div class="mb-6 rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm backdrop-blur sm:p-5">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">Browse catalog</p>
+                        <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">Search Results</h1>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                        Found <span class="font-bold text-gray-900">{{ $products->total() }}</span> products
+                        @if($query)
+                            for <span class="font-semibold text-primary">"{{ $query }}"</span>
+                        @endif
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-[11px] text-gray-600">
+                        @if($categoryId)
+                            <span class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 font-semibold text-primary">Category filtered</span>
+                        @endif
+                        @if($minPrice || $maxPrice)
+                            <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 font-semibold text-gray-700">Price filtered</span>
+                        @endif
+                        @if($sort && $sort !== 'newest')
+                            <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 font-semibold text-gray-700">Sorted</span>
+                        @endif
+                    </div>
+                </div>
 
-            <div class="flex items-center bg-white rounded-lg shadow-sm border border-gray-200 px-3 py-2">
-                <span class="text-sm text-gray-500 mr-2 shrink-0">Sort by:</span>
-                <form method="GET" action="{{ route('store.search') }}">
-                    @if($query) <input type="hidden" name="query" value="{{ $query }}"> @endif
-                    @if($categoryId) <input type="hidden" name="category" value="{{ $categoryId }}"> @endif
-                    @if($minPrice) <input type="hidden" name="min_price" value="{{ $minPrice }}"> @endif
-                    @if($maxPrice) <input type="hidden" name="max_price" value="{{ $maxPrice }}"> @endif
+                <div class="w-full lg:w-auto">
+                    <div class="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
+                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500 shrink-0">Sort by</span>
+                            <form method="GET" action="{{ route('store.search') }}" class="w-full sm:w-auto">
+                                @if($query) <input type="hidden" name="query" value="{{ $query }}"> @endif
+                                @if($categoryId) <input type="hidden" name="category" value="{{ $categoryId }}"> @endif
+                                @if($minPrice) <input type="hidden" name="min_price" value="{{ $minPrice }}"> @endif
+                                @if($maxPrice) <input type="hidden" name="max_price" value="{{ $maxPrice }}"> @endif
 
-                    <div class="relative">
-                        <select name="sort" onchange="this.form.submit()" class="w-full appearance-none rounded-lg border border-gray-200 bg-white py-2 pl-3 pr-10 text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 focus:border-gray-200 cursor-pointer">
-                            <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest Arrivals</option>
-                            <option value="price_low" {{ $sort == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                            <option value="price_high" {{ $sort == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-                            <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Oldest</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
+                                <div class="relative w-full sm:w-60">
+                                    <select name="sort" onchange="this.form.submit()" class="w-full appearance-none rounded-xl border border-gray-200 bg-white py-2.5 pl-3 pr-10 text-sm font-medium text-gray-900 shadow-sm focus:outline-none focus:ring-0 focus:border-gray-200 cursor-pointer">
+                                        <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest Arrivals</option>
+                                        <option value="price_low" {{ $sort == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                                        <option value="price_high" {{ $sort == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                                        <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 
