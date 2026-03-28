@@ -200,4 +200,25 @@ class DashboardAnalytics extends Component
     {
         return view('livewire.admin.dashboard-analytics');
     }
+
+    public function clearSiteAnalytics(): void
+    {
+        if (! Schema::hasTable('site_analytics_sessions') || ! Schema::hasTable('site_analytics_page_views')) {
+            session()->flash('message', 'Analytics tables are not available yet.');
+            return;
+        }
+
+        SiteAnalyticsPageView::query()->delete();
+        SiteAnalyticsSession::query()->delete();
+
+        $this->siteVisitors = 0;
+        $this->siteSessions = 0;
+        $this->sitePageViews = 0;
+        $this->siteBounceRate = 0;
+        $this->topBrowsers = [];
+        $this->topReferrers = [];
+        $this->mostVisitedPages = [];
+
+        session()->flash('message', 'Site analytics cleared successfully.');
+    }
 }
