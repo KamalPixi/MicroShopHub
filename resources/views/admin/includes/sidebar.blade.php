@@ -66,7 +66,7 @@
                     <li>
                         <a href="{{ route('admin.discounts.index') }}" 
                            class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.discounts*') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
-                            Discounts
+                            Coupons
                         </a>
                     </li>
                 </ul>

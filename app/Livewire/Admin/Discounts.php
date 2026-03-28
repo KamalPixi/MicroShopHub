@@ -91,7 +91,7 @@ class Discounts extends Component
             ]
         );
 
-        session()->flash('message', $this->editingId ? 'Discount updated successfully.' : 'Discount created successfully.');
+        session()->flash('message', $this->editingId ? 'Coupon updated successfully.' : 'Coupon created successfully.');
         $this->resetForm();
     }
 
@@ -113,7 +113,7 @@ class Discounts extends Component
     public function deleteDiscount($discountId)
     {
         Discount::findOrFail($discountId)->delete();
-        session()->flash('message', 'Discount deleted successfully.');
+        session()->flash('message', 'Coupon deleted successfully.');
         $this->resetForm();
     }
 

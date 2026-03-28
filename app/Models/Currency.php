@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Setting;
 
 class Currency extends Model
 {
@@ -29,8 +30,18 @@ class Currency extends Model
     // Helper to get the store's main currency
     public static function getActive()
     {
-        return self::where('is_default', true)->first() 
-            ?? self::first() // Fallback
-            ?? new self(['code' => 'USD', 'symbol' => '$', 'exchange_rate' => 1]); // Hard fallback
+        $configuredCode = Setting::where('key', 'currency')->value('value');
+
+        if ($configuredCode) {
+            $configuredCurrency = self::where('code', $configuredCode)->first();
+            if ($configuredCurrency) {
+                return $configuredCurrency;
+            }
+        }
+
+        return self::where('is_default', true)->first()
+            ?? self::where('active', true)->orderByDesc('is_default')->first()
+            ?? self::first()
+            ?? new self(['code' => 'BDT', 'symbol' => '৳', 'exchange_rate' => 1]);
     }
 }

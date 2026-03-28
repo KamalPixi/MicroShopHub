@@ -35,7 +35,7 @@ class Dashboard extends Component
     public $selectedOrder = null;
     public $showOrderModal = false;
     public $currencySymbol = '$';
-    public $currencyCode = 'USD';
+    public $currencyCode = 'BDT';
     public $showAddressForm = false;
     public $newAddress = [
         'type' => 'home',
@@ -68,7 +68,7 @@ class Dashboard extends Component
 
         $currency = Currency::getActive();
         $this->currencySymbol = $currency?->symbol ?? '$';
-        $this->currencyCode = $currency?->code ?? 'USD';
+        $this->currencyCode = $currency?->code ?? 'BDT';
     }
 
     // --- Tab Switching ---

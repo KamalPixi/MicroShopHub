@@ -5,7 +5,7 @@
             <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            {{ $editingId ? 'Edit Discount' : 'Add Discount' }}
+            {{ $editingId ? 'Edit Coupon' : 'Add Coupon' }}
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -15,7 +15,7 @@
                     type="text" 
                     id="code" 
                     class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-                    placeholder="Enter discount code (e.g., SAVE10)"
+                    placeholder="Enter coupon code (e.g., SAVE10)"
                 >
                 @error('code') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
@@ -34,14 +34,14 @@
             </div>
             @if ($type !== 'free_shipping')
                 <div>
-                    <label for="value" class="block text-sm font-medium text-gray-700">Value {{ $type === 'percentage' ? '(%)' : '($)' }}</label>
+                        <label for="value" class="block text-sm font-medium text-gray-700">Value {{ $type === 'percentage' ? '(%)' : '($)' }}</label>
                     <input 
                         wire:model="value" 
                         type="number" 
                         id="value" 
                         step="0.01" 
                         class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-                        placeholder="Enter discount value"
+                    placeholder="Enter coupon value"
                     >
                     @error('value') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                 </div>
@@ -108,7 +108,7 @@
                         type="checkbox" 
                         class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                     >
-                    <span>Enable this discount</span>
+                    <span>Enable this coupon</span>
                 </label>
                 @error('active') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
@@ -142,17 +142,17 @@
                 <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                Discounts List
+                Coupons List
             </h3>
         </div>
         <div class="mb-4">
-            <label for="search" class="block text-sm font-medium text-gray-700">Search Discounts</label>
+            <label for="search" class="block text-sm font-medium text-gray-700">Search Coupons</label>
             <input 
                 wire:model.live="search" 
                 type="text" 
                 id="search" 
                 class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-                placeholder="Search by discount code"
+                placeholder="Search by coupon code"
             >
         </div>
 
@@ -223,7 +223,7 @@
                                 <button 
                                     wire:click="deleteDiscount({{ $discount->id }})" 
                                     wire:loading.attr="disabled" 
-                                    wire:confirm="Are you sure you want to delete this discount?" 
+                                    wire:confirm="Are you sure you want to delete this coupon?" 
                                     class="inline-flex items-center py-1 text-red-600 hover:text-red-800 rounded" 
                                     title="Delete"
                                 >
@@ -235,7 +235,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="11" class="text-center text-gray-500 py-4">No discounts found.</td>
+                            <td colspan="11" class="text-center text-gray-500 py-4">No coupons found.</td>
                         </tr>
                     @endforelse
                 </tbody>

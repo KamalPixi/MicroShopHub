@@ -36,7 +36,7 @@
     @php
         $defaultCurrency = \App\Models\Currency::getActive();
         $defaultSymbol = $defaultCurrency?->symbol ?? '$';
-        $defaultCode = $defaultCurrency?->code ?? 'USD';
+        $defaultCode = $defaultCurrency?->code ?? 'BDT';
         $currencySymbol = $order->currency?->symbol ?? '';
         $currencyCode = $order->currency_code ?? '';
         $resolvedCode = $currencyCode ?: $defaultCode;

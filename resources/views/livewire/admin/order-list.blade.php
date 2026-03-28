@@ -103,7 +103,7 @@
     @php
         $defaultCurrency = \App\Models\Currency::getActive();
         $defaultSymbol = $defaultCurrency?->symbol ?? '$';
-        $defaultCode = $defaultCurrency?->code ?? 'USD';
+        $defaultCode = $defaultCurrency?->code ?? 'BDT';
     @endphp
     <div class="overflow-x-auto">
         <table class="table-field w-full text-left text-xs">
