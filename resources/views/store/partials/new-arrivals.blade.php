@@ -8,7 +8,7 @@
     }
 }">
     <div class="flex items-center justify-between mb-4 px-1">
-        <h2 class="text-2xl font-bold text-gray-900">New Arrivals</h2>
+        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_new_arrivals_title'] ?? 'New Arrivals' }}</h2>
         <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-primary">View All →</a>
     </div>
 

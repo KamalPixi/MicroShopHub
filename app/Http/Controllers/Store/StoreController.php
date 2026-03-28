@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Setting;
 
 class StoreController extends Controller
 {
@@ -14,6 +15,31 @@ class StoreController extends Controller
      */
     public function index()
     {
+        $homepageSettings = Setting::whereIn('key', [
+                'home_hero_enabled',
+                'home_hero_title',
+                'home_hero_subtitle',
+                'home_hero_cta_label',
+                'home_hero_cta_url',
+                'home_shop_by_category_enabled',
+                'home_shop_by_category_title',
+                'home_featured_products_enabled',
+                'home_featured_products_title',
+                'home_new_arrivals_enabled',
+                'home_new_arrivals_title',
+                'home_newsletter_enabled',
+                'home_newsletter_title',
+                'home_newsletter_subtitle',
+            ])
+            ->pluck('value', 'key')
+            ->toArray();
+
+        $homepageSettings['home_hero_enabled'] = filter_var($homepageSettings['home_hero_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $homepageSettings['home_shop_by_category_enabled'] = filter_var($homepageSettings['home_shop_by_category_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $homepageSettings['home_featured_products_enabled'] = filter_var($homepageSettings['home_featured_products_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $homepageSettings['home_new_arrivals_enabled'] = filter_var($homepageSettings['home_new_arrivals_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $homepageSettings['home_newsletter_enabled'] = filter_var($homepageSettings['home_newsletter_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+
         // 1. Shop By Category
         $homeCategories = Category::where('show_on_homepage', true)
             ->orderBy('created_at', 'desc')
@@ -36,7 +62,7 @@ class StoreController extends Controller
             ->get();
 
         // Pointing to 'store.index' instead of 'home.index'
-        return view('store.index', compact('homeCategories', 'featuredProducts', 'newArrivals'));
+        return view('store.index', compact('homeCategories', 'featuredProducts', 'newArrivals', 'homepageSettings'));
     }
 
     /**

@@ -8,7 +8,7 @@
     }
 }">
     <div class="mb-3 px-1">
-        <h2 class="text-2xl font-bold text-gray-900">Shop by Category</h2>
+        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_shop_by_category_title'] ?? 'Shop by Category' }}</h2>
     </div>
 
     <div class="relative">
