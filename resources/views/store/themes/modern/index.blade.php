@@ -7,7 +7,7 @@
     $homepageSettings = $homepageSettings ?? [];
 @endphp
 
-<div class="space-y-8">
+<div class="space-y-8 pb-8 md:pb-10">
 @if($homepageSettings['home_hero_enabled'] ?? true)
 <section class="rounded-[2rem] border border-gray-200 bg-white shadow-sm overflow-hidden">
     @if(($homepageSettings['home_banner_type'] ?? 'split') === 'text_only')
@@ -189,9 +189,9 @@
 @endif
 
 @if($homepageSettings['home_newsletter_enabled'] ?? true)
-<section id="newsletter" class="rounded-3xl bg-primary p-6 text-center text-white shadow-sm md:p-8">
-    <h2 class="text-2xl font-bold mb-2">{{ $homepageSettings['home_newsletter_title'] ?? 'Stay Updated' }}</h2>
-    <p class="text-white/80 mb-4">{{ $homepageSettings['home_newsletter_subtitle'] ?? 'Subscribe for new arrivals, exclusive offers, and restock alerts.' }}</p>
+<section id="newsletter" class="mb-6 rounded-3xl bg-primary px-5 py-5 text-center text-white shadow-sm md:mb-8 md:px-6 md:py-6">
+    <h2 class="mb-1 text-xl font-bold md:text-2xl">{{ $homepageSettings['home_newsletter_title'] ?? 'Stay Updated' }}</h2>
+    <p class="mb-3 text-sm text-white/80 md:mb-4">{{ $homepageSettings['home_newsletter_subtitle'] ?? 'Subscribe for new arrivals, exclusive offers, and restock alerts.' }}</p>
     <livewire:store.newsletter-subscribe />
 </section>
 @endif
