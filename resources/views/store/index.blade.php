@@ -38,9 +38,9 @@
                 </div>
 
                 <div class="mt-4 flex flex-wrap gap-2 text-xs">
-                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">{{ $homepageSettings['home_banner_chip_1'] ?? 'Primary brand color' }}</span>
-                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">{{ $homepageSettings['home_banner_chip_2'] ?? 'Fast checkout' }}</span>
-                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">{{ $homepageSettings['home_banner_chip_3'] ?? 'Live support' }}</span>
+                    @foreach(($homepageSettings['home_banner_chips'] ?? []) as $chip)
+                        <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">{{ $chip }}</span>
+                    @endforeach
                 </div>
             </div>
 
@@ -69,14 +69,6 @@
                             </div>
                             <span class="ml-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-secondary font-bold transition group-hover:translate-x-0.5">→</span>
                         </a>
-                    </div>
-                    <div class="mt-3 rounded-xl border border-white/15 bg-white/10 p-3">
-                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">Banner chips</p>
-                        <div class="mt-2 flex flex-wrap gap-2 text-[11px]">
-                            <span class="rounded-full bg-white/15 px-3 py-1 text-white">{{ $homepageSettings['home_banner_chip_1'] ?? 'Primary brand color' }}</span>
-                            <span class="rounded-full bg-white/15 px-3 py-1 text-white">{{ $homepageSettings['home_banner_chip_2'] ?? 'Fast checkout' }}</span>
-                            <span class="rounded-full bg-white/15 px-3 py-1 text-white">{{ $homepageSettings['home_banner_chip_3'] ?? 'Live support' }}</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -154,11 +146,13 @@
                     </a>
                 </div>
 
-                <div class="mt-6 flex flex-wrap gap-2 text-xs">
-                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">Primary brand color</span>
-                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">Fast checkout</span>
-                    <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">Live support</span>
-                </div>
+                @if(!empty($homepageSettings['home_banner_chips'] ?? []))
+                    <div class="mt-6 flex flex-wrap gap-2 text-xs">
+                        @foreach($homepageSettings['home_banner_chips'] as $chip)
+                            <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5">{{ $chip }}</span>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     @else

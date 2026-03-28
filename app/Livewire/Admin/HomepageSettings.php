@@ -13,6 +13,7 @@ class HomepageSettings extends Component
 
     public array $settings = [];
     public array $bannerSlides = [];
+    public array $bannerChips = [];
 
     public array $defaults = [
         'home_hero_enabled' => true,
@@ -21,9 +22,7 @@ class HomepageSettings extends Component
         'home_hero_subtitle' => 'Curated products, fast delivery, and a storefront built for easy browsing.',
         'home_hero_cta_label' => 'Shop Now',
         'home_hero_cta_url' => '/search',
-        'home_banner_chip_1' => 'Primary brand color',
-        'home_banner_chip_2' => 'Fast checkout',
-        'home_banner_chip_3' => 'Live support',
+        'home_banner_chips' => '[]',
         'home_banner_slides' => '[]',
         'home_shop_by_category_enabled' => true,
         'home_shop_by_category_title' => 'Shop by Category',
@@ -43,9 +42,8 @@ class HomepageSettings extends Component
         'settings.home_hero_subtitle' => 'nullable|string|max:500',
         'settings.home_hero_cta_label' => 'nullable|string|max:100',
         'settings.home_hero_cta_url' => 'nullable|string|max:255',
-        'settings.home_banner_chip_1' => 'nullable|string|max:100',
-        'settings.home_banner_chip_2' => 'nullable|string|max:100',
-        'settings.home_banner_chip_3' => 'nullable|string|max:100',
+        'bannerChips' => 'array',
+        'bannerChips.*.label' => 'nullable|string|max:100',
         'bannerSlides' => 'array',
         'bannerSlides.*.image_file' => 'nullable|image|max:4096',
         'bannerSlides.*.link_url' => 'nullable|string|max:255',
@@ -74,6 +72,9 @@ class HomepageSettings extends Component
             } elseif ($key === 'home_banner_slides') {
                 $slides = is_string($current) ? json_decode($current, true) : $current;
                 $this->bannerSlides = $this->normalizeSlides(is_array($slides) ? $slides : []);
+            } elseif ($key === 'home_banner_chips') {
+                $chips = is_string($current) ? json_decode($current, true) : $current;
+                $this->bannerChips = $this->normalizeChips(is_array($chips) ? $chips : []);
             } else {
                 $this->settings[$key] = $current;
             }
@@ -89,11 +90,29 @@ class HomepageSettings extends Component
                 ],
             ];
         }
+
+        if (empty($this->bannerChips)) {
+            $this->bannerChips = [
+                ['label' => 'Primary brand color'],
+                ['label' => 'Fast checkout'],
+                ['label' => 'Live support'],
+            ];
+        }
     }
 
     public function save(): void
     {
         $this->validate();
+
+        $chips = [];
+        foreach ($this->bannerChips as $chip) {
+            $chip = is_array($chip) ? $chip : [];
+            $label = trim((string) ($chip['label'] ?? ''));
+            if ($label === '') {
+                continue;
+            }
+            $chips[] = ['label' => $label];
+        }
 
         $slides = [];
         foreach ($this->bannerSlides as $index => $slide) {
@@ -124,6 +143,7 @@ class HomepageSettings extends Component
         }
 
         $this->settings['home_banner_slides'] = json_encode($slides);
+        $this->settings['home_banner_chips'] = json_encode($chips);
 
         foreach ($this->settings as $key => $value) {
             Setting::updateOrCreate(
@@ -158,6 +178,27 @@ class HomepageSettings extends Component
         }
     }
 
+    public function addBannerChip(): void
+    {
+        $this->bannerChips[] = [
+            'label' => '',
+        ];
+    }
+
+    public function removeBannerChip(int $index): void
+    {
+        if (! isset($this->bannerChips[$index])) {
+            return;
+        }
+
+        array_splice($this->bannerChips, $index, 1);
+    }
+
+    public function clearBannerChips(): void
+    {
+        $this->bannerChips = [];
+    }
+
     protected function normalizeSlides(array $slides): array
     {
         return collect($slides)->map(function ($slide) {
@@ -168,6 +209,17 @@ class HomepageSettings extends Component
                 'image_file' => null,
                 'link_url' => $slide['link_url'] ?? '',
                 'alt' => $slide['alt'] ?? '',
+            ];
+        })->values()->all();
+    }
+
+    protected function normalizeChips(array $chips): array
+    {
+        return collect($chips)->map(function ($chip) {
+            $chip = is_array($chip) ? $chip : [];
+
+            return [
+                'label' => $chip['label'] ?? '',
             ];
         })->values()->all();
     }

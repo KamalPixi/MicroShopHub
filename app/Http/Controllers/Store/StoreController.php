@@ -23,6 +23,7 @@ class StoreController extends Controller
                 'home_hero_subtitle',
                 'home_hero_cta_label',
                 'home_hero_cta_url',
+                'home_banner_chips',
                 'home_banner_slides',
                 'home_shop_by_category_enabled',
                 'home_shop_by_category_title',
@@ -57,6 +58,14 @@ class StoreController extends Controller
                 ];
             })
             ->filter(fn ($slide) => ! empty($slide['image_url']))
+            ->values()
+            ->all();
+
+        $rawChips = $homepageSettings['home_banner_chips'] ?? '[]';
+        $bannerChips = is_string($rawChips) ? json_decode($rawChips, true) : $rawChips;
+        $homepageSettings['home_banner_chips'] = collect(is_array($bannerChips) ? $bannerChips : [])
+            ->map(fn ($chip) => trim((string) ($chip['label'] ?? '')))
+            ->filter()
             ->values()
             ->all();
 
