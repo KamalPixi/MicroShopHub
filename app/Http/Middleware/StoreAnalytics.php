@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class StoreAnalytics
 {
+    private const PAGE_VIEW_DEDUPE_MINUTES = 5;
+
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->isMethod('get')) {
@@ -66,6 +68,26 @@ class StoreAnalytics
         $referrerHost = $this->extractHost($referrer, $requestHost);
         $browser = $this->parseBrowser($request->userAgent());
         $device = $this->parseDevice($request->userAgent());
+        $fullUrl = $request->fullUrl();
+
+        $recentView = SiteAnalyticsPageView::query()
+            ->where('site_analytics_session_id', $session->id)
+            ->where('visitor_token', $visitorToken)
+            ->where('route_name', $routeName)
+            ->where('page_path', '/' . ltrim($request->path(), '/'))
+            ->where('full_url', $fullUrl)
+            ->latest('created_at')
+            ->first();
+
+        if ($recentView && $recentView->created_at && $recentView->created_at->diffInMinutes($now) < self::PAGE_VIEW_DEDUPE_MINUTES) {
+            $session->forceFill(['last_seen_at' => $now])->save();
+
+            $response = $next($request);
+
+            return $response
+                ->withCookie(cookie('shophub_visitor_token', $visitorToken, 60 * 24 * 365))
+                ->withCookie(cookie('shophub_analytics_session_token', $sessionToken, 60 * 24 * 30));
+        }
 
         SiteAnalyticsPageView::create([
             'site_analytics_session_id' => $session->id,
@@ -73,7 +95,7 @@ class StoreAnalytics
             'route_name' => $routeName,
             'page_title' => $pageLabel,
             'page_path' => '/' . ltrim($request->path(), '/'),
-            'full_url' => $request->fullUrl(),
+            'full_url' => $fullUrl,
             'referrer_url' => $referrer,
             'referrer_host' => $referrerHost,
             'browser' => $browser,
