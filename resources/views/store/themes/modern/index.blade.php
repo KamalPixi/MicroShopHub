@@ -11,10 +11,9 @@
 @if($homepageSettings['home_hero_enabled'] ?? true)
 <section class="rounded-[2rem] border border-gray-200 bg-white shadow-sm overflow-hidden">
     @if(($homepageSettings['home_banner_type'] ?? 'split') === 'text_only')
-        <div class="grid gap-5 px-5 py-5 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-6">
-            <div class="flex flex-col justify-center">
-                <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary/80">Modern storefront</p>
-                <h1 class="mt-2 text-2xl font-extrabold tracking-tight text-gray-900 lg:text-4xl">
+        <div class="px-5 py-5 lg:px-8 lg:py-6">
+            <div class="mx-auto flex max-w-4xl flex-col items-center text-center">
+                <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 lg:text-4xl">
                     {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
                 </h1>
                 <p class="mt-2.5 max-w-2xl text-sm leading-5 text-gray-600 lg:text-sm">
@@ -22,14 +21,14 @@
                 </p>
 
                 @if(!empty($homepageSettings['home_banner_chips'] ?? []))
-                    <div class="mt-3 flex flex-wrap gap-2">
+                    <div class="mt-3 flex flex-wrap justify-center gap-2">
                         @foreach($homepageSettings['home_banner_chips'] as $chip)
                             <span class="rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">{{ $chip }}</span>
                         @endforeach
                     </div>
                 @endif
 
-                <div class="mt-4 flex flex-wrap items-center gap-3">
+                <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
                     <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
                         {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
                     </a>
@@ -37,24 +36,6 @@
                         Browse Store
                     </a>
                 </div>
-            </div>
-
-            <div class="grid gap-2.5 self-center">
-                <a href="{{ route('store.search') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-3.5 transition hover:border-primary/25 hover:bg-primary/5">
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Quick action</p>
-                    <p class="mt-1.5 text-base font-bold text-gray-900">Browse categories</p>
-                    <p class="mt-1 text-[13px] leading-5 text-gray-600">Jump into the catalog and explore by category.</p>
-                </a>
-                <a href="{{ route('store.search', ['sort' => 'newest']) }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-3.5 transition hover:border-primary/25 hover:bg-primary/5">
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Quick action</p>
-                    <p class="mt-1.5 text-base font-bold text-gray-900">See new arrivals</p>
-                    <p class="mt-1 text-[13px] leading-5 text-gray-600">View the newest items added to the store.</p>
-                </a>
-                <a href="#newsletter" class="rounded-2xl border border-gray-200 bg-gray-50 p-3.5 transition hover:border-primary/25 hover:bg-primary/5">
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Quick action</p>
-                    <p class="mt-1.5 text-base font-bold text-gray-900">Stay updated</p>
-                    <p class="mt-1 text-[13px] leading-5 text-gray-600">Go straight to the subscribe section for offers and updates.</p>
-                </a>
             </div>
         </div>
     @elseif(($homepageSettings['home_banner_type'] ?? 'split') === 'split')
@@ -114,40 +95,34 @@
                 @endif
             </div>
 
-            <div class="flex flex-col justify-between gap-3">
-                <div>
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary/80">Modern storefront</p>
-                    <h1 class="mt-2 text-2xl font-extrabold tracking-tight text-gray-900 lg:text-[2.35rem]">
-                        {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
-                    </h1>
-                    <p class="mt-2.5 text-sm leading-5 text-gray-600 lg:text-sm">
-                        {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
-                    </p>
-                </div>
+            <div class="flex flex-col justify-center gap-3">
+                <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 lg:text-[2.35rem]">
+                    {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
+                </h1>
+                <p class="text-sm leading-5 text-gray-600 lg:text-sm">
+                    {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
+                </p>
 
-                <div class="grid gap-2.5">
-                    <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="rounded-2xl bg-primary px-5 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
+                @if(!empty($homepageSettings['home_banner_chips'] ?? []))
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($homepageSettings['home_banner_chips'] as $chip)
+                            <span class="rounded-full border border-primary/15 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary">{{ $chip }}</span>
+                        @endforeach
+                    </div>
+                @endif
+
+                <div class="flex flex-wrap gap-3 pt-1">
+                    <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
                         {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
                     </a>
-                    <a href="{{ route('store.search') }}" class="rounded-2xl border border-gray-200 bg-white px-5 py-3 text-center text-sm font-semibold text-gray-700 transition hover:border-primary/20 hover:text-primary">
+                    <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-primary/20 hover:text-primary">
                         Browse Store
                     </a>
-                </div>
-
-                <div class="grid gap-2.5">
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-3.5">
-                        <p class="text-sm font-semibold text-gray-900">Fast checkout</p>
-                        <p class="mt-1 text-[13px] leading-5 text-gray-600">Keep the flow simple from product selection to payment.</p>
-                    </div>
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-3.5">
-                        <p class="text-sm font-semibold text-gray-900">Live support</p>
-                        <p class="mt-1 text-[13px] leading-5 text-gray-600">Chat with the store team while you browse and compare products.</p>
-                    </div>
                 </div>
             </div>
         </div>
     @else
-        <div class="grid gap-4 px-5 py-5 lg:grid-cols-[1.25fr_0.75fr] lg:px-8 lg:py-6">
+        <div class="grid gap-4 px-5 py-5 lg:px-8 lg:py-6">
             <div class="relative overflow-hidden rounded-[1.75rem] border border-gray-200 bg-gray-50 aspect-[42/8] js-home-banner-slider" data-autoplay="{{ ($homepageSettings['home_banner_autoplay_enabled'] ?? true) ? '1' : '0' }}">
                 @foreach($homeBannerSlides as $index => $slide)
                     <a
@@ -173,41 +148,29 @@
                 </div>
             </div>
 
-            <div class="flex flex-col justify-center rounded-[1.75rem] border border-gray-200 bg-white p-4 shadow-sm">
-                <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary/80">Modern storefront</p>
-                <h1 class="mt-2 text-2xl font-extrabold tracking-tight text-gray-900">
+            <div class="mx-auto flex max-w-4xl flex-col items-center text-center">
+                <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">
                     {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
                 </h1>
                 <p class="mt-2.5 text-sm leading-5 text-gray-600">
                     {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
                 </p>
 
-                <div class="mt-4 flex flex-wrap gap-3">
-                    <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
-                        {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
-                    </a>
-                    <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-primary/20 hover:text-primary">
-                        Browse Store
-                    </a>
-                </div>
-
                 @if(!empty($homepageSettings['home_banner_chips'] ?? []))
-                    <div class="mt-3 flex flex-wrap gap-2">
+                    <div class="mt-3 flex flex-wrap justify-center gap-2">
                         @foreach($homepageSettings['home_banner_chips'] as $chip)
                             <span class="rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">{{ $chip }}</span>
                         @endforeach
                     </div>
                 @endif
 
-                <div class="mt-4 grid gap-2.5 sm:grid-cols-2">
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-3.5">
-                        <p class="text-sm font-semibold text-gray-900">Fresh listings</p>
-                        <p class="mt-1 text-[13px] leading-5 text-gray-600">Keep the homepage moving with new products and curated highlights.</p>
-                    </div>
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-3.5">
-                        <p class="text-sm font-semibold text-gray-900">Brand colors</p>
-                        <p class="mt-1 text-[13px] leading-5 text-gray-600">Every theme still respects your configured primary color.</p>
-                    </div>
+                <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+                    <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
+                        {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
+                    </a>
+                    <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-primary/20 hover:text-primary">
+                        Browse Store
+                    </a>
                 </div>
             </div>
         </div>

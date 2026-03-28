@@ -154,13 +154,6 @@ class HomepageSettings extends Component
             ];
         }
 
-        if (empty($this->bannerChips)) {
-            $this->bannerChips = [
-                ['label' => 'Primary brand color'],
-                ['label' => 'Fast checkout'],
-                ['label' => 'Live support'],
-            ];
-        }
     }
 
     public function save(): void
