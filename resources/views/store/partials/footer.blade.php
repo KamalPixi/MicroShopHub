@@ -1,63 +1,92 @@
+@php
+    $footerSettings = $footerSettings ?? [];
+    $year = date('Y');
+    $footerTitle = $footerSettings['footer_about_title'] ?? 'ShopHub';
+    $footerDescription = $footerSettings['footer_about_description'] ?? 'Your trusted marketplace for clothing, health products, and unique handmade items.';
+    $quickLinks = [
+        ['label' => $footerSettings['footer_link_1_label'] ?? 'About Us', 'url' => $footerSettings['footer_link_1_url'] ?? '/about'],
+        ['label' => $footerSettings['footer_link_2_label'] ?? 'Contact', 'url' => $footerSettings['footer_link_2_url'] ?? '/contact'],
+        ['label' => $footerSettings['footer_link_3_label'] ?? 'FAQ', 'url' => $footerSettings['footer_link_3_url'] ?? '/faq'],
+        ['label' => $footerSettings['footer_link_4_label'] ?? 'Shipping Info', 'url' => $footerSettings['footer_link_4_url'] ?? '/shipping'],
+    ];
+    $policyLinks = [
+        ['label' => $footerSettings['footer_policy_1_label'] ?? 'Privacy Policy', 'url' => $footerSettings['footer_policy_1_url'] ?? '/privacy-policy'],
+        ['label' => $footerSettings['footer_policy_2_label'] ?? 'Terms of Service', 'url' => $footerSettings['footer_policy_2_url'] ?? '/terms'],
+        ['label' => $footerSettings['footer_policy_3_label'] ?? 'Cookie Policy', 'url' => $footerSettings['footer_policy_3_url'] ?? '/cookie-policy'],
+    ];
+    $copyrightText = str_replace('{year}', $year, $footerSettings['footer_copyright_text'] ?? '© {year} ShopHub. All rights reserved.');
+@endphp
+
 <footer class="bg-gray-900 text-white mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-                <h3 class="text-lg font-bold mb-4 text-primary">ShopHub</h3>
-                <p class="text-gray-400 text-sm mb-4">Your trusted marketplace for clothing, health products, and unique handmade items.</p>
+                <h3 class="text-lg font-bold mb-4 text-primary">{{ $footerTitle }}</h3>
+                <p class="text-gray-400 text-sm mb-4">{{ $footerDescription }}</p>
+
                 <div class="flex space-x-4">
-                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-primary transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.042-3.441.219-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.357-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.001 12.017z"/></svg>
-                    </a>
+                    @if(!empty($footerSettings['footer_social_facebook_url'] ?? ''))
+                        <a href="{{ $footerSettings['footer_social_facebook_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Facebook">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.52 1.5-3.9 3.8-3.9 1.1 0 2.25.2 2.25.2v2.48H15.2c-1.25 0-1.63.78-1.63 1.57V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
+                        </a>
+                    @endif
+                    @if(!empty($footerSettings['footer_social_x_url'] ?? ''))
+                        <a href="{{ $footerSettings['footer_social_x_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="X">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.9 2H22l-6.93 7.92L23.2 22h-6.35l-4.97-6.43L6.23 22H3.1l7.46-8.52L0.8 2h6.52l4.47 5.8L18.9 2zm-1.12 18h1.72L6.42 3.96H4.57L17.78 20z"/></svg>
+                        </a>
+                    @endif
+                    @if(!empty($footerSettings['footer_social_instagram_url'] ?? ''))
+                        <a href="{{ $footerSettings['footer_social_instagram_url'] }}" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-primary transition-colors" aria-label="Instagram">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm10 2H7a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3zm-5 3.5A5.5 5.5 0 1111.5 13 5.5 5.5 0 0112 7.5zm0 2A3.5 3.5 0 1015.5 13 3.5 3.5 0 0012 9.5zM18 6.7a1.1 1.1 0 11-1.1-1.1A1.1 1.1 0 0118 6.7z"/></svg>
+                        </a>
+                    @endif
                 </div>
             </div>
 
             <div>
-                <h4 class="font-semibold mb-4">Quick Links</h4>
+                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_links_title'] ?? 'Quick Links' }}</h4>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="text-gray-400 hover:text-primary">About Us</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-primary">Contact</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-primary">FAQ</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-primary">Shipping Info</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-primary">Returns</a></li>
+                    @foreach($quickLinks as $link)
+                        @if(!empty($link['label']))
+                            <li><a href="{{ url($link['url']) }}" class="text-gray-400 hover:text-primary">{{ $link['label'] }}</a></li>
+                        @endif
+                    @endforeach
                 </ul>
             </div>
 
             <div>
-                <h4 class="font-semibold mb-4">Categories</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="text-gray-400 hover:text-primary">Clothing</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-primary">Health & Medicine</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-primary">Handmade Items</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-primary">Electronics</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-primary">Home & Garden</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-semibold mb-4">Customer Support</h4>
+                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_support_title'] ?? 'Customer Support' }}</h4>
                 <ul class="space-y-2 text-sm text-gray-400">
-                    <li>📧 support@shophub.com</li>
-                    <li>📞 +1 (555) 123-4567</li>
-                    <li>🕒 Mon-Fri: 9AM-6PM</li>
-                    <li>🕒 Sat-Sun: 10AM-4PM</li>
+                    @if(!empty($footerSettings['footer_support_email'] ?? ''))
+                        <li>📧 {{ $footerSettings['footer_support_email'] }}</li>
+                    @endif
+                    @if(!empty($footerSettings['footer_support_phone'] ?? ''))
+                        <li>📞 {{ $footerSettings['footer_support_phone'] }}</li>
+                    @endif
+                    @if(!empty($footerSettings['footer_support_hours_1'] ?? ''))
+                        <li>🕒 {{ $footerSettings['footer_support_hours_1'] }}</li>
+                    @endif
+                    @if(!empty($footerSettings['footer_support_hours_2'] ?? ''))
+                        <li>🕒 {{ $footerSettings['footer_support_hours_2'] }}</li>
+                    @endif
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_policy_title'] ?? 'Policies' }}</h4>
+                <ul class="space-y-2 text-sm">
+                    @foreach($policyLinks as $link)
+                        @if(!empty($link['label']))
+                            <li><a href="{{ url($link['url']) }}" class="text-gray-400 hover:text-primary">{{ $link['label'] }}</a></li>
+                        @endif
+                    @endforeach
                 </ul>
             </div>
         </div>
 
         <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-            <div class="flex flex-col sm:flex-row justify-between items-center text-sm">
-                <p class="text-gray-400 mb-4 sm:mb-0">© {{ date('Y') }} ShopHub. All rights reserved.</p>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-primary">Privacy Policy</a>
-                    <a href="#" class="text-gray-400 hover:text-primary">Terms of Service</a>
-                    <a href="#" class="text-gray-400 hover:text-primary">Cookie Policy</a>
-                </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 text-sm">
+                <p class="text-gray-400">{{ $copyrightText }}</p>
             </div>
         </div>
     </div>

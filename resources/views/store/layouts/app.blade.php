@@ -14,6 +14,33 @@
             'pusher_app_key',
             'pusher_app_secret',
             'pusher_app_cluster',
+            'footer_about_title',
+            'footer_about_description',
+            'footer_social_facebook_url',
+            'footer_social_x_url',
+            'footer_social_instagram_url',
+            'footer_links_title',
+            'footer_link_1_label',
+            'footer_link_1_url',
+            'footer_link_2_label',
+            'footer_link_2_url',
+            'footer_link_3_label',
+            'footer_link_3_url',
+            'footer_link_4_label',
+            'footer_link_4_url',
+            'footer_support_title',
+            'footer_support_email',
+            'footer_support_phone',
+            'footer_support_hours_1',
+            'footer_support_hours_2',
+            'footer_policy_title',
+            'footer_policy_1_label',
+            'footer_policy_1_url',
+            'footer_policy_2_label',
+            'footer_policy_2_url',
+            'footer_policy_3_label',
+            'footer_policy_3_url',
+            'footer_copyright_text',
         ])->pluck('value', 'key');
         $primaryColor = $brandSettings['branding_color'] ?? '#2563eb';
         $secondaryColor = $brandSettings['secondary_color'] ?? '#64748b';
@@ -22,6 +49,7 @@
         $pusherKey = $brandSettings['pusher_app_key'] ?? null;
         $pusherCluster = $brandSettings['pusher_app_cluster'] ?? 'mt1';
         $pusherEnabled = $liveChatEnabled && !empty($brandSettings['pusher_app_id']) && !empty($brandSettings['pusher_app_secret']) && $pusherKey;
+        $footerSettings = $brandSettings;
     @endphp
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -73,7 +101,7 @@
         @yield('content')
     </main>
 
-    @include('store.partials.footer')
+    @include('store.partials.footer', ['footerSettings' => $footerSettings])
 
     @livewire('store.live-chat-widget')
 

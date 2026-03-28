@@ -241,13 +241,145 @@
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
-        </div>
 
-        <div class="mt-5 flex items-center justify-end gap-3">
-            <button wire:click="save" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
-                Save Homepage Settings
-            </button>
+            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
+                <div>
+                    <p class="text-sm font-semibold text-gray-800">Footer</p>
+                    <p class="text-xs text-gray-500">Edit the storefront footer content shown across the website.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="rounded-lg border border-gray-200 bg-white p-3 space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600">About Title</label>
+                            <input type="text" wire:model="settings.footer_about_title" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600">About Description</label>
+                            <textarea wire:model="settings.footer_about_description" rows="3" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Facebook URL</label>
+                                <input type="text" wire:model="settings.footer_social_facebook_url" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">X URL</label>
+                                <input type="text" wire:model="settings.footer_social_x_url" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Instagram URL</label>
+                                <input type="text" wire:model="settings.footer_social_instagram_url" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg border border-gray-200 bg-white p-3 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Quick Links Title</label>
+                                <input type="text" wire:model="settings.footer_links_title" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Support Title</label>
+                                <input type="text" wire:model="settings.footer_support_title" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Link 1</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <input type="text" wire:model="settings.footer_link_1_label" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Label">
+                                    <input type="text" wire:model="settings.footer_link_1_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Link 2</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <input type="text" wire:model="settings.footer_link_2_label" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Label">
+                                    <input type="text" wire:model="settings.footer_link_2_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Link 3</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <input type="text" wire:model="settings.footer_link_3_label" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Label">
+                                    <input type="text" wire:model="settings.footer_link_3_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Link 4</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <input type="text" wire:model="settings.footer_link_4_label" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Label">
+                                    <input type="text" wire:model="settings.footer_link_4_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Support Email</label>
+                                <input type="text" wire:model="settings.footer_support_email" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Support Phone</label>
+                                <input type="text" wire:model="settings.footer_support_phone" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Hours 1</label>
+                                <input type="text" wire:model="settings.footer_support_hours_1" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Hours 2</label>
+                                <input type="text" wire:model="settings.footer_support_hours_2" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Policies Title</label>
+                                <input type="text" wire:model="settings.footer_policy_title" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Copyright Text</label>
+                                <input type="text" wire:model="settings.footer_copyright_text" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="© {year} ShopHub. All rights reserved.">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Policy 1</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <input type="text" wire:model="settings.footer_policy_1_label" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Label">
+                                    <input type="text" wire:model="settings.footer_policy_1_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Policy 2</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <input type="text" wire:model="settings.footer_policy_2_label" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Label">
+                                    <input type="text" wire:model="settings.footer_policy_2_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600">Policy 3</label>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <input type="text" wire:model="settings.footer_policy_3_label" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Label">
+                                    <input type="text" wire:model="settings.footer_policy_3_url" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="URL">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-end gap-3">
+                <button wire:click="save" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                    Save Homepage Settings
+                </button>
         </div>
     </section>
 </div>
