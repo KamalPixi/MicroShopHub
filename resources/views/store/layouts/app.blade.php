@@ -105,7 +105,7 @@
         $storefrontFooterView = \App\Support\StorefrontTheme::partial('footer');
     @endphp
 
-    @include($storefrontHeaderView)
+    @include($storefrontHeaderView, ['storeName' => $storeName, 'storeLogo' => $storeLogo])
     @include($storefrontNavbarView)
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full {{ $storefrontTheme === 'modern' ? 'pt-5 md:pt-8' : 'pt-4 md:pt-6' }}">

@@ -35,7 +35,7 @@ use App\Http\Controllers\Admin\UserController;
 |--------------------------------------------------------------------------
 */
 
-Route::name('store.')->group(function () {
+Route::middleware('store.analytics')->name('store.')->group(function () {
     Route::get('/', [StoreController::class, 'index'])->name('index');
     Route::get('/search', [StoreController::class, 'search'])->name('search');
     Route::get('/product/{slug}', [StoreController::class, 'show'])->name('product.show');
@@ -53,12 +53,14 @@ Route::name('store.')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::middleware('store.analytics')->group(function () {
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/register', [AuthController::class, 'register'])->name('register');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::middleware('auth')->group(function () {
+        Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    });
 });
 
 

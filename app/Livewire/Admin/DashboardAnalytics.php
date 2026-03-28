@@ -10,7 +10,10 @@ use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\Currency;
 use App\Models\Setting;
+use App\Models\SiteAnalyticsPageView;
+use App\Models\SiteAnalyticsSession;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 
 class DashboardAnalytics extends Component
@@ -35,6 +38,13 @@ class DashboardAnalytics extends Component
     public $recentProducts;
     public $currencySymbol;
     public $shopName;
+    public $siteVisitors = 0;
+    public $siteSessions = 0;
+    public $sitePageViews = 0;
+    public $siteBounceRate = 0;
+    public $topBrowsers = [];
+    public $topReferrers = [];
+    public $mostVisitedPages = [];
 
     public function mount()
     {
@@ -135,6 +145,55 @@ class DashboardAnalytics extends Component
         $this->recentProducts = Product::orderBy('created_at', 'desc')
             ->take(5)
             ->get();
+
+        if (Schema::hasTable('site_analytics_sessions') && Schema::hasTable('site_analytics_page_views')) {
+            $this->siteSessions = SiteAnalyticsSession::count();
+            $this->siteVisitors = SiteAnalyticsSession::query()->distinct()->count('visitor_token');
+            $this->sitePageViews = SiteAnalyticsPageView::count();
+            $bouncedSessions = SiteAnalyticsSession::where('page_views_count', 1)->count();
+            $this->siteBounceRate = $this->siteSessions > 0 ? round(($bouncedSessions / $this->siteSessions) * 100, 1) : 0;
+
+            $this->topBrowsers = SiteAnalyticsSession::query()
+                ->select('browser', DB::raw('COUNT(*) as total_sessions'))
+                ->groupBy('browser')
+                ->orderByDesc('total_sessions')
+                ->take(5)
+                ->get()
+                ->map(function ($row) {
+                    return [
+                        'label' => $row->browser ?: 'Unknown',
+                        'total_sessions' => (int) $row->total_sessions,
+                    ];
+                });
+
+            $referrerSourceSql = "CASE WHEN referrer_host IS NULL OR referrer_host = '' THEN 'Direct / None' ELSE referrer_host END";
+            $this->topReferrers = SiteAnalyticsPageView::query()
+                ->selectRaw("{$referrerSourceSql} as source, COUNT(*) as total_views")
+                ->groupByRaw($referrerSourceSql)
+                ->orderByDesc('total_views')
+                ->take(5)
+                ->get()
+                ->map(function ($row) {
+                    return [
+                        'label' => $row->source,
+                        'total_views' => (int) $row->total_views,
+                    ];
+                });
+
+            $this->mostVisitedPages = SiteAnalyticsPageView::query()
+                ->select('page_title', 'page_path', DB::raw('COUNT(*) as total_views'))
+                ->groupBy('page_title', 'page_path')
+                ->orderByDesc('total_views')
+                ->take(5)
+                ->get()
+                ->map(function ($row) {
+                    return [
+                        'label' => $row->page_title ?: $row->page_path,
+                        'path' => $row->page_path,
+                        'total_views' => (int) $row->total_views,
+                    ];
+                });
+        }
     }
 
     public function render()

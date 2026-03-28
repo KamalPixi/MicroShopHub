@@ -291,4 +291,128 @@
             </div>
         </div>
     </div>
+
+    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between gap-3">
+            <h3 class="text-base font-semibold text-gray-800 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13l4-4 4 4 4-4 4 4 2-2"></path>
+                </svg>
+                Site Analytics
+            </h3>
+            <p class="text-xs text-gray-500">Traffic, referrers, and browsing behavior</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Sessions</p>
+                <p class="mt-2 text-2xl font-bold text-gray-900">{{ number_format($siteSessions) }}</p>
+                <p class="text-xs text-gray-500 mt-1">All tracked visits</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Visitors</p>
+                <p class="mt-2 text-2xl font-bold text-gray-900">{{ number_format($siteVisitors) }}</p>
+                <p class="text-xs text-gray-500 mt-1">Unique browser ids</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Page Views</p>
+                <p class="mt-2 text-2xl font-bold text-gray-900">{{ number_format($sitePageViews) }}</p>
+                <p class="text-xs text-gray-500 mt-1">All page loads</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Bounce Rate</p>
+                <p class="mt-2 text-2xl font-bold text-gray-900">{{ number_format($siteBounceRate, 1) }}%</p>
+                <p class="text-xs text-gray-500 mt-1">Sessions with one page view</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+            <div class="rounded-xl border border-gray-200 overflow-hidden">
+                <div class="border-b border-gray-200 bg-gray-50 px-4 py-3">
+                    <h4 class="text-sm font-semibold text-gray-800">Top Browsers</h4>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="text-gray-600">
+                                <th class="p-3">Browser</th>
+                                <th class="p-3">Sessions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($topBrowsers as $browser)
+                                <tr class="border-t">
+                                    <td class="p-3 text-gray-700">{{ $browser['label'] }}</td>
+                                    <td class="p-3 font-semibold text-gray-900">{{ number_format($browser['total_sessions']) }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="p-3 text-center text-gray-500">No analytics data yet.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="rounded-xl border border-gray-200 overflow-hidden">
+                <div class="border-b border-gray-200 bg-gray-50 px-4 py-3">
+                    <h4 class="text-sm font-semibold text-gray-800">Top Referrers</h4>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="text-gray-600">
+                                <th class="p-3">Source</th>
+                                <th class="p-3">Views</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($topReferrers as $referrer)
+                                <tr class="border-t">
+                                    <td class="p-3 text-gray-700 break-all">{{ $referrer['label'] }}</td>
+                                    <td class="p-3 font-semibold text-gray-900">{{ number_format($referrer['total_views']) }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="p-3 text-center text-gray-500">No analytics data yet.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="rounded-xl border border-gray-200 overflow-hidden">
+                <div class="border-b border-gray-200 bg-gray-50 px-4 py-3">
+                    <h4 class="text-sm font-semibold text-gray-800">Most Visited Pages</h4>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="text-gray-600">
+                                <th class="p-3">Page</th>
+                                <th class="p-3">Views</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($mostVisitedPages as $page)
+                                <tr class="border-t">
+                                    <td class="p-3">
+                                        <div class="font-medium text-gray-900">{{ $page['label'] }}</div>
+                                        <div class="text-xs text-gray-500 break-all">{{ $page['path'] }}</div>
+                                    </td>
+                                    <td class="p-3 font-semibold text-gray-900">{{ number_format($page['total_views']) }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="p-3 text-center text-gray-500">No analytics data yet.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
