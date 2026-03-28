@@ -25,6 +25,14 @@
                      @mousemove="zoomImage($event)" 
                      @mouseleave="resetZoom()"
                      aria-label="Click to open image in full screen">
+                    <button type="button"
+                            class="absolute top-3 right-3 z-10 inline-flex items-center justify-center rounded-full border border-white/70 bg-white/90 p-2 text-gray-700 shadow-sm transition-all hover:bg-primary hover:text-white hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                            @click.stop="lightboxOpen = true"
+                            aria-label="Zoom product image">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"></path>
+                        </svg>
+                    </button>
                     <img :src="mainImage" 
                          x-ref="mainImg" 
                          alt="{{ $product->name }}" 
