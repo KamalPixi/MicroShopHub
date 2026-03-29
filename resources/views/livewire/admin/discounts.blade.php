@@ -217,7 +217,7 @@
                                 <!-- Edit -->
                                 <button 
                                     wire:click="edit({{ $discount->id }})" 
-                                    class="inline-flex items-center py-1 text-green-600 hover:text-green-800 rounded" 
+                                    class="admin-action-btn admin-action-edit" 
                                     title="Edit"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -229,7 +229,7 @@
                                     wire:click="deleteDiscount({{ $discount->id }})" 
                                     wire:loading.attr="disabled" 
                                     wire:confirm="Are you sure you want to delete this coupon?" 
-                                    class="inline-flex items-center py-1 text-red-600 hover:text-red-800 rounded" 
+                                    class="admin-action-btn admin-action-delete" 
                                     title="Delete"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -103,13 +103,29 @@
                         <td class="p-2">{{ $campaign->scheduled_at?->format('Y-m-d H:i') ?? '—' }}</td>
                         <td class="p-2">{{ $campaign->created_at?->format('Y-m-d H:i') }}</td>
                         <td class="p-2 text-end space-x-2">
-                            <button wire:click="edit({{ $campaign->id }})" class="inline-flex items-center text-xs font-medium text-primary hover:underline">Edit</button>
+                            <button wire:click="edit({{ $campaign->id }})" class="admin-action-btn admin-action-edit" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                </svg>
+                            </button>
                             @if($campaign->status !== 'sent')
-                                <button wire:click="sendNow({{ $campaign->id }})" wire:confirm="Send this campaign to all active subscribers now?" class="inline-flex items-center text-xs font-medium text-green-600 hover:text-green-700">Send Now</button>
+                                <button wire:click="sendNow({{ $campaign->id }})" wire:confirm="Send this campaign to all active subscribers now?" class="admin-action-btn admin-action-success" title="Send Now">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7" />
+                                    </svg>
+                                </button>
                             @else
-                                <span class="inline-flex items-center text-xs font-medium text-green-600">Sent</span>
+                                <span class="admin-action-btn admin-action-success" title="Sent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </span>
                             @endif
-                            <button wire:click="delete({{ $campaign->id }})" wire:confirm="Delete this campaign?" class="inline-flex items-center text-xs font-medium text-red-600 hover:text-red-700">Delete</button>
+                            <button wire:click="delete({{ $campaign->id }})" wire:confirm="Delete this campaign?" class="admin-action-btn admin-action-delete" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m5 0H6" />
+                                </svg>
+                            </button>
                         </td>
                     </tr>
                 @empty

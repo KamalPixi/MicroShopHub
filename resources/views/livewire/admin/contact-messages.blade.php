@@ -90,12 +90,24 @@
                             <td class="px-3 py-3">
                                 <div class="flex flex-wrap gap-2">
                                     @if($message->status === 'new')
-                                        <button type="button" wire:click="markRead({{ $message->id }})" class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:border-primary/25 hover:text-primary">Mark Read</button>
+                                        <button type="button" wire:click="markRead({{ $message->id }})" class="admin-action-btn admin-action-view" title="Mark Read">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7l9 6 9-6m-18 0h18v10H3V7z" />
+                                            </svg>
+                                        </button>
                                     @endif
                                     @if($message->status !== 'resolved')
-                                        <button type="button" wire:click="markResolved({{ $message->id }})" class="rounded-lg border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700 hover:bg-green-100">Resolve</button>
+                                        <button type="button" wire:click="markResolved({{ $message->id }})" class="admin-action-btn admin-action-success" title="Resolve">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </button>
                                     @endif
-                                    <button type="button" onclick="return confirm('Delete this contact message?')" wire:click="deleteMessage({{ $message->id }})" class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100">Delete</button>
+                                    <button type="button" onclick="return confirm('Delete this contact message?')" wire:click="deleteMessage({{ $message->id }})" class="admin-action-btn admin-action-delete" title="Delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m5 0H6" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </td>
                         </tr>

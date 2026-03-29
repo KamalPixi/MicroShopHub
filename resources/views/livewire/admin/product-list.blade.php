@@ -125,14 +125,14 @@
                         @endif
                     </td>
                     <td class="text-end space-x-1 px-2 py-2 align-top whitespace-nowrap">
-                        <a href="{{ route('store.product.show', $product->slug) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center h-7 w-7 border border-gray-200 text-gray-600 hover:text-primary hover:bg-gray-50 rounded" title="Open product on website">
+                        <a href="{{ route('store.product.show', $product->slug) }}" target="_blank" rel="noopener noreferrer" class="admin-action-btn" title="Open product on website">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7v7M10 14L21 3M21 14v7h-7M3 10V3h7M3 21l7-7" />
                             </svg>
                         </a>
 
                         <!-- View -->
-                        <a href="{{ route('admin.products.show', $product->id) }}" class="inline-flex items-center justify-center h-7 w-7 border border-blue-200 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded">
+                        <a href="{{ route('admin.products.show', $product->id) }}" class="admin-action-btn admin-action-view" title="View">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -140,14 +140,14 @@
                         </a>
 
                         <!-- Edit -->
-                        <a href="{{ route('admin.products.edit', $product->id) }}" class="inline-flex items-center justify-center h-7 w-7 border border-green-200 text-green-600 hover:text-green-800 hover:bg-green-50 rounded">
+                        <a href="{{ route('admin.products.edit', $product->id) }}" class="admin-action-btn admin-action-edit" title="Edit">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </a>
 
                         <!-- Delete -->
-                        <button wire:click="deleteProduct({{ $product->id }})" wire:loading.attr="disabled" wire:confirm="Are you sure you want to delete this product?" class="inline-flex items-center justify-center h-7 w-7 border border-red-200 text-red-600 hover:text-red-800 hover:bg-red-50 rounded">
+                        <button wire:click="deleteProduct({{ $product->id }})" wire:loading.attr="disabled" wire:confirm="Are you sure you want to delete this product?" class="admin-action-btn admin-action-delete" title="Delete">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m5 0H6" />
                             </svg>

@@ -351,6 +351,80 @@
             accent-color: #2563eb;
         }
 
+        .admin-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #4b5563;
+            transition: all 0.2s ease;
+        }
+
+        .admin-action-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+
+        .admin-action-view {
+            border-color: #dbeafe;
+            color: #2563eb;
+        }
+
+        .admin-action-view:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        .admin-action-edit {
+            border-color: #bbf7d0;
+            color: #16a34a;
+        }
+
+        .admin-action-edit:hover {
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: #166534;
+        }
+
+        .admin-action-delete {
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .admin-action-delete:hover {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #b91c1c;
+        }
+
+        .admin-action-success {
+            border-color: #a7f3d0;
+            color: #059669;
+        }
+
+        .admin-action-success:hover {
+            background: #ecfdf5;
+            border-color: #6ee7b7;
+            color: #047857;
+        }
+
+        .admin-action-warning {
+            border-color: #fde68a;
+            color: #d97706;
+        }
+
+        .admin-action-warning:hover {
+            background: #fffbeb;
+            border-color: #fcd34d;
+            color: #b45309;
+        }
+
         .table-field {
             border: 1px solid #e5e7eb;
         }

@@ -136,14 +136,14 @@
                         <td class="p-2 text-gray-600">{{ $customer->created_at?->format('M d, Y') }}</td>
                         <td class="p-2 text-end space-x-3">
                             <!-- View -->
-                            <a href="{{ route('admin.customers.show', $customer->id) }}" class="inline-flex items-center py-1 text-primary hover:text-primary rounded" title="View">
+                            <a href="{{ route('admin.customers.show', $customer->id) }}" class="admin-action-btn admin-action-view" title="View">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
                             </a>
                             <!-- Edit -->
-                            <a href="{{ route('admin.customers.edit', $customer->id) }}" class="inline-flex items-center py-1 text-emerald-600 hover:text-emerald-800 rounded" title="Edit">
+                            <a href="{{ route('admin.customers.edit', $customer->id) }}" class="admin-action-btn admin-action-edit" title="Edit">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                                 </svg>
@@ -153,7 +153,7 @@
                                 wire:click="deleteCustomer({{ $customer->id }})" 
                                 wire:loading.attr="disabled" 
                                 onclick="return confirm('Are you sure you want to delete this customer?')"
-                                class="inline-flex items-center py-1 text-red-600 hover:text-red-800 rounded" 
+                                class="admin-action-btn admin-action-delete" 
                                 title="Delete"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
