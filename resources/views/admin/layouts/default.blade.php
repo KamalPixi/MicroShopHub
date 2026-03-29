@@ -311,7 +311,7 @@
         @include('admin.includes.sidebar')
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 overflow-y-auto ml-56">
+        <main class="flex-1 p-4 overflow-y-auto ml-60">
             <!-- Header -->
             @include('admin.includes.header')
 
@@ -348,9 +348,9 @@
             toggleButtonFloating.classList.toggle('show-floating');
             const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
             if (sidebar.classList.contains('sidebar-collapsed')) {
-                mainContent.classList.remove('ml-56');
+                mainContent.classList.remove('ml-60');
             } else {
-                mainContent.classList.add('ml-56');
+                mainContent.classList.add('ml-60');
             }
             if (toggleButton) {
                 toggleButton.querySelector('svg').innerHTML = breadcrumbIcon;
