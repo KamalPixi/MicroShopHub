@@ -278,57 +278,77 @@
         <div class="card" style="padding:16px">
             <h3 style="margin:0 0 10px;font-size:16px">Gateway Details (Optional)</h3>
             <div class="grid grid-2">
-                <div>
-                    <label>Stripe API Key</label>
-                    <input type="text" name="stripe_api_key" value="{{ old('stripe_api_key', $settings['stripe_api_key'] ?? '') }}" placeholder="Optional">
+                <div class="card" style="padding:14px">
+                    <h4 style="margin:0 0 10px;font-size:14px">Stripe</h4>
+                    <div class="stack">
+                        <div>
+                            <label>API Key</label>
+                            <input type="text" name="stripe_api_key" value="{{ old('stripe_api_key', $settings['stripe_api_key'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Label</label>
+                            <input type="text" name="stripe_label" value="{{ old('stripe_label', $settings['stripe_label'] ?? '') }}" placeholder="Credit / Debit Card">
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label>Stripe Label</label>
-                    <input type="text" name="stripe_label" value="{{ old('stripe_label', $settings['stripe_label'] ?? '') }}" placeholder="Credit / Debit Card">
+                <div class="card" style="padding:14px">
+                    <h4 style="margin:0 0 10px;font-size:14px">PayPal</h4>
+                    <div class="stack">
+                        <div>
+                            <label>API Key</label>
+                            <input type="text" name="paypal_api_key" value="{{ old('paypal_api_key', $settings['paypal_api_key'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Label</label>
+                            <input type="text" name="paypal_label" value="{{ old('paypal_label', $settings['paypal_label'] ?? '') }}" placeholder="PayPal">
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label>PayPal API Key</label>
-                    <input type="text" name="paypal_api_key" value="{{ old('paypal_api_key', $settings['paypal_api_key'] ?? '') }}" placeholder="Optional">
+                <div class="card" style="padding:14px">
+                    <h4 style="margin:0 0 10px;font-size:14px">SSLCommerz</h4>
+                    <div class="stack">
+                        <div>
+                            <label>Store ID</label>
+                            <input type="text" name="sslcommerz_store_id" value="{{ old('sslcommerz_store_id', $settings['sslcommerz_store_id'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>API Key</label>
+                            <input type="text" name="sslcommerz_api_key" value="{{ old('sslcommerz_api_key', $settings['sslcommerz_api_key'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Label</label>
+                            <input type="text" name="sslcommerz_label" value="{{ old('sslcommerz_label', $settings['sslcommerz_label'] ?? '') }}" placeholder="SSLCommerz">
+                        </div>
+                        <label class="checkbox" style="margin-top:0">
+                            <input type="checkbox" name="sslcommerz_sandbox" value="1" @checked(old('sslcommerz_sandbox', $settings['sslcommerz_sandbox'] ?? false))>
+                            <span class="small">Use sandbox</span>
+                        </label>
+                    </div>
                 </div>
-                <div>
-                    <label>PayPal Label</label>
-                    <input type="text" name="paypal_label" value="{{ old('paypal_label', $settings['paypal_label'] ?? '') }}" placeholder="PayPal">
-                </div>
-                <div>
-                    <label>SSLCommerz Store ID</label>
-                    <input type="text" name="sslcommerz_store_id" value="{{ old('sslcommerz_store_id', $settings['sslcommerz_store_id'] ?? '') }}" placeholder="Optional">
-                </div>
-                <div>
-                    <label>SSLCommerz API Key</label>
-                    <input type="text" name="sslcommerz_api_key" value="{{ old('sslcommerz_api_key', $settings['sslcommerz_api_key'] ?? '') }}" placeholder="Optional">
-                </div>
-                <div>
-                    <label>SSLCommerz Label</label>
-                    <input type="text" name="sslcommerz_label" value="{{ old('sslcommerz_label', $settings['sslcommerz_label'] ?? '') }}" placeholder="SSLCommerz">
-                </div>
-                <div class="checkbox" style="align-self:end">
-                    <input type="checkbox" name="sslcommerz_sandbox" value="1" @checked(old('sslcommerz_sandbox', $settings['sslcommerz_sandbox'] ?? false))>
-                    <span class="small">Use SSLCommerz sandbox</span>
-                </div>
-                <div>
-                    <label>bKash Base URL</label>
-                    <input type="text" name="bkash_base_url" value="{{ old('bkash_base_url', $settings['bkash_base_url'] ?? '') }}" placeholder="Optional">
-                </div>
-                <div>
-                    <label>bKash App Key</label>
-                    <input type="text" name="bkash_app_key" value="{{ old('bkash_app_key', $settings['bkash_app_key'] ?? '') }}" placeholder="Optional">
-                </div>
-                <div>
-                    <label>bKash App Secret</label>
-                    <input type="text" name="bkash_app_secret" value="{{ old('bkash_app_secret', $settings['bkash_app_secret'] ?? '') }}" placeholder="Optional">
-                </div>
-                <div>
-                    <label>bKash Username</label>
-                    <input type="text" name="bkash_username" value="{{ old('bkash_username', $settings['bkash_username'] ?? '') }}" placeholder="Optional">
-                </div>
-                <div>
-                    <label>bKash Password</label>
-                    <input type="password" name="bkash_password" value="{{ old('bkash_password', $settings['bkash_password'] ?? '') }}" placeholder="Optional">
+                <div class="card" style="padding:14px">
+                    <h4 style="margin:0 0 10px;font-size:14px">bKash</h4>
+                    <div class="stack">
+                        <div>
+                            <label>Base URL</label>
+                            <input type="text" name="bkash_base_url" value="{{ old('bkash_base_url', $settings['bkash_base_url'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>App Key</label>
+                            <input type="text" name="bkash_app_key" value="{{ old('bkash_app_key', $settings['bkash_app_key'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>App Secret</label>
+                            <input type="text" name="bkash_app_secret" value="{{ old('bkash_app_secret', $settings['bkash_app_secret'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Username</label>
+                            <input type="text" name="bkash_username" value="{{ old('bkash_username', $settings['bkash_username'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Password</label>
+                            <input type="password" name="bkash_password" value="{{ old('bkash_password', $settings['bkash_password'] ?? '') }}" placeholder="Optional">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
