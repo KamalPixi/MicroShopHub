@@ -1,17 +1,23 @@
-<div class="bg-gray-50 min-h-screen font-sans">
+<div class="bg-gradient-to-br from-gray-50 via-white to-gray-50 min-h-screen font-sans">
+    @php
+        $fieldClass = 'mt-1 w-full h-11 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-primary focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10';
+        $selectClass = 'mt-1 w-full h-11 appearance-none rounded-xl border border-gray-300 bg-white px-4 pr-10 text-sm text-gray-900 shadow-sm transition focus:border-primary focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10';
+        $disabledFieldClass = 'mt-1 w-full h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm text-gray-500 shadow-sm cursor-not-allowed';
+    @endphp
     
     <div class="md:hidden bg-white border-b border-gray-200 p-4 sticky top-0 z-10">
         <h1 class="text-lg font-bold text-gray-900">My Account</h1>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex flex-col lg:flex-row gap-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        <div class="flex flex-col lg:flex-row gap-6 xl:gap-8">
             
             <aside class="w-full lg:w-64 flex-shrink-0">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden sticky top-24">
+                    <div class="h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
                     
                     <div class="p-6 border-b border-gray-100 flex flex-col items-center text-center bg-gradient-to-b from-white to-gray-50">
-                        <div class="relative mb-3">
+                        <div class="relative mb-4">
                             <div class="w-20 h-20 rounded-full overflow-hidden bg-gray-200 ring-4 ring-white shadow-sm">
                                 @if($existingAvatar)
                                     <img src="{{ Storage::url($existingAvatar) }}" class="w-full h-full object-cover">
@@ -24,7 +30,9 @@
                         </div>
                         <h2 class="font-bold text-gray-900 truncate w-full">{{ auth()->user()->name }}</h2>
                         <p class="text-xs text-gray-500 truncate w-full mb-2">{{ auth()->user()->email }}</p>
-                        <p class="text-[11px] text-gray-400">Member since {{ auth()->user()->created_at?->format('M Y') }}</p>
+                        <div class="mt-2 inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
+                            Member since {{ auth()->user()->created_at?->format('M Y') }}
+                        </div>
                     </div>
 
                     <nav class="p-2 space-y-1">
@@ -35,11 +43,11 @@
                             'profile' => ['label' => 'Profile Settings', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'],
                         ] as $key => $item)
                             <button wire:click="switchTab('{{ $key }}')"
-                                    class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium
+                                    class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium border
                                     {{ $activeTab === $key 
-                                        ? 'bg-primary text-white shadow-sm' 
-                                        : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
-                                <svg class="w-5 h-5 {{ $activeTab === $key ? 'text-white' : 'text-gray-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        ? 'bg-primary text-white shadow-sm border-primary/10' 
+                                        : 'text-gray-600 border-transparent hover:bg-gray-50 hover:text-primary hover:border-gray-200' }}">
+                                <svg class="w-5 h-5 shrink-0 {{ $activeTab === $key ? 'text-white' : 'text-gray-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}" />
                                 </svg>
                                 <span>{{ $item['label'] }}</span>
@@ -48,7 +56,7 @@
                         
                         <form method="POST" action="{{ route('logout') }}" class="mt-2 pt-2 border-t border-gray-100">
                             @csrf
-                            <button type="submit" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 transition-colors">
+                            <button type="submit" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors border border-transparent hover:border-red-100">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                                 <span>Log Out</span>
                             </button>
@@ -62,17 +70,17 @@
                 @if($activeTab === 'overview')
                     <div class="space-y-6 animate-fade-in">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                            <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
                                 <p class="text-xs font-semibold text-gray-500 uppercase">Total Orders</p>
                                 <div class="mt-2 text-2xl font-bold text-gray-900">{{ $stats['total_orders'] }}</div>
                                 <p class="text-xs text-gray-400 mt-1">All-time orders</p>
                             </div>
-                            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                            <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
                                 <p class="text-xs font-semibold text-gray-500 uppercase">Total Spend</p>
                                 <div class="mt-2 text-2xl font-bold text-gray-900">{{ $currencyCode }} {{ number_format($stats['total_spend'], 2) }}</div>
                                 <p class="text-xs text-gray-400 mt-1">Across all orders</p>
                             </div>
-                            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                            <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
                                 <p class="text-xs font-semibold text-gray-500 uppercase">Last Order</p>
                                 <div class="mt-2 text-sm font-semibold text-gray-900">
                                     @if($stats['last_order'])
@@ -87,25 +95,29 @@
                             </div>
                         </div>
 
-                        <div class="bg-white rounded-xl border border-gray-100 p-6">
+                        <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="font-bold text-gray-900">Profile Overview</h3>
                                 <button wire:click="switchTab('profile')" class="text-xs font-semibold text-primary hover:underline">Edit Profile</button>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                                <div>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                                <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
                                     <p class="text-xs font-semibold text-gray-500 uppercase">Name</p>
                                     <p class="font-semibold text-gray-900 mt-1">{{ $user->name }}</p>
                                 </div>
-                                <div>
+                                <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
                                     <p class="text-xs font-semibold text-gray-500 uppercase">Email</p>
                                     <p class="text-gray-700 mt-1">{{ $user->email }}</p>
                                 </div>
-                                <div>
+                                <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
                                     <p class="text-xs font-semibold text-gray-500 uppercase">Phone</p>
                                     <p class="text-gray-700 mt-1">{{ $user->phone ?? '—' }}</p>
                                 </div>
-                                <div class="md:col-span-3">
+                                <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">Saved Addresses</p>
+                                    <p class="font-semibold text-gray-900 mt-1">{{ $stats['address_count'] }}</p>
+                                </div>
+                                <div class="md:col-span-4 rounded-xl border border-gray-200 bg-gray-50/80 p-4">
                                     <p class="text-xs font-semibold text-gray-500 uppercase">Default Address</p>
                                     <p class="text-gray-700 mt-1">
                                         {{ $user->defaultAddress?->address_line1 ?? 'No default address set.' }}
@@ -123,10 +135,10 @@
                             </div>
                         </div>
                         
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                             <h3 class="font-bold text-gray-900 mb-4">My Orders</h3>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <button wire:click="switchOrderTab('to_pay')" class="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 hover:bg-blue-50 transition group">
+                                <button wire:click="switchOrderTab('to_pay')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition group border border-transparent hover:border-primary/10">
                                     <div class="relative mb-2">
                                         <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                                         @if($stats['pending_payment'] > 0)
@@ -136,7 +148,7 @@
                                     <span class="text-xs font-medium text-gray-600 group-hover:text-primary">To Pay</span>
                                 </button>
 
-                                <button wire:click="switchOrderTab('to_ship')" class="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 hover:bg-blue-50 transition group">
+                                <button wire:click="switchOrderTab('to_ship')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition group border border-transparent hover:border-primary/10">
                                     <div class="relative mb-2">
                                         <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                                         @if($stats['to_ship'] > 0)
@@ -146,7 +158,7 @@
                                     <span class="text-xs font-medium text-gray-600 group-hover:text-primary">To Ship</span>
                                 </button>
 
-                                <button wire:click="switchOrderTab('to_receive')" class="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 hover:bg-blue-50 transition group">
+                                <button wire:click="switchOrderTab('to_receive')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition group border border-transparent hover:border-primary/10">
                                     <div class="relative mb-2">
                                         <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
                                         @if($stats['to_receive'] > 0)
@@ -156,7 +168,7 @@
                                     <span class="text-xs font-medium text-gray-600 group-hover:text-primary">To Receive</span>
                                 </button>
 
-                                <button wire:click="switchOrderTab('completed')" class="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-50 hover:bg-blue-50 transition group">
+                                <button wire:click="switchOrderTab('completed')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition group border border-transparent hover:border-primary/10">
                                     <div class="relative mb-2">
                                         <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                         @if($stats['completed'] > 0)
@@ -168,7 +180,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                             <div class="px-6 py-4 border-b border-gray-100">
                                 <h3 class="font-bold text-gray-900">Recent Orders</h3>
                             </div>
@@ -176,7 +188,7 @@
                                 @forelse($recentOrders as $order)
                                     <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition">
                                         <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center border border-gray-200">
                                                 <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                                             </div>
                                             <div>
@@ -201,7 +213,7 @@
                 @endif
 
                 @if($activeTab === 'orders')
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden min-h-[500px]">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden min-h-[500px]">
                         
                         <div class="flex overflow-x-auto border-b border-gray-100 no-scrollbar">
                             @foreach(['all' => 'All', 'to_pay' => 'To Pay', 'to_ship' => 'To Ship', 'to_receive' => 'To Receive', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $key => $label)
@@ -240,7 +252,7 @@
                                     <div class="space-y-3 mb-4">
                                         @foreach($order->items->take(2) as $item)
                                             <div class="flex items-center gap-4">
-                                                <div class="w-14 h-14 bg-gray-100 rounded border border-gray-200 overflow-hidden flex-shrink-0">
+                                            <div class="w-14 h-14 bg-gray-100 rounded-xl border border-gray-200 overflow-hidden flex-shrink-0">
                                                     </div>
                                                 <div class="flex-1">
                                                     <p class="text-sm font-medium text-gray-900 line-clamp-1">{{ $item->name }}</p>
@@ -304,67 +316,67 @@
                             <div class="bg-green-50 text-green-700 p-3 rounded-lg text-sm">{{ session('address_success') }}</div>
                         @endif
                         @if($showAddressForm)
-                            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                            <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 md:p-6">
                                 <h4 class="text-sm font-bold text-gray-900 mb-4">New Address</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600">Label</label>
-                                        <input wire:model="newAddress.type" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Home / Office">
+                                        <input wire:model="newAddress.type" type="text" class="{{ $fieldClass }}" placeholder="Home / Office">
                                         @error('newAddress.type') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600">Full Name</label>
-                                        <input wire:model="newAddress.name" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        <input wire:model="newAddress.name" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600">Phone</label>
-                                        <input wire:model="newAddress.phone" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        <input wire:model="newAddress.phone" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.phone') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600">City</label>
-                                        <input wire:model="newAddress.city" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        <input wire:model="newAddress.city" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.city') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-xs font-semibold text-gray-600">Street Address</label>
-                                        <input wire:model="newAddress.address_line1" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        <input wire:model="newAddress.address_line1" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.address_line1') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-xs font-semibold text-gray-600">Apartment / Suite</label>
-                                        <input wire:model="newAddress.address_line2" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        <input wire:model="newAddress.address_line2" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.address_line2') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600">State</label>
-                                        <input wire:model="newAddress.state" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        <input wire:model="newAddress.state" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.state') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600">Postal Code</label>
-                                        <input wire:model="newAddress.postal_code" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        <input wire:model="newAddress.postal_code" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.postal_code') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600">Country</label>
-                                        <input wire:model="newAddress.country" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                        <input wire:model="newAddress.country" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.country') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
-                                    <div class="flex items-center gap-2 mt-2">
+                                    <div class="flex items-center gap-2 mt-2 md:pt-4">
                                         <input wire:model="newAddress.is_default" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
                                         <span class="text-xs text-gray-600">Set as default</span>
                                     </div>
                                 </div>
                                 <div class="mt-4 flex justify-end">
-                                    <button wire:click="addAddress" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary transition">Save Address</button>
+                                    <button wire:click="addAddress" class="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary/90">Save Address</button>
                                 </div>
                             </div>
                         @endif
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @forelse($addresses as $addr)
-                                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative group hover:border-primary/50 transition-colors">
+                                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm relative group hover:border-primary/40 transition-colors">
                                     <div class="flex justify-between items-start mb-2">
                                         <span class="bg-gray-100 text-gray-600 text-[10px] uppercase font-bold px-2 py-1 rounded">{{ $addr->type ?? 'Address' }}</span>
                                         <button wire:click="deleteAddress({{ $addr->id }})" wire:confirm="Delete?" class="text-gray-400 hover:text-red-500 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
@@ -380,7 +392,7 @@
                                     @endif
                                 </div>
                             @empty
-                                <div class="col-span-2 text-center py-10 bg-white rounded-xl border border-dashed border-gray-300"><p class="text-gray-500">No addresses saved.</p></div>
+                                <div class="col-span-2 text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300"><p class="text-gray-500">No addresses saved.</p></div>
                             @endforelse
                         </div>
                         @if(method_exists($addresses, 'links'))
@@ -392,88 +404,131 @@
                 @endif
 
                 @if($activeTab === 'profile')
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 animate-fade-in">
-                        <h3 class="font-bold text-gray-900 text-lg mb-6 pb-4 border-b border-gray-100">My Profile</h3>
-
-                        @if (session()->has('profile_success'))
-                            <div class="bg-green-50 text-green-700 p-3 rounded-lg text-sm mb-6">{{ session('profile_success') }}</div>
-                        @endif
-
-                        <form wire:submit="updateProfile" class="space-y-8">
-                            
-                            <div class="flex items-center gap-6">
-                                <div class="relative group">
-                                    <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-100 ring-4 ring-gray-50">
-                                        @if($avatar)
-                                            <img src="{{ $avatar->temporaryUrl() }}" class="w-full h-full object-cover">
-                                        @elseif($existingAvatar)
-                                            <img src="{{ Storage::url($existingAvatar) }}" class="w-full h-full object-cover">
-                                        @else
-                                            <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
-                                                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-                                            </div>
-                                        @endif
+                    <div class="grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)] gap-6 animate-fade-in">
+                        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                            <div class="h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
+                            <div class="p-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="relative shrink-0">
+                                        <div class="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100 ring-4 ring-gray-50 shadow-sm">
+                                            @if($avatar)
+                                                <img src="{{ $avatar->temporaryUrl() }}" class="w-full h-full object-cover">
+                                            @elseif($existingAvatar)
+                                                <img src="{{ Storage::url($existingAvatar) }}" class="w-full h-full object-cover">
+                                            @else
+                                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/15 to-primary/5 text-primary">
+                                                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <label class="absolute -right-1 -bottom-1 rounded-full bg-white p-2 shadow-md border border-gray-200 cursor-pointer text-gray-500 hover:text-primary transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                            <input type="file" wire:model="avatar" class="hidden" accept="image/*">
+                                        </label>
                                     </div>
-                                    <label class="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow border border-gray-200 cursor-pointer hover:text-primary transition">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                        <input type="file" wire:model="avatar" class="hidden" accept="image/*">
-                                    </label>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-900">Profile Photo</h4>
-                                    <p class="text-xs text-gray-500 mt-1">Accepts PNG, JPG or JPEG. Max 1MB.</p>
-                                    @error('avatar') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-1">Full Name</label>
-                                    <input wire:model="name" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary h-10">
-                                    @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-1">Email</label>
-                                    <input value="{{ $email }}" type="email" disabled class="w-full bg-gray-50 border-gray-200 rounded-lg shadow-sm text-gray-500 cursor-not-allowed h-10">
-                                    <span class="text-[10px] text-gray-400 float-right mt-1">Email changes are not supported yet.</span>
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-1">Phone Number</label>
-                                    <input wire:model="phone" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary h-10">
-                                    @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-1">Gender</label>
-                                    <div class="relative">
-                                        <select wire:model="gender" class="w-full appearance-none border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary h-10 pr-8 bg-white">
-                                            <option value="">Select Gender</option>
-                                            <option value="1">Male</option>
-                                            <option value="2">Female</option>
-                                            <option value="3">Other</option>
-                                        </select>
-                                        <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
-                                            <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
-                                            </svg>
-                                        </span>
+                                    <div class="min-w-0">
+                                        <h4 class="font-bold text-gray-900 truncate">{{ auth()->user()->name }}</h4>
+                                        <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
+                                        <p class="text-[11px] text-gray-400 mt-1">Upload a clear photo to personalize your account.</p>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-1">Date of Birth</label>
-                                    <input wire:model="birthday" type="date" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary h-10">
+                                @error('avatar') <span class="mt-3 block text-red-500 text-xs">{{ $message }}</span> @enderror
+
+                                <div class="mt-6 grid grid-cols-2 gap-3">
+                                    <div class="rounded-xl bg-gray-50 border border-gray-200 p-3">
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Orders</p>
+                                        <p class="mt-1 text-lg font-bold text-gray-900">{{ $stats['total_orders'] }}</p>
+                                    </div>
+                                    <div class="rounded-xl bg-gray-50 border border-gray-200 p-3">
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Addresses</p>
+                                        <p class="mt-1 text-lg font-bold text-gray-900">{{ $stats['address_count'] }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 space-y-3 rounded-2xl border border-gray-200 bg-gray-50/70 p-4 text-sm">
+                                    <div>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Phone</p>
+                                        <p class="mt-1 font-medium text-gray-900">{{ $user->phone ?? '—' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Member since</p>
+                                        <p class="mt-1 font-medium text-gray-900">{{ $user->created_at?->format('M Y') }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 flex gap-3">
+                                    <button type="button" wire:click="switchTab('overview')" class="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-primary/30 hover:text-primary transition">Overview</button>
+                                    <button type="button" wire:click="switchTab('addresses')" class="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-primary/30 hover:text-primary transition">Addresses</button>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="pt-6 border-t border-gray-100 flex justify-end">
-                                <button type="submit" class="bg-primary text-white px-8 py-3 rounded-lg font-bold shadow-sm hover:bg-primary transition">
-                                    Save Changes
-                                </button>
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+                            <div class="flex items-center justify-between gap-4 pb-5 border-b border-gray-100">
+                                <div>
+                                    <h3 class="font-bold text-gray-900 text-lg">My Profile</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Update your contact details and account identity.</p>
+                                </div>
+                                @if (session()->has('profile_success'))
+                                    <div class="hidden md:block bg-green-50 text-green-700 px-3 py-2 rounded-xl text-sm">{{ session('profile_success') }}</div>
+                                @endif
                             </div>
-                        </form>
+
+                            @if (session()->has('profile_success'))
+                                <div class="md:hidden mt-4 bg-green-50 text-green-700 p-3 rounded-xl text-sm">{{ session('profile_success') }}</div>
+                            @endif
+
+                            <form wire:submit="updateProfile" class="mt-6 space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Full Name</label>
+                                        <input wire:model="name" type="text" class="{{ $fieldClass }}">
+                                        @error('name') <span class="mt-1 block text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Email</label>
+                                        <input value="{{ $email }}" type="email" disabled class="{{ $disabledFieldClass }}">
+                                        <p class="mt-1 text-[11px] text-gray-400">Email changes are not supported yet.</p>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Phone Number</label>
+                                        <input wire:model="phone" type="text" class="{{ $fieldClass }}">
+                                        @error('phone') <span class="mt-1 block text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Gender</label>
+                                        <div class="relative">
+                                            <select wire:model="gender" class="{{ $selectClass }}">
+                                                <option value="">Select Gender</option>
+                                                <option value="1">Male</option>
+                                                <option value="2">Female</option>
+                                                <option value="3">Other</option>
+                                            </select>
+                                            <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                                                <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Date of Birth</label>
+                                        <input wire:model="birthday" type="date" class="{{ $fieldClass }}">
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end pt-4 border-t border-gray-100">
+                                    <button type="submit" class="rounded-xl bg-primary px-8 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-primary/90">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 @endif
 

@@ -252,6 +252,7 @@ class Dashboard extends Component
                 'to_receive' => $toReceive,
                 'completed' => $completed,
                 'total_spend' => $totalSpend,
+                'address_count' => $this->user->addresses()->count(),
                 'last_order' => $lastOrder,
             ],
         ]);
