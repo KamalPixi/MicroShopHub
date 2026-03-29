@@ -240,11 +240,20 @@ class Dashboard extends Component
         $completed = (clone $statsQuery)->where('status', 'delivered')->count();
         $totalSpend = (clone $statsQuery)->sum('total');
         $lastOrder = (clone $statsQuery)->latest()->first();
+        $orderTabCounts = [
+            'all' => $totalOrders,
+            'to_pay' => $pendingPayment,
+            'to_ship' => $toShip,
+            'to_receive' => $toReceive,
+            'completed' => $completed,
+            'cancelled' => (clone $statsQuery)->whereIn('status', ['cancelled', 'refunded'])->count(),
+        ];
 
         return view('livewire.store.customer.dashboard', [
             'orders' => $this->activeTab === 'orders' ? $this->orders : [], // Uses the computed property above
             'addresses' => $this->activeTab === 'addresses' ? $this->user->addresses()->latest()->paginate(6, ['*'], 'addressesPage') : [],
             'recentOrders' => $this->user->orders()->latest()->take(5)->get(),
+            'orderTabCounts' => $orderTabCounts,
             'stats' => [
                 'total_orders' => $totalOrders,
                 'pending_payment' => $pendingPayment,

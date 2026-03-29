@@ -242,75 +242,120 @@
 
                 @if($activeTab === 'orders')
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden min-h-[500px]">
-                        
-                        <div class="flex overflow-x-auto border-b border-gray-100 no-scrollbar">
+                        <div class="p-6 border-b border-gray-100 bg-gradient-to-b from-white to-gray-50/60">
+                            <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                                <div>
+                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Order history</p>
+                                    <h3 class="mt-2 text-xl font-bold text-gray-900">My Orders</h3>
+                                    <p class="mt-1 text-sm text-gray-500">Track payments, shipments, and completed purchases in one place.</p>
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3">
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">All</p>
+                                        <p class="mt-1 text-lg font-bold text-gray-900">{{ $orderTabCounts['all'] }}</p>
+                                    </div>
+                                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3">
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Active</p>
+                                        <p class="mt-1 text-lg font-bold text-gray-900">{{ $orderTabCounts['to_pay'] + $orderTabCounts['to_ship'] + $orderTabCounts['to_receive'] }}</p>
+                                    </div>
+                                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3">
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Delivered</p>
+                                        <p class="mt-1 text-lg font-bold text-gray-900">{{ $orderTabCounts['completed'] }}</p>
+                                    </div>
+                                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3">
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Cancelled</p>
+                                        <p class="mt-1 text-lg font-bold text-gray-900">{{ $orderTabCounts['cancelled'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex overflow-x-auto border-b border-gray-100 bg-white no-scrollbar px-2 pt-2">
                             @foreach(['all' => 'All', 'to_pay' => 'To Pay', 'to_ship' => 'To Ship', 'to_receive' => 'To Receive', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $key => $label)
                                 <button wire:click="switchOrderTab('{{ $key }}')"
-                                        class="px-6 py-4 text-sm font-bold whitespace-nowrap border-b-2 transition-colors
+                                        class="relative flex items-center gap-2 px-5 py-4 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors
                                         {{ $activeOrderTab === $key ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-800' }}">
-                                    {{ $label }}
+                                    <span>{{ $label }}</span>
+                                    <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold text-gray-600">
+                                        {{ $orderTabCounts[$key] ?? 0 }}
+                                    </span>
                                 </button>
                             @endforeach
                         </div>
 
-                        <div class="p-0">
+                        <div class="p-4 md:p-6">
                             @forelse($orders as $order)
-                                <div class="p-6 border-b border-gray-100 hover:bg-gray-50 transition">
-                                    <div class="flex flex-col md:flex-row justify-between mb-4">
-                                        <div class="flex items-center gap-2 mb-2 md:mb-0">
-                                            <span class="font-bold text-gray-900">#{{ $order->order_number }}</span>
-                                            <span class="text-xs text-gray-400">•</span>
-                                            <span class="text-sm text-gray-500">{{ $order->created_at->format('d M Y H:i') }}</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="px-2.5 py-0.5 rounded text-xs font-bold uppercase
-                                                {{ $order->status == 'delivered' ? 'bg-green-100 text-green-700' : 
-                                                  ($order->status == 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700') }}">
-                                                {{ $order->status }}
-                                            </span>
-                                            <span class="px-2.5 py-0.5 rounded text-xs font-semibold uppercase bg-gray-100 text-gray-600">
-                                                {{ $order->payment_status ?? 'pending' }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="text-xs text-gray-500 mb-3">
-                                        Payment: <span class="font-semibold text-gray-700">{{ $order->payment_method ?? '—' }}</span>
-                                    </div>
-
-                                    <div class="space-y-3 mb-4">
-                                        @foreach($order->items->take(2) as $item)
-                                            <div class="flex items-center gap-4">
-                                            <div class="w-14 h-14 bg-gray-100 rounded-xl border border-gray-200 overflow-hidden flex-shrink-0">
-                                                    </div>
-                                                <div class="flex-1">
-                                                    <p class="text-sm font-medium text-gray-900 line-clamp-1">{{ $item->name }}</p>
-                                                    <p class="text-xs text-gray-500">x{{ $item->quantity }}</p>
+                                <div class="mb-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-primary/30 hover:shadow-md">
+                                    <div class="border-b border-gray-100 bg-gray-50/60 px-5 py-4">
+                                        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
+                                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                                                 </div>
-                                                <div class="text-sm font-medium text-gray-900">
-                                                    @php
-                                                        $itemSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
-                                                    @endphp
-                                                    {{ $itemSymbol }}{{ number_format($item->price, 2) }}
+                                                <div>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="font-bold text-gray-900">#{{ $order->order_number }}</span>
+                                                        <span class="text-xs text-gray-400">•</span>
+                                                        <span class="text-sm text-gray-500">{{ $order->created_at->format('d M Y, h:i A') }}</span>
+                                                    </div>
+                                                    <p class="mt-1 text-xs text-gray-500">
+                                                        {{ $order->items->count() }} item{{ $order->items->count() === 1 ? '' : 's' }} in this order
+                                                    </p>
                                                 </div>
                                             </div>
-                                        @endforeach
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.18em]
+                                                    {{ $order->status == 'delivered' ? 'bg-green-100 text-green-700' : 
+                                                      ($order->status == 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700') }}">
+                                                    {{ $order->status }}
+                                                </span>
+                                                <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.18em] bg-gray-100 text-gray-600">
+                                                    {{ $order->payment_status ?? 'pending' }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="px-5 py-4">
+                                        <div class="text-xs text-gray-500 mb-4">
+                                            Payment: <span class="font-semibold text-gray-700">{{ $order->payment_method ?? '—' }}</span>
+                                        </div>
+
+                                        <div class="space-y-3">
+                                            @foreach($order->items->take(2) as $item)
+                                                <div class="flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                                                    <div class="w-14 h-14 bg-gray-100 rounded-xl border border-gray-200 overflow-hidden flex-shrink-0">
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-medium text-gray-900 line-clamp-1">{{ $item->name }}</p>
+                                                        <p class="text-xs text-gray-500">x{{ $item->quantity }}</p>
+                                                    </div>
+                                                    <div class="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                        @php
+                                                            $itemSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
+                                                        @endphp
+                                                        {{ $itemSymbol }}{{ number_format($item->price, 2) }}
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                         @if($order->items->count() > 2)
-                                            <p class="text-xs text-gray-500 pl-18">and {{ $order->items->count() - 2 }} more items...</p>
+                                            <p class="mt-3 text-xs text-gray-500">+ {{ $order->items->count() - 2 }} more item{{ $order->items->count() - 2 === 1 ? '' : 's' }}</p>
                                         @endif
                                     </div>
 
-                                    <div class="flex items-center justify-between pt-2 border-t border-dashed border-gray-200">
+                                    <div class="flex flex-col gap-3 border-t border-dashed border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                                         <div class="text-sm">
                                             @php
                                                 $totalSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
                                             @endphp
-                                            Total: <span class="font-bold text-xl text-primary">{{ $totalSymbol }}{{ number_format($order->total, 2) }}</span>
+                                            <span class="text-gray-500">Total</span>
+                                            <span class="ml-2 text-xl font-bold text-primary">{{ $totalSymbol }}{{ number_format($order->total, 2) }}</span>
                                         </div>
-                                        <div class="flex gap-2">
+                                        <div class="flex flex-wrap gap-2">
                                             @if($order->status == 'pending')
-                                                <button class="px-4 py-2 bg-primary text-white text-xs font-bold rounded hover:bg-primary transition">Pay Now</button>
+                                                <button class="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white transition hover:bg-primary/90">Pay Now</button>
                                             @endif
-                                            <button wire:click="viewOrder({{ $order->id }})" class="px-4 py-2 border border-gray-300 text-gray-700 text-xs font-bold rounded hover:bg-gray-50 transition">View Details</button>
+                                            <button wire:click="viewOrder({{ $order->id }})" class="rounded-xl border border-gray-300 px-4 py-2 text-xs font-bold text-gray-700 transition hover:border-primary/30 hover:text-primary hover:bg-gray-50">View Details</button>
                                         </div>
                                     </div>
                                 </div>
@@ -325,7 +370,7 @@
                         </div>
                         
                         @if(method_exists($orders, 'links'))
-                            <div class="p-4 border-t border-gray-100">
+                            <div class="p-4 border-t border-gray-100 bg-white">
                                 {{ $orders->links() }}
                             </div>
                         @endif
