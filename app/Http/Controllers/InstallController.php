@@ -106,6 +106,16 @@ class InstallController extends Controller
             'prefix' => ['nullable', 'string', 'max:20'],
         ]);
 
+        $this->applyDatabaseConfig($data);
+
+        try {
+            DB::connection('mysql')->getPdo();
+        } catch (Throwable $e) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => 'Database connection failed: '.$e->getMessage()]);
+        }
+
         session(['installer.database' => $data]);
 
         return redirect()->route('install.settings');

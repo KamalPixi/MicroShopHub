@@ -12,7 +12,7 @@
         @csrf
         <div>
             <h2 style="margin:0 0 6px;font-size:18px">Database credentials</h2>
-            <p class="muted small" style="margin:0">Enter the database details now. The installer will validate and use them during the final install step.</p>
+            <p class="muted small" style="margin:0">Enter the database details now. The installer will test the connection here and use it during the final install step.</p>
         </div>
 
         <div class="grid grid-2">
@@ -26,7 +26,7 @@
             </div>
             <div>
                 <label>Database</label>
-                <input type="text" name="database" value="{{ old('database', $database['database'] ?? '') }}" placeholder="micro_shop_hub_db">
+                <input type="text" name="database" value="{{ old('database', $database['database'] ?? '') }}" placeholder="slim_cart_db">
             </div>
             <div>
                 <label>Username</label>
@@ -44,7 +44,7 @@
 
         <div class="btn-row">
             <a class="btn btn-soft" href="{{ route('install.requirements') }}">Back</a>
-            <button class="btn btn-primary" type="submit">Continue</button>
+            <button class="btn btn-primary" type="submit">Test & Continue</button>
         </div>
     </form>
 @endsection
