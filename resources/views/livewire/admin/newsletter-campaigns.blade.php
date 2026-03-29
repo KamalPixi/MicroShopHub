@@ -203,22 +203,15 @@
                         </div>
                         <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ data_get($templateOptions, $template_key . '.name', 'Template') }}</span>
                     </div>
-                    <div class="mt-3 grid grid-cols-2 gap-2 text-[11px] text-gray-500">
-                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-                            <div class="uppercase tracking-[0.18em] text-gray-400">Subject</div>
-                            <div class="mt-1 font-semibold text-gray-900">{{ $previewSummary['subject'] }}</div>
+                    <div class="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-3">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-500">Subject</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ $previewSummary['subject'] }}</span>
                         </div>
-                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-                            <div class="uppercase tracking-[0.18em] text-gray-400">Template</div>
-                            <div class="mt-1 font-semibold text-gray-900">{{ $previewSummary['template'] }}</div>
-                        </div>
-                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-                            <div class="uppercase tracking-[0.18em] text-gray-400">Preheader</div>
-                            <div class="mt-1 line-clamp-2 font-semibold text-gray-900">{{ $previewSummary['preheader'] ?: 'No preheader set' }}</div>
-                        </div>
-                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-                            <div class="uppercase tracking-[0.18em] text-gray-400">Products</div>
-                            <div class="mt-1 font-semibold text-gray-900">{{ $previewSummary['products'] }}</div>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <span class="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-semibold text-gray-700">{{ $previewSummary['template'] }}</span>
+                            <span class="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-semibold text-gray-700">{{ $previewSummary['products'] }} products</span>
+                            <span class="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-semibold text-gray-700">{{ $previewSummary['preheader'] ?: 'No preheader' }}</span>
                         </div>
                     </div>
                     <div class="mt-4 overflow-hidden rounded-[1.75rem] border border-gray-200 bg-gray-100 p-3 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
