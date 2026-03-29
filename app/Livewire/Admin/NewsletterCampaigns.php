@@ -408,7 +408,6 @@ class NewsletterCampaigns extends Component
 
                         <div style="padding:18px 24px; border-top:1px solid #e5e7eb; background:#fafafa;">
                             <div style="font-size:12px; color:#6b7280; line-height:1.7;">You are receiving this email because you subscribed to updates from ' . e($storeName) . '.</div>
-                            <div style="margin-top:6px; font-size:12px; color:#6b7280;">Powered by your storefront campaign builder.</div>
                         </div>
                     </div>
                 </div>
