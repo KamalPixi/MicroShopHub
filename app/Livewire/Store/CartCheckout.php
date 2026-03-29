@@ -418,7 +418,14 @@ class CartCheckout extends Component
 
     protected function notifyAdminNewOrder(Order $order): void
     {
-        SendAdminOrderNotification::dispatch($order->id);
+        $emailEnabled = filter_var($this->settings['admin_notify_email_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $telegramEnabled = filter_var($this->settings['admin_notify_telegram_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        if (! $emailEnabled && ! $telegramEnabled) {
+            return;
+        }
+
+        SendAdminOrderNotification::dispatch($order->id)->afterCommit();
     }
 
     public function setAuthMethod(string $method): void
