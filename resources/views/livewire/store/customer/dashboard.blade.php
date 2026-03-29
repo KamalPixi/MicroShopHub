@@ -41,7 +41,7 @@
                                     wire:target="sendVerificationEmail"
                                     class="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-3 py-1 text-[11px] font-semibold text-amber-700 transition hover:border-amber-300 hover:bg-amber-50 disabled:cursor-wait disabled:opacity-80">
                                 <svg wire:loading.remove wire:target="sendVerificationEmail" class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8m-18 8l7.89-4.26a2 2 0 012.22 0L21 16"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8m-18 0a2 2 0 012-2h16a2 2 0 012 2m-20 0v8a2 2 0 002 2h16a2 2 0 002-2V8"></path>
                                 </svg>
                                 <svg wire:loading wire:target="sendVerificationEmail" class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -106,7 +106,7 @@
                                     wire:target="sendVerificationEmail"
                                     class="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-amber-700 disabled:cursor-wait disabled:opacity-80">
                                 <svg wire:loading.remove wire:target="sendVerificationEmail" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8m-18 8l7.89-4.26a2 2 0 012.22 0L21 16"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8m-18 0a2 2 0 012-2h16a2 2 0 012 2m-20 0v8a2 2 0 002 2h16a2 2 0 002-2V8"></path>
                                 </svg>
                                 <svg wire:loading wire:target="sendVerificationEmail" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
