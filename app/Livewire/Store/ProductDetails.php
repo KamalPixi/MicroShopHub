@@ -246,7 +246,7 @@ class ProductDetails extends Component
         );
         $this->dispatch('cartUpdated'); 
 
-        if ($buyNow) return redirect()->route('store.index');
+        if ($buyNow) return redirect()->route('store.cart.index');
 
         $this->showSuccess = true;
         $this->dispatch('reset-success'); 
