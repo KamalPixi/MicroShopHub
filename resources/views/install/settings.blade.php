@@ -25,10 +25,12 @@
             <div>
                 <label>Shop Name</label>
                 <input type="text" name="shop_name" value="{{ old('shop_name', $settings['shop_name'] ?? '') }}" placeholder="Shop name">
+                <div class="help">Auto-filled from your site URL when possible.</div>
             </div>
             <div>
                 <label>Slogan</label>
                 <input type="text" name="slogan" value="{{ old('slogan', $settings['slogan'] ?? '') }}" placeholder="Short brand slogan">
+                <div class="help">A short line derived from your shop name.</div>
             </div>
             <div>
                 <label>Logo</label>
@@ -181,16 +183,49 @@
             </div>
         </div>
 
-        <div class="card" style="padding:16px">
-            <h3 style="margin:0 0 10px;font-size:16px">Supported Countries</h3>
-            <p class="muted xsmall" style="margin:0 0 12px">Select the countries you want active on the storefront.</p>
-            <div class="checkboxes">
+        <div class="card" style="padding:16px" x-data="{ rows: [] }">
+            <div class="inline" style="justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div>
+                    <h3 style="margin:0 0 4px;font-size:16px">Supported Countries</h3>
+                    <p class="muted xsmall" style="margin:0">Select countries that should be active on the storefront or add a new country below.</p>
+                </div>
+                <button type="button" class="btn btn-soft" @click="rows.push({code:'', name:'', active:true})">Add Country</button>
+            </div>
+
+            <div class="checkboxes" style="margin-bottom:14px">
                 @foreach($countryOptions as $code => $name)
                     <label class="checkbox">
                         <input type="checkbox" name="country_codes[]" value="{{ $code }}" @checked(in_array($code, old('country_codes', $settings['country_codes'] ?? ['BD'])))>
                         <span class="small">{{ $name }} ({{ $code }})</span>
                     </label>
                 @endforeach
+            </div>
+
+            <div class="stack">
+                <template x-for="(row, index) in rows" :key="index">
+                    <div class="card" style="padding:14px">
+                        <div class="grid grid-3" style="gap:10px">
+                            <div>
+                                <label>Code</label>
+                                <input type="text" :name="`custom_countries[${index}][code]`" x-model="row.code" placeholder="US">
+                            </div>
+                            <div>
+                                <label>Name</label>
+                                <input type="text" :name="`custom_countries[${index}][name]`" x-model="row.name" placeholder="United States">
+                            </div>
+                            <div>
+                                <label>Status</label>
+                                <label class="checkbox" style="margin-top:0">
+                                    <input type="checkbox" :name="`custom_countries[${index}][active]`" value="1" x-model="row.active">
+                                    <span class="small">Active</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="btn-row" style="justify-content:flex-end;margin-top:10px">
+                            <button type="button" class="btn btn-soft" @click="rows.splice(index, 1)">Remove</button>
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
 

@@ -40,6 +40,11 @@ class InstallController extends Controller
         'NP' => 'Nepal',
     ];
 
+    protected function countrySuggestions(): array
+    {
+        return $this->countryOptions;
+    }
+
     protected function currencyPresets(): array
     {
         return [
@@ -154,10 +159,12 @@ class InstallController extends Controller
 
         $settings = session('installer.settings', $this->defaultSettings());
         $settings['app_url'] = $settings['app_url'] ?: $this->guessAppUrl(request());
+        $settings['shop_name'] = $settings['shop_name'] ?: $this->suggestShopName($settings['app_url']);
+        $settings['slogan'] = $settings['slogan'] ?: $this->suggestSlogan($settings['shop_name']);
 
         return view('install.settings', [
             'settings' => $settings,
-            'countryOptions' => $this->countryOptions,
+            'countryOptions' => $this->countrySuggestions(),
             'currencyPresets' => $this->currencyPresets(),
         ]);
     }
@@ -223,6 +230,10 @@ class InstallController extends Controller
             'mail_from_name' => ['nullable', 'string', 'max:255'],
             'country_codes' => ['nullable', 'array'],
             'country_codes.*' => ['string', 'size:2'],
+            'custom_countries' => ['nullable', 'array'],
+            'custom_countries.*.code' => ['nullable', 'string', 'size:2', 'alpha'],
+            'custom_countries.*.name' => ['nullable', 'string', 'max:120'],
+            'custom_countries.*.active' => ['sometimes', 'boolean'],
             'logo' => ['nullable', 'image', 'max:2048'],
         ]);
 
@@ -237,6 +248,24 @@ class InstallController extends Controller
         $data['cod_enabled'] = (bool) ($data['cod_enabled'] ?? true);
         $data['sslcommerz_sandbox'] = (bool) ($data['sslcommerz_sandbox'] ?? false);
         $data['country_codes'] = array_values(array_intersect(array_keys($this->countryOptions), $data['country_codes'] ?? []));
+        $data['custom_countries'] = collect($data['custom_countries'] ?? [])
+            ->map(function (array $country): ?array {
+                $code = strtoupper(trim((string) ($country['code'] ?? '')));
+                $name = trim((string) ($country['name'] ?? ''));
+
+                if ($code === '' || $name === '') {
+                    return null;
+                }
+
+                return [
+                    'code' => $code,
+                    'name' => $name,
+                    'active' => (bool) ($country['active'] ?? true),
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
         $data['currency'] = strtoupper((string) ($data['currency'] ?? 'BDT'));
         $data['custom_currencies'] = collect($data['custom_currencies'] ?? [])
             ->map(function (array $currency): ?array {
@@ -305,7 +334,7 @@ class InstallController extends Controller
 
         $this->persistSettings($settings);
         $this->persistCurrencies($settings['currency'] ?? 'BDT', $settings['custom_currencies'] ?? []);
-        $this->syncCountries($settings['country_codes'] ?? ['BD']);
+        $this->syncCountries($settings['country_codes'] ?? ['BD'], $settings['custom_countries'] ?? []);
         $this->createLockFile($settings['app_url'] ?? config('app.url'));
 
         session()->forget(['installer.database', 'installer.settings']);
@@ -466,7 +495,7 @@ class InstallController extends Controller
         }
     }
 
-    protected function syncCountries(array $codes): void
+    protected function syncCountries(array $codes, array $customCountries = []): void
     {
         $codes = array_values(array_unique(array_map('strtoupper', $codes)));
 
@@ -474,8 +503,28 @@ class InstallController extends Controller
             array_unshift($codes, 'BD');
         }
 
+        foreach ($customCountries as $country) {
+            $code = strtoupper(trim((string) ($country['code'] ?? '')));
+            $name = trim((string) ($country['name'] ?? ''));
+
+            if ($code === '' || $name === '') {
+                continue;
+            }
+
+            Country::query()->updateOrInsert(
+                ['code' => $code],
+                [
+                    'name' => $name,
+                    'active' => (bool) ($country['active'] ?? true),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+
         Country::query()->update(['active' => false]);
         Country::query()->whereIn('code', $codes)->update(['active' => true]);
+        Country::query()->whereIn('code', array_column($customCountries, 'code'))->update(['active' => true]);
     }
 
     protected function createLockFile(?string $appUrl = null): void
@@ -565,7 +614,7 @@ class InstallController extends Controller
             'home_new_arrivals_title' => 'New Arrivals',
             'home_newsletter_title' => 'Stay Updated',
             'home_newsletter_subtitle' => 'Subscribe for new arrivals, exclusive offers, and restock alerts.',
-            'footer_about_title' => 'ShopHub',
+            'footer_about_title' => $this->suggestShopName($this->guessAppUrl(request())),
             'footer_about_description' => 'Your trusted marketplace for clothing, health products, and unique handmade items.',
             'footer_support_hours_1' => 'Mon-Fri: 9AM-6PM',
             'footer_support_hours_2' => 'Sat-Sun: 10AM-4PM',
@@ -610,6 +659,7 @@ class InstallController extends Controller
             'mail_from_name' => '',
             'logo' => '',
             'country_codes' => ['BD'],
+            'custom_countries' => [],
         ];
     }
 
@@ -626,5 +676,28 @@ class InstallController extends Controller
         }
 
         return $url;
+    }
+
+    protected function suggestShopName(?string $appUrl): string
+    {
+        $host = parse_url((string) $appUrl, PHP_URL_HOST) ?: (string) $appUrl;
+        $host = preg_replace('/^www\./i', '', (string) $host);
+        $host = preg_replace('/\.[a-z]{2,}$/i', '', (string) $host);
+        $host = str_replace(['-', '_'], ' ', (string) $host);
+        $host = trim(preg_replace('/\s+/', ' ', (string) $host));
+
+        if ($host === '') {
+            return 'My Store';
+        }
+
+        return collect(explode(' ', $host))
+            ->filter()
+            ->map(fn ($word) => ucfirst(strtolower($word)))
+            ->implode(' ');
+    }
+
+    protected function suggestSlogan(?string $shopName): string
+    {
+        return 'Quality products you can trust.';
     }
 }
