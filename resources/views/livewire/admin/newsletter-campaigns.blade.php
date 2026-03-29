@@ -136,7 +136,7 @@
                     </div>
                 </div>
 
-                @if($templateUsesProducts($template_key))
+                @if($this->templateUsesProducts($template_key))
                     <div class="rounded-2xl border border-gray-200 bg-white p-4">
                         <div class="flex items-start justify-between gap-3">
                             <div>
@@ -203,12 +203,34 @@
                         </div>
                         <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ data_get($templateOptions, $template_key . '.name', 'Template') }}</span>
                     </div>
-                    <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50">
-                        <iframe
-                            srcdoc="{{ e($previewHtml) }}"
-                            class="h-[760px] w-full bg-white"
-                            title="Campaign preview"
-                        ></iframe>
+                    <div class="mt-3 grid grid-cols-2 gap-2 text-[11px] text-gray-500">
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
+                            <div class="uppercase tracking-[0.18em] text-gray-400">Subject</div>
+                            <div class="mt-1 font-semibold text-gray-900">{{ $previewSummary['subject'] }}</div>
+                        </div>
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
+                            <div class="uppercase tracking-[0.18em] text-gray-400">Template</div>
+                            <div class="mt-1 font-semibold text-gray-900">{{ $previewSummary['template'] }}</div>
+                        </div>
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
+                            <div class="uppercase tracking-[0.18em] text-gray-400">Preheader</div>
+                            <div class="mt-1 line-clamp-2 font-semibold text-gray-900">{{ $previewSummary['preheader'] ?: 'No preheader set' }}</div>
+                        </div>
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
+                            <div class="uppercase tracking-[0.18em] text-gray-400">Products</div>
+                            <div class="mt-1 font-semibold text-gray-900">{{ $previewSummary['products'] }}</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 overflow-hidden rounded-[1.75rem] border border-gray-200 bg-gray-100 p-3 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+                        <div class="mb-3 flex items-center justify-between rounded-2xl border border-gray-200 bg-white px-4 py-2 text-[11px] text-gray-500">
+                            <span>Desktop email preview</span>
+                            <span>Rendered layout</span>
+                        </div>
+                        <div class="max-h-[760px] overflow-auto rounded-[1.5rem] border border-gray-200 bg-white">
+                            <div class="min-w-[740px]">
+                                {!! $previewHtml !!}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

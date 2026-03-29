@@ -230,6 +230,7 @@ class NewsletterCampaigns extends Component
             'selectedProducts' => $selectedProducts,
             'templateOptions' => $this->templateOptions(),
             'previewHtml' => $this->buildPreviewHtml($selectedProducts),
+            'previewSummary' => $this->previewSummary(),
         ]);
     }
 
@@ -279,6 +280,16 @@ class NewsletterCampaigns extends Component
         );
     }
 
+    public function previewSummary(): array
+    {
+        return [
+            'subject' => trim($this->subject) ?: 'Campaign preview',
+            'preheader' => trim($this->preheader),
+            'template' => data_get($this->templateOptions(), $this->template_key . '.name', 'Template'),
+            'products' => count($this->selected_product_ids),
+        ];
+    }
+
     private function buildEmailHtml(
         object $campaign,
         ?string $subscriberName,
@@ -295,8 +306,8 @@ class NewsletterCampaigns extends Component
         $greeting = $subscriberName ? 'Hi ' . e($subscriberName) . ',' : 'Hi there,';
         $content = nl2br(e(trim((string) ($campaign->content ?? ''))));
         $logoHtml = $storeLogo
-            ? '<img src="' . e(asset('storage/' . $storeLogo)) . '" alt="' . e($storeName) . '" style="height:48px; width:auto; display:block; object-fit:contain;">'
-            : '<div style="font-size:24px;font-weight:700;line-height:1;color:#111;">' . e($storeName) . '</div>';
+            ? '<img src="' . e(asset('storage/' . $storeLogo)) . '" alt="' . e($storeName) . '" style="height:42px; width:auto; display:block; object-fit:contain;">'
+            : '<div style="font-size:22px;font-weight:800;line-height:1;color:#111;">' . e($storeName) . '</div>';
 
         $heroColor = e($brandColor ?: '#111111');
         $productCards = '';
@@ -306,16 +317,16 @@ class NewsletterCampaigns extends Component
             $price = $product->currency_symbol . number_format((float) $product->price, 2);
             $categories = $product->categories->pluck('name')->take(2)->implode(', ');
             $productCards .= '
-                <div style="width:260px; border:1px solid #e5e7eb; border-radius:18px; overflow:hidden; background:#fff; display:inline-block; vertical-align:top; margin:0 12px 12px 0;">
-                    <div style="background:#f3f4f6; height:160px; text-align:center; line-height:160px; overflow:hidden;">
+                <div style="width:260px; border:1px solid #e5e7eb; border-radius:20px; overflow:hidden; background:#fff; display:inline-block; vertical-align:top; margin:0 12px 12px 0; box-shadow:0 10px 30px rgba(15,23,42,0.04);">
+                    <div style="background:#f3f4f6; height:158px; overflow:hidden;">
                         ' . ($image ? '<img src="' . e($image) . '" alt="' . e($product->name) . '" style="width:100%; height:160px; object-fit:cover; display:block;">' : '<span style="color:#9ca3af; font-size:12px;">No image</span>') . '
                     </div>
                     <div style="padding:14px;">
-                        <div style="font-size:14px; font-weight:700; color:#111827; line-height:1.4; min-height:40px;">' . e(Str::limit($product->name, 70)) . '</div>
-                        <div style="margin-top:6px; font-size:12px; color:#6b7280;">' . e($categories ?: 'Featured product') . '</div>
-                        <div style="margin-top:10px; font-size:16px; font-weight:800; color:#111827;">' . e($price) . '</div>
-                        <div style="margin-top:12px;">
-                            <a href="' . e(route('store.product.show', $product->slug)) . '" style="display:inline-block; padding:10px 14px; border-radius:999px; background:' . $heroColor . '; color:#fff; font-size:12px; font-weight:700; text-decoration:none;">View product</a>
+                        <div style="font-size:14px; font-weight:800; color:#111827; line-height:1.35; min-height:38px;">' . e(Str::limit($product->name, 70)) . '</div>
+                        <div style="margin-top:6px; font-size:12px; color:#6b7280; line-height:1.4;">' . e($categories ?: 'Featured product') . '</div>
+                        <div style="margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                            <div style="font-size:16px; font-weight:800; color:#111827;">' . e($price) . '</div>
+                            <a href="' . e(route('store.product.show', $product->slug)) . '" style="display:inline-block; padding:9px 13px; border-radius:999px; background:' . $heroColor . '; color:#fff; font-size:12px; font-weight:700; text-decoration:none;">View</a>
                         </div>
                     </div>
                 </div>';
@@ -348,18 +359,51 @@ class NewsletterCampaigns extends Component
 
         return '
             <div style="background:#f3f4f6; padding:24px;">
-                <div style="max-width:720px; margin:0 auto; background:#ffffff; border-radius:24px; overflow:hidden; border:1px solid #e5e7eb;">
-                    <div style="padding:24px; background:linear-gradient(135deg, ' . $heroColor . ', #111827); color:#fff;">
-                        <div style="margin-bottom:10px;">' . $logoHtml . '</div>
-                        <div style="font-size:12px; letter-spacing:0.2em; text-transform:uppercase; opacity:0.8;">' . e($storeSlogan ?: 'Store update') . '</div>
-                        <div style="margin-top:10px; font-size:28px; font-weight:800; line-height:1.15;">' . $subject . '</div>
-                        ' . ($preheader ? '<div style="margin-top:10px; font-size:14px; opacity:0.9;">' . $preheader . '</div>' : '') . '
+                <div style="max-width:740px; margin:0 auto;">
+                    <div style="margin-bottom:12px; border-radius:18px; border:1px solid #e5e7eb; background:#fff; padding:12px 16px; box-shadow:0 10px 30px rgba(15,23,42,0.05);">
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+                            <div>
+                                <div style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:#6b7280;">Live Email Preview</div>
+                                <div style="margin-top:4px; font-size:18px; font-weight:800; color:#111827;">' . $subject . '</div>
+                                ' . ($preheader ? '<div style="margin-top:4px; font-size:13px; color:#6b7280;">' . $preheader . '</div>' : '') . '
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:12px; font-weight:700; color:#111827;">' . e($storeName) . '</div>
+                                <div style="margin-top:4px; font-size:11px; color:#6b7280;">' . e($storeSlogan ?: 'Store update') . '</div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="padding:24px;">
-                        <div style="font-size:15px; line-height:1.8; color:#111827;">' . $greeting . '</div>
-                        <div style="margin-top:14px; font-size:15px; line-height:1.8; color:#4b5563;">' . $content . '</div>
-                        ' . ($buttonUrl ? '<div style="margin-top:18px;"><a href="' . e($buttonUrl) . '" style="display:inline-block; padding:12px 18px; border-radius:999px; background:' . $heroColor . '; color:#fff; text-decoration:none; font-size:13px; font-weight:700;">' . e($buttonText) . '</a></div>' : '') . '
-                        ' . $templateBody . '
+
+                    <div style="background:#fff; border-radius:28px; overflow:hidden; border:1px solid #e5e7eb; box-shadow:0 16px 50px rgba(15,23,42,0.08);">
+                        <div style="padding:18px 24px; border-bottom:1px solid #e5e7eb; background:#fafafa;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="width:44px; height:44px; border-radius:14px; overflow:hidden; background:#fff; border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center;">' . $logoHtml . '</div>
+                                    <div>
+                                        <div style="font-size:12px; font-weight:700; color:#111827;">' . e($storeName) . '</div>
+                                        <div style="margin-top:2px; font-size:11px; color:#6b7280;">' . e($campaign->template_key ?: 'announcement') . ' • Automated campaign</div>
+                                    </div>
+                                </div>
+                                <div style="text-align:right; font-size:11px; color:#6b7280;">
+                                    Inbox preview
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="padding:26px 24px; background:#fff;">
+                            <div style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#6b7280;">' . $subject . '</div>
+                            <div style="margin-top:12px; font-size:26px; font-weight:900; line-height:1.15; color:#111827;">' . $subject . '</div>
+                            ' . ($preheader ? '<div style="margin-top:8px; font-size:14px; color:#6b7280; line-height:1.6;">' . $preheader . '</div>' : '') . '
+                            <div style="margin-top:18px; font-size:15px; line-height:1.8; color:#111827;">' . $greeting . '</div>
+                            <div style="margin-top:14px; font-size:15px; line-height:1.8; color:#4b5563;">' . $content . '</div>
+                            ' . ($buttonUrl ? '<div style="margin-top:22px;"><a href="' . e($buttonUrl) . '" style="display:inline-block; padding:13px 20px; border-radius:999px; background:' . $heroColor . '; color:#fff; text-decoration:none; font-size:13px; font-weight:800;">' . e($buttonText) . '</a></div>' : '') . '
+                            ' . $templateBody . '
+                        </div>
+
+                        <div style="padding:18px 24px; border-top:1px solid #e5e7eb; background:#fafafa;">
+                            <div style="font-size:12px; color:#6b7280; line-height:1.7;">You are receiving this email because you subscribed to updates from ' . e($storeName) . '.</div>
+                            <div style="margin-top:6px; font-size:12px; color:#6b7280;">Powered by your storefront campaign builder.</div>
+                        </div>
                     </div>
                 </div>
             </div>
