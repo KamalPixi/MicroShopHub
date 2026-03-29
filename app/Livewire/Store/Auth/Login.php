@@ -75,7 +75,7 @@ class Login extends Component
         $this->customerAuthService->sendLoginOtp($validated['email']);
         $this->otpSent = true;
 
-        session()->flash('message', 'We sent a 6-digit code to your email.');
+        session()->flash('message', __('store.login_otp_sent'));
     }
 
     public function verifyOtp()
@@ -149,7 +149,7 @@ class Login extends Component
         $this->customerAuthService->sendPasswordResetOtp($validated['resetEmail']);
         $this->resetOtpSent = true;
 
-        session()->flash('message', 'If the account exists, a reset code has been sent.');
+        session()->flash('message', __('store.password_reset_code_sent'));
     }
 
     public function resetPassword(): void
@@ -174,7 +174,7 @@ class Login extends Component
 
         $this->hideForgotPasswordForm();
         $this->email = $validated['resetEmail'];
-        session()->flash('message', 'Password reset successful. You can now sign in.');
+        session()->flash('message', __('store.password_reset_success'));
     }
 
     public function resetLoginState(): void

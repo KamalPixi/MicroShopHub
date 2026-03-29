@@ -127,13 +127,13 @@ class Dashboard extends Component
         // Clear file input
         $this->avatar = null;
 
-        session()->flash('profile_success', 'Profile updated successfully.');
+        session()->flash('profile_success', __('store.profile_updated_success'));
     }
 
     public function sendVerificationEmail(): void
     {
         if ($this->user->hasVerifiedEmail()) {
-            session()->flash('message', 'Your email is already verified.');
+            session()->flash('message', __('store.email_already_verified'));
             return;
         }
 
@@ -143,14 +143,14 @@ class Dashboard extends Component
         if ($lastSentAt && now()->diffInSeconds($lastSentAt) < 120) {
             $wait = 120 - now()->diffInSeconds($lastSentAt);
 
-            session()->flash('message', 'Please wait '.$wait.' seconds before requesting another verification link.');
+            session()->flash('message', __('store.please_wait_seconds', ['seconds' => $wait]));
             return;
         }
 
         $this->user->sendEmailVerificationNotification();
         Cache::put($cacheKey, now(), now()->addMinutes(10));
 
-        session()->flash('message', 'Verification link sent to your email. If you do not receive it, you can request a new one after 2 minutes.');
+        session()->flash('message', __('store.verification_link_sent'));
     }
 
     // --- Order Logic ---
