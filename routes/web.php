@@ -38,7 +38,33 @@ use App\Http\Controllers\Admin\UserController;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('store.analytics')->name('store.')->group(function () {
+Route::get('/language/{locale}', function (Request $request, string $locale) {
+    $settings = Cache::remember('store_language_settings', 300, function () {
+        return \App\Models\Setting::whereIn('key', [
+            'store_default_locale',
+            'store_language_en_enabled',
+            'store_language_bn_enabled',
+        ])->pluck('value', 'key')->toArray();
+    });
+
+    $enabledLocales = [];
+    if (filter_var($settings['store_language_en_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
+        $enabledLocales[] = 'en';
+    }
+    if (filter_var($settings['store_language_bn_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN)) {
+        $enabledLocales[] = 'bn';
+    }
+
+    if (! in_array($locale, $enabledLocales, true)) {
+        return back()->with('message', 'Language not available.');
+    }
+
+    session(['store_locale' => $locale]);
+
+    return back();
+})->name('store.language.switch');
+
+Route::middleware(['store.analytics', 'store.locale'])->name('store.')->group(function () {
     Route::get('/', [StoreController::class, 'index'])->name('index');
     Route::get('/search', [StoreController::class, 'search'])->name('search');
     Route::get('/flash-sale', [StoreController::class, 'flashSale'])->name('flash-sale');
@@ -64,7 +90,7 @@ Route::get('/sitemap.xml', [StoreController::class, 'sitemap'])->name('sitemap')
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('store.analytics')->group(function () {
+Route::middleware(['store.analytics', 'store.locale'])->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::get('/register', [AuthController::class, 'register'])->name('register');
 

@@ -84,6 +84,58 @@
         </section>
 
         <section class="rounded-xl border border-gray-200 p-5 bg-white">
+            <h4 class="text-base font-bold text-gray-800">Storefront Language</h4>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Choose the default storefront language and enable the languages customers can switch between.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="store_default_locale" class="block text-sm font-semibold text-gray-700">Default Language</label>
+                    <select wire:model="settings.store_default_locale" id="store_default_locale" class="form-input mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                        <option value="en">English</option>
+                        <option value="bn">Bengali</option>
+                    </select>
+                    <p class="mt-1 text-[10px] text-gray-400">This is the language customers see first.</p>
+                    @error('settings.store_default_locale') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="space-y-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">English</p>
+                            <p class="text-xs text-gray-500">Show the storefront in English.</p>
+                        </div>
+                        <input wire:model="settings.store_language_en_enabled" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1">
+                    </div>
+
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">Bengali</p>
+                            <p class="text-xs text-gray-500">Show the storefront in Bengali.</p>
+                        </div>
+                        <input wire:model="settings.store_language_bn_enabled" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1">
+                    </div>
+                </div>
+            </div>
+
+            @error('settings.store_language_en_enabled')
+                <span class="text-red-600 text-xs block mt-2">{{ $message }}</span>
+            @enderror
+
+            <div class="mt-5 flex items-center justify-end gap-3">
+                @if($savedSection === 'general')
+                    <span class="text-xs font-semibold text-green-600">Saved</span>
+                @endif
+                <button
+                    wire:click="saveGeneral"
+                    wire:loading.attr="disabled"
+                    class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition"
+                >
+                    Save Language
+                </button>
+            </div>
+        </section>
+
+        <section class="rounded-xl border border-gray-200 p-5 bg-white">
             <h4 class="text-base font-bold text-gray-800">SEO & Metadata</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Optimize your store for search engines.</p>
 

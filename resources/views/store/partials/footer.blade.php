@@ -1,22 +1,22 @@
 @php
     $footerSettings = $footerSettings ?? [];
-    $storeName = $storeName ?? 'ShopHub';
+    $storeName = $storeName ?? __('store.shop_name_default');
     $storeLogo = $storeLogo ?? '';
     $storeSlogan = $storeSlogan ?? '';
     $year = date('Y');
     $footerTitle = $footerSettings['footer_about_title'] ?? $storeName;
-    $footerDescription = $footerSettings['footer_about_description'] ?? 'Your trusted marketplace for clothing, health products, and unique handmade items.';
+    $footerDescription = $footerSettings['footer_about_description'] ?? __('store.support_intro');
     $quickLinks = [
-        ['label' => $footerSettings['footer_link_1_label'] ?? 'About Us', 'url' => $footerSettings['footer_link_1_url'] ?? '/about'],
-        ['label' => $footerSettings['footer_link_2_label'] ?? 'Contact', 'url' => $footerSettings['footer_link_2_url'] ?? '/contact'],
-        ['label' => $footerSettings['footer_link_3_label'] ?? 'FAQ', 'url' => $footerSettings['footer_link_3_url'] ?? '/faq'],
-        ['label' => $footerSettings['footer_link_4_label'] ?? 'Shipping Info', 'url' => $footerSettings['footer_link_4_url'] ?? '/shipping'],
+        ['label' => $footerSettings['footer_link_1_label'] ?? __('store.about_us'), 'url' => $footerSettings['footer_link_1_url'] ?? '/about'],
+        ['label' => $footerSettings['footer_link_2_label'] ?? __('store.contact_us'), 'url' => $footerSettings['footer_link_2_url'] ?? '/contact'],
+        ['label' => $footerSettings['footer_link_3_label'] ?? __('store.faq'), 'url' => $footerSettings['footer_link_3_url'] ?? '/faq'],
+        ['label' => $footerSettings['footer_link_4_label'] ?? __('store.shipping_info'), 'url' => $footerSettings['footer_link_4_url'] ?? '/shipping'],
     ];
     $policyLinks = [
-        ['label' => $footerSettings['footer_policy_1_label'] ?? 'Privacy Policy', 'url' => $footerSettings['footer_policy_1_url'] ?? '/privacy-policy'],
-        ['label' => $footerSettings['footer_policy_2_label'] ?? 'Terms of Service', 'url' => $footerSettings['footer_policy_2_url'] ?? '/terms'],
-        ['label' => $footerSettings['footer_policy_3_label'] ?? 'Cookie Policy', 'url' => $footerSettings['footer_policy_3_url'] ?? '/cookie-policy'],
-        ['label' => $footerSettings['footer_policy_4_label'] ?? 'Refund Policy', 'url' => $footerSettings['footer_policy_4_url'] ?? '/refund-policy'],
+        ['label' => $footerSettings['footer_policy_1_label'] ?? __('store.privacy_policy'), 'url' => $footerSettings['footer_policy_1_url'] ?? '/privacy-policy'],
+        ['label' => $footerSettings['footer_policy_2_label'] ?? __('store.terms_of_service'), 'url' => $footerSettings['footer_policy_2_url'] ?? '/terms'],
+        ['label' => $footerSettings['footer_policy_3_label'] ?? __('store.cookie_policy'), 'url' => $footerSettings['footer_policy_3_url'] ?? '/cookie-policy'],
+        ['label' => $footerSettings['footer_policy_4_label'] ?? __('store.refund_policy'), 'url' => $footerSettings['footer_policy_4_url'] ?? '/refund-policy'],
     ];
     $normalizeSocialUrl = function (?string $url): string {
         $url = trim((string) $url);
@@ -49,7 +49,7 @@
                     <div class="leading-tight">
                         <h3 class="text-lg font-bold text-white leading-tight">{{ $footerTitle }}</h3>
                         @if(!empty($storeSlogan))
-                            <p class="mt-0.5 text-[11px] leading-tight uppercase tracking-[0.2em] text-primary/80">{{ $storeSlogan }}</p>
+                            <p class="mt-0.5 text-[11px] leading-tight uppercase tracking-[0.2em] text-primary/80">{{ $storeSlogan ?: __('store.shop_slogan_default') }}</p>
                         @endif
                     </div>
                 </div>
@@ -79,7 +79,7 @@
             </div>
 
             <div>
-                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_links_title'] ?? 'Quick Links' }}</h4>
+                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_links_title'] ?? __('store.footer_quick_links') }}</h4>
                 <ul class="space-y-2 text-sm">
                     @foreach($quickLinks as $link)
                         @if(!empty($link['label']))
@@ -90,7 +90,7 @@
             </div>
 
             <div>
-                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_support_title'] ?? 'Customer Support' }}</h4>
+                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_support_title'] ?? __('store.customer_support') }}</h4>
                 <ul class="space-y-2 text-sm text-gray-400">
                     @if(!empty($footerSettings['footer_support_email'] ?? ''))
                         <li>📧 {{ $footerSettings['footer_support_email'] }}</li>
@@ -108,7 +108,7 @@
             </div>
 
             <div>
-                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_policy_title'] ?? 'Policies' }}</h4>
+                <h4 class="font-semibold mb-4">{{ $footerSettings['footer_policy_title'] ?? __('store.policies') }}</h4>
                 <ul class="space-y-2 text-sm">
                     @foreach($policyLinks as $link)
                         @if(!empty($link['label']))

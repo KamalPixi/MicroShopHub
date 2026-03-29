@@ -6,7 +6,7 @@
     @endphp
     
     <div class="md:hidden bg-white border-b border-gray-200 p-4 sticky top-0 z-10">
-        <h1 class="text-lg font-bold text-gray-900">My Account</h1>
+        <h1 class="text-lg font-bold text-gray-900">{{ __('store.my_account') }}</h1>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
@@ -32,7 +32,7 @@
                         <p class="text-xs text-gray-500 truncate w-full mb-2">{{ auth()->user()->email }}</p>
                         <div class="mb-2 inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]
                             {{ $user->hasVerifiedEmail() ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700' }}">
-                            {{ $user->hasVerifiedEmail() ? 'Verified' : 'Unverified' }}
+                            {{ $user->hasVerifiedEmail() ? __('store.verified') : __('store.unverified') }}
                         </div>
                         @if(! $user->hasVerifiedEmail())
                             <button type="button"
@@ -47,21 +47,21 @@
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                                 </svg>
-                                <span wire:loading.remove wire:target="sendVerificationEmail">Send verification link</span>
-                                <span wire:loading wire:target="sendVerificationEmail">Sending...</span>
+                                <span wire:loading.remove wire:target="sendVerificationEmail">{{ __('store.send_verification_link') }}</span>
+                                <span wire:loading wire:target="sendVerificationEmail">{{ __('store.loading') }}</span>
                             </button>
                         @endif
                         <div class="mt-2 inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
-                            Member since {{ auth()->user()->created_at?->format('M Y') }}
+                            {{ __('store.member_since') }} {{ auth()->user()->created_at?->format('M Y') }}
                         </div>
                     </div>
 
                     <nav class="p-2 space-y-1">
                         @foreach([
-                            'overview' => ['label' => 'Overview', 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
-                            'orders' => ['label' => 'My Orders', 'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],
-                            'addresses' => ['label' => 'Address Book', 'icon' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'],
-                            'profile' => ['label' => 'Profile Settings', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'],
+                            'overview' => ['label' => __('store.overview'), 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
+                            'orders' => ['label' => __('store.my_orders'), 'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],
+                            'addresses' => ['label' => __('store.address_book'), 'icon' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'],
+                            'profile' => ['label' => __('store.profile_settings'), 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'],
                         ] as $key => $item)
                             <button wire:click="switchTab('{{ $key }}')"
                                     class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium border
@@ -79,7 +79,7 @@
                             @csrf
                             <button type="submit" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors border border-transparent hover:border-red-100">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                                <span>Log Out</span>
+                                <span>{{ __('store.logout') }}</span>
                             </button>
                         </form>
                     </nav>
@@ -97,8 +97,8 @@
                     <div class="mb-6 rounded-2xl border border-amber-200 bg-amber-50/90 p-4 md:p-5 shadow-sm">
                         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div>
-                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-600">Email not verified</p>
-                                <p class="mt-1 text-sm text-amber-900">Verify your email to keep your account secure and receive important order updates.</p>
+                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-600">{{ __('store.email_verification') }}</p>
+                                <p class="mt-1 text-sm text-amber-900">{{ __('store.verification_sent') }}</p>
                             </div>
                             <button type="button"
                                     wire:click="sendVerificationEmail"
@@ -112,8 +112,8 @@
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                                 </svg>
-                                <span wire:loading.remove wire:target="sendVerificationEmail">Send verification link</span>
-                                <span wire:loading wire:target="sendVerificationEmail">Sending...</span>
+                                <span wire:loading.remove wire:target="sendVerificationEmail">{{ __('store.send_verification_link') }}</span>
+                                <span wire:loading wire:target="sendVerificationEmail">{{ __('store.loading') }}</span>
                             </button>
                         </div>
                     </div>
@@ -123,22 +123,22 @@
                     <div class="space-y-6 animate-fade-in">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
-                                <p class="text-xs font-semibold text-gray-500 uppercase">Total Orders</p>
+                                <p class="text-xs font-semibold text-gray-500 uppercase">{{ __('store.total_orders') }}</p>
                                 <div class="mt-2 text-2xl font-bold text-gray-900">{{ $stats['total_orders'] }}</div>
-                                <p class="text-xs text-gray-400 mt-1">All-time orders</p>
+                                <p class="text-xs text-gray-400 mt-1">{{ __('store.all_time_orders') }}</p>
                             </div>
                             <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
-                                <p class="text-xs font-semibold text-gray-500 uppercase">Total Spend</p>
+                                <p class="text-xs font-semibold text-gray-500 uppercase">{{ __('store.total_spend') }}</p>
                                 <div class="mt-2 text-2xl font-bold text-gray-900">{{ $currencyCode }} {{ number_format($stats['total_spend'], 2) }}</div>
-                                <p class="text-xs text-gray-400 mt-1">Across all orders</p>
+                                <p class="text-xs text-gray-400 mt-1">{{ __('store.across_all_orders') }}</p>
                             </div>
                             <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
-                                <p class="text-xs font-semibold text-gray-500 uppercase">Last Order</p>
+                                <p class="text-xs font-semibold text-gray-500 uppercase">{{ __('store.last_order') }}</p>
                                 <div class="mt-2 text-sm font-semibold text-gray-900">
                                     @if($stats['last_order'])
                                         #{{ $stats['last_order']->order_number }}
                                     @else
-                                        No orders yet
+                                        {{ __('store.no_orders_yet') }}
                                     @endif
                                 </div>
                                 <p class="text-xs text-gray-400 mt-1">
@@ -149,34 +149,34 @@
 
                         <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                             <div class="flex items-center justify-between mb-4">
-                                <h3 class="font-bold text-gray-900">Profile Overview</h3>
-                                <button wire:click="switchTab('profile')" class="text-xs font-semibold text-primary hover:underline">Edit Profile</button>
+                                    <h3 class="font-bold text-gray-900">{{ __('store.overview') }}</h3>
+                                <button wire:click="switchTab('profile')" class="text-xs font-semibold text-primary hover:underline">{{ __('store.profile_settings') }}</button>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
                                 <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
-                                    <p class="text-xs font-semibold text-gray-500 uppercase">Name</p>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">{{ __('store.name') }}</p>
                                     <p class="font-semibold text-gray-900 mt-1">{{ $user->name }}</p>
                                 </div>
                                 <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
-                                    <p class="text-xs font-semibold text-gray-500 uppercase">Email</p>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">{{ __('store.email') }}</p>
                                     <p class="text-gray-700 mt-1">{{ $user->email }}</p>
                                     <span class="mt-2 inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]
                                         {{ $user->hasVerifiedEmail() ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700' }}">
-                                        {{ $user->hasVerifiedEmail() ? 'Verified' : 'Unverified' }}
+                                        {{ $user->hasVerifiedEmail() ? __('store.verified') : __('store.unverified') }}
                                     </span>
                                 </div>
                                 <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
-                                    <p class="text-xs font-semibold text-gray-500 uppercase">Phone</p>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">{{ __('store.phone') }}</p>
                                     <p class="text-gray-700 mt-1">{{ $user->phone ?? '—' }}</p>
                                 </div>
                                 <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
-                                    <p class="text-xs font-semibold text-gray-500 uppercase">Saved Addresses</p>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">{{ __('store.saved_addresses') }}</p>
                                     <p class="font-semibold text-gray-900 mt-1">{{ $stats['address_count'] }}</p>
                                 </div>
                                 <div class="md:col-span-4 rounded-xl border border-gray-200 bg-gray-50/80 p-4">
-                                    <p class="text-xs font-semibold text-gray-500 uppercase">Default Address</p>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase">{{ __('store.default_address') }}</p>
                                     <p class="text-gray-700 mt-1">
-                                        {{ $user->defaultAddress?->address_line1 ?? 'No default address set.' }}
+                                        {{ $user->defaultAddress?->address_line1 ?? __('store.default_address') }}
                                         @if($user->defaultAddress?->city)
                                             , {{ $user->defaultAddress?->city }}
                                         @endif
@@ -194,11 +194,11 @@
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                             <div class="flex items-center justify-between gap-4 mb-5">
                                 <div>
-                                    <h3 class="font-bold text-gray-900">My Orders</h3>
-                                    <p class="text-sm text-gray-500 mt-1">Quick access to the order states you need most.</p>
+                                    <h3 class="font-bold text-gray-900">{{ __('store.my_orders') }}</h3>
+                                    <p class="text-sm text-gray-500 mt-1">{{ __('store.my_orders') }}</p>
                                 </div>
                                 <button wire:click="switchTab('orders')" class="rounded-xl border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-primary/30 hover:text-primary transition">
-                                    View all orders
+                                    {{ __('store.view_all_orders') }}
                                 </button>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -212,8 +212,8 @@
                                         </span>
                                     </div>
                                     <div class="mt-4">
-                                        <p class="text-sm font-bold text-gray-900">To Pay</p>
-                                        <p class="mt-1 text-xs text-gray-500">Orders waiting for payment</p>
+                                        <p class="text-sm font-bold text-gray-900">{{ __('store.to_pay') }}</p>
+                                        <p class="mt-1 text-xs text-gray-500">{{ __('store.to_pay') }}</p>
                                     </div>
                                 </button>
 
@@ -227,8 +227,8 @@
                                         </span>
                                     </div>
                                     <div class="mt-4">
-                                        <p class="text-sm font-bold text-gray-900">To Ship</p>
-                                        <p class="mt-1 text-xs text-gray-500">Ready to be processed by support</p>
+                                        <p class="text-sm font-bold text-gray-900">{{ __('store.to_ship') }}</p>
+                                        <p class="mt-1 text-xs text-gray-500">{{ __('store.to_ship') }}</p>
                                     </div>
                                 </button>
 
@@ -242,8 +242,8 @@
                                         </span>
                                     </div>
                                     <div class="mt-4">
-                                        <p class="text-sm font-bold text-gray-900">To Receive</p>
-                                        <p class="mt-1 text-xs text-gray-500">Shipped and on the way</p>
+                                        <p class="text-sm font-bold text-gray-900">{{ __('store.to_receive') }}</p>
+                                        <p class="mt-1 text-xs text-gray-500">{{ __('store.on_the_way') }}</p>
                                     </div>
                                 </button>
 
@@ -257,8 +257,8 @@
                                         </span>
                                     </div>
                                     <div class="mt-4">
-                                        <p class="text-sm font-bold text-gray-900">Completed</p>
-                                        <p class="mt-1 text-xs text-gray-500">Delivered orders only</p>
+                                        <p class="text-sm font-bold text-gray-900">{{ __('store.completed') }}</p>
+                                        <p class="mt-1 text-xs text-gray-500">{{ __('store.delivered_orders_only') }}</p>
                                     </div>
                                 </button>
                             </div>
@@ -266,7 +266,7 @@
 
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                             <div class="px-6 py-4 border-b border-gray-100">
-                                <h3 class="font-bold text-gray-900">Recent Orders</h3>
+                                <h3 class="font-bold text-gray-900">{{ __('store.recent_orders') }}</h3>
                             </div>
                             <div class="divide-y divide-gray-100">
                                 @forelse($recentOrders as $order)
@@ -285,11 +285,11 @@
                                                 $orderSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
                                             @endphp
                                             <p class="text-sm font-bold text-primary">{{ $orderSymbol }}{{ number_format($order->total, 2) }}</p>
-                                            <p class="text-xs font-medium capitalize {{ $order->status == 'delivered' ? 'text-green-600' : ($order->status == 'cancelled' ? 'text-red-500' : 'text-orange-500') }}">{{ $order->status }}</p>
+                                            <p class="text-xs font-medium capitalize {{ $order->status == 'delivered' ? 'text-green-600' : ($order->status == 'cancelled' ? 'text-red-500' : 'text-orange-500') }}">{{ __('store.' . $order->status) }}</p>
                                         </div>
                                     </div>
                                 @empty
-                                    <div class="p-8 text-center text-gray-500 text-sm">No recent activity.</div>
+                                    <div class="p-8 text-center text-gray-500 text-sm">{{ __('store.no_recent_activity') }}</div>
                                 @endforelse
                             </div>
                         </div>
@@ -301,25 +301,25 @@
                         <div class="p-6 border-b border-gray-100 bg-gradient-to-b from-white to-gray-50/60">
                             <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                                 <div>
-                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Order history</p>
-                                    <h3 class="mt-2 text-xl font-bold text-gray-900">My Orders</h3>
-                                    <p class="mt-1 text-sm text-gray-500">Track payments, shipments, and completed purchases in one place.</p>
+                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{{ __('store.order_history') }}</p>
+                                    <h3 class="mt-2 text-xl font-bold text-gray-900">{{ __('store.my_orders') }}</h3>
+                                    <p class="mt-1 text-sm text-gray-500">{{ __('store.track_orders_intro') }}</p>
                                 </div>
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     <div class="rounded-xl border border-gray-200 bg-white px-4 py-3">
-                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">All</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.all') }}</p>
                                         <p class="mt-1 text-lg font-bold text-gray-900">{{ $orderTabCounts['all'] }}</p>
                                     </div>
                                     <div class="rounded-xl border border-gray-200 bg-white px-4 py-3">
-                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Active</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.active') }}</p>
                                         <p class="mt-1 text-lg font-bold text-gray-900">{{ $orderTabCounts['to_pay'] + $orderTabCounts['to_ship'] + $orderTabCounts['to_receive'] }}</p>
                                     </div>
                                     <div class="rounded-xl border border-gray-200 bg-white px-4 py-3">
-                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Delivered</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.delivered_short') }}</p>
                                         <p class="mt-1 text-lg font-bold text-gray-900">{{ $orderTabCounts['completed'] }}</p>
                                     </div>
                                     <div class="rounded-xl border border-gray-200 bg-white px-4 py-3">
-                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Cancelled</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.cancelled_short') }}</p>
                                         <p class="mt-1 text-lg font-bold text-gray-900">{{ $orderTabCounts['cancelled'] }}</p>
                                     </div>
                                 </div>
@@ -327,7 +327,14 @@
                         </div>
 
                         <div class="flex overflow-x-auto border-b border-gray-100 bg-white no-scrollbar px-2 pt-2">
-                            @foreach(['all' => 'All', 'to_pay' => 'To Pay', 'to_ship' => 'To Ship', 'to_receive' => 'To Receive', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $key => $label)
+                            @foreach([
+                                'all' => __('store.all'),
+                                'to_pay' => __('store.to_pay'),
+                                'to_ship' => __('store.to_ship'),
+                                'to_receive' => __('store.to_receive'),
+                                'completed' => __('store.completed'),
+                                'cancelled' => __('store.cancelled'),
+                            ] as $key => $label)
                                 <button wire:click="switchOrderTab('{{ $key }}')"
                                         class="relative flex items-center gap-2 px-5 py-4 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors
                                         {{ $activeOrderTab === $key ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-800' }}">
@@ -355,7 +362,7 @@
                                                         <span class="text-sm text-gray-500">{{ $order->created_at->format('d M Y, h:i A') }}</span>
                                                     </div>
                                                     <p class="mt-1 text-xs text-gray-500">
-                                                        {{ $order->items->count() }} item{{ $order->items->count() === 1 ? '' : 's' }} in this order
+                                                        {{ __('store.items_in_this_order', ['count' => $order->items->count()]) }}
                                                     </p>
                                                 </div>
                                             </div>
@@ -363,17 +370,17 @@
                                                 <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.18em]
                                                     {{ $order->status == 'delivered' ? 'bg-green-100 text-green-700' : 
                                                       ($order->status == 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700') }}">
-                                                    {{ $order->status }}
+                                                    {{ __('store.' . $order->status) }}
                                                 </span>
                                                 <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.18em] bg-gray-100 text-gray-600">
-                                                    {{ $order->payment_status ?? 'pending' }}
+                                                    {{ $order->payment_status ? __('store.' . $order->payment_status) : __('store.pending') }}
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="px-5 py-4">
                                         <div class="text-xs text-gray-500 mb-4">
-                                            Payment: <span class="font-semibold text-gray-700">{{ $order->payment_method ?? '—' }}</span>
+                                            {{ __('store.payment_method') }}: <span class="font-semibold text-gray-700">{{ $order->payment_method ?? '—' }}</span>
                                         </div>
 
                                         <div class="space-y-3">
@@ -395,7 +402,7 @@
                                             @endforeach
                                         </div>
                                         @if($order->items->count() > 2)
-                                            <p class="mt-3 text-xs text-gray-500">+ {{ $order->items->count() - 2 }} more item{{ $order->items->count() - 2 === 1 ? '' : 's' }}</p>
+                                            <p class="mt-3 text-xs text-gray-500">{{ __('store.more_items', ['count' => $order->items->count() - 2]) }}</p>
                                         @endif
                                     </div>
 
@@ -404,14 +411,14 @@
                                             @php
                                                 $totalSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
                                             @endphp
-                                            <span class="text-gray-500">Total</span>
+                                            <span class="text-gray-500">{{ __('store.total') }}</span>
                                             <span class="ml-2 text-xl font-bold text-primary">{{ $totalSymbol }}{{ number_format($order->total, 2) }}</span>
                                         </div>
                                         <div class="flex flex-wrap gap-2">
                                             @if($order->status == 'pending')
-                                                <button class="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white transition hover:bg-primary/90">Pay Now</button>
+                                                <button class="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white transition hover:bg-primary/90">{{ __('store.pay_now') }}</button>
                                             @endif
-                                            <button wire:click="viewOrder({{ $order->id }})" class="rounded-xl border border-gray-300 px-4 py-2 text-xs font-bold text-gray-700 transition hover:border-primary/30 hover:text-primary hover:bg-gray-50">View Details</button>
+                                            <button wire:click="viewOrder({{ $order->id }})" class="rounded-xl border border-gray-300 px-4 py-2 text-xs font-bold text-gray-700 transition hover:border-primary/30 hover:text-primary hover:bg-gray-50">{{ __('store.view_details') }}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -420,7 +427,7 @@
                                     <div class="bg-gray-50 p-4 rounded-full mb-4">
                                         <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                                     </div>
-                                    <p class="text-gray-500 font-medium">No orders found.</p>
+                                    <p class="text-gray-500 font-medium">{{ __('store.no_orders_found') }}</p>
                                 </div>
                             @endforelse
                         </div>
@@ -436,9 +443,9 @@
                 @if($activeTab === 'addresses')
                     <div class="space-y-6 animate-fade-in">
                         <div class="flex justify-between items-center">
-                            <h3 class="font-bold text-gray-900 text-lg">Saved Addresses</h3>
+                            <h3 class="font-bold text-gray-900 text-lg">{{ __('store.saved_addresses') }}</h3>
                             <button wire:click="toggleAddressForm" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary transition">
-                                {{ $showAddressForm ? 'Close' : '+ Add New' }}
+                                {{ $showAddressForm ? __('store.close') : __('store.add_new') }}
                             </button>
                         </div>
                         @if(session('address_success'))
@@ -446,60 +453,60 @@
                         @endif
                         @if($showAddressForm)
                             <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 md:p-6">
-                                <h4 class="text-sm font-bold text-gray-900 mb-4">New Address</h4>
+                                <h4 class="text-sm font-bold text-gray-900 mb-4">{{ __('store.new_address') }}</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-600">Label</label>
-                                        <input wire:model="newAddress.type" type="text" class="{{ $fieldClass }}" placeholder="Home / Office">
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.address_type') }}</label>
+                                        <input wire:model="newAddress.type" type="text" class="{{ $fieldClass }}" placeholder="{{ __('store.home_office') }}">
                                         @error('newAddress.type') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-600">Full Name</label>
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.full_name') }}</label>
                                         <input wire:model="newAddress.name" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-600">Phone</label>
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.phone') }}</label>
                                         <input wire:model="newAddress.phone" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.phone') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-600">City</label>
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.city') }}</label>
                                         <input wire:model="newAddress.city" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.city') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div class="md:col-span-2">
-                                        <label class="block text-xs font-semibold text-gray-600">Street Address</label>
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.address_line_1') }}</label>
                                         <input wire:model="newAddress.address_line1" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.address_line1') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div class="md:col-span-2">
-                                        <label class="block text-xs font-semibold text-gray-600">Apartment / Suite</label>
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.address_line_2') }}</label>
                                         <input wire:model="newAddress.address_line2" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.address_line2') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-600">State</label>
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.state') }}</label>
                                         <input wire:model="newAddress.state" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.state') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-600">Postal Code</label>
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.postal_code') }}</label>
                                         <input wire:model="newAddress.postal_code" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.postal_code') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-600">Country</label>
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.country') }}</label>
                                         <input wire:model="newAddress.country" type="text" class="{{ $fieldClass }}">
                                         @error('newAddress.country') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div class="flex items-center gap-2 mt-2 md:pt-4">
                                         <input wire:model="newAddress.is_default" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                                        <span class="text-xs text-gray-600">Set as default</span>
+                                        <span class="text-xs text-gray-600">{{ __('store.set_as_default') }}</span>
                                     </div>
                                 </div>
                                 <div class="mt-4 flex justify-end">
-                                    <button wire:click="addAddress" class="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary/90">Save Address</button>
+                                    <button wire:click="addAddress" class="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary/90">{{ __('store.save_address') }}</button>
                                 </div>
                             </div>
                         @endif
@@ -521,7 +528,7 @@
                                     @endif
                                 </div>
                             @empty
-                                <div class="col-span-2 text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300"><p class="text-gray-500">No addresses saved.</p></div>
+                                <div class="col-span-2 text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300"><p class="text-gray-500">{{ __('store.no_addresses_saved') }}</p></div>
                             @endforelse
                         </div>
                         @if(method_exists($addresses, 'links'))
@@ -558,7 +565,7 @@
                                     <div class="min-w-0">
                                         <h4 class="font-bold text-gray-900 truncate">{{ auth()->user()->name }}</h4>
                                         <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
-                                        <p class="text-[11px] text-gray-400 mt-1">Upload a clear photo to personalize your account.</p>
+                                        <p class="text-[11px] text-gray-400 mt-1">{{ __('store.upload_clear_photo') }}</p>
                                     </div>
                                 </div>
 
@@ -566,29 +573,29 @@
 
                                 <div class="mt-6 grid grid-cols-2 gap-3">
                                     <div class="rounded-xl bg-gray-50 border border-gray-200 p-3">
-                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Orders</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.orders') }}</p>
                                         <p class="mt-1 text-lg font-bold text-gray-900">{{ $stats['total_orders'] }}</p>
                                     </div>
                                     <div class="rounded-xl bg-gray-50 border border-gray-200 p-3">
-                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Addresses</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.addresses') }}</p>
                                         <p class="mt-1 text-lg font-bold text-gray-900">{{ $stats['address_count'] }}</p>
                                     </div>
                                 </div>
 
                                 <div class="mt-6 space-y-3 rounded-2xl border border-gray-200 bg-gray-50/70 p-4 text-sm">
                                     <div>
-                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Phone</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.phone') }}</p>
                                         <p class="mt-1 font-medium text-gray-900">{{ $user->phone ?? '—' }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Member since</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.member_since') }}</p>
                                         <p class="mt-1 font-medium text-gray-900">{{ $user->created_at?->format('M Y') }}</p>
                                     </div>
                                 </div>
 
                                 <div class="mt-6 flex gap-3">
-                                    <button type="button" wire:click="switchTab('overview')" class="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-primary/30 hover:text-primary transition">Overview</button>
-                                    <button type="button" wire:click="switchTab('addresses')" class="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-primary/30 hover:text-primary transition">Addresses</button>
+                                    <button type="button" wire:click="switchTab('overview')" class="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-primary/30 hover:text-primary transition">{{ __('store.overview') }}</button>
+                                    <button type="button" wire:click="switchTab('addresses')" class="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-primary/30 hover:text-primary transition">{{ __('store.addresses') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -596,8 +603,8 @@
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
                             <div class="flex items-center justify-between gap-4 pb-5 border-b border-gray-100">
                                 <div>
-                                    <h3 class="font-bold text-gray-900 text-lg">My Profile</h3>
-                                    <p class="text-sm text-gray-500 mt-1">Update your contact details and account identity.</p>
+                                    <h3 class="font-bold text-gray-900 text-lg">{{ __('store.my_profile') }}</h3>
+                                    <p class="text-sm text-gray-500 mt-1">{{ __('store.update_contact_details') }}</p>
                                 </div>
                                 @if (session()->has('profile_success'))
                                     <div class="hidden md:block bg-green-50 text-green-700 px-3 py-2 rounded-xl text-sm">{{ session('profile_success') }}</div>
@@ -611,31 +618,31 @@
                             <form wire:submit="updateProfile" class="mt-6 space-y-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Full Name</label>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.full_name') }}</label>
                                         <input wire:model="name" type="text" class="{{ $fieldClass }}">
                                         @error('name') <span class="mt-1 block text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Email</label>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.email') }}</label>
                                         <input value="{{ $email }}" type="email" disabled class="{{ $disabledFieldClass }}">
-                                        <p class="mt-1 text-[11px] text-gray-400">Email changes are not supported yet.</p>
+                                        <p class="mt-1 text-[11px] text-gray-400">{{ __('store.email_changes_not_supported_yet') }}</p>
                                     </div>
 
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Phone Number</label>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.phone_number') }}</label>
                                         <input wire:model="phone" type="text" class="{{ $fieldClass }}">
                                         @error('phone') <span class="mt-1 block text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Gender</label>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.gender') }}</label>
                                         <div class="relative">
                                             <select wire:model="gender" class="{{ $selectClass }}">
-                                                <option value="">Select Gender</option>
-                                                <option value="1">Male</option>
-                                                <option value="2">Female</option>
-                                                <option value="3">Other</option>
+                                                <option value="">{{ __('store.select_gender') }}</option>
+                                                <option value="1">{{ __('store.male') }}</option>
+                                                <option value="2">{{ __('store.female') }}</option>
+                                                <option value="3">{{ __('store.other') }}</option>
                                             </select>
                                             <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
                                                 <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -646,14 +653,14 @@
                                     </div>
 
                                     <div class="md:col-span-2">
-                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Date of Birth</label>
+                                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.date_of_birth') }}</label>
                                         <input wire:model="birthday" type="date" class="{{ $fieldClass }}">
                                     </div>
                                 </div>
 
                                 <div class="flex justify-end pt-4 border-t border-gray-100">
                                     <button type="submit" class="rounded-xl bg-primary px-8 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-primary/90">
-                                        Save Changes
+                                        {{ __('store.save_changes') }}
                                     </button>
                                 </div>
                             </form>
@@ -675,15 +682,15 @@
                 <div class="p-6 space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-600">
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <div class="font-semibold text-gray-700">Status</div>
-                            <div class="mt-1 capitalize">{{ $selectedOrder->status }}</div>
+                            <div class="font-semibold text-gray-700">{{ __('store.status') }}</div>
+                            <div class="mt-1 capitalize">{{ __('store.' . $selectedOrder->status) }}</div>
                         </div>
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <div class="font-semibold text-gray-700">Payment</div>
-                            <div class="mt-1 capitalize">{{ $selectedOrder->payment_status }}</div>
+                            <div class="font-semibold text-gray-700">{{ __('store.payment') }}</div>
+                            <div class="mt-1 capitalize">{{ __('store.' . $selectedOrder->payment_status) }}</div>
                         </div>
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <div class="font-semibold text-gray-700">Placed</div>
+                            <div class="font-semibold text-gray-700">{{ __('store.placed') }}</div>
                             <div class="mt-1">{{ $selectedOrder->created_at?->format('M d, Y') }}</div>
                         </div>
                     </div>
@@ -695,20 +702,20 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
                                     <div class="w-12 h-12 bg-gray-100 rounded-lg mr-4 overflow-hidden border border-gray-200"></div>
-                                    <div><p class="text-sm font-bold text-gray-900">{{ $item->name }}</p><p class="text-xs text-gray-500">Qty: {{ $item->quantity }}</p></div>
+                                    <div><p class="text-sm font-bold text-gray-900">{{ $item->name }}</p><p class="text-xs text-gray-500">{{ __('store.qty') }}: {{ $item->quantity }}</p></div>
                                 </div>
                                 <p class="text-sm font-bold text-gray-900">{{ $modalSymbol }}{{ number_format($item->price, 2) }}</p>
                             </div>
                         @endforeach
                     </div>
                     <div class="border-t border-gray-100 pt-4 space-y-2">
-                        <div class="flex justify-between text-sm text-gray-600"><span>Subtotal</span><span>{{ $modalSymbol }}{{ number_format($selectedOrder->subtotal, 2) }}</span></div>
-                        <div class="flex justify-between text-sm text-gray-600"><span>Shipping</span><span>{{ $modalSymbol }}{{ number_format($selectedOrder->shipping_cost, 2) }}</span></div>
-                        <div class="flex justify-between text-base font-bold text-gray-900 pt-2 border-t border-dashed border-gray-200"><span>Total</span><span class="text-primary">{{ $modalSymbol }}{{ number_format($selectedOrder->total, 2) }}</span></div>
+                        <div class="flex justify-between text-sm text-gray-600"><span>{{ __('store.subtotal') }}</span><span>{{ $modalSymbol }}{{ number_format($selectedOrder->subtotal, 2) }}</span></div>
+                        <div class="flex justify-between text-sm text-gray-600"><span>{{ __('store.shipping') }}</span><span>{{ $modalSymbol }}{{ number_format($selectedOrder->shipping_cost, 2) }}</span></div>
+                        <div class="flex justify-between text-base font-bold text-gray-900 pt-2 border-t border-dashed border-gray-200"><span>{{ __('store.total') }}</span><span class="text-primary">{{ $modalSymbol }}{{ number_format($selectedOrder->total, 2) }}</span></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-600">
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <div class="font-semibold text-gray-700">Shipping Address</div>
+                            <div class="font-semibold text-gray-700">{{ __('store.shipping_address') }}</div>
                             <div class="mt-1">
                                 {{ $selectedOrder->shippingAddress?->name ?? '—' }}<br>
                                 {{ $selectedOrder->shippingAddress?->address_line1 ?? '' }}<br>
@@ -716,7 +723,7 @@
                             </div>
                         </div>
                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <div class="font-semibold text-gray-700">Billing Address</div>
+                            <div class="font-semibold text-gray-700">{{ __('store.billing_address') }}</div>
                             <div class="mt-1">
                                 {{ $selectedOrder->billingAddress?->name ?? '—' }}<br>
                                 {{ $selectedOrder->billingAddress?->address_line1 ?? '' }}<br>

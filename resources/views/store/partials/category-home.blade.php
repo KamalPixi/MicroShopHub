@@ -20,7 +20,7 @@
         ];
     @endphp
     <div class="mb-3 px-1">
-        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_shop_by_category_title'] ?? 'Shop by Category' }}</h2>
+        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_shop_by_category_title'] ?? __('store.shop_by_category') }}</h2>
     </div>
 
     <div class="relative">
@@ -77,7 +77,7 @@
                     @endforeach
                 @else
                     <div class="w-full text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
-                        <p>No categories found to display.</p>
+                        <p>{{ __('store.no_categories_available') }}</p>
                     </div>
                 @endif
 

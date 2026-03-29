@@ -14,7 +14,7 @@
                 </button>
 
                 <div class="hidden md:flex flex-wrap items-center gap-2">
-                    <a href="{{ route('store.index') }}" class="inline-flex items-center rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary/25 hover:text-primary">All Products</a>
+                    <a href="{{ route('store.index') }}" class="inline-flex items-center rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary/25 hover:text-primary">{{ __('store.all_products') }}</a>
                     @if(isset($navbarCategories) && $navbarCategories->count() > 0)
                         @foreach($navbarCategories as $category)
                             @if($category->children->isNotEmpty())
@@ -51,14 +51,14 @@
                     @endif
                 </div>
 
-                <div class="md:hidden text-sm font-semibold text-gray-800">Categories</div>
+                <div class="md:hidden text-sm font-semibold text-gray-800">{{ __('store.categories') }}</div>
             </div>
         </div>
     </div>
 
     <div x-show="mobileMenuOpen" x-cloak class="md:hidden mt-2 border-t border-gray-200 bg-white/95 backdrop-blur shadow-sm relative z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-1">
-            <a href="{{ route('store.index') }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary">All Products</a>
+            <a href="{{ route('store.index') }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary">{{ __('store.all_products') }}</a>
             @if(isset($navbarCategories) && $navbarCategories->count() > 0)
                 @foreach($navbarCategories as $category)
                     @if($category->children->isNotEmpty())

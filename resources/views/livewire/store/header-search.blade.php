@@ -4,7 +4,7 @@
         <div class="relative border-r border-gray-300 bg-gray-50 hidden sm:block">
             <select wire:model.live="category" 
                     class="appearance-none bg-transparent h-full pl-4 pr-8 py-2 text-sm text-gray-600 focus:outline-none cursor-pointer hover:bg-gray-100 max-w-[150px] truncate">
-                <option value="">All Categories</option>
+                <option value="">{{ __('store.all_categories') }}</option>
                 @if(isset($categories))
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -20,7 +20,7 @@
             <input wire:model.live.debounce.300ms="query" 
                    wire:keydown.enter="performSearch"
                    type="text" 
-                   placeholder="Search products..."
+                   placeholder="{{ __('store.search_products') }}"
                    class="w-full pl-10 pr-12 py-2 border-none focus:ring-0 h-full text-gray-700 placeholder-gray-400"
                    autocomplete="off">
             
@@ -36,7 +36,7 @@
                         wire:target="query"
                         wire:click="$set('query','')"
                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
-                        aria-label="Clear search">
+                        aria-label="{{ __('store.clear') }}">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -74,7 +74,7 @@
                                 <div class="ml-2">
                                     @if($saleInfo)
                                         @if($product->has_variations && empty($product->price))
-                                            <span class="block text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500 text-right">From</span>
+                                            <span class="block text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500 text-right">{{ __('store.from') }}</span>
                                         @endif
                                         <span class="block text-[10px] font-medium text-gray-400 line-through text-right">{{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}</span>
                                         <span class="text-sm font-bold text-primary">{{ $product->currency_symbol }}{{ number_format($saleInfo['sale_price'], 2) }}</span>
@@ -82,7 +82,7 @@
                                         @if($product->price)
                                             <span class="text-sm font-bold text-primary">{{ $product->currency_symbol }}{{ number_format($product->price, 2) }}</span>
                                         @elseif($product->has_variations)
-                                            <span class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">See Options</span>
+                                            <span class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">{{ __('store.see_options') }}</span>
                                         @endif
                                     @endif
                                 </div>
@@ -93,12 +93,12 @@
                 
                 <div class="bg-gray-50 p-2 text-center border-t border-gray-100">
                     <button wire:click="performSearch" class="text-primary text-sm font-medium hover:underline w-full py-1">
-                        View all results for "{{ $query }}"
+                        {{ __('store.view_all_results') }} for "{{ $query }}"
                     </button>
                 </div>
             @else
                 <div class="px-4 py-4 text-center text-sm text-gray-500">
-                    No products found for "<span class="font-semibold">{{ $query }}</span>"
+                    {{ __('store.no_results_for', ['query' => $query]) }}
                 </div>
             @endif
         </div>

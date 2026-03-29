@@ -17,7 +17,7 @@
                         <svg class="h-3.5 w-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.5 2.25 4.5 14.25H11l-1.5 7.5 9-12H12l1.5-7.5Z"></path>
                         </svg>
-                        <span>Flash Sale</span>
+                        <span>{{ __('store.flash_sale') }}</span>
                     </div>
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                         <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 md:text-3xl">
@@ -25,8 +25,8 @@
                         </h1>
                         @if($saleEndsAt)
                             <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-3 py-1.5 shadow-sm">
-                                <span class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Ends in</span>
-                                <span class="text-sm font-extrabold text-primary" data-flash-sale-countdown="{{ $saleEndsAt }}">Loading…</span>
+                                <span class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.flash_sale_ends_in') }}</span>
+                                <span class="text-sm font-extrabold text-primary" data-flash-sale-countdown="{{ $saleEndsAt }}">{{ __('store.loading') }}</span>
                             </div>
                         @endif
                     </div>
@@ -43,11 +43,11 @@
         <section class="mb-8">
             <div class="flex items-center justify-between gap-3 mb-4">
                 <div>
-                    <h2 class="text-xl font-bold text-gray-900">All Flash Sale Items</h2>
-                    <p class="text-sm text-gray-500">{{ $saleProducts->count() }} products on sale right now</p>
+                    <h2 class="text-xl font-bold text-gray-900">{{ __('store.flash_sale_label') }}</h2>
+                    <p class="text-sm text-gray-500">{{ __('store.products_on_sale_now', ['count' => $saleProducts->count()]) }}</p>
                 </div>
                 <a href="{{ route('store.index') }}" class="inline-flex items-center rounded-full border border-primary/20 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm transition hover:bg-primary hover:text-white">
-                    Back Home
+                    {{ __('store.visit_home') }}
                 </a>
             </div>
 
@@ -71,7 +71,7 @@
                             @endphp
                             <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
                             <div class="absolute left-3 top-3 rounded-full bg-rose-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">
-                                Flash Sale
+                                {{ __('store.flash_sale_label') }}
                             </div>
                         </div>
 
@@ -82,7 +82,7 @@
                             <div class="mt-2 flex items-end justify-between gap-2">
                                 <div class="flex flex-col">
                                     @if($product->has_variations && empty($product->price))
-                                        <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">From</span>
+                                        <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">{{ __('store.from') }}</span>
                                     @endif
                                     <span class="text-sm font-semibold text-gray-400 line-through">
                                         {{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}
@@ -94,7 +94,7 @@
                                 @livewire('store.add-to-cart-button', ['productId' => $product->id], key('flash-sale-page-'.$product->id))
                             </div>
                             <p class="mt-1 text-xs font-semibold text-green-700">
-                                Save {{ $saleInfo['discount_percent'] }}%
+                                {{ __('store.save') }} {{ $saleInfo['discount_percent'] }}%
                             </p>
                         </div>
                     </div>
@@ -107,14 +107,12 @@
                 <svg class="h-3.5 w-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.5 2.25 4.5 14.25H11l-1.5 7.5 9-12H12l1.5-7.5Z"></path>
                 </svg>
-                <span>Flash Sale</span>
-            </div>
-            <h1 class="mt-2 text-2xl font-extrabold text-gray-900">No active flash sale right now</h1>
-            <p class="mx-auto mt-2 max-w-xl text-sm text-gray-600">
-                Check back later for limited-time deals and special product offers.
-            </p>
+                        <span>{{ __('store.flash_sale') }}</span>
+                    </div>
+            <h1 class="mt-2 text-2xl font-extrabold text-gray-900">{{ __('store.no_active_flash_sale') }}</h1>
+            <p class="mx-auto mt-2 max-w-xl text-sm text-gray-600">{{ __('store.check_back_later') }}</p>
             <a href="{{ route('store.index') }}" class="mt-5 inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
-                Back to Home
+                {{ __('store.visit_home') }}
             </a>
         </section>
     @endif
@@ -130,7 +128,7 @@
                 const diff = endsAt.getTime() - Date.now();
 
                 if (diff <= 0) {
-                    node.textContent = 'Ended';
+                    node.textContent = @js(__('store.ended'));
                     return;
                 }
 

@@ -8,8 +8,8 @@
     }
 }">
     <div class="flex items-center justify-between mb-4 px-1">
-        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_new_arrivals_title'] ?? 'New Arrivals' }}</h2>
-        <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-primary">View All →</a>
+        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_new_arrivals_title'] ?? __('store.new_arrivals') }}</h2>
+        <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-primary">{{ __('store.view_all') }} →</a>
     </div>
 
     <div class="relative">
@@ -48,7 +48,7 @@
                             @endphp
                             <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105">
                             @if($saleInfo)
-                                <span class="absolute left-2 top-2 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">Flash Sale</span>
+                                <span class="absolute left-2 top-2 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">{{ __('store.flash_sale_label') }}</span>
                             @endif
                         </div>
 
@@ -63,7 +63,7 @@
                                 <div class="flex flex-col">
                                     @if($saleInfo)
                                         @if($product->has_variations && empty($product->price))
-                                            <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">From</span>
+                                        <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">{{ __('store.from') }}</span>
                                         @endif
                                         <span class="text-xs font-medium text-gray-400 line-through">
                                             {{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}
@@ -76,9 +76,9 @@
                                             {{ $product->currency_symbol }}{{ number_format($product->price, 2) }}
                                         </span>
                                     @elseif($product->has_variations)
-                                        <span class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">See Options</span>
+                                        <span class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">{{ __('store.see_options') }}</span>
                                     @else
-                                        <span class="text-xs text-gray-500">View</span>
+                                        <span class="text-xs text-gray-500">{{ __('store.view') }}</span>
                                     @endif
                                 </div>
                                 
@@ -89,7 +89,7 @@
                 @endforeach
             @else
                 <div class="w-full text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
-                    No new arrivals found.
+                    {{ __('store.no_products_available') }}
                 </div>
             @endif
 

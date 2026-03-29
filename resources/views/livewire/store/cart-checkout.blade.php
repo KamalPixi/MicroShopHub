@@ -3,7 +3,7 @@
 
         @include('admin.includes.errors')
         
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Shopping Cart & Checkout</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ __('store.shopping_cart_checkout') }}</h1>
 
         @if(count($cart) > 0)
             <div class="lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
@@ -12,7 +12,7 @@
                     
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                         <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Items in Cart</h2>
+                            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">{{ __('store.items_in_cart') }}</h2>
                             <span class="text-xs font-medium text-gray-500">{{ count($cart) }} Items</span>
                         </div>
                         <ul class="divide-y divide-gray-100">
@@ -73,7 +73,7 @@
                                     @if($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled'])
                                         <p class="text-xs text-primary mt-2">Want faster checkout and order history? Use optional login/register below.</p>
                                         <button wire:click="toggleAuthSection" type="button" class="mt-3 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-primary border border-primary/20 hover:bg-primary/10">
-                                            {{ $showAuthSection ? 'Hide Login / Register' : 'Show Login / Register' }}
+                                            {{ $showAuthSection ? __('store.hide_login_register') : __('store.show_login_register') }}
                                         </button>
                                     @endif
                                 </div>
@@ -87,7 +87,7 @@
                                 <div class="rounded-lg border {{ $authSettings['guest_checkout_enabled'] ? 'border-gray-200 bg-gray-50' : 'border-yellow-200 bg-yellow-50' }} p-4 space-y-3">
                                     <div class="flex items-center justify-between">
                                         <p class="text-sm font-semibold text-gray-800">
-                                            {{ $authSettings['guest_checkout_enabled'] ? 'Optional Account Access' : 'Login Required' }}
+                                            {{ $authSettings['guest_checkout_enabled'] ? __('store.optional_account_access') : __('store.login_required') }}
                                         </p>
                                         @if($authSettings['guest_checkout_enabled'])
                                             <button wire:click="toggleAuthSection" type="button" class="text-[11px] px-2 py-1 rounded bg-primary/10 text-primary font-semibold hover:bg-primary/20">Hide</button>
@@ -117,15 +117,15 @@
                                         @if($authSettings['email_password_enabled'] && $authSettings['email_otp_enabled'])
                                             <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-1 border border-gray-200">
                                                 <button type="button" wire:click="setAuthMethod('password')" class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'password' ? 'bg-primary text-white' : 'text-gray-700' }}">
-                                                    Email + Password
+                                                    {{ __('store.email_password') }}
                                                 </button>
                                                 <button type="button" wire:click="setAuthMethod('otp')" class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'otp' ? 'bg-primary text-white' : 'text-gray-700' }}">
-                                                    Email OTP
+                                                    {{ __('store.email_otp') }}
                                                 </button>
                                             </div>
                                         @endif
 
-                                        <input wire:model="loginEmail" type="email" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Email for login">
+                                        <input wire:model="loginEmail" type="email" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.email_for_login') }}">
                                         @error('loginEmail') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
                                         @if($authMethod === 'password' && $authSettings['email_password_enabled'])
@@ -165,17 +165,17 @@
                                         @endif
                                     @else
                                         <div class="space-y-2">
-                                            <input wire:model="registerName" type="text" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Full name">
+                                            <input wire:model="registerName" type="text" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.full_name') }}">
                                             @error('registerName') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
                                             <input wire:model="registerEmail" type="email" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Email">
                                             @error('registerEmail') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
-                                            <input wire:model="registerPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Create password">
+                                            <input wire:model="registerPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.create_password') }}">
                                             @error('registerPassword') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
                                             <button wire:click="registerInline" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                                Create Account & Continue
+                                        {{ __('store.create_account_continue') }}
                                             </button>
                                         </div>
                                     @endif
@@ -202,7 +202,7 @@
                         <div class="space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
                             @if(auth()->check() && $savedAddresses && $savedAddresses->count() > 0)
                                     <div class="mb-5">
-                                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Select Address</h3>
+                                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">{{ __('store.select_address') }}</h3>
                                         
                                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                             
@@ -418,7 +418,7 @@
 
                 <div class="lg:col-span-4 mt-8 lg:mt-0">
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sticky top-24">
-                        <h2 class="text-base font-bold text-gray-900 mb-4 border-b pb-2">Order Summary</h2>
+                        <h2 class="text-base font-bold text-gray-900 mb-4 border-b pb-2">{{ __('store.order_summary') }}</h2>
 
                         <div class="space-y-3 text-sm mb-6">
                             <div class="flex justify-between text-gray-600">
@@ -471,18 +471,18 @@
                                        class="flex-1 text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 uppercase placeholder-gray-400">
                                 <button wire:click="applyCoupon"
                                         class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-black transition border border-gray-800 shadow-sm">
-                                    Apply
+                                    {{ __('store.apply') }}
                                 </button>
                             </div>
                             @if(! $appliedCoupon)
-                                <p class="text-[11px] text-gray-500">Enter a discount code and click Apply to update your total.</p>
+                                <p class="text-[11px] text-gray-500">{{ __('store.enter_discount_code_apply') ?? 'Enter a discount code and click Apply to update your total.' }}</p>
                             @endif
                             @error('coupon') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
                             @if(session('coupon_success')) <p class="text-green-600 text-xs mt-1 font-bold">{{ session('coupon_success') }}</p> @endif
                         </div>
 
                         <div class="space-y-4 mb-4">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4">Select Payment Method</h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('store.select_payment_method') }}</h3>
                             
                             <div class="grid grid-cols-1 gap-4">
 
@@ -588,7 +588,7 @@
                         @if($paymentMethod === 'offline')
                             <div class="mb-4 space-y-3">
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-600">Select Method</label>
+                                    <label class="block text-xs font-semibold text-gray-600">{{ __('store.select_method') }}</label>
                                     <div class="relative mt-1">
                                         <select wire:model.live="offlinePaymentMethodId" class="block w-full appearance-none border border-gray-300 rounded-lg text-sm px-3 py-2 bg-white pr-8 focus:outline-none focus:ring-0 focus:border-gray-300">
                                             @foreach($offlinePaymentMethods as $index => $method)
@@ -635,7 +635,7 @@
                                     class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center
                                            {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? 'opacity-70 cursor-not-allowed' : '' }}">
                                 <span wire:loading.remove>
-                                    {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? 'Log in to Order' : 'Complete Order' }}
+                                    {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? __('store.log_in_to_order') : __('store.complete_order') }}
                                 </span>
                                 <span wire:loading><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>
                             </button>
@@ -682,8 +682,8 @@
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Order Placed Successfully</h3>
                     <p class="text-gray-600 mb-6">{{ session('order_success') }}</p>
                     <div class="grid grid-cols-1 gap-3">
-                        <a href="{{ route('store.index') }}" class="block w-full bg-primary text-white py-2 rounded-lg font-bold hover:bg-primary">Continue Shopping</a>
-                        <a href="{{ route('store.index') }}" class="block w-full border border-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-50">Visit Home</a>
+                        <a href="{{ route('store.index') }}" class="block w-full bg-primary text-white py-2 rounded-lg font-bold hover:bg-primary">{{ __('store.continue_shopping') }}</a>
+                        <a href="{{ route('store.index') }}" class="block w-full border border-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-50">{{ __('store.visit_home') }}</a>
                     </div>
                 </div>
             </div>

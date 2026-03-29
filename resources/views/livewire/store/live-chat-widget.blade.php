@@ -2,7 +2,7 @@
     @if($enabled)
         <div class="fixed bottom-6 right-6 z-50">
             <button type="button" wire:click="toggle" wire:loading.attr="disabled" wire:target="toggle" class="bg-primary text-white rounded-full shadow-lg px-4 py-3 text-sm font-semibold flex items-center gap-2">
-                <span wire:loading.remove wire:target="toggle">{{ $open ? 'Close Chat' : 'Live Chat' }}</span>
+                <span wire:loading.remove wire:target="toggle">{{ $open ? __('store.close_chat') : __('store.live_chat') }}</span>
                 <span wire:loading wire:target="toggle">
                     <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
@@ -16,9 +16,9 @@
             <div class="fixed bottom-20 right-6 w-80 max-w-full bg-white border border-gray-200 rounded-lg shadow-xl z-50">
                 <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                     <div>
-                        <p class="text-sm font-semibold text-gray-900">Live Chat</p>
+                        <p class="text-sm font-semibold text-gray-900">{{ __('store.live_chat') }}</p>
                         <p class="text-xs text-gray-500">
-                            {{ $nameCaptured ? 'You: ' . $customerName : 'We typically reply within a few minutes.' }}
+                            {{ $nameCaptured ? __('store.you') . ': ' . $customerName : __('store.reply_time') }}
                         </p>
                     </div>
                     <button type="button" wire:click="toggle" wire:loading.attr="disabled" wire:target="toggle" class="text-gray-500 hover:text-gray-700 flex items-center justify-center">
@@ -35,10 +35,10 @@
                 <div id="live-chat-messages" class="p-4 space-y-2 max-h-72 overflow-y-auto">
                     @if(!$nameCaptured)
                         <div class="space-y-3">
-                            <p class="text-xs text-gray-500">Please enter your name to start the chat.</p>
+                            <p class="text-xs text-gray-500">{{ __('store.please_enter_name') }}</p>
                             <div class="flex gap-2">
-                                <input type="text" wire:model.live="customerName" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Your name">
-                                <button type="button" wire:click="saveName" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold">Start</button>
+                                <input type="text" wire:model.live="customerName" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="{{ __('store.full_name') }}">
+                                <button type="button" wire:click="saveName" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold">{{ __('store.start') }}</button>
                             </div>
                         </div>
                     @else
@@ -49,18 +49,18 @@
                                     <div class="mt-1 text-[10px] opacity-70 flex items-center gap-2">
                                         <span>{{ $msg['created_at'] }}</span>
                                         @if($msg['sender'] === 'customer')
-                                            <span>{{ $msg['delivery_status'] === 'delivered' ? 'Delivered' : 'Sent' }}</span>
+                                            <span>{{ $msg['delivery_status'] === 'delivered' ? __('store.delivered') : __('store.sent') }}</span>
                                         @endif
                                     </div>
                                     @if(!empty($msg['meta']['product']))
                                         <div class="mt-1 text-[10px] opacity-90">
-                                            Product: {{ $msg['meta']['product']['name'] }}
+                                            {{ __('store.view_product') }}: {{ $msg['meta']['product']['name'] }}
                                         </div>
                                     @endif
                                 </div>
                             </div>
                         @empty
-                            <p class="text-xs text-gray-500">Ask us anything.</p>
+                            <p class="text-xs text-gray-500">{{ __('store.ask_us_anything') }}</p>
                         @endforelse
                         <div id="live-chat-bottom"></div>
                     @endif
@@ -68,16 +68,16 @@
 
                 @if($currentProduct && $nameCaptured)
                     <div class="px-4 py-2 border-t border-gray-100">
-                        <button type="button" wire:click="shareProduct" class="text-xs text-primary font-semibold hover:underline">
-                            Share this product
-                        </button>
-                    </div>
-                @endif
+                            <button type="button" wire:click="shareProduct" class="text-xs text-primary font-semibold hover:underline">
+                            {{ __('store.share_product') }}
+                            </button>
+                        </div>
+                    @endif
 
                 @if($nameCaptured)
                     <div class="px-4 py-3 border-t border-gray-100">
                         <div class="flex gap-2">
-                            <input type="text" wire:model.live="message" wire:keydown.enter.prevent="sendMessage" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Type a message...">
+                            <input type="text" wire:model.live="message" wire:keydown.enter.prevent="sendMessage" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-xs focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="{{ __('store.type_message_placeholder') }}">
                             <button type="button" wire:click="sendMessage" wire:loading.attr="disabled" wire:target="sendMessage" class="bg-primary text-white px-3 py-2 rounded-md text-xs font-semibold flex items-center justify-center min-w-[64px]">
                                 <span wire:loading.remove wire:target="sendMessage">Send</span>
                                 <span wire:loading.delay.longer wire:target="sendMessage">
@@ -91,7 +91,7 @@
                     </div>
                 @else
                     <div class="px-4 py-3 border-t border-gray-100">
-                        <p class="text-[11px] text-gray-500">Type your name above to start chatting.</p>
+                        <p class="text-[11px] text-gray-500">{{ __('store.type_name_to_start') }}</p>
                     </div>
                 @endif
             </div>

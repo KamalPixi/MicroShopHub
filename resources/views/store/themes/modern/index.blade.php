@@ -30,10 +30,10 @@
 
                 <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
                     <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
-                        {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
+                        {{ $homepageSettings['home_hero_cta_label'] ?? __('store.shop_now') }}
                     </a>
                     <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-primary/20 hover:text-primary">
-                        Browse Store
+                        {{ __('store.browse_store') }}
                     </a>
                 </div>
             </div>
@@ -113,10 +113,10 @@
 
                 <div class="flex flex-wrap gap-3 pt-1">
                     <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
-                        {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
+                        {{ $homepageSettings['home_hero_cta_label'] ?? __('store.shop_now') }}
                     </a>
                     <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-primary/20 hover:text-primary">
-                        Browse Store
+                        {{ __('store.browse_store') }}
                     </a>
                 </div>
             </div>
@@ -166,10 +166,10 @@
 
                 <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
                     <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95">
-                        {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
+                        {{ $homepageSettings['home_hero_cta_label'] ?? __('store.shop_now') }}
                     </a>
                     <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-primary/20 hover:text-primary">
-                        Browse Store
+                        {{ __('store.browse_store') }}
                     </a>
                 </div>
             </div>
@@ -195,7 +195,7 @@
 @if($homepageSettings['home_newsletter_enabled'] ?? true)
 <section id="newsletter" class="mb-6 rounded-3xl bg-primary px-5 py-5 text-center text-white shadow-sm md:mb-8 md:px-6 md:py-6">
     <h2 class="mb-1 text-xl font-bold md:text-2xl">{{ $homepageSettings['home_newsletter_title'] ?? 'Stay Updated' }}</h2>
-    <p class="mb-3 text-sm text-white/80 md:mb-4">{{ $homepageSettings['home_newsletter_subtitle'] ?? 'Subscribe for new arrivals, exclusive offers, and restock alerts.' }}</p>
+    <p class="mb-3 text-sm text-white/80 md:mb-4">{{ $homepageSettings['home_newsletter_subtitle'] ?? __('store.stay_updated_hint') }}</p>
     <livewire:store.newsletter-subscribe />
 </section>
 @endif

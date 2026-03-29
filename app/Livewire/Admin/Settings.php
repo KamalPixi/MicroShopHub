@@ -26,6 +26,9 @@ class Settings extends Component
         'accent_color' => '#F59E0B',
         'shop_name' => '',
         'site_title' => '',
+        'store_default_locale' => 'en',
+        'store_language_en_enabled' => true,
+        'store_language_bn_enabled' => true,
         
         // SEO
         'meta_description' => '',
@@ -123,6 +126,9 @@ class Settings extends Component
         'settings.accent_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         'settings.shop_name' => 'nullable|string|max:255',
         'settings.site_title' => 'nullable|string|max:255',
+        'settings.store_default_locale' => 'required|in:en,bn',
+        'settings.store_language_en_enabled' => 'boolean',
+        'settings.store_language_bn_enabled' => 'boolean',
         'settings.meta_description' => 'nullable|string|max:500',
         'settings.meta_keywords' => 'nullable|string|max:255',
         'settings.social_facebook' => 'nullable|url',
@@ -194,6 +200,18 @@ class Settings extends Component
         $this->settings['customer_auth_email_otp_enabled'] = filter_var($this->settings['customer_auth_email_otp_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['customer_auth_email_password_enabled'] = filter_var($this->settings['customer_auth_email_password_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $this->settings['customer_auth_guest_checkout_enabled'] = filter_var($this->settings['customer_auth_guest_checkout_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['store_default_locale'] = in_array($this->settings['store_default_locale'] ?? 'en', ['en', 'bn'], true) ? $this->settings['store_default_locale'] : 'en';
+        $this->settings['store_language_en_enabled'] = filter_var($this->settings['store_language_en_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['store_language_bn_enabled'] = filter_var($this->settings['store_language_bn_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        if (! $this->settings['store_language_en_enabled'] && ! $this->settings['store_language_bn_enabled']) {
+            $this->settings['store_language_en_enabled'] = true;
+        }
+        if (
+            ($this->settings['store_default_locale'] === 'en' && ! $this->settings['store_language_en_enabled']) ||
+            ($this->settings['store_default_locale'] === 'bn' && ! $this->settings['store_language_bn_enabled'])
+        ) {
+            $this->settings['store_default_locale'] = $this->settings['store_language_en_enabled'] ? 'en' : 'bn';
+        }
         $this->settings['admin_notify_email_enabled'] = filter_var($this->settings['admin_notify_email_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['admin_notify_telegram_enabled'] = filter_var($this->settings['admin_notify_telegram_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['live_chat_enabled'] = filter_var($this->settings['live_chat_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
@@ -278,9 +296,25 @@ class Settings extends Component
 
     public function saveGeneral()
     {
+        if (! $this->settings['store_language_en_enabled'] && ! $this->settings['store_language_bn_enabled']) {
+            $this->addError('settings.store_language_en_enabled', 'Enable at least one storefront language.');
+            $this->savedSection = 'general';
+            return;
+        }
+
+        if (
+            ($this->settings['store_default_locale'] === 'en' && ! $this->settings['store_language_en_enabled']) ||
+            ($this->settings['store_default_locale'] === 'bn' && ! $this->settings['store_language_bn_enabled'])
+        ) {
+            $this->settings['store_default_locale'] = $this->settings['store_language_en_enabled'] ? 'en' : 'bn';
+        }
+
         $this->saveSettings([
             'shop_name',
             'site_title',
+            'store_default_locale',
+            'store_language_en_enabled',
+            'store_language_bn_enabled',
             'branding_color',
             'secondary_color',
             'accent_color',
@@ -289,6 +323,9 @@ class Settings extends Component
             'logo' => $this->rules['logo'],
             'settings.shop_name' => $this->rules['settings.shop_name'],
             'settings.site_title' => $this->rules['settings.site_title'],
+            'settings.store_default_locale' => $this->rules['settings.store_default_locale'],
+            'settings.store_language_en_enabled' => $this->rules['settings.store_language_en_enabled'],
+            'settings.store_language_bn_enabled' => $this->rules['settings.store_language_bn_enabled'],
             'settings.branding_color' => $this->rules['settings.branding_color'],
             'settings.secondary_color' => $this->rules['settings.secondary_color'],
             'settings.accent_color' => $this->rules['settings.accent_color'],

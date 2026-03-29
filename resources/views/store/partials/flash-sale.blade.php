@@ -11,7 +11,7 @@
                 <svg class="h-3.5 w-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.5 2.25 4.5 14.25H11l-1.5 7.5 9-12H12l1.5-7.5Z"></path>
                 </svg>
-                <span>Flash Sale</span>
+                <span>{{ __('store.flash_sale') }}</span>
             </div>
             <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                 <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 md:text-3xl">
@@ -19,8 +19,8 @@
                 </h2>
                 @if($saleEndsAt)
                     <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-3 py-1.5 shadow-sm">
-                        <span class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Ends in</span>
-                        <span class="text-sm font-extrabold text-primary" data-flash-sale-countdown="{{ $saleEndsAt }}">Loading…</span>
+                        <span class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">{{ __('store.flash_sale_ends_in') }}</span>
+                        <span class="text-sm font-extrabold text-primary" data-flash-sale-countdown="{{ $saleEndsAt }}">{{ __('store.loading') }}</span>
                     </div>
                 @endif
             </div>
@@ -34,7 +34,7 @@
 
         <div class="flex items-start gap-2">
             <a href="{{ route('store.flash-sale') }}" class="inline-flex items-center rounded-full border border-primary/20 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm transition hover:bg-primary hover:text-white">
-                View All
+                {{ __('store.view_all') }}
             </a>
         </div>
     </div>
@@ -62,7 +62,7 @@
                         <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.5 2.25 4.5 14.25H11l-1.5 7.5 9-12H12l1.5-7.5Z"></path>
                         </svg>
-                        <span>Flash Sale</span>
+                        <span>{{ __('store.flash_sale_label') }}</span>
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@
                     <div class="mt-2 flex items-end justify-between gap-2">
                         <div class="flex flex-col">
                             @if($product->has_variations && empty($product->price))
-                                <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">From</span>
+                            <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">{{ __('store.from') }}</span>
                             @endif
                             <span class="text-sm font-semibold text-gray-400 line-through">
                                 {{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}
@@ -103,7 +103,7 @@
                 const diff = endsAt.getTime() - Date.now();
 
                 if (diff <= 0) {
-                    node.textContent = 'Ended';
+                    node.textContent = @js(__('store.ended'));
                     return;
                 }
 

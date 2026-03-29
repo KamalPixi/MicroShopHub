@@ -30,10 +30,10 @@
 
                 <div class="mt-4 flex flex-wrap items-center gap-3">
                     <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition hover:opacity-95">
-                        {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
+                        {{ $homepageSettings['home_hero_cta_label'] ?? __('store.shop_now') }}
                     </a>
                     <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-white/25 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
-                        Browse Store
+                        {{ __('store.browse_store') }}
                     </a>
                 </div>
 
@@ -46,26 +46,26 @@
 
             <div class="self-center">
                 <div class="rounded-2xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-sm">
-                    <p class="text-[11px] uppercase tracking-[0.18em] text-white/70">Quick Actions</p>
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-white/70">{{ __('store.quick_actions') }}</p>
                     <div class="mt-2.5 space-y-2">
                         <a href="{{ route('store.search') }}" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-2.5 transition hover:bg-white/15">
                             <div>
-                                <p class="text-sm font-semibold">Browse categories</p>
-                                <p class="mt-0.5 text-[11px] text-white/75">Jump into the catalog and explore by category.</p>
+                                <p class="text-sm font-semibold">{{ __('store.browse_categories') }}</p>
+                                <p class="mt-0.5 text-[11px] text-white/75">{{ __('store.browse_categories_hint') }}</p>
                             </div>
                             <span class="ml-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-primary font-bold transition group-hover:translate-x-0.5">→</span>
                         </a>
                         <a href="{{ route('store.search', ['sort' => 'newest']) }}" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-2.5 transition hover:bg-white/15">
                             <div>
-                                <p class="text-sm font-semibold">See new arrivals</p>
-                                <p class="mt-0.5 text-[11px] text-white/75">View the newest items added to the store.</p>
+                                <p class="text-sm font-semibold">{{ __('store.see_new_arrivals') }}</p>
+                                <p class="mt-0.5 text-[11px] text-white/75">{{ __('store.see_new_arrivals_hint') }}</p>
                             </div>
                             <span class="ml-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent text-slate-900 font-bold transition group-hover:translate-x-0.5">→</span>
                         </a>
                         <a href="#newsletter" class="group flex items-center justify-between rounded-xl bg-white/10 px-3 py-2.5 transition hover:bg-white/15">
                             <div>
-                                <p class="text-sm font-semibold">Stay updated</p>
-                                <p class="mt-0.5 text-[11px] text-white/75">Go straight to the subscribe section for offers and updates.</p>
+                                <p class="text-sm font-semibold">{{ __('store.stay_updated') }}</p>
+                                <p class="mt-0.5 text-[11px] text-white/75">{{ __('store.stay_updated_hint') }}</p>
                             </div>
                             <span class="ml-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-secondary font-bold transition group-hover:translate-x-0.5">→</span>
                         </a>
@@ -132,10 +132,10 @@
 
                 <div class="mt-3.5 flex flex-wrap items-center gap-3">
                     <a href="{{ $homepageSettings['home_hero_cta_url'] ?? route('store.search') }}" class="inline-flex items-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-primary shadow-sm transition hover:opacity-95">
-                        {{ $homepageSettings['home_hero_cta_label'] ?? 'Shop Now' }}
+                        {{ $homepageSettings['home_hero_cta_label'] ?? __('store.shop_now') }}
                     </a>
                     <a href="{{ route('store.search') }}" class="inline-flex items-center rounded-xl border border-white/25 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15">
-                        Browse Store
+                        {{ __('store.browse_store') }}
                     </a>
                 </div>
 
@@ -202,8 +202,8 @@
 <!-- Newsletter -->
 @if($homepageSettings['home_newsletter_enabled'] ?? true)
 <section id="newsletter" class="bg-primary rounded-lg p-6 text-center text-white mb-8">
-    <h2 class="text-2xl font-bold mb-2">{{ $homepageSettings['home_newsletter_title'] ?? 'Stay Updated' }}</h2>
-    <p class="text-white/80 mb-4">{{ $homepageSettings['home_newsletter_subtitle'] ?? 'Subscribe for new arrivals, exclusive offers, and restock alerts.' }}</p>
+    <h2 class="text-2xl font-bold mb-2">{{ $homepageSettings['home_newsletter_title'] ?? __('store.stay_updated') }}</h2>
+    <p class="text-white/80 mb-4">{{ $homepageSettings['home_newsletter_subtitle'] ?? __('store.stay_updated_hint') }}</p>
     <livewire:store.newsletter-subscribe />
 </section>
 @endif

@@ -101,7 +101,7 @@
                     </h1>
                     <div class="flex flex-wrap items-center gap-2 text-xs text-gray-600">
                         <span class="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-700">
-                            {{ $product->categories->first()->name ?? 'Product' }}
+                            {{ $product->categories->first()->name ?? __('store.product') }}
                         </span>
                         <span class="inline-flex items-center rounded-full border border-gray-200 bg-white px-3 py-1 text-xs">
                             SKU: <span class="font-mono ml-1 font-semibold text-gray-900">{{ $selectedVariation ? $selectedVariation->sku : $product->sku }}</span>
@@ -120,7 +120,7 @@
                 @endphp
                 <div class="mb-2 pb-3 border-b border-gray-100">
                     <div class="rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3 sm:p-4 space-y-2">
-                        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Price</p>
+                        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">{{ __('store.price_label') }}</p>
                         <div class="flex flex-wrap items-end gap-3">
                         <span class="text-3xl font-bold text-primary transition-all duration-300" 
                               role="status"
@@ -132,7 +132,7 @@
                                 {{ $product->currency_symbol }}{{ number_format($originalPrice, 2) }}
                             </span>
                             <span class="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">
-                                Save {{ $discountPercent }}%
+                                {{ __('store.save') }} {{ $discountPercent }}%
                             </span>
                         @endif
                         </div>
@@ -141,7 +141,7 @@
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                 </svg>
-                                {{ $flashSaleTitle ?? 'Flash Sale' }}
+                                {{ $flashSaleTitle ?? __('store.flash_sale_label') }}
                             </div>
                         @endif
                         @if($product->has_variations && count($selectedAttributes) == 0)
@@ -149,19 +149,19 @@
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Choose your options to see the exact final price
+                                {{ __('store.choose_options_to_see_price') }}
                             </div>
                         @elseif($selectedVariation && $product->has_variations)
                             <div class="inline-flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-md">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Final price for selected options
+                                {{ __('store.final_price_selected_options') }}
                             </div>
                         @endif
                         @if($hasPriceRange && count($selectedAttributes) == 0)
                             <p class="text-sm text-gray-500">
-                                Range: {{ $product->currency_symbol }}{{ number_format($minVariationPrice, 2) }} - {{ $product->currency_symbol }}{{ number_format($maxVariationPrice, 2) }}
+                                {{ __('store.range') }}: {{ $product->currency_symbol }}{{ number_format($minVariationPrice, 2) }} - {{ $product->currency_symbol }}{{ number_format($maxVariationPrice, 2) }}
                             </p>
                         @endif
                     </div>
@@ -186,14 +186,14 @@
 
                         <div class="bg-gray-50 border border-gray-100 rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-2">
                             <div>
-                                <h3 id="options-heading" class="text-xs font-bold text-gray-900">Attributes & Variations</h3>
-                                <p class="text-[11px] text-gray-500">Select one value per option before adding to cart.</p>
+                                <h3 id="options-heading" class="text-xs font-bold text-gray-900">{{ __('store.attributes_variations') }}</h3>
+                                <p class="text-[11px] text-gray-500">{{ __('store.variation_options') }}</p>
                             </div>
                             @if(!empty($selectedAttributes))
                                 <button wire:click="resetSelection" 
                                         type="button"
                                         class="text-xs text-gray-500 hover:text-red-600 underline transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded px-1">
-                                    Clear All
+                                    {{ __('store.clear_all') }}
                                 </button>
                             @endif
                         </div>
@@ -204,7 +204,7 @@
                                     <label class="text-xs font-bold text-gray-900">
                                         {{ $option['name'] }}: 
                                         <span class="text-primary ml-1 font-extrabold">
-                                            {{ $this->getSelectedValueName($option['id']) ?? 'Select one' }}
+                                            {{ $this->getSelectedValueName($option['id']) ?? __('store.select_one') }}
                                         </span>
                                     </label>
                                 </div>
@@ -234,7 +234,7 @@
                             {{-- Quantity Selector --}}
                             <div class="flex-1">
                                 <label class="block text-[11px] font-bold text-gray-900 mb-2">
-                                    Quantity
+                                    {{ __('store.quantity') }}
                                 </label>
                                 <div class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-1">
                                     <button wire:click="decrement" 
@@ -272,7 +272,7 @@
                             {{-- Total Price --}}
                             <div class="flex-1 text-left sm:text-right">
                                 <label class="block text-[11px] font-bold text-gray-900 mb-2">
-                                    Total
+                                    {{ __('store.total') }}
                                 </label>
                                 <span class="text-xl font-bold text-primary">
                                         {{ $product->currency_symbol }}{{ number_format($currentPrice * $quantity, 2) }}
@@ -288,18 +288,18 @@
                                   :class="currentStock > 0 ? 'bg-green-500' : 'bg-red-500'"></span>
                             @if($product->has_variations)
                                 <span x-show="selectedAttributes.length > 0">
-                                    <span x-show="currentStock > 5">In stock, ready to ship</span>
-                                    <span x-show="currentStock > 0 && currentStock <= 5">Only <span x-text="currentStock"></span> left in stock</span>
-                                    <span x-show="currentStock <= 0" class="font-semibold">Out of stock</span>
+                                    <span x-show="currentStock > 5">{{ __('store.in_stock_ready_to_ship') }}</span>
+                                    <span x-show="currentStock > 0 && currentStock <= 5">{{ __('store.only_left_in_stock', ['count' => '<span x-text="currentStock"></span>']) }}</span>
+                                    <span x-show="currentStock <= 0" class="font-semibold">{{ __('store.out_of_stock') }}</span>
                                 </span>
-                                <span x-show="selectedAttributes.length === 0">Select options to view stock availability</span>
+                                <span x-show="selectedAttributes.length === 0">{{ __('store.select_options_to_view_stock_availability') }}</span>
                             @else
                                 @if($currentStock > 5)
-                                    <span>In stock, ready to ship</span>
+                                    <span>{{ __('store.in_stock_ready_to_ship') }}</span>
                                 @elseif($currentStock > 0)
-                                    <span>Only {{ $currentStock }} left in stock</span>
+                                    <span>{{ __('store.only_left_in_stock', ['count' => $currentStock]) }}</span>
                                 @else
-                                    <span class="font-semibold">Out of stock</span>
+                                    <span class="font-semibold">{{ __('store.out_of_stock') }}</span>
                                 @endif
                             @endif
                         </div>
@@ -320,12 +320,12 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
-                                    Added to Cart
+                                    {{ __('store.added_to_cart') }}
                                 @else
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                     </svg>
-                                    Add to Cart
+                                    {{ __('store.add_to_cart') }}
                                 @endif
                             </span>
                             <span wire:loading class="flex items-center gap-2">
@@ -333,7 +333,7 @@
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                <span>Adding...</span>
+                                <span>{{ __('store.adding') }}</span>
                             </span>
                         </button>
 
@@ -342,7 +342,7 @@
                                 class="w-full md:flex-1 h-12 px-4 rounded-lg font-bold bg-gray-900 text-white shadow-sm hover:shadow-lg hover:bg-black transform active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900
                                 {{ $currentStock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}"
                                 :disabled="currentStock <= 0">
-                            <span>Buy Now</span>
+                            <span>{{ __('store.buy_now') }}</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
@@ -361,7 +361,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
                 </svg>
             </span>
-            Product Description
+            {{ __('store.product_description') }}
         </h2>
         <div class="prose prose-blue prose-lg max-w-none text-gray-600">
             {!! $product->description !!}
@@ -377,11 +377,11 @@
     @if($relatedProducts && $relatedProducts->count() > 0)
         <div class="border-t border-gray-200 pt-8">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3">
-                <h2 class="text-xl font-bold text-gray-900">You might also like</h2>
+                <h2 class="text-xl font-bold text-gray-900">{{ __('store.you_might_also_like') }}</h2>
                 @if($product->categories->first())
                     <a href="{{ route('store.search', ['category' => $product->categories->first()->id]) }}" 
                        class="text-primary hover:text-primary font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2">
-                        View More →
+                        {{ __('store.view_more') }} →
                     </a>
                 @endif
             </div>
@@ -410,7 +410,7 @@
                                 </h3>
                             </a>
                             <p class="text-xs text-gray-500 mb-3">
-                                {{ $related->categories->first()->name ?? 'General' }}
+                                {{ $related->categories->first()->name ?? __('store.general') }}
                             </p>
                             
                             <div class="mt-auto flex items-center justify-between gap-2">

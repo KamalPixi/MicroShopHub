@@ -10,10 +10,8 @@
                     </div>
                 @endif
                 <div class="leading-tight">
-                    <h1 class="text-lg font-bold text-gray-900">{{ $storeName ?? 'ShopHub' }}</h1>
-                    @if(!empty($storeSlogan ?? ''))
-                        <p class="mt-0.5 text-[9px] uppercase tracking-[0.16em] leading-none text-primary/70">{{ $storeSlogan }}</p>
-                    @endif
+                    <h1 class="text-lg font-bold text-gray-900">{{ $storeName ?? __('store.shop_name_default') }}</h1>
+                    <p class="mt-0.5 text-[9px] uppercase tracking-[0.16em] leading-none text-primary/70">{{ $storeSlogan ?: __('store.shop_slogan_default') }}</p>
                 </div>
             </a>
 
@@ -22,6 +20,19 @@
             </div>
 
             <div class="flex items-center gap-2">
+                @if(count($storeLocales ?? []) > 1)
+                    <div class="hidden sm:flex items-center gap-1 rounded-full border border-gray-200 bg-white p-1">
+                        @foreach($storeLocales as $locale => $meta)
+                            <a
+                                href="{{ route('store.language.switch', $locale) }}"
+                                class="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] transition {{ ($storeLocale ?? app()->getLocale()) === $locale ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900' }}"
+                            >
+                                {{ $meta['native'] }}
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+
                 <a href="{{ route('customer.dashboard') }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-primary/25 hover:text-primary">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>

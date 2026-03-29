@@ -13,8 +13,8 @@
             <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div class="space-y-1.5">
                     <div>
-                        <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">Browse catalog</p>
-                        <h1 class="mt-0.5 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-[2rem]">Search Results</h1>
+                        <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">{{ __('store.browse_catalog') }}</p>
+                        <h1 class="mt-0.5 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-[2rem]">{{ __('store.search_results') }}</h1>
                     </div>
                     <p class="text-sm text-gray-600">
                         Found <span class="font-bold text-gray-900">{{ $products->total() }}</span> products
@@ -38,7 +38,7 @@
                 <div class="hidden w-full lg:block lg:w-auto">
                     <div class="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-2.5">
                         <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-                            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500 shrink-0">Sort by</span>
+                            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500 shrink-0">{{ __('store.sort_by') }}</span>
                             <form method="GET" action="{{ route('store.search') }}" class="w-full sm:w-auto">
                                 @if($query) <input type="hidden" name="query" value="{{ $query }}"> @endif
                                 @if($categoryId) <input type="hidden" name="category" value="{{ $categoryId }}"> @endif
@@ -47,10 +47,10 @@
 
                                 <div class="relative w-full sm:w-60">
                                     <select name="sort" onchange="this.form.submit()" class="w-full appearance-none rounded-xl border border-gray-200 bg-white py-2 pl-3 pr-10 text-sm font-medium text-gray-900 shadow-sm focus:outline-none focus:ring-0 focus:border-gray-200 cursor-pointer">
-                                        <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest Arrivals</option>
-                                        <option value="price_low" {{ $sort == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                                        <option value="price_high" {{ $sort == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-                                        <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                                        <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>{{ __('store.newest_arrivals') }}</option>
+                                        <option value="price_low" {{ $sort == 'price_low' ? 'selected' : '' }}>{{ __('store.price_low_to_high') }}</option>
+                                        <option value="price_high" {{ $sort == 'price_high' ? 'selected' : '' }}>{{ __('store.price_high_to_low') }}</option>
+                                        <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>{{ __('store.oldest') }}</option>
                                     </select>
                                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@
 
                     <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm lg:hidden">
                         <button type="button" @click="open = !open" class="flex min-h-[34px] w-full items-center justify-between">
-                            <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">Sort By</h3>
+                            <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">{{ __('store.sort_by') }}</h3>
                             <svg class="h-4 w-4 text-gray-500 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -83,10 +83,10 @@
                         <div class="mt-2" x-show="open" x-cloak>
                             <div class="relative">
                                 <select name="sort" onchange="this.form.submit()" class="w-full appearance-none rounded-lg border border-gray-300 bg-white py-2 pl-3 pr-10 text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 focus:border-gray-300 cursor-pointer">
-                                    <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest Arrivals</option>
-                                    <option value="price_low" {{ $sort == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                                    <option value="price_high" {{ $sort == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-                                    <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                                    <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>{{ __('store.newest_arrivals') }}</option>
+                                    <option value="price_low" {{ $sort == 'price_low' ? 'selected' : '' }}>{{ __('store.price_low_to_high') }}</option>
+                                    <option value="price_high" {{ $sort == 'price_high' ? 'selected' : '' }}>{{ __('store.price_high_to_low') }}</option>
+                                    <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>{{ __('store.oldest') }}</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@
 
                     <div x-data="{ open: false }" class="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
                         <button type="button" @click="open = !open" class="flex min-h-[34px] w-full items-center justify-between lg:pointer-events-none lg:cursor-default">
-                            <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">Price Range</h3>
+                            <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">{{ __('store.price_range') }}</h3>
                             <svg class="h-4 w-4 text-gray-500 transition-transform lg:hidden" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -120,7 +120,7 @@
                                     </div>
                                 </div>
                                 <button type="submit" class="w-full rounded-lg bg-primary py-2 text-sm font-medium text-white transition hover:bg-primary">
-                                    Apply Price
+                                    {{ __('store.apply_price') }}
                                 </button>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                 <div x-data="{ expanded: false }" class="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
                     <button type="button" @click="expanded = !expanded" class="flex min-h-[34px] w-full items-center justify-between lg:pointer-events-none lg:cursor-default">
                         <div class="flex items-center gap-2">
-                            <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">Categories</h3>
+                            <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">{{ __('store.categories') }}</h3>
                             @if($categoryId)
                                 <a href="{{ route('store.search', request()->except('category', 'page')) }}" class="text-xs text-primary hover:underline lg:pointer-events-auto">Clear</a>
                             @endif
@@ -147,7 +147,7 @@
                                     <li>
                                         <a href="{{ route('store.search', request()->except('category', 'page')) }}"
                                            class="block text-sm {{ request('category') == '' ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary' }}">
-                                            All Categories
+                                            {{ __('store.all_categories') }}
                                         </a>
                                     </li>
                                     @foreach($categories as $cat)
@@ -179,7 +179,7 @@
                                     @click="expanded = !expanded"
                                     class="inline-flex min-h-[34px] w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100"
                                 >
-                                    <span x-text="expanded ? 'Show fewer categories' : 'Show all categories'"></span>
+                                    <span x-text="expanded ? @js(__('store.show_fewer_categories')) : @js(__('store.show_all_categories'))"></span>
                                     <svg class="h-4 w-4 transition-transform duration-200" :class="expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                     </svg>
@@ -214,7 +214,7 @@
                                 @endphp
                                 <img src="{{ $img }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                                 @if($saleInfo)
-                                    <span class="absolute top-2 left-2 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">Flash Sale</span>
+                                    <span class="absolute top-2 left-2 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">{{ __('store.flash_sale_label') }}</span>
                                 @endif
                             </div>
                             
@@ -233,7 +233,7 @@
                                     <div class="flex flex-col">
                                         @if($saleInfo)
                                             @if($product->has_variations && empty($product->price))
-                                                <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">From</span>
+                                                <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">{{ __('store.from') }}</span>
                                             @endif
                                             <span class="text-xs font-medium text-gray-400 line-through">{{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}</span>
                                             <span class="text-sm font-bold text-gray-900">{{ $product->currency_symbol }}{{ number_format($saleInfo['sale_price'], 2) }}</span>
@@ -241,7 +241,7 @@
                                             @if($product->price)
                                                 <span class="text-sm font-bold text-gray-900">{{ $product->currency_symbol }}{{ number_format($product->price, 2) }}</span>
                                             @elseif($product->has_variations)
-                                                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">See Options</span>
+                                                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">{{ __('store.see_options') }}</span>
                                             @endif
                                         @endif
                                     </div>
@@ -263,10 +263,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900">No products found</h3>
+                        <h3 class="text-lg font-medium text-gray-900">{{ __('store.no_products_found') }}</h3>
                         <p class="text-gray-500 text-sm mt-1 mb-6">We couldn't find any matches for your filters.</p>
                         <a href="{{ route('store.search') }}" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-primary transition">
-                            Clear all filters
+                            {{ __('store.clear_all_filters') }}
                         </a>
                     </div>
                 @endif

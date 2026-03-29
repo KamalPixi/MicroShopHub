@@ -14,12 +14,12 @@
             </button>
 
             <div class="md:hidden font-bold text-gray-900 text-lg">
-                Categories
+                {{ __('store.categories') }}
             </div>
 
             <div class="hidden md:flex justify-center space-x-8 items-center h-full">
                 
-                <a href="{{ route('store.index') }}" class="text-gray-600 hover:text-primary font-medium transition-colors text-sm lg:text-base">All Products</a>
+                <a href="{{ route('store.index') }}" class="text-gray-600 hover:text-primary font-medium transition-colors text-sm lg:text-base">{{ __('store.all_products') }}</a>
 
                 @if(isset($navbarCategories) && $navbarCategories->count() > 0)
                     @foreach($navbarCategories as $category)
@@ -67,7 +67,7 @@
     <div x-show="mobileMenuOpen" x-cloak class="md:hidden border-t border-gray-200 bg-gray-50 relative z-40">
         <div class="px-2 pt-2 pb-3 space-y-1">
             
-            <a href="{{ route('store.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-100">All Products</a>
+            <a href="{{ route('store.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-100">{{ __('store.all_products') }}</a>
 
             @if(isset($navbarCategories) && $navbarCategories->count() > 0)
                 @foreach($navbarCategories as $category)

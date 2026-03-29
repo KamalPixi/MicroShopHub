@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.admin' => \App\Http\Middleware\AdminAuth::class,
             'admin.permission' => \App\Http\Middleware\AdminPermission::class,
             'store.analytics' => \App\Http\Middleware\StoreAnalytics::class,
+            'store.locale' => \App\Http\Middleware\StoreLocale::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [
