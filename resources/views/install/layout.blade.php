@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'MicroShopHub') }} Installer</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         :root{--bg:#f4f6f8;--card:#ffffff;--line:#d9dde3;--text:#111827;--muted:#6b7280;--primary:#111111;--good:#166534;--good-bg:#dcfce7;--bad:#991b1b;--bad-bg:#fee2e2}
         *{box-sizing:border-box}

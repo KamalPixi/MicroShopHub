@@ -152,8 +152,11 @@ class InstallController extends Controller
             return redirect()->route('install.database');
         }
 
+        $settings = session('installer.settings', $this->defaultSettings());
+        $settings['app_url'] = $settings['app_url'] ?: $this->guessAppUrl(request());
+
         return view('install.settings', [
-            'settings' => session('installer.settings', $this->defaultSettings()),
+            'settings' => $settings,
             'countryOptions' => $this->countryOptions,
             'currencyPresets' => $this->currencyPresets(),
         ]);
@@ -544,7 +547,7 @@ class InstallController extends Controller
     protected function defaultSettings(): array
     {
         return [
-            'app_url' => '',
+            'app_url' => $this->guessAppUrl(request()),
             'shop_name' => '',
             'slogan' => '',
             'branding_color' => '#111111',
@@ -566,11 +569,7 @@ class InstallController extends Controller
             'footer_about_description' => 'Your trusted marketplace for clothing, health products, and unique handmade items.',
             'footer_support_hours_1' => 'Mon-Fri: 9AM-6PM',
             'footer_support_hours_2' => 'Sat-Sun: 10AM-4PM',
-            'custom_currencies' => [
-                ['code' => '', 'name' => '', 'symbol' => '', 'exchange_rate' => 1, 'active' => true],
-                ['code' => '', 'name' => '', 'symbol' => '', 'exchange_rate' => 1, 'active' => true],
-                ['code' => '', 'name' => '', 'symbol' => '', 'exchange_rate' => 1, 'active' => true],
-            ],
+            'custom_currencies' => [],
             'footer_link_1_label' => 'About Us',
             'footer_link_1_url' => '/about',
             'footer_link_2_label' => 'Contact',
@@ -612,5 +611,20 @@ class InstallController extends Controller
             'logo' => '',
             'country_codes' => ['BD'],
         ];
+    }
+
+    protected function guessAppUrl(Request $request): string
+    {
+        $scheme = $request->getScheme();
+        $host = $request->getHost();
+        $port = $request->getPort();
+
+        $url = "{$scheme}://{$host}";
+
+        if ($port && ! in_array($port, [80, 443], true)) {
+            $url .= ":{$port}";
+        }
+
+        return $url;
     }
 }

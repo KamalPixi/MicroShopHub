@@ -10,7 +10,7 @@
 
     <form method="POST" action="{{ route('install.settings.store') }}" enctype="multipart/form-data" class="card stack">
         @csrf
-        @php($customCurrencies = old('custom_currencies', $settings['custom_currencies'] ?? []))
+        @php($customCurrencies = old('custom_currencies'))
         <div>
             <h2 style="margin:0 0 6px;font-size:18px">Default store settings</h2>
             <p class="muted small" style="margin:0">Fill what you need now. You can skip optional fields and edit them later from admin.</p>
@@ -73,35 +73,45 @@
             </div>
         </div>
 
-        <div class="card" style="padding:16px">
-            <h3 style="margin:0 0 8px;font-size:16px">Additional Currencies</h3>
-            <p class="muted xsmall" style="margin:0 0 12px">Add only what you need. Leave empty rows blank. Exchange rate is relative to the default currency above.</p>
+        <div class="card" style="padding:16px" x-data="{ rows: @js(array_values($customCurrencies ?: [])) }">
+            <div class="inline" style="justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div>
+                    <h3 style="margin:0 0 4px;font-size:16px">Additional Currencies</h3>
+                    <p class="muted xsmall" style="margin:0">Add only what you need. Exchange rate is relative to the default currency above.</p>
+                </div>
+                <button type="button" class="btn btn-soft" @click="rows.push({code:'', name:'', symbol:'', exchange_rate:1, active:true})">Add Currency</button>
+            </div>
+
             <div class="stack">
-                @foreach([0,1,2] as $index)
-                    @php($currencyRow = $customCurrencies[$index] ?? [])
-                    <div class="grid grid-4" style="gap:10px">
-                        <div>
-                            <label>Code</label>
-                            <input type="text" name="custom_currencies[{{ $index }}][code]" value="{{ old("custom_currencies.$index.code", $currencyRow['code'] ?? '') }}" placeholder="USD">
+                <template x-for="(row, index) in rows" :key="index">
+                    <div class="card" style="padding:14px">
+                        <div class="grid grid-4" style="gap:10px">
+                            <div>
+                                <label>Code</label>
+                                <input type="text" :name="`custom_currencies[${index}][code]`" x-model="row.code" placeholder="USD">
+                            </div>
+                            <div>
+                                <label>Name</label>
+                                <input type="text" :name="`custom_currencies[${index}][name]`" x-model="row.name" placeholder="US Dollar">
+                            </div>
+                            <div>
+                                <label>Symbol</label>
+                                <input type="text" :name="`custom_currencies[${index}][symbol]`" x-model="row.symbol" placeholder="$">
+                            </div>
+                            <div>
+                                <label>Exchange Rate</label>
+                                <input type="number" step="0.0001" min="0.0001" :name="`custom_currencies[${index}][exchange_rate]`" x-model="row.exchange_rate" placeholder="1.0000">
+                            </div>
                         </div>
-                        <div>
-                            <label>Name</label>
-                            <input type="text" name="custom_currencies[{{ $index }}][name]" value="{{ old("custom_currencies.$index.name", $currencyRow['name'] ?? '') }}" placeholder="US Dollar">
-                        </div>
-                        <div>
-                            <label>Symbol</label>
-                            <input type="text" name="custom_currencies[{{ $index }}][symbol]" value="{{ old("custom_currencies.$index.symbol", $currencyRow['symbol'] ?? '') }}" placeholder="$">
-                        </div>
-                        <div>
-                            <label>Exchange Rate</label>
-                            <input type="number" step="0.0001" min="0.0001" name="custom_currencies[{{ $index }}][exchange_rate]" value="{{ old("custom_currencies.$index.exchange_rate", $currencyRow['exchange_rate'] ?? 1) }}" placeholder="1.0000">
+                        <div class="btn-row" style="justify-content:space-between;margin-top:10px">
+                            <label class="checkbox" style="margin-top:0">
+                                <input type="checkbox" :name="`custom_currencies[${index}][active]`" value="1" x-model="row.active">
+                                <span class="small">Active</span>
+                            </label>
+                            <button type="button" class="btn btn-soft" @click="rows.splice(index, 1)">Remove</button>
                         </div>
                     </div>
-                    <label class="checkbox" style="margin-top:-4px">
-                        <input type="checkbox" name="custom_currencies[{{ $index }}][active]" value="1" @checked(old("custom_currencies.$index.active", $currencyRow['active'] ?? true))>
-                        <span class="small">Active</span>
-                    </label>
-                @endforeach
+                </template>
             </div>
         </div>
 
