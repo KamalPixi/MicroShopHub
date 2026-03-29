@@ -1,5 +1,5 @@
 @if(request()->routeIs('store.index'))
-<nav class="relative z-40" x-data="{ mobileMenuOpen: false }">
+<nav class="relative z-30" x-data="{ mobileMenuOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mt-2 rounded-2xl border border-gray-200 bg-white/90 shadow-sm backdrop-blur">
             <div class="flex items-center justify-between gap-4 px-4 py-3">
@@ -36,7 +36,7 @@
                                          x-transition:leave="transition ease-in duration-150"
                                          x-transition:leave-start="opacity-100 translate-y-0"
                                          x-transition:leave-end="opacity-0 translate-y-1"
-                                         class="absolute left-1/2 top-full z-50 mt-3 w-56 -translate-x-1/2 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
+                                         class="absolute left-1/2 top-full z-40 mt-3 w-56 -translate-x-1/2 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
                                         @foreach($category->children as $child)
                                             <a href="{{ route('store.search', ['category' => $child->id]) }}" class="block px-4 py-3 text-sm text-gray-700 transition hover:bg-primary/5 hover:text-primary">
                                                 {{ $child->name }}
@@ -56,7 +56,7 @@
         </div>
     </div>
 
-    <div x-show="mobileMenuOpen" x-cloak class="md:hidden mt-2 border-t border-gray-200 bg-white/95 backdrop-blur shadow-sm">
+    <div x-show="mobileMenuOpen" x-cloak class="md:hidden mt-2 border-t border-gray-200 bg-white/95 backdrop-blur shadow-sm relative z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-1">
             <a href="{{ route('store.index') }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary">All Products</a>
             @if(isset($navbarCategories) && $navbarCategories->count() > 0)
