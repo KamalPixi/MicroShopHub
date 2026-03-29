@@ -18,13 +18,13 @@
                     <p class="mt-1 font-semibold text-gray-900">{{ $admin->role_label }}</p>
                 </div>
                 <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                    <p class="text-[11px] uppercase tracking-[0.18em] text-gray-500">Permissions</p>
-                    <p class="mt-1 font-semibold text-gray-900">{{ count($permissions) }} assigned</p>
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-gray-500">Role Permissions</p>
+                    <p class="mt-1 font-semibold text-gray-900">{{ count($permissions) }} available</p>
                 </div>
             </div>
 
             <div class="mt-5">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Access summary</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Role access summary</p>
                 <div class="mt-3 space-y-3">
                     @foreach ($permissionGroups as $groupName => $groupPermissions)
                         <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">

@@ -20,7 +20,6 @@ class AdminSeeder extends Seeder
             ['email' => 'admin@e.com'],
             [
                 'name' => 'Admin',
-                'role' => 'super_admin',
                 'role_id' => $roleId,
                 'password' => Hash::make('password'),
             ]

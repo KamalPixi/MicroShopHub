@@ -20,9 +20,7 @@ class Admin extends Authenticatable implements CanResetPassword
         'name',
         'email',
         'password',
-        'role',
         'role_id',
-        'permissions',
     ];
 
     protected function casts(): array
@@ -31,7 +29,6 @@ class Admin extends Authenticatable implements CanResetPassword
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role_id' => 'integer',
-            'permissions' => 'array',
         ];
     }
 
@@ -64,7 +61,7 @@ class Admin extends Authenticatable implements CanResetPassword
 
     public function roleSlug(): string
     {
-        return $this->adminRole?->slug ?: ($this->role ?: 'editor');
+        return $this->adminRole?->slug ?: 'editor';
     }
 
     public function getRoleLabelAttribute(): string
@@ -75,15 +72,6 @@ class Admin extends Authenticatable implements CanResetPassword
     public function adminRole()
     {
         return $this->belongsTo(AdminRole::class, 'role_id');
-    }
-
-    public function rolePermissions(): array
-    {
-        if ($this->adminRole) {
-            return $this->adminRole->permissions ?? [];
-        }
-
-        return $this->defaultPermissions();
     }
 
 }

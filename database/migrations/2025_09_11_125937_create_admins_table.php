@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken()->nullable();
-            $table->enum('role', ['super_admin', 'editor', 'viewer'])->default('editor');
+            $table->foreignId('role_id')->nullable()->constrained('admin_roles')->nullOnDelete();
             $table->timestamps();
         });
     }

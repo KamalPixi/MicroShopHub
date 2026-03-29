@@ -112,7 +112,7 @@
                         <th class="font-medium text-gray-700 p-2">Name</th>
                         <th class="font-medium text-gray-700 p-2">Email</th>
                         <th class="font-medium text-gray-700 p-2">Role</th>
-                        <th class="font-medium text-gray-700 p-2">Permissions</th>
+                        <th class="font-medium text-gray-700 p-2">Role Permissions</th>
                         <th class="font-medium text-gray-700 p-2 text-end">Action</th>
                     </tr>
                 </thead>

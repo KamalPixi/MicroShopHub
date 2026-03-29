@@ -63,7 +63,6 @@ class AdminUsers extends Component
         $data = [
             'name' => $this->name,
             'email' => $this->email,
-            'role' => $role->slug,
             'role_id' => $role->id,
         ];
 
