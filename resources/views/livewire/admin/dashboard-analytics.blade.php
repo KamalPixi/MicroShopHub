@@ -217,7 +217,7 @@
             </div>
         </div>
 
-        <div>
+        <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div class="mb-2 flex items-center justify-between">
                 <h3 class="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">Operations</h3>
                 <p class="text-[11px] text-gray-400">Active workload</p>
