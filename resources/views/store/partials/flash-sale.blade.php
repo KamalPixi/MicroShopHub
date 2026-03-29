@@ -55,16 +55,19 @@
                     <h3 class="text-sm font-semibold text-gray-900 transition group-hover:text-primary">
                         {{ $product->name }}
                     </h3>
-                    <div class="mt-2 flex items-end gap-2">
-                        @if($product->has_variations && empty($product->price))
-                            <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">From</span>
-                        @endif
-                        <span class="text-sm font-semibold text-gray-400 line-through">
-                            {{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}
-                        </span>
-                        <span class="text-lg font-extrabold text-primary">
-                            {{ $product->currency_symbol }}{{ number_format($saleInfo['sale_price'], 2) }}
-                        </span>
+                    <div class="mt-2 flex items-end justify-between gap-2">
+                        <div class="flex flex-col">
+                            @if($product->has_variations && empty($product->price))
+                                <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">From</span>
+                            @endif
+                            <span class="text-sm font-semibold text-gray-400 line-through">
+                                {{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}
+                            </span>
+                            <span class="text-lg font-extrabold text-primary">
+                                {{ $product->currency_symbol }}{{ number_format($saleInfo['sale_price'], 2) }}
+                            </span>
+                        </div>
+                        @livewire('store.add-to-cart-button', ['productId' => $product->id], key('flash-sale-'.$product->id))
                     </div>
                     <p class="mt-1 text-xs font-semibold text-green-700">
                         Save {{ $saleInfo['discount_percent'] }}%
