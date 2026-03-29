@@ -17,6 +17,7 @@ class AdminUsers extends Component
     public $email = '';
     public $password = '';
     public $role = 'editor';
+    public array $permissions = [];
     public $editingId = null;
 
     protected $rules = [
@@ -24,6 +25,8 @@ class AdminUsers extends Component
         'email' => 'required|email|max:255|unique:admins,email',
         'password' => 'required|string|min:8',
         'role' => 'required|in:super_admin,editor,viewer',
+        'permissions' => 'array',
+        'permissions.*' => 'string',
     ];
 
     protected $queryString = ['search' => ['except' => ''], 'perPage' => ['except' => 10]];
@@ -39,8 +42,19 @@ class AdminUsers extends Component
         $this->email = '';
         $this->password = '';
         $this->role = 'editor';
+        $this->permissions = $this->defaultPermissionsForRole('editor');
         $this->editingId = null;
         $this->resetValidation();
+    }
+
+    public function mount(): void
+    {
+        $this->permissions = $this->defaultPermissionsForRole($this->role);
+    }
+
+    public function updatedRole($value): void
+    {
+        $this->permissions = $this->defaultPermissionsForRole($value);
     }
 
     public function save()
@@ -52,10 +66,14 @@ class AdminUsers extends Component
 
         $this->validate();
 
+        $allowedPermissions = $this->allPermissionKeys();
+        $selectedPermissions = array_values(array_intersect($this->permissions ?? [], $allowedPermissions));
+
         $data = [
             'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
+            'permissions' => $this->role === 'super_admin' ? null : $selectedPermissions,
         ];
 
         if ($this->password && !$this->editingId) {
@@ -80,6 +98,7 @@ class AdminUsers extends Component
         $this->name = $admin->name;
         $this->email = $admin->email;
         $this->role = $admin->role;
+        $this->permissions = $admin->effectivePermissions();
         $this->password = '';
     }
 
@@ -102,6 +121,20 @@ class AdminUsers extends Component
 
         return view('livewire.admin.admin-users', [
             'admins' => $admins,
+            'permissionGroups' => config('admin_permissions.groups', []),
         ]);
+    }
+
+    public function defaultPermissionsForRole(string $role): array
+    {
+        return config('admin_permissions.role_defaults.' . $role, []);
+    }
+
+    public function allPermissionKeys(): array
+    {
+        return collect(config('admin_permissions.groups', []))
+            ->flatMap(fn ($group) => array_keys($group))
+            ->values()
+            ->all();
     }
 }

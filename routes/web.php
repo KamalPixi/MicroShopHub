@@ -162,32 +162,61 @@ Route::prefix('admin')
         Route::middleware(['auth:admin'])->group(function () {
 
             Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+            Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
 
-            // Dashboard
-            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-            Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
-            Route::get('/pages', [DashboardController::class, 'pages'])->name('pages');
-            Route::get('/pages/about', [DashboardController::class, 'aboutPage'])->name('pages.about');
-            Route::get('/pages/faq', [DashboardController::class, 'faqPage'])->name('pages.faq');
-            Route::get('/pages/privacy-policy', [DashboardController::class, 'privacyPolicyPage'])->name('pages.privacy');
-            Route::get('/pages/terms', [DashboardController::class, 'termsPage'])->name('pages.terms');
-            Route::get('/pages/refund-policy', [DashboardController::class, 'refundPolicyPage'])->name('pages.refund');
-            Route::get('/pages/shipping-info', [DashboardController::class, 'shippingInfoPage'])->name('pages.shipping');
-            Route::get('/pages/cookie-policy', [DashboardController::class, 'cookiePolicyPage'])->name('pages.cookie');
-            Route::get('/contact-messages', [DashboardController::class, 'contactMessages'])->name('contact.messages');
+            Route::middleware('admin.permission:dashboard.view')->group(function () {
+                Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+            });
 
-            Route::get('/categories', [DashboardController::class, 'categories'])->name('categories');
-            Route::get('/shipping-methods', [DashboardController::class, 'shippingMethods'])->name('shipping.methods');
-            Route::get('/homepage-settings', [DashboardController::class, 'homepageSettings'])->name('homepage.settings');
-            Route::get('/marketing/subscriptions', [DashboardController::class, 'marketingSubscriptions'])->name('marketing.subscriptions');
-            Route::get('/marketing/campaigns', [DashboardController::class, 'marketingCampaigns'])->name('marketing.campaigns');
-            Route::get('/marketing/flash-sales', [DashboardController::class, 'marketingFlashSales'])->name('marketing.flash-sales');
+            Route::middleware('admin.permission:catalog.manage')->group(function () {
+                Route::resource('products', ProductController::class)->except(['destroy']);
+            });
 
-            // Resources
-            Route::resource('products', ProductController::class)->except(['destroy']);
-            Route::resource('discounts', DiscountController::class)->only(['index']);
-            Route::resource('customers', AdminCustomerController::class)->except(['create', 'store']);
-            Route::resource('orders', OrderController::class)->only(['index', 'show']);
-            Route::resource('users', UserController::class)->only(['index']);
+            Route::middleware('admin.permission:categories.manage')->group(function () {
+                Route::get('/categories', [DashboardController::class, 'categories'])->name('categories');
+            });
+
+            Route::middleware('admin.permission:coupons.manage')->group(function () {
+                Route::resource('discounts', DiscountController::class)->only(['index']);
+            });
+
+            Route::middleware('admin.permission:orders.manage')->group(function () {
+                Route::resource('orders', OrderController::class)->only(['index', 'show']);
+            });
+
+            Route::middleware('admin.permission:customers.manage')->group(function () {
+                Route::resource('customers', AdminCustomerController::class)->except(['create', 'store']);
+            });
+
+            Route::middleware('admin.permission:admins.manage')->group(function () {
+                Route::resource('users', UserController::class)->only(['index']);
+            });
+
+            Route::middleware('admin.permission:contact.manage')->group(function () {
+                Route::get('/contact-messages', [DashboardController::class, 'contactMessages'])->name('contact.messages');
+            });
+
+            Route::middleware('admin.permission:pages.manage')->group(function () {
+                Route::get('/pages', [DashboardController::class, 'pages'])->name('pages');
+                Route::get('/pages/about', [DashboardController::class, 'aboutPage'])->name('pages.about');
+                Route::get('/pages/faq', [DashboardController::class, 'faqPage'])->name('pages.faq');
+                Route::get('/pages/privacy-policy', [DashboardController::class, 'privacyPolicyPage'])->name('pages.privacy');
+                Route::get('/pages/terms', [DashboardController::class, 'termsPage'])->name('pages.terms');
+                Route::get('/pages/refund-policy', [DashboardController::class, 'refundPolicyPage'])->name('pages.refund');
+                Route::get('/pages/shipping-info', [DashboardController::class, 'shippingInfoPage'])->name('pages.shipping');
+                Route::get('/pages/cookie-policy', [DashboardController::class, 'cookiePolicyPage'])->name('pages.cookie');
+            });
+
+            Route::middleware('admin.permission:marketing.manage')->group(function () {
+                Route::get('/marketing/subscriptions', [DashboardController::class, 'marketingSubscriptions'])->name('marketing.subscriptions');
+                Route::get('/marketing/campaigns', [DashboardController::class, 'marketingCampaigns'])->name('marketing.campaigns');
+                Route::get('/marketing/flash-sales', [DashboardController::class, 'marketingFlashSales'])->name('marketing.flash-sales');
+            });
+
+            Route::middleware('admin.permission:settings.manage')->group(function () {
+                Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
+                Route::get('/shipping-methods', [DashboardController::class, 'shippingMethods'])->name('shipping.methods');
+                Route::get('/homepage-settings', [DashboardController::class, 'homepageSettings'])->name('homepage.settings');
+            });
         });
     });
