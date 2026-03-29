@@ -203,23 +203,8 @@
                         </div>
                         <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ data_get($templateOptions, $template_key . '.name', 'Template') }}</span>
                     </div>
-                    <div class="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-3">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-500">Subject</span>
-                            <span class="text-sm font-semibold text-gray-900">{{ $previewSummary['subject'] }}</span>
-                        </div>
-                        <div class="mt-3 flex flex-wrap gap-2">
-                            <span class="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-semibold text-gray-700">{{ $previewSummary['template'] }}</span>
-                            <span class="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-semibold text-gray-700">{{ $previewSummary['products'] }} products</span>
-                            <span class="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-semibold text-gray-700">{{ $previewSummary['preheader'] ?: 'No preheader' }}</span>
-                        </div>
-                    </div>
-                    <div class="mt-4 overflow-hidden rounded-[1.75rem] border border-gray-200 bg-gray-100 p-3 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
-                        <div class="mb-3 flex items-center justify-between rounded-2xl border border-gray-200 bg-white px-4 py-2 text-[11px] text-gray-500">
-                            <span>Desktop email preview</span>
-                            <span>Rendered layout</span>
-                        </div>
-                        <div class="max-h-[760px] overflow-auto rounded-[1.5rem] border border-gray-200 bg-white">
+                    <div class="mt-4 overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+                        <div class="max-h-[760px] overflow-auto">
                             <div class="min-w-[740px]">
                                 {!! $previewHtml !!}
                             </div>
