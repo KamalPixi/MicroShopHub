@@ -38,6 +38,7 @@ class Dashboard extends Component
     public $currencySymbol = '$';
     public $currencyCode = 'BDT';
     public $showAddressForm = false;
+    public array $addressTypeOptions = [];
     public $newAddress = [
         'type' => 'home',
         'name' => '',
@@ -70,6 +71,7 @@ class Dashboard extends Component
         $currency = Currency::getActive();
         $this->currencySymbol = $currency?->symbol ?? '$';
         $this->currencyCode = $currency?->code ?? 'BDT';
+        $this->addressTypeOptions = $this->getAddressTypeOptions();
     }
 
     // --- Tab Switching ---
@@ -219,8 +221,10 @@ class Dashboard extends Component
 
     public function addAddress(): void
     {
+        $allowedTypes = array_keys($this->getAddressTypeOptions());
+
         $validated = $this->validate([
-            'newAddress.type' => 'nullable|string|max:50',
+            'newAddress.type' => ['required', 'in:' . implode(',', $allowedTypes)],
             'newAddress.name' => 'required|string|max:255',
             'newAddress.phone' => 'nullable|string|max:50',
             'newAddress.address_line1' => 'required|string|max:255',
@@ -251,7 +255,18 @@ class Dashboard extends Component
             'is_default' => false,
         ];
         $this->showAddressForm = false;
-        session()->flash('address_success', 'Address added.');
+        session()->flash('address_success', __('store.address_added'));
+    }
+
+    public function getAddressTypeOptions(): array
+    {
+        return [
+            'home' => __('store.address_type_home'),
+            'office' => __('store.address_type_office'),
+            'billing' => __('store.address_type_billing'),
+            'shipping' => __('store.address_type_shipping'),
+            'other' => __('store.address_type_other'),
+        ];
     }
 
     public function render()

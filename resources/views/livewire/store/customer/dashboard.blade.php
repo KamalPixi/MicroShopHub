@@ -456,8 +456,19 @@
                                 <h4 class="text-sm font-bold text-gray-900 mb-4">{{ __('store.new_address') }}</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                     <div>
-                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.address_type') }}</label>
-                                        <input wire:model="newAddress.type" type="text" class="{{ $fieldClass }}" placeholder="{{ __('store.home_office') }}">
+                                        <label class="block text-xs font-semibold text-gray-600">{{ __('store.address_type') }} <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <select wire:model="newAddress.type" class="{{ $selectClass }}">
+                                                @foreach($addressTypeOptions as $value => $label)
+                                                    <option value="{{ $value }}">{{ $label }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
                                         @error('newAddress.type') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
