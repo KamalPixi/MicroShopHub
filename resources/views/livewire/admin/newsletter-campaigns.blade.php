@@ -54,9 +54,6 @@
                                     <div class="min-w-0 flex-1">
                                         <div class="flex flex-wrap items-center gap-2">
                                             <span class="text-[13px] font-semibold text-gray-900">{{ $template['name'] }}</span>
-                                            @if($template_key === $key)
-                                                <span class="rounded-full bg-black px-2 py-0.5 text-[10px] font-semibold text-white">Active</span>
-                                            @endif
                                         </div>
                                         <p class="mt-1 text-[11px] leading-4 text-gray-500">{{ $template['description'] }}</p>
                                     </div>
