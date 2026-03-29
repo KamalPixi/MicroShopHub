@@ -4,29 +4,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @php
-        $brandSettings = \App\Models\Setting::whereIn('key', ['branding_color'])->pluck('value', 'key');
-        $primaryColor = $brandSettings['branding_color'] ?? '#2563eb';
-    @endphp
     <title>Admin Login - MicroShopHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/heroicons@2.1.1/dist/heroicons.min.js"></script>
     <style>
         :root {
-            --color-primary: {{ $primaryColor }};
-            --color-primary-50: color-mix(in srgb, var(--color-primary) 8%, white);
-            --color-primary-100: color-mix(in srgb, var(--color-primary) 14%, white);
-            --color-primary-200: color-mix(in srgb, var(--color-primary) 22%, white);
-            --color-primary-500: var(--color-primary);
-            --color-primary-600: var(--color-primary);
-            --color-primary-700: color-mix(in srgb, var(--color-primary) 82%, black);
-            --color-primary-800: color-mix(in srgb, var(--color-primary) 88%, black);
+            --color-primary: #111111;
+            --color-primary-strong: #000000;
+            --color-primary-soft: #f3f4f6;
         }
 
         /* Smooth transitions and modern scrollbar */
         button:hover,
         input:focus {
             transition: all 0.3s ease;
+        }
+        .bg-primary { background-color: var(--color-primary); }
+        .text-primary { color: var(--color-primary); }
+        .border-primary { border-color: var(--color-primary); }
+        .hover\:bg-primary:hover { background-color: var(--color-primary); }
+        .hover\:text-primary:hover { color: var(--color-primary); }
+        .ring-primary { --tw-ring-color: var(--color-primary); }
+        [class*="bg-primary/"] {
+            background-color: var(--color-primary-soft) !important;
+            color: var(--color-primary-strong) !important;
+        }
+        [class*="text-primary/"] {
+            color: var(--color-primary) !important;
+        }
+        [class*="border-primary/"] {
+            border-color: var(--color-primary-soft) !important;
+        }
+        [class*="ring-primary/"] {
+            --tw-ring-color: var(--color-primary-soft) !important;
+        }
+        [class*="hover:bg-primary/"]:hover {
+            background-color: var(--color-primary) !important;
+            color: #fff !important;
+        }
+        [class*="hover:text-primary/"]:hover {
+            color: var(--color-primary) !important;
+        }
+        [class*="focus:border-primary/"]:focus {
+            border-color: var(--color-primary) !important;
+        }
+        [class*="focus:ring-primary/"]:focus {
+            --tw-ring-color: var(--color-primary) !important;
         }
         button.bg-blue-50,
         button.bg-blue-100,

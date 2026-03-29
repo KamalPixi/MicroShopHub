@@ -7,22 +7,16 @@
     @php
         $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name'])->pluck('value', 'key');
         $storeName = $sidebarSettings['shop_name'] ?: config('app.name', 'Store Name');
-        $brandSettings = \App\Models\Setting::whereIn('key', [
-            'branding_color',
-            'secondary_color',
-            'accent_color',
-        ])->pluck('value', 'key');
-        $primaryColor = $brandSettings['branding_color'] ?? '#2563eb';
-        $secondaryColor = $brandSettings['secondary_color'] ?? '#64748b';
-        $accentColor = $brandSettings['accent_color'] ?? '#f59e0b';
     @endphp
     <title>{{ $storeName }} Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --color-primary: {{ $primaryColor }};
-            --color-secondary: {{ $secondaryColor }};
-            --color-accent: {{ $accentColor }};
+            --color-primary: #111111;
+            --color-primary-strong: #000000;
+            --color-primary-soft: #f3f4f6;
+            --color-secondary: #6b7280;
+            --color-accent: #e5e7eb;
         }
     </style>
     <style>
@@ -32,7 +26,7 @@
             transition: all 0.3s ease;
         }
 
-        /* Brand color helpers (admin) */
+        /* Admin color helpers */
         .bg-primary { background-color: var(--color-primary); }
         .text-primary { color: var(--color-primary); }
         .border-primary { border-color: var(--color-primary); }
@@ -45,6 +39,120 @@
         .bg-accent { background-color: var(--color-accent); }
         .text-accent { color: var(--color-accent); }
         .border-accent { border-color: var(--color-accent); }
+        [class*="bg-primary/"] {
+            background-color: var(--color-primary-soft) !important;
+            color: var(--color-primary-strong) !important;
+        }
+        [class*="text-primary/"] {
+            color: var(--color-primary) !important;
+        }
+        [class*="border-primary/"] {
+            border-color: var(--color-primary-soft) !important;
+        }
+        [class*="ring-primary/"] {
+            --tw-ring-color: var(--color-primary-soft) !important;
+        }
+        [class*="hover:bg-primary/"]:hover {
+            background-color: var(--color-primary) !important;
+            color: #fff !important;
+        }
+        [class*="hover:text-primary/"]:hover {
+            color: var(--color-primary) !important;
+        }
+        [class*="hover:border-primary/"]:hover {
+            border-color: var(--color-primary) !important;
+        }
+        [class*="focus:border-primary/"]:focus {
+            border-color: var(--color-primary) !important;
+        }
+        [class*="focus:ring-primary/"]:focus {
+            --tw-ring-color: var(--color-primary) !important;
+        }
+        .bg-blue-50,
+        .bg-blue-100,
+        .bg-blue-200,
+        .bg-blue-300,
+        .bg-blue-400,
+        .bg-blue-500,
+        .bg-blue-600,
+        .bg-blue-700,
+        .bg-blue-800,
+        .bg-blue-900 {
+            background-color: var(--color-primary-soft) !important;
+        }
+        .text-blue-50,
+        .text-blue-100,
+        .text-blue-200,
+        .text-blue-300,
+        .text-blue-400,
+        .text-blue-500,
+        .text-blue-600,
+        .text-blue-700,
+        .text-blue-800,
+        .text-blue-900 {
+            color: var(--color-primary) !important;
+        }
+        .border-blue-50,
+        .border-blue-100,
+        .border-blue-200,
+        .border-blue-300,
+        .border-blue-400,
+        .border-blue-500,
+        .border-blue-600,
+        .border-blue-700,
+        .border-blue-800,
+        .border-blue-900 {
+            border-color: var(--color-primary) !important;
+        }
+        .hover\:bg-blue-50:hover,
+        .hover\:bg-blue-100:hover,
+        .hover\:bg-blue-200:hover,
+        .hover\:bg-blue-300:hover,
+        .hover\:bg-blue-400:hover,
+        .hover\:bg-blue-500:hover,
+        .hover\:bg-blue-600:hover,
+        .hover\:bg-blue-700:hover,
+        .hover\:bg-blue-800:hover,
+        .hover\:bg-blue-900:hover {
+            background-color: var(--color-primary) !important;
+            color: #fff !important;
+        }
+        .hover\:text-blue-50:hover,
+        .hover\:text-blue-100:hover,
+        .hover\:text-blue-200:hover,
+        .hover\:text-blue-300:hover,
+        .hover\:text-blue-400:hover,
+        .hover\:text-blue-500:hover,
+        .hover\:text-blue-600:hover,
+        .hover\:text-blue-700:hover,
+        .hover\:text-blue-800:hover,
+        .hover\:text-blue-900:hover {
+            color: var(--color-primary-strong) !important;
+        }
+        .focus\:border-blue-50:focus,
+        .focus\:border-blue-100:focus,
+        .focus\:border-blue-200:focus,
+        .focus\:border-blue-300:focus,
+        .focus\:border-blue-400:focus,
+        .focus\:border-blue-500:focus,
+        .focus\:border-blue-600:focus,
+        .focus\:border-blue-700:focus,
+        .focus\:border-blue-800:focus,
+        .focus\:border-blue-900:focus {
+            border-color: var(--color-primary) !important;
+        }
+        .focus\:ring-blue-50:focus,
+        .focus\:ring-blue-100:focus,
+        .focus\:ring-blue-200:focus,
+        .focus\:ring-blue-300:focus,
+        .focus\:ring-blue-400:focus,
+        .focus\:ring-blue-500:focus,
+        .focus\:ring-blue-600:focus,
+        .focus\:ring-blue-700:focus,
+        .focus\:ring-blue-800:focus,
+        .focus\:ring-blue-900:focus {
+            --tw-ring-color: var(--color-primary) !important;
+        }
 
         ::-webkit-scrollbar {
             width: 8px;
