@@ -115,28 +115,32 @@
                         </div>
                     @endif
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                        @forelse($products as $product)
-                        <label class="cursor-pointer rounded-xl border p-3 transition {{ in_array($product->id, $selectedProductIds) ? 'border-primary ring-1 ring-primary/20 bg-primary/5' : 'border-gray-200 hover:border-primary/30' }}">
-                                <div class="flex items-start gap-3">
-                                    <input type="checkbox" wire:model.live="selectedProductIds" value="{{ $product->id }}" class="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-2">
-                                            <p class="truncate text-sm font-semibold text-gray-900">{{ $product->name }}</p>
-                                            @if($product->has_variations)
-                                                <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-600">Variations</span>
-                                            @endif
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
+                        <div class="max-h-[360px] overflow-y-auto pr-1">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                                @forelse($products as $product)
+                                <label class="cursor-pointer rounded-xl border p-3 transition {{ in_array($product->id, $selectedProductIds) ? 'border-primary ring-1 ring-primary/20 bg-primary/5' : 'border-gray-200 hover:border-primary/30' }}">
+                                        <div class="flex items-start gap-3">
+                                            <input type="checkbox" wire:model.live="selectedProductIds" value="{{ $product->id }}" class="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center gap-2">
+                                                    <p class="truncate text-sm font-semibold text-gray-900">{{ $product->name }}</p>
+                                                    @if($product->has_variations)
+                                                        <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-600">Variations</span>
+                                                    @endif
+                                                </div>
+                                                <p class="mt-1 truncate text-xs text-gray-500">{{ $product->sku ?? 'No SKU' }}</p>
+                                                <p class="mt-1 text-sm font-semibold text-primary">{{ $product->currency_symbol }}{{ number_format((float) $product->price, 2) }}</p>
+                                            </div>
                                         </div>
-                                        <p class="mt-1 truncate text-xs text-gray-500">{{ $product->sku ?? 'No SKU' }}</p>
-                                        <p class="mt-1 text-sm font-semibold text-primary">{{ $product->currency_symbol }}{{ number_format((float) $product->price, 2) }}</p>
+                                    </label>
+                                @empty
+                                    <div class="col-span-full rounded-lg border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-500">
+                                        No products found.
                                     </div>
-                                </div>
-                            </label>
-                        @empty
-                            <div class="col-span-full rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-500">
-                                No products found.
+                                @endforelse
                             </div>
-                        @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
