@@ -7,8 +7,13 @@
         this.$refs.container.scrollBy({ left: this.scrollAmount, behavior: 'smooth' });
     }
 }">
+    @php
+        $newArrivalsTitle = ($homepageSettings['home_new_arrivals_title'] ?? '') === 'New Arrivals'
+            ? __('store.new_arrivals')
+            : ($homepageSettings['home_new_arrivals_title'] ?? __('store.new_arrivals'));
+    @endphp
     <div class="flex items-center justify-between mb-4 px-1">
-        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_new_arrivals_title'] ?? __('store.new_arrivals') }}</h2>
+        <h2 class="text-2xl font-bold text-gray-900">{{ $newArrivalsTitle }}</h2>
         <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-primary">{{ __('store.view_all') }} →</a>
     </div>
 

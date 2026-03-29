@@ -19,8 +19,13 @@
             'from-pink-500 to-red-600',
         ];
     @endphp
+    @php
+        $categorySectionTitle = ($homepageSettings['home_shop_by_category_title'] ?? '') === 'Shop by Category'
+            ? __('store.shop_by_category')
+            : ($homepageSettings['home_shop_by_category_title'] ?? __('store.shop_by_category'));
+    @endphp
     <div class="mb-3 px-1">
-        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_shop_by_category_title'] ?? __('store.shop_by_category') }}</h2>
+        <h2 class="text-2xl font-bold text-gray-900">{{ $categorySectionTitle }}</h2>
     </div>
 
     <div class="relative">

@@ -8,8 +8,13 @@
         this.$refs.container.scrollBy({ left: this.scrollAmount, behavior: 'smooth' });
     }
 }">
+    @php
+        $featuredTitle = ($homepageSettings['home_featured_products_title'] ?? '') === 'Featured Products'
+            ? __('store.featured_products')
+            : ($homepageSettings['home_featured_products_title'] ?? __('store.featured_products'));
+    @endphp
     <div class="flex items-center justify-between mb-4 px-1">
-        <h2 class="text-2xl font-bold text-gray-900">{{ $homepageSettings['home_featured_products_title'] ?? __('store.featured_products') }}</h2>
+        <h2 class="text-2xl font-bold text-gray-900">{{ $featuredTitle }}</h2>
         <a href="{{ route('store.index') }}" class="text-primary font-medium hover:text-primary">{{ __('store.view_all') }} →</a>
     </div>
 
