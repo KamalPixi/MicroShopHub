@@ -461,7 +461,7 @@
                 </table>
             </div>
             <div class="mt-3">
-                {{ $recentProducts?->links() }}
+                {{ $recentProducts?->links(null, ['scrollTo' => false]) }}
             </div>
         </div>
     </div>
