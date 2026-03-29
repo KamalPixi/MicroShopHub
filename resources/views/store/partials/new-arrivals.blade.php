@@ -54,15 +54,11 @@
 
                         <div class="p-3">
                             <div class="block">
-                                <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base group-hover/card:text-primary truncate">
+                                <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base leading-snug line-clamp-2 group-hover/card:text-primary">
                                     {{ $product->name }}
                                 </h3>
                             </div>
                             
-                            <p class="text-xs text-gray-600 mb-2 truncate">
-                                {{ Str::limit(strip_tags($product->description), 40) }}
-                            </p>
-
                             <div class="flex items-end justify-between gap-2">
                                 <div class="flex flex-col">
                                     @if($saleInfo)

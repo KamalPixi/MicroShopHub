@@ -54,14 +54,10 @@
                         </div>
 
                         <div class="block">
-                            <h3 class="font-medium text-gray-900 text-sm mb-1 group-hover/card:text-primary truncate">
+                            <h3 class="font-medium text-gray-900 text-sm mb-1 leading-snug line-clamp-2 group-hover/card:text-primary">
                                 {{ $product->name }}
                             </h3>
                         </div>
-
-                        <p class="text-xs text-gray-600 mb-2 truncate">
-                            {{ Str::limit(strip_tags($product->description), 30) }}
-                        </p>
 
                         <div class="flex items-end justify-between gap-2">
                             <div class="flex flex-col">
