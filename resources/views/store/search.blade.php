@@ -220,7 +220,7 @@
                             
                             <div class="p-3 flex-1 flex flex-col">
                                 <div class="block">
-                                    <h3 class="text-sm font-medium text-gray-900 group-hover:text-primary truncate mb-1">
+                                    <h3 class="text-sm font-medium text-gray-900 group-hover:text-primary line-clamp-2 leading-snug mb-1">
                                         {{ $product->name }}
                                     </h3>
                                 </div>
