@@ -11,18 +11,20 @@ class CurrencySeeder extends Seeder
     {
         $currencies = [
             [
-                'code' => 'USD',
-                'name' => 'US Dollar',
-                'symbol' => '$',
-                'exchange_rate' => 1.0000, // Base Currency
-                'active' => true,
-            ],
-            [
                 'code' => 'BDT',
                 'name' => 'Bangladeshi Taka',
                 'symbol' => '৳',
-                'exchange_rate' => 120.0000, // Example Rate
+                'exchange_rate' => 1.0000,
                 'active' => true,
+                'is_default' => true,
+            ],
+            [
+                'code' => 'USD',
+                'name' => 'US Dollar',
+                'symbol' => '$',
+                'exchange_rate' => 120.0000,
+                'active' => true,
+                'is_default' => false,
             ],
             [
                 'code' => 'EUR',
@@ -30,6 +32,7 @@ class CurrencySeeder extends Seeder
                 'symbol' => '€',
                 'exchange_rate' => 0.9200,
                 'active' => true,
+                'is_default' => false,
             ],
             [
                 'code' => 'CAD',
@@ -37,6 +40,7 @@ class CurrencySeeder extends Seeder
                 'symbol' => 'C$',
                 'exchange_rate' => 1.3500,
                 'active' => true,
+                'is_default' => false,
             ],
             [
                 'code' => 'MYR',
@@ -44,6 +48,7 @@ class CurrencySeeder extends Seeder
                 'symbol' => 'RM',
                 'exchange_rate' => 4.7500,
                 'active' => true,
+                'is_default' => false,
             ],
             [
                 'code' => 'SGD',
@@ -51,9 +56,15 @@ class CurrencySeeder extends Seeder
                 'symbol' => 'S$',
                 'exchange_rate' => 1.3400,
                 'active' => true,
+                'is_default' => false,
             ],
         ];
 
-        DB::table('currencies')->insert($currencies);
+        foreach ($currencies as $currency) {
+            DB::table('currencies')->updateOrInsert(
+                ['code' => $currency['code']],
+                $currency
+            );
+        }
     }
 }

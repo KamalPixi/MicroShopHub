@@ -1,0 +1,112 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class SettingSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $settings = [
+            'shop_name' => 'ShopHub',
+            'site_title' => 'Hand Picked Items.',
+            'storefront_theme' => 'default',
+            'branding_color' => '#111111',
+            'secondary_color' => '#6B7280',
+            'accent_color' => '#F59E0B',
+            'currency' => 'BDT',
+            'home_hero_enabled' => '1',
+            'home_banner_type' => 'text_only',
+            'home_banner_autoplay_enabled' => '1',
+            'home_hero_title' => 'Find what fits your life',
+            'home_hero_subtitle' => 'Curated products, fast delivery, and a storefront built for easy browsing.',
+            'home_hero_cta_label' => 'Shop Now',
+            'home_hero_cta_url' => '/search',
+            'home_banner_chips' => '[]',
+            'home_banner_slides' => '[]',
+            'home_shop_by_category_enabled' => '1',
+            'home_shop_by_category_title' => 'Shop by Category',
+            'home_featured_products_enabled' => '1',
+            'home_featured_products_title' => 'Featured Products',
+            'home_new_arrivals_enabled' => '1',
+            'home_new_arrivals_title' => 'New Arrivals',
+            'home_newsletter_enabled' => '1',
+            'home_newsletter_title' => 'Stay Updated',
+            'home_newsletter_subtitle' => 'Subscribe for new arrivals, exclusive offers, and restock alerts.',
+            'footer_about_title' => 'ShopHub',
+            'footer_about_description' => 'Your trusted marketplace for clothing, health products, and unique handmade items.',
+            'footer_social_facebook_url' => '',
+            'footer_social_x_url' => '',
+            'footer_social_instagram_url' => '',
+            'footer_links_title' => 'Quick Links',
+            'footer_link_1_label' => 'About Us',
+            'footer_link_1_url' => '/about',
+            'footer_link_2_label' => 'Contact',
+            'footer_link_2_url' => '/contact',
+            'footer_link_3_label' => 'FAQ',
+            'footer_link_3_url' => '/faq',
+            'footer_link_4_label' => 'Shipping Info',
+            'footer_link_4_url' => '/shipping',
+            'footer_support_title' => 'Customer Support',
+            'footer_support_email' => 'support@shophub.com',
+            'footer_support_phone' => '+1 (555) 123-4567',
+            'footer_support_hours_1' => 'Mon-Fri: 9AM-6PM',
+            'footer_support_hours_2' => 'Sat-Sun: 10AM-4PM',
+            'footer_policy_title' => 'Policies',
+            'footer_policy_1_label' => 'Privacy Policy',
+            'footer_policy_1_url' => '/privacy-policy',
+            'footer_policy_2_label' => 'Terms of Service',
+            'footer_policy_2_url' => '/terms',
+            'footer_policy_3_label' => 'Cookie Policy',
+            'footer_policy_3_url' => '/cookie-policy',
+            'footer_policy_4_label' => 'Refund Policy',
+            'footer_policy_4_url' => '/refund-policy',
+            'footer_copyright_text' => '© {year} ShopHub. All rights reserved.',
+            'mail_host' => '',
+            'mail_port' => '',
+            'mail_username' => '',
+            'mail_password' => '',
+            'mail_encryption' => 'tls',
+            'mail_from_address' => '',
+            'mail_from_name' => '',
+            'admin_notify_email_enabled' => '0',
+            'admin_notify_email_address' => '',
+            'admin_notify_telegram_enabled' => '0',
+            'admin_telegram_bot_token' => '',
+            'admin_telegram_chat_id' => '',
+            'live_chat_enabled' => '0',
+            'admin_telegram_webhook_set' => '0',
+            'pusher_app_id' => '',
+            'pusher_app_key' => '',
+            'pusher_app_secret' => '',
+            'pusher_app_cluster' => 'mt1',
+            'customer_auth_email_otp_enabled' => '0',
+            'customer_auth_email_password_enabled' => '1',
+            'customer_auth_guest_checkout_enabled' => '0',
+            'offline_payment_methods' => '[]',
+            'page_about_title' => 'About Us',
+            'page_about_content' => "About Us\n\nWe are focused on making shopping simple, fast, and trustworthy. Our store brings together curated products, clear pricing, and easy checkout so customers can shop with confidence.\n\nWhat we stand for:\n- Honest product information\n- Helpful customer support\n- Secure checkout and clear order updates\n- Fast responses when customers need help\n\nWhy customers choose us:\n- Easy browsing across categories\n- Multiple payment options\n- Delivery and support guidance when needed\n- A shopping experience built around convenience\n\nIf you have questions about our store, products, or services, our team is here to help.",
+            'page_faq_title' => 'FAQ',
+            'page_faq_content' => "FAQ\n\nHere are answers to common questions about shopping with us.\n\nOrders:\n- How do I place an order?\n  Browse the store, add items to cart, and complete checkout.\n- Can I change my order after placing it?\n  Contact us as soon as possible and we will check if the order can still be updated.\n\nPayments:\n- Which payment methods do you accept?\n  Available methods are shown at checkout and may include online and offline options.\n- Is offline payment supported?\n  Yes, where enabled, you can upload proof and wait for approval.\n\nShipping:\n- How long does delivery take?\n  Delivery time depends on location and shipping method.\n- Can I track my order?\n  Tracking depends on the selected delivery method and order status.\n\nSupport:\n- How can I contact support?\n  Use the contact page or live chat for help.\n- What should I do if I received the wrong item?\n  Contact support right away with your order details and proof if possible.\n\nIf you have another question, please reach out to us.",
+            'page_privacy_title' => 'Privacy Policy',
+            'page_privacy_content' => "Privacy Policy\n\nWe respect your privacy and handle your information carefully. We collect the details needed to process your orders, support your account, and improve your shopping experience.\n\nWhat we collect:\n- Name, email, phone number, and delivery address\n- Order history and payment details\n- Messages you send through support or live chat\n\nHow we use it:\n- To process orders and deliver products\n- To contact you about your order or support request\n- To improve the store and customer experience\n\nSharing:\n- We do not sell your personal information\n- We may share information with payment, delivery, or support providers only when needed to complete your order\n\nCookies and analytics:\n- We may use cookies to remember your session and improve browsing\n- You can disable cookies in your browser, but some features may stop working properly\n\nContact:\nIf you have questions about your privacy, contact our support team.",
+            'page_terms_title' => 'Terms of Service',
+            'page_terms_content' => "Terms of Service\n\nBy using our store, you agree to the terms below. Please read them before placing an order.\n\nOrders:\n- Product availability may change without notice\n- Orders are confirmed only after payment and verification where needed\n- We may cancel orders if there is a pricing, stock, or payment issue\n\nPricing and payments:\n- Prices may change at any time before checkout\n- Payment methods shown at checkout are the current available methods\n- Offline payment orders may require verification before confirmation\n\nShipping and delivery:\n- Delivery times are estimates and can vary by location and courier delays\n- Once an order is shipped, tracking or delivery updates depend on the shipping provider\n\nReturns and refunds:\n- Return and refund rules depend on the product type and store policy\n- Damaged or incorrect items should be reported as soon as possible\n\nAccount use:\n- You are responsible for keeping your account details accurate\n- You should not misuse the store, submit false details, or attempt unauthorized access\n\nWe may update these terms from time to time. Continued use of the store means you accept the updated terms.",
+            'page_refund_title' => 'Refund Policy',
+            'page_refund_content' => "Refund Policy\n\nWe want every customer to feel comfortable shopping with us. If a refund is approved, it will be handled according to the rules below.\n\nWhen refunds may apply:\n- Damaged items received on delivery\n- Wrong items shipped by mistake\n- Orders cancelled before processing or shipping, where possible\n- Other cases approved by our support team\n\nWhen refunds may not apply:\n- Change of mind after an order has been processed\n- Items damaged due to customer handling\n- Requests made outside the allowed return window\n- Products that are not eligible for return or refund under store rules\n\nRefund process:\n- Contact support with your order number and proof\n- Our team will review the request\n- If approved, the refund or replacement will be arranged based on the payment method and order status\n\nTiming:\n- Refund timing depends on the payment method and processing time\n- Some payments may take additional business days to appear\n\nIf you need help with a refund request, contact our support team as soon as possible.",
+            'page_shipping_title' => 'Shipping Info',
+            'page_shipping_content' => "Shipping Info\n\nThis page explains how shipping and delivery work in our store.\n\nShipping methods:\n- Available shipping methods are shown at checkout\n- Shipping cost may depend on location, weight, and delivery speed\n- Some locations may offer more than one delivery option\n\nDelivery timing:\n- Estimated delivery times are shown when available\n- Delivery time can change based on courier delays, location, and order volume\n- Processing time may be added before dispatch\n\nOrder dispatch:\n- Orders are prepared after payment confirmation or verification when needed\n- Offline payment orders may take longer while payment proof is reviewed\n- You will be notified when your order is processed or shipped\n\nTracking:\n- Tracking details may be shared if the selected courier supports it\n- Some local or offline deliveries may not include live tracking\n\nImportant notes:\n- Please provide a correct delivery address and phone number\n- We are not responsible for delays caused by incorrect shipping details\n- Customers should contact support if the order seems delayed or missing\n\nIf you have shipping questions for a specific order, contact our support team.",
+            'page_cookie_title' => 'Cookie Policy',
+            'page_cookie_content' => "Cookie Policy\n\nThis store uses cookies and similar tools to keep the website working smoothly and to improve your experience.\n\nWhy we use cookies:\n- To keep you signed in during your visit\n- To remember your cart and preferences\n- To understand how the store is being used\n- To improve page speed, browsing, and marketing performance\n\nTypes of cookies:\n- Essential cookies: required for basic store functions\n- Preference cookies: remember settings like language or location\n- Analytics cookies: help us understand store traffic and performance\n- Marketing cookies: may help us show relevant offers and campaigns\n\nManaging cookies:\n- You can clear or block cookies from your browser settings\n- Some features may not work correctly if essential cookies are disabled\n\nIf you continue using the store, you agree to the use of cookies as described here.",
+        ];
+
+        foreach ($settings as $key => $value) {
+            DB::table('settings')->updateOrInsert(
+                ['key' => $key],
+                ['value' => $value]
+            );
+        }
+    }
+}

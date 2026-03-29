@@ -53,7 +53,7 @@ class DashboardAnalytics extends Component
     {
         $this->currencySymbol = Currency::getActive()->symbol;
         $settings = Setting::whereIn('key', ['shop_name'])->pluck('value', 'key');
-        $this->shopName = $settings['shop_name'] ?: config('app.name', 'Store Name');
+        $this->shopName = trim((string) ($settings['shop_name'] ?? '')) ?: config('app.name', 'Store Name');
         // Total Sales: Sum of all order totals
         $this->totalSales = Order::sum('total');
 

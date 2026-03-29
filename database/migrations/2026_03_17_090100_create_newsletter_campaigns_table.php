@@ -12,7 +12,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('subject');
+            $table->string('preheader')->nullable();
+            $table->string('template_key')->default('announcement');
             $table->longText('content')->nullable();
+            $table->json('featured_product_ids')->nullable();
+            $table->string('button_text')->nullable();
+            $table->string('button_url')->nullable();
             $table->string('status')->default('draft');
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamp('sent_at')->nullable();

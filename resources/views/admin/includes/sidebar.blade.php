@@ -1,7 +1,7 @@
 <aside id="sidebar" class="w-60 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 p-4 flex flex-col fixed top-0 bottom-0 border-r border-white/10 shadow-[0_24px_60px_rgba(2,6,23,0.45)]">
 @php
         $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title', 'shop_logo'])->pluck('value', 'key');
-        $sidebarStoreName = $sidebarSettings['shop_name'] ?: config('app.name', 'Store Name');
+        $sidebarStoreName = trim((string) ($sidebarSettings['shop_name'] ?? '')) ?: config('app.name', 'Store Name');
         $sidebarStoreLogo = $sidebarSettings['shop_logo'] ?? null;
         $sidebarStoreLogoUrl = $sidebarStoreLogo
             ? (\Illuminate\Support\Str::startsWith($sidebarStoreLogo, ['http://', 'https://'])

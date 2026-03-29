@@ -43,7 +43,7 @@
             'footer_copyright_text',
         ])->pluck('value', 'key');
         $storeMeta = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title', 'shop_logo'])->pluck('value', 'key');
-        $storeName = $storeMeta['shop_name'] ?: config('app.name', 'Store Name');
+        $storeName = trim((string) ($storeMeta['shop_name'] ?? '')) ?: config('app.name', 'Store Name');
         $storeSlogan = $storeMeta['site_title'] ?? '';
         $storeLogo = $storeMeta['shop_logo'] ?? '';
         $primaryColor = $brandSettings['branding_color'] ?? '#2563eb';

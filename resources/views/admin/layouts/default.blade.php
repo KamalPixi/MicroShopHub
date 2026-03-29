@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @php
         $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name'])->pluck('value', 'key');
-        $storeName = $sidebarSettings['shop_name'] ?: config('app.name', 'Store Name');
+        $storeName = trim((string) ($sidebarSettings['shop_name'] ?? '')) ?: config('app.name', 'Store Name');
     @endphp
     <title>{{ $storeName }} Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
