@@ -135,26 +135,39 @@
                 @endif
 
                 @if($adminUser?->hasPermission('admins.manage'))
+                    @php
+                        $isAdminManagementOpen = request()->routeIs('admin.users*', 'admin.roles*');
+                    @endphp
                     <li>
-                        <a href="{{ route('admin.users.index') }}" 
-                           class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition {{ request()->routeIs('admin.users*') ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
+                        <button
+                            class="flex items-center gap-3 text-sm px-3 py-2.5 rounded-xl w-full font-medium transition {{ $isAdminManagementOpen ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}"
+                            onclick="document.getElementById('admin-management-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                        >
                             <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M17 20h5v-2a4 4 0 00-4-4h-1
                                          M9 20H4v-2a4 4 0 014-4h1
                                          M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
-                            Users
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.roles') }}"
-                           class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition {{ request()->routeIs('admin.roles*') ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
-                            <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1M16 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            <span class="flex-1 text-left">Admin Management</span>
+                            <svg class="chevron ml-auto w-4 h-4 transform transition-transform {{ $isAdminManagementOpen ? 'rotate-90' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
-                            Roles
-                        </a>
+                        </button>
+                        <ul id="admin-management-submenu" class="ml-4 mt-2 space-y-1.5 border-l border-white/10 pl-3 {{ $isAdminManagementOpen ? '' : 'hidden' }}">
+                            <li>
+                                <a href="{{ route('admin.users.index') }}"
+                                   class="block text-sm px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.users*') ? 'bg-white text-slate-950 shadow-md ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
+                                    Users
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.roles') }}"
+                                   class="block text-sm px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.roles*') ? 'bg-white text-slate-950 shadow-md ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
+                                    Roles
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 @endif
 
