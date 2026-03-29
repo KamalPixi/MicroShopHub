@@ -38,6 +38,7 @@ return [
     'search_results' => 'Search Results',
     'browse_catalog' => 'Browse catalog',
     'found_products' => 'Found :count products',
+    'found_products_for_query' => 'Found :count products for ":query"',
     'category_filtered' => 'Category filtered',
     'price_filtered' => 'Price filtered',
     'sorted' => 'Sorted',
@@ -52,6 +53,9 @@ return [
     'clear' => 'Clear',
     'show_all_categories' => 'Show all categories',
     'show_fewer_categories' => 'Show fewer categories',
+    'min' => 'Min',
+    'max' => 'Max',
+    'no_matches_for_filters' => "We couldn't find any matches for your filters.",
     'no_results_for' => 'No products found for ":query"',
 
     'contact_us' => 'Contact us',

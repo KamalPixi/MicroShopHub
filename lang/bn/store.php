@@ -38,6 +38,7 @@ return [
     'search_results' => 'সার্চ ফলাফল',
     'browse_catalog' => 'ক্যাটালগ দেখুন',
     'found_products' => ':countটি পণ্য পাওয়া গেছে',
+    'found_products_for_query' => '":query" এর জন্য :countটি পণ্য পাওয়া গেছে',
     'category_filtered' => 'ক্যাটাগরি ফিল্টার করা',
     'price_filtered' => 'দামের ফিল্টার করা',
     'sorted' => 'সাজানো',
@@ -52,6 +53,9 @@ return [
     'clear' => 'মুছুন',
     'show_all_categories' => 'সব ক্যাটাগরি দেখুন',
     'show_fewer_categories' => 'কম ক্যাটাগরি দেখান',
+    'min' => 'সর্বনিম্ন',
+    'max' => 'সর্বোচ্চ',
+    'no_matches_for_filters' => 'আপনার ফিল্টারের সাথে কোনো মিল পাওয়া যায়নি।',
     'no_results_for' => '":query" এর জন্য কোনো পণ্য পাওয়া যায়নি',
 
     'contact_us' => 'যোগাযোগ করুন',

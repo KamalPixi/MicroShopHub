@@ -17,20 +17,21 @@
                         <h1 class="mt-0.5 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-[2rem]">{{ __('store.search_results') }}</h1>
                     </div>
                     <p class="text-sm text-gray-600">
-                        Found <span class="font-bold text-gray-900">{{ $products->total() }}</span> products
                         @if($query)
-                            for <span class="font-semibold text-primary">"{{ $query }}"</span>
+                            {{ __('store.found_products_for_query', ['count' => $products->total(), 'query' => $query]) }}
+                        @else
+                            {{ __('store.found_products', ['count' => $products->total()]) }}
                         @endif
                     </p>
                     <div class="flex flex-wrap gap-2 text-[11px] text-gray-600">
                         @if($categoryId)
-                            <span class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 font-semibold text-primary">Category filtered</span>
+                            <span class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 font-semibold text-primary">{{ __('store.category_filtered') }}</span>
                         @endif
                         @if($minPrice || $maxPrice)
-                            <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 font-semibold text-gray-700">Price filtered</span>
+                            <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 font-semibold text-gray-700">{{ __('store.price_filtered') }}</span>
                         @endif
                         @if($sort && $sort !== 'newest')
-                            <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 font-semibold text-gray-700">Sorted</span>
+                            <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 font-semibold text-gray-700">{{ __('store.sorted') }}</span>
                         @endif
                     </div>
                 </div>
@@ -109,13 +110,13 @@
                                 <div class="flex items-center gap-2">
                                     <div class="relative flex-1">
                                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
-                                        <input type="number" name="min_price" value="{{ $minPrice }}" placeholder="Min"
+                                        <input type="number" name="min_price" value="{{ $minPrice }}" placeholder="{{ __('store.min') }}"
                                                class="w-full pl-6 pr-2 py-2 text-sm border border-gray-300 rounded focus:ring-primary focus:border-primary">
                                     </div>
                                     <span class="text-gray-400">-</span>
                                     <div class="relative flex-1">
                                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
-                                        <input type="number" name="max_price" value="{{ $maxPrice }}" placeholder="Max"
+                                        <input type="number" name="max_price" value="{{ $maxPrice }}" placeholder="{{ __('store.max') }}"
                                                class="w-full pl-6 pr-2 py-2 text-sm border border-gray-300 rounded focus:ring-primary focus:border-primary">
                                     </div>
                                 </div>
@@ -132,7 +133,7 @@
                         <div class="flex items-center gap-2">
                             <h3 class="font-bold text-gray-900 uppercase text-xs tracking-wider">{{ __('store.categories') }}</h3>
                             @if($categoryId)
-                                <a href="{{ route('store.search', request()->except('category', 'page')) }}" class="text-xs text-primary hover:underline lg:pointer-events-auto">Clear</a>
+                                <a href="{{ route('store.search', request()->except('category', 'page')) }}" class="text-xs text-primary hover:underline lg:pointer-events-auto">{{ __('store.clear') }}</a>
                             @endif
                         </div>
                         <svg class="h-4 w-4 text-gray-500 transition-transform lg:hidden" :class="expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,15 +155,15 @@
                                         <li>
                                             <a href="{{ request()->fullUrlWithQuery(['category' => $cat->id, 'page' => null]) }}"
                                                class="block text-sm {{ request('category') == $cat->id ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary' }}">
-                                                {{ $cat->name }}
-                                            </a>
+                                            {{ $cat->name }}
+                                        </a>
                                             @if($cat->children->isNotEmpty())
                                                 <ul class="ml-4 mt-1 space-y-1 border-l border-gray-200 pl-2">
                                                     @foreach($cat->children as $child)
                                                         <li>
                                                             <a href="{{ request()->fullUrlWithQuery(['category' => $child->id, 'page' => null]) }}"
                                                                class="block text-xs {{ request('category') == $child->id ? 'text-primary font-bold' : 'text-gray-500 hover:text-primary' }}">
-                                                                {{ $child->name }}
+                                        {{ $child->name }}
                                                             </a>
                                                         </li>
                                                     @endforeach
@@ -226,7 +227,7 @@
                                 </div>
                                 
                                 <p class="text-xs text-gray-500 mb-2 truncate">
-                                    {{ $product->categories->first()->name ?? 'General' }}
+                                    {{ $product->categories->first()->name ?? __('store.general') }}
                                 </p>
                                 
                                 <div class="mt-auto flex items-end justify-between gap-2">
@@ -264,7 +265,7 @@
                             </svg>
                         </div>
                         <h3 class="text-lg font-medium text-gray-900">{{ __('store.no_products_found') }}</h3>
-                        <p class="text-gray-500 text-sm mt-1 mb-6">We couldn't find any matches for your filters.</p>
+                        <p class="text-gray-500 text-sm mt-1 mb-6">{{ __('store.no_matches_for_filters') }}</p>
                         <a href="{{ route('store.search') }}" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-primary transition">
                             {{ __('store.clear_all_filters') }}
                         </a>
