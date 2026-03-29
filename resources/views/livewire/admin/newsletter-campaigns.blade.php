@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[1.25fr_0.95fr]">
+        <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[1.25fr_auto]">
             <div class="space-y-5">
                 <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
                     <div class="flex items-start justify-between gap-3">
@@ -195,22 +195,43 @@
             </div>
 
             <div class="space-y-4 xl:sticky xl:top-4 self-start">
-                <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Preview</p>
-                            <h4 class="mt-1 text-sm font-semibold text-gray-900">Live email preview</h4>
+                @if($previewCollapsed)
+                    <div class="flex h-full min-h-[420px] w-14 flex-col items-center justify-between rounded-2xl border border-gray-200 bg-white p-2 shadow-sm">
+                        <button type="button" wire:click="togglePreview" class="admin-action-btn admin-action-view !h-9 !w-9 !p-0" title="Expand preview">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <div class="flex flex-1 items-center justify-center">
+                            <span class="origin-center -rotate-90 whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.24em] text-gray-400">Preview</span>
                         </div>
-                        <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ data_get($templateOptions, $template_key . '.name', 'Template') }}</span>
+                        <span class="h-9 w-9"></span>
                     </div>
-                    <div class="mt-4 overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
-                        <div class="max-h-[760px] overflow-auto">
-                            <div class="min-w-[740px]">
-                                {!! $previewHtml !!}
+                @else
+                    <div class="rounded-2xl border border-gray-200 bg-white p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Preview</p>
+                                <h4 class="mt-1 text-sm font-semibold text-gray-900">Live email preview</h4>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ data_get($templateOptions, $template_key . '.name', 'Template') }}</span>
+                                <button type="button" wire:click="togglePreview" class="admin-action-btn admin-action-view !h-8 !w-8 !p-0" title="Collapse preview">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-4 overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+                            <div class="max-h-[760px] overflow-auto">
+                                <div class="min-w-[740px]">
+                                    {!! $previewHtml !!}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>

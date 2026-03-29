@@ -28,6 +28,7 @@ class NewsletterCampaigns extends Component
     public string $productSearch = '';
     public string $status = 'draft';
     public $scheduled_at;
+    public bool $previewCollapsed = false;
     public int $perPage = 10;
 
     protected $queryString = [
@@ -67,6 +68,11 @@ class NewsletterCampaigns extends Component
         if (! $this->templateUsesProducts($this->template_key)) {
             $this->selected_product_ids = [];
         }
+    }
+
+    public function togglePreview(): void
+    {
+        $this->previewCollapsed = ! $this->previewCollapsed;
     }
 
     public function resetForm(): void
