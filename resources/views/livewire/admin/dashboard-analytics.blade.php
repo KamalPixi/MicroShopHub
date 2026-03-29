@@ -1,14 +1,12 @@
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
-        <div>
-            <p class="text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-500">Admin Dashboard</p>
-            <h2 class="text-lg font-semibold text-gray-900">{{ $shopName }}</h2>
-            <p class="text-sm text-gray-500">{{ $shopName }} overview of sales, orders, customers, and inventory.</p>
-        </div>
+    <div class="rounded-2xl border border-gray-200 bg-white px-4 py-4 shadow-sm">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-500">Admin Dashboard</p>
+        <h2 class="text-lg font-semibold text-gray-900">{{ $shopName }}</h2>
+        <p class="text-sm text-gray-500">{{ $shopName }} overview of sales, orders, customers, and inventory.</p>
     </div>
     <!-- Analytics Cards -->
     <div class="space-y-5">
-        <div>
+        <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div class="mb-2 flex items-center justify-between">
                 <h3 class="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">Sales</h3>
                 <p class="text-[11px] text-gray-400">Revenue and order value</p>
@@ -164,7 +162,7 @@
             </div>
         </div>
 
-        <div>
+        <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div class="mb-2 flex items-center justify-between">
                 <h3 class="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">Catalog</h3>
                 <p class="text-[11px] text-gray-400">Products and stock status</p>
