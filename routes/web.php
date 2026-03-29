@@ -17,6 +17,7 @@ use App\Http\Controllers\Store\PaymentController;
 use App\Http\Controllers\Store\NewsletterController;
 use App\Http\Controllers\Store\LiveChatTelegramController;
 use App\Http\Controllers\Store\TelegramWebhookController;
+use App\Http\Controllers\InstallController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,16 @@ use App\Http\Controllers\Admin\UserController;
 | Store (Frontend) Routes
 |--------------------------------------------------------------------------
 */
+
+Route::get('/install', [InstallController::class, 'index'])->name('install.index');
+Route::get('/install/requirements', [InstallController::class, 'requirements'])->name('install.requirements');
+Route::post('/install/requirements', [InstallController::class, 'storeRequirements'])->name('install.requirements.store');
+Route::get('/install/database', [InstallController::class, 'database'])->name('install.database');
+Route::post('/install/database', [InstallController::class, 'storeDatabase'])->name('install.database.store');
+Route::get('/install/settings', [InstallController::class, 'settings'])->name('install.settings');
+Route::post('/install/settings', [InstallController::class, 'storeSettings'])->name('install.settings.store');
+Route::get('/install/complete', [InstallController::class, 'complete'])->name('install.complete');
+Route::post('/install/finalize', [InstallController::class, 'finalize'])->name('install.finalize');
 
 Route::get('/language/{locale}', function (Request $request, string $locale) {
     $settings = Cache::remember('store_language_settings', 300, function () {
@@ -62,9 +73,9 @@ Route::get('/language/{locale}', function (Request $request, string $locale) {
     session(['store_locale' => $locale]);
 
     return back();
-})->name('store.language.switch');
+})->middleware('app.installed')->name('store.language.switch');
 
-Route::middleware(['store.analytics', 'store.locale'])->name('store.')->group(function () {
+Route::middleware(['app.installed', 'store.analytics', 'store.locale'])->name('store.')->group(function () {
     Route::get('/', [StoreController::class, 'index'])->name('index');
     Route::get('/search', [StoreController::class, 'search'])->name('search');
     Route::get('/flash-sale', [StoreController::class, 'flashSale'])->name('flash-sale');
@@ -81,7 +92,7 @@ Route::middleware(['store.analytics', 'store.locale'])->name('store.')->group(fu
     Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
 
-Route::get('/sitemap.xml', [StoreController::class, 'sitemap'])->name('sitemap');
+Route::get('/sitemap.xml', [StoreController::class, 'sitemap'])->middleware('app.installed')->name('sitemap');
 
 
 /*
@@ -90,7 +101,7 @@ Route::get('/sitemap.xml', [StoreController::class, 'sitemap'])->name('sitemap')
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['store.analytics', 'store.locale'])->group(function () {
+Route::middleware(['app.installed', 'store.analytics', 'store.locale'])->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::get('/register', [AuthController::class, 'register'])->name('register');
 
@@ -136,7 +147,7 @@ Route::middleware(['store.analytics', 'store.locale'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('payment')->name('payment.')->group(function () {    
+Route::prefix('payment')->middleware('app.installed')->name('payment.')->group(function () {    
     // Initiate Payment (Frontend posts here with 'gateway' name)
     Route::post('/pay', [PaymentController::class, 'pay'])->name('pay');
     Route::any('/bkash/callback', [PaymentController::class, 'bkashCallback'])->name('bkash.callback');
@@ -151,8 +162,8 @@ Route::prefix('payment')->name('payment.')->group(function () {
     });
 });
 
-Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle'])->name('telegram.webhook');
-Route::post('/live-chat/telegram', [LiveChatTelegramController::class, 'handle'])->name('live-chat.telegram');
+Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle'])->middleware('app.installed')->name('telegram.webhook');
+Route::post('/live-chat/telegram', [LiveChatTelegramController::class, 'handle'])->middleware('app.installed')->name('live-chat.telegram');
 
 /*
 |--------------------------------------------------------------------------
@@ -161,6 +172,7 @@ Route::post('/live-chat/telegram', [LiveChatTelegramController::class, 'handle']
 */
 
 Route::prefix('admin')
+    ->middleware('app.installed')
     ->name('admin.')
     ->group(function () {
 
