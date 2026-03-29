@@ -13,7 +13,7 @@
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                         <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
                             <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">{{ __('store.items_in_cart') }}</h2>
-                            <span class="text-xs font-medium text-gray-500">{{ count($cart) }} Items</span>
+                            <span class="text-xs font-medium text-gray-500">{{ __('store.items_count', ['count' => count($cart)]) }}</span>
                         </div>
                         <ul class="divide-y divide-gray-100">
                             @foreach($cart as $key => $item)
@@ -46,7 +46,7 @@
                                                 <input type="text" value="{{ $item['quantity'] }}" readonly class="w-8 text-center border-none p-0 text-gray-900 font-bold text-xs h-full focus:ring-0">
                                                 <button wire:click="increment('{{ $key }}')" class="px-2 text-gray-500 hover:text-primary hover:bg-gray-50 h-full border-l border-gray-300 text-xs">+</button>
                                             </div>
-                                            <button wire:click="removeItem('{{ $key }}')" class="text-xs text-red-500 hover:underline">Remove</button>
+                                            <button wire:click="removeItem('{{ $key }}')" class="text-xs text-red-500 hover:underline">{{ __('store.remove') }}</button>
                                         </div>
                                     </div>
                                 </li>
@@ -56,11 +56,11 @@
 
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
                         <div class="flex items-center justify-between mb-4 border-b pb-2">
-                            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Customer Details</h2>
+                            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">{{ __('store.customer_details') }}</h2>
                             @if(auth()->check())
                                 <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold flex items-center">
                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    Logged In
+                                    {{ __('store.logged_in') }}
                                 </span>
                             @endif
                         </div>
@@ -68,10 +68,10 @@
                         <div class="mb-6 space-y-4">
                             @if(!auth()->check() && $authSettings['guest_checkout_enabled'])
                                 <div class="rounded-lg border border-primary/20 bg-primary/10 p-4">
-                                    <p class="text-sm font-semibold text-primary">You can order as guest.</p>
-                                    <p class="text-xs text-primary mt-1">No login or registration required. Just enter your email and shipping address below.</p>
+                                    <p class="text-sm font-semibold text-primary">{{ __('store.guest_checkout_intro') }}</p>
+                                    <p class="text-xs text-primary mt-1">{{ __('store.guest_checkout_no_login_required') }}</p>
                                     @if($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled'])
-                                        <p class="text-xs text-primary mt-2">Want faster checkout and order history? Use optional login/register below.</p>
+                                        <p class="text-xs text-primary mt-2">{{ __('store.guest_checkout_faster_checkout') }}</p>
                                         <button wire:click="toggleAuthSection" type="button" class="mt-3 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-primary border border-primary/20 hover:bg-primary/10">
                                             {{ $showAuthSection ? __('store.hide_login_register') : __('store.show_login_register') }}
                                         </button>
@@ -90,12 +90,12 @@
                                             {{ $authSettings['guest_checkout_enabled'] ? __('store.optional_account_access') : __('store.login_required') }}
                                         </p>
                                         @if($authSettings['guest_checkout_enabled'])
-                                            <button wire:click="toggleAuthSection" type="button" class="text-[11px] px-2 py-1 rounded bg-primary/10 text-primary font-semibold hover:bg-primary/20">Hide</button>
+                                            <button wire:click="toggleAuthSection" type="button" class="text-[11px] px-2 py-1 rounded bg-primary/10 text-primary font-semibold hover:bg-primary/20">{{ __('store.hide') }}</button>
                                         @endif
                                     </div>
 
                                     @if(!$authSettings['guest_checkout_enabled'])
-                                        <p class="text-xs text-yellow-800">Please login or register to place your order.</p>
+                                        <p class="text-xs text-yellow-800">{{ __('store.login_or_register_to_place_order') }}</p>
                                     @endif
 
                                     @if(session('auth_success'))
@@ -105,10 +105,10 @@
                                     @if($authSettings['email_password_enabled'])
                                         <div class="grid grid-cols-2 gap-2 rounded-lg bg-gray-100 p-1">
                                             <button type="button" wire:click="setAuthPanel('login')" class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'login' ? 'bg-primary text-white shadow-sm' : 'text-gray-700' }}">
-                                                Login
+                                                {{ __('store.login') }}
                                             </button>
                                             <button type="button" wire:click="setAuthPanel('register')" class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'register' ? 'bg-primary text-white shadow-sm' : 'text-gray-700' }}">
-                                                Register
+                                                {{ __('store.register') }}
                                             </button>
                                         </div>
                                     @endif
@@ -130,16 +130,16 @@
 
                                         @if($authMethod === 'password' && $authSettings['email_password_enabled'])
                                             <div class="space-y-2">
-                                                <input wire:model="loginPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Password">
+                                                <input wire:model="loginPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.password') }}">
                                                 @error('loginPassword') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
                                                 <div class="flex items-center justify-between">
                                                     <label class="inline-flex items-center text-xs text-gray-700">
                                                         <input wire:model="loginRemember" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary mr-2">
-                                                        Remember me
+                                                        {{ __('store.remember_me') }}
                                                     </label>
                                                     <button wire:click="loginWithPasswordInline" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                                        Login
+                                                        {{ __('store.login') }}
                                                     </button>
                                                 </div>
                                             </div>
@@ -149,13 +149,13 @@
                                             <div class="space-y-2">
                                                 @if(!$loginOtpSent)
                                                     <button wire:click="sendLoginOtp" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                                        Send OTP
+                                                        {{ __('store.send_otp') }}
                                                     </button>
                                                 @else
                                                     <div class="flex gap-2">
                                                         <input wire:model="loginOtp" type="text" maxlength="6" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3 tracking-widest text-center font-mono" placeholder="123456">
                                                         <button wire:click="verifyLoginOtp" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                                            Verify
+                                                            {{ __('store.verify') }}
                                                         </button>
                                                     </div>
                                                     @if(session('otp_message')) <p class="text-xs text-primary">{{ session('otp_message') }}</p> @endif
@@ -168,7 +168,7 @@
                                             <input wire:model="registerName" type="text" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.full_name') }}">
                                             @error('registerName') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
-                                            <input wire:model="registerEmail" type="email" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Email">
+                                            <input wire:model="registerEmail" type="email" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.email') }}">
                                             @error('registerEmail') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
                                             <input wire:model="registerPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.create_password') }}">
@@ -185,7 +185,7 @@
                             @if(auth()->check() || $authSettings['guest_checkout_enabled'])
                                 <div class="grid grid-cols-1 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">Email <span class="text-red-500">*</span></label>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.email') }} <span class="text-red-500">*</span></label>
                                         <input wire:model="email" wire:change="saveGuestDraft" type="email" {{ auth()->check() ? 'disabled' : '' }}
                                                class="w-full text-sm border border-gray-300 {{ auth()->check() ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white' }} focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
                                                placeholder="you@example.com">
@@ -194,7 +194,7 @@
                                 </div>
                             @elseif(!auth()->check())
                                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                                    <p class="text-xs text-yellow-800">Please login or register above to continue checkout.</p>
+                                    <p class="text-xs text-yellow-800">{{ __('store.login_or_register_to_place_order') }}</p>
                                 </div>
                             @endif
                         </div>
@@ -232,7 +232,7 @@
                                                 <div class="bg-gray-100 rounded-full p-1.5 mb-1 group-hover:bg-white transition-colors">
                                                     <svg class="w-4 h-4 text-gray-500 group-hover:text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                                                 </div>
-                                                <span class="text-xs font-bold text-gray-600 group-hover:text-primary">New Address</span>
+                                                <span class="text-xs font-bold text-gray-600 group-hover:text-primary">New {{ __('store.address') }}</span>
                                             </div>
 
                                         </div>
@@ -242,7 +242,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-600 mb-1">
-                                            Country <span class="text-red-500">*</span>
+                                            {{ __('store.country') }} <span class="text-red-500">*</span>
                                         </label>
 
                                         <div class="relative">
@@ -268,13 +268,13 @@
                                         @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">Full Name <span class="text-red-500">*</span></label>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.full_name') }} <span class="text-red-500">*</span></label>
                                         <input wire:model="billing.name" wire:change="saveGuestDraft" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">Phone <span class="text-gray-400">(Optional)</span></label>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.phone') }} <span class="text-gray-400">(Optional)</span></label>
                                         <input wire:model="phone" wire:change="saveGuestDraft" type="text"
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
                                                placeholder="+123456789">
@@ -283,7 +283,7 @@
                             </div>
 
                             <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">Street Address <span class="text-red-500">*</span></label>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.address_line_1') }} <span class="text-red-500">*</span></label>
                                     <input wire:model="billing.address_line1" wire:change="saveGuestDraft" type="text" 
                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400" 
                                            placeholder="123 Main St, Apt 4B">
@@ -292,20 +292,20 @@
 
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">City <span class="text-red-500">*</span></label>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.city') }} <span class="text-red-500">*</span></label>
                                         <input wire:model="billing.city" wire:change="saveGuestDraft" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.city') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">State / Province</label>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.state_province') }}</label>
                                         <input wire:model="billing.state" wire:change="saveGuestDraft" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
                                                placeholder="NY, CA, etc">
                                         @error('billing.state') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">Zip / Postal Code</label>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.zip_postal_code') }}</label>
                                         <input wire:model="billing.postal_code" wire:change="saveGuestDraft" type="text" 
                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         @error('billing.postal_code') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -315,7 +315,7 @@
                             <div class="pt-2">
                                     <label class="inline-flex items-center cursor-pointer">
                                         <input wire:model.live="shipToDifferentAddress" wire:change="saveGuestDraft" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                                        <span class="ml-2 text-sm text-gray-700 font-medium">Ship to a different address?</span>
+                                        <span class="ml-2 text-sm text-gray-700 font-medium">{{ __('store.ship_to_different_address') }}</span>
                                     </label>
                             </div>
 
@@ -325,7 +325,7 @@
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
                                                 <label class="block text-xs font-bold text-gray-600 mb-1">
-                                                    Country <span class="text-red-500">*</span>
+                                                    {{ __('store.country') }} <span class="text-red-500">*</span>
                                                 </label>
 
                                                 <div class="relative">
@@ -351,19 +351,19 @@
                                                 @enderror
                                             </div>
                                             <div>
-                                                <label class="block text-xs font-bold text-gray-600 mb-1">Recipient Name</label>
+                                                <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.recipient_name') }}</label>
                                                 <input wire:model="shipping.name" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                         </div>
 
                                         <div>
-                                            <label class="block text-xs font-bold text-gray-600 mb-1">Address</label>
+                                            <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.address') }}</label>
                                             <input wire:model="shipping.address_line1" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                         </div>
 
                                         <div class="grid grid-cols-3 gap-4">
                                             <div>
-                                                <label class="block text-xs font-bold text-gray-600 mb-1">City</label>
+                                                <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.city') }}</label>
                                                 <input wire:model="shipping.city" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                             <div>
@@ -371,7 +371,7 @@
                                                 <input wire:model="shipping.state" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                             <div>
-                                                <label class="block text-xs font-bold text-gray-600 mb-1">Zip Code</label>
+                                                <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.zip_code') }}</label>
                                                 <input wire:model="shipping.postal_code" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
                                             </div>
                                         </div>
@@ -381,7 +381,7 @@
                     </div>
 
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-                        <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3">Delivery Method</h2>
+                        <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3">{{ __('store.delivery_method') }}</h2>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @foreach($shippingMethods as $method)
@@ -394,7 +394,7 @@
                                             <span class="text-sm font-bold text-gray-900">{{ $method->name }}</span>
                                             <span class="text-xs text-gray-500 flex items-center mt-0.5">
                                                 <svg class="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                {{ $method->estimated_days }} Days
+                                                {{ $method->estimated_days }} {{ __('store.days') }}
                                             </span>
                                         </div>
 
@@ -422,23 +422,23 @@
 
                         <div class="space-y-3 text-sm mb-6">
                             <div class="flex justify-between text-gray-600">
-                                <span>Subtotal</span>
+                                <span>{{ __('store.subtotal') }}</span>
                                 <span class="font-bold text-gray-900">{{$currencySymbol}}{{ number_format($subtotal, 2) }}</span>
                             </div>
                             @if($appliedCoupon)
                                 <div class="flex justify-between text-green-600">
                                     <span class="flex items-center">
-                                        Coupon <button wire:click="removeCoupon" class="ml-1 text-xs text-red-500 hover:underline">(x)</button>
+                                        {{ __('store.coupon') }} <button wire:click="removeCoupon" class="ml-1 text-xs text-red-500 hover:underline">(x)</button>
                                     </span>
                                     <span class="font-bold">-{{$currencySymbol}}{{ number_format($discountAmount, 2) }}</span>
                                 </div>
                             @endif
                             <div class="flex justify-between text-gray-600">
-                                <span>Shipping</span>
+                                <span>{{ __('store.shipping') }}</span>
                                 <span class="font-bold text-gray-900">{{$currencySymbol}}{{ number_format($shippingCost, 2) }}</span>
                             </div>
                             <div class="border-t border-dashed border-gray-300 pt-3 flex justify-between items-end">
-                                <span class="text-base font-bold text-gray-900">Total</span>
+                                <span class="text-base font-bold text-gray-900">{{ __('store.total') }}</span>
                                 <span class="text-xl font-extrabold text-primary">{{$currencySymbol}}{{ number_format($total, 2) }}</span>
                             </div>
                         </div>
@@ -451,23 +451,23 @@
                                             <p class="text-sm font-semibold text-green-800">{{ $appliedCoupon->code }}</p>
                                             <p class="text-xs text-green-700">
                                                 @if($appliedCoupon->type === 'free_shipping')
-                                                    Free shipping applied
+                                                    {{ __('store.free_shipping_applied') }}
                                                 @elseif($appliedCoupon->type === 'percentage')
-                                                    {{ $appliedCoupon->value }}% discount applied
+                                                    {{ $appliedCoupon->value }}% {{ __('store.discount_applied') }}
                                                 @else
-                                                    {{$currencySymbol}}{{ number_format($discountAmount, 2) }} discount applied
+                                                    {{$currencySymbol}}{{ number_format($discountAmount, 2) }} {{ __('store.discount_applied') }}
                                                 @endif
                                             </p>
                                         </div>
                                         <button wire:click="removeCoupon" type="button" class="text-xs font-semibold text-red-600 hover:text-red-700">
-                                            Remove
+                                            {{ __('store.remove') }}
                                         </button>
                                     </div>
                                 </div>
                             @endif
 
                             <div class="flex space-x-2">
-                                <input wire:model="couponCode" type="text" placeholder="Enter coupon code"
+                                <input wire:model="couponCode" type="text" placeholder="{{ __('store.enter_coupon_code') }}"
                                        class="flex-1 text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 uppercase placeholder-gray-400">
                                 <button wire:click="applyCoupon"
                                         class="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-black transition border border-gray-800 shadow-sm">
@@ -475,7 +475,7 @@
                                 </button>
                             </div>
                             @if(! $appliedCoupon)
-                                <p class="text-[11px] text-gray-500">{{ __('store.enter_discount_code_apply') ?? 'Enter a discount code and click Apply to update your total.' }}</p>
+                                <p class="text-[11px] text-gray-500">{{ __('store.enter_discount_code_apply') }}</p>
                             @endif
                             @error('coupon') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
                             @if(session('coupon_success')) <p class="text-green-600 text-xs mt-1 font-bold">{{ session('coupon_success') }}</p> @endif
@@ -496,9 +496,9 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                             </div>
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-green-700 transition-colors">
-                                                {{ $settings['cod_label'] ?: 'Cash on Delivery' }}
+                                                {{ $settings['cod_label'] ?: __('store.cash_on_delivery') }}
                                             </span>
-                                            <span class="text-[10px] text-gray-500">Pay when you receive</span>
+                                            <span class="text-[10px] text-gray-500">{{ __('store.pay_when_you_receive') }}</span>
                                         </div>
                                         <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition-colors text-gray-400">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -514,7 +514,7 @@
                                         <div class="flex flex-col items-start text-left">
                                             <img src="https://securepay.sslcommerz.com/public/image/sslcommerz.png" alt="SSLCommerz" class="h-5 mb-1 opacity-90 group-hover:opacity-100 transition-opacity">
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
-                                                {{ $settings['sslcommerz_label'] ?: 'Pay with SSLCommerz' }}
+                                                {{ $settings['sslcommerz_label'] ?: __('store.pay_with_sslcommerz') }}
                                             </span>
                                             <span class="text-[10px] text-gray-500">bKash / Cards / Banking</span>
                                         </div>
@@ -532,9 +532,9 @@
                                         <div class="flex flex-col items-start text-left">
                                             <svg class="h-5 mb-1 text-primary" viewBox="0 0 40 17" fill="currentColor"><path d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z"/></svg>
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
-                                                {{ $settings['stripe_label'] ?: 'Credit / Debit Card' }}
+                                                {{ $settings['stripe_label'] ?: __('store.credit_debit_card') }}
                                             </span>
-                                            <span class="text-[10px] text-gray-500">International</span>
+                                            <span class="text-[10px] text-gray-500">{{ __('store.international') }}</span>
                                         </div>
                                         <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-gray-400">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -552,7 +552,7 @@
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-pink-700 transition-colors">
                                                 bKash
                                             </span>
-                                            <span class="text-[10px] text-gray-500">bKash Wallet</span>
+                                            <span class="text-[10px] text-gray-500">{{ __('store.bkash_wallet') }}</span>
                                         </div>
                                         <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-pink-600 group-hover:text-white transition-colors text-gray-400">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -572,9 +572,9 @@
                                                 </svg>
                                             </div>
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
-                                                Offline Payment
+                                                {{ __('store.offline_payment') }}
                                             </span>
-                                            <span class="text-[10px] text-gray-500">Bank transfer / wallets</span>
+                                            <span class="text-[10px] text-gray-500">{{ __('store.bank_transfer_wallets') }}</span>
                                         </div>
                                         <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-gray-400">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -608,22 +608,22 @@
                                     $selectedMethod = $offlinePaymentMethods[$methodIndex] ?? null;
                                 @endphp
                                 @if($selectedMethod)
-                                    <div class="text-[11px] text-gray-600 bg-gray-50 border border-gray-200 rounded-lg p-3 whitespace-pre-line">{{ $selectedMethod['instructions'] ?? 'Follow the payment instructions and upload the proof.' }}</div>
+                                    <div class="text-[11px] text-gray-600 bg-gray-50 border border-gray-200 rounded-lg p-3 whitespace-pre-line">{{ $selectedMethod['instructions'] ?? __('store.follow_payment_instructions') }}</div>
                                 @endif
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-600">Reference (optional)</label>
-                                    <input type="text" wire:model.live="offlineReference" class="mt-1 block w-full border border-gray-300 rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" placeholder="Transaction ID or note">
+                                    <label class="block text-xs font-semibold text-gray-600">{{ __('store.reference_optional') }}</label>
+                                    <input type="text" wire:model.live="offlineReference" class="mt-1 block w-full border border-gray-300 rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" placeholder="{{ __('store.transaction_id_note') }}">
                                     @error('offlineReference') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-600">Upload Payment Proof (optional)</label>
+                                    <label class="block text-xs font-semibold text-gray-600">{{ __('store.upload_payment_proof_optional') }}</label>
                                     <input type="file" wire:model="offlineProof" class="mt-1 block w-full text-sm text-gray-600">
                                     @error('offlineProof') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     <p class="text-[11px] text-amber-700 mt-2 flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-md px-2 py-1">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86l-7.1 12.29A1.5 1.5 0 004.5 18h15a1.5 1.5 0 001.31-2.25l-7.1-12.29a1.5 1.5 0 00-2.62 0z"></path>
                                         </svg>
-                                        Provide at least one: reference or proof.
+                                        {{ __('store.provide_reference_or_proof') }}
                                     </p>
                                 </div>
                             </div>
@@ -647,7 +647,7 @@
                                 <input type="hidden" name="payer_reference" value="{{ $phone }}">
                                 <button type="submit"
                                         class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center">
-                                    Proceed to Payment
+                                    {{ __('store.proceed_to_payment') }}
                                 </button>
                             </form>
                         @endif
@@ -655,7 +655,7 @@
 
                         <div class="mt-4 flex justify-center items-center text-xs text-gray-400 gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                            <span>SSL Secure Checkout</span>
+                            <span>{{ __('store.ssl_secure_checkout') }}</span>
                         </div>
                     </div>
                 </div>
@@ -666,8 +666,8 @@
                 <div class="bg-gray-50 p-4 rounded-full mb-4">
                     <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
-                <a href="{{ route('store.index') }}" class="px-6 py-2 bg-primary text-white text-sm font-bold rounded hover:bg-primary transition">Start Shopping</a>
+                <h2 class="text-xl font-bold text-gray-900 mb-2">{{ __('store.your_cart_is_empty') }}</h2>
+                <a href="{{ route('store.index') }}" class="px-6 py-2 bg-primary text-white text-sm font-bold rounded hover:bg-primary transition">{{ __('store.start_shopping') }}</a>
             </div>
         @endif
 
@@ -679,7 +679,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Order Placed Successfully</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ __('store.order_placed_successfully') }}</h3>
                     <p class="text-gray-600 mb-6">{{ session('order_success') }}</p>
                     <div class="grid grid-cols-1 gap-3">
                         <a href="{{ route('store.index') }}" class="block w-full bg-primary text-white py-2 rounded-lg font-bold hover:bg-primary">{{ __('store.continue_shopping') }}</a>

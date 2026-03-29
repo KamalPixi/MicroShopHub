@@ -288,4 +288,12 @@ return [
     'shipped' => 'পাঠানো হয়েছে',
     'delivered' => 'ডেলিভারি হয়েছে',
     'cancelled' => 'বাতিল',
+    'pay_with_sslcommerz' => 'SSLCommerz দিয়ে পেমেন্ট করুন',
+    'transaction_id_note' => 'ট্রানজেকশন আইডি বা নোট',
+    'provide_reference_or_proof' => 'কমপক্ষে একটি দিন: রেফারেন্স বা প্রমাণ।',
+    'proceed_to_payment' => 'পেমেন্টে যান',
+    'ssl_secure_checkout' => 'SSL সিকিউর চেকআউট',
+    'your_cart_is_empty' => 'আপনার কার্ট খালি',
+    'start_shopping' => 'শপিং শুরু করুন',
+    'order_placed_successfully' => 'অর্ডার সফলভাবে সম্পন্ন হয়েছে',
 ];
