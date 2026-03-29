@@ -12,7 +12,7 @@
         @csrf
         <div>
             <h2 style="margin:0 0 6px;font-size:18px">Database credentials</h2>
-            <p class="muted small" style="margin:0">Enter the database details for this installation.</p>
+            <p class="muted small" style="margin:0">Enter the database details now. The installer will validate and use them during the final install step.</p>
         </div>
 
         <div class="grid grid-2">
@@ -44,7 +44,7 @@
 
         <div class="btn-row">
             <a class="btn btn-soft" href="{{ route('install.requirements') }}">Back</a>
-            <button class="btn btn-primary" type="submit">Test & Continue</button>
+            <button class="btn btn-primary" type="submit">Continue</button>
         </div>
     </form>
 @endsection

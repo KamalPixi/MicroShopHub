@@ -5,6 +5,18 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+if (! file_exists(__DIR__.'/../storage/app/installed.lock')) {
+    foreach ([
+        'SESSION_DRIVER' => 'file',
+        'CACHE_STORE' => 'file',
+        'QUEUE_CONNECTION' => 'sync',
+    ] as $key => $value) {
+        putenv("{$key}={$value}");
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
+    }
+}
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;

@@ -106,16 +106,6 @@ class InstallController extends Controller
             'prefix' => ['nullable', 'string', 'max:20'],
         ]);
 
-        $this->applyDatabaseConfig($data);
-
-        try {
-            DB::connection('mysql')->getPdo();
-        } catch (Throwable $e) {
-            return back()
-                ->withInput()
-                ->withErrors(['database' => 'Database connection failed: '.$e->getMessage()]);
-        }
-
         session(['installer.database' => $data]);
 
         return redirect()->route('install.settings');
@@ -227,18 +217,24 @@ class InstallController extends Controller
         $database = session('installer.database');
         $settings = session('installer.settings', $this->defaultSettings());
 
-        $this->applyDatabaseConfig($database);
-        $this->writeEnvFile($database, $settings);
+        try {
+            $this->applyDatabaseConfig($database);
+            $this->writeEnvFile($database, $settings);
 
-        Artisan::call('config:clear');
-        Artisan::call('cache:clear');
-        Artisan::call('migrate', ['--force' => true]);
-        Artisan::call('db:seed', ['--force' => true]);
-        if (empty(config('app.key'))) {
-            Artisan::call('key:generate', ['--force' => true]);
-        }
-        if (! is_link(public_path('storage')) && ! file_exists(public_path('storage'))) {
-            Artisan::call('storage:link');
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
+            Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('db:seed', ['--force' => true]);
+            if (empty(config('app.key'))) {
+                Artisan::call('key:generate', ['--force' => true]);
+            }
+            if (! is_link(public_path('storage')) && ! file_exists(public_path('storage'))) {
+                Artisan::call('storage:link');
+            }
+        } catch (Throwable $e) {
+            return redirect()->route('install.database')
+                ->withInput()
+                ->withErrors(['database' => 'Installation could not complete: '.$e->getMessage()]);
         }
 
         $this->persistSettings($settings);
