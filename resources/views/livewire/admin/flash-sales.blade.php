@@ -119,7 +119,7 @@
                         @forelse($products as $product)
                         <label class="cursor-pointer rounded-xl border p-3 transition {{ in_array($product->id, $selectedProductIds) ? 'border-primary ring-1 ring-primary/20 bg-primary/5' : 'border-gray-200 hover:border-primary/30' }}">
                                 <div class="flex items-start gap-3">
-                                    <input type="checkbox" wire:model="selectedProductIds" value="{{ $product->id }}" class="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                                    <input type="checkbox" wire:model.live="selectedProductIds" value="{{ $product->id }}" class="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2">
                                             <p class="truncate text-sm font-semibold text-gray-900">{{ $product->name }}</p>
