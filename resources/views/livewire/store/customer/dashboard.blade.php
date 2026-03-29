@@ -1,4 +1,4 @@
-<div class="bg-gradient-to-br from-gray-50 via-white to-gray-50 min-h-screen font-sans">
+<div class="bg-gradient-to-br from-gray-50 via-white to-gray-50 min-h-screen font-sans rounded-xl">
     @php
         $fieldClass = 'mt-1 w-full h-11 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 shadow-sm transition placeholder:text-gray-400 focus:border-primary focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10';
         $selectClass = 'mt-1 w-full h-11 appearance-none rounded-xl border border-gray-300 bg-white px-4 pr-10 text-sm text-gray-900 shadow-sm transition focus:border-primary focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10';
