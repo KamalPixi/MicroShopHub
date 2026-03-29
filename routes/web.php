@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +69,35 @@ Route::middleware('store.analytics')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
+        Route::get('/email/verify', function () {
+            return view('store.email-verification');
+        })->name('verification.notice');
+
+        Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+            $request->fulfill();
+
+            return redirect()->route('customer.dashboard')->with('message', 'Your email address has been verified.');
+        })->middleware(['signed'])->name('verification.verify');
+
+        Route::post('/email/verification-notification', function (Request $request) {
+            if ($request->user()->hasVerifiedEmail()) {
+                return back()->with('message', 'Your email is already verified.');
+            }
+
+            $cacheKey = 'customer-email-verification-sent:'.$request->user()->id;
+            $lastSentAt = Cache::get($cacheKey);
+
+            if ($lastSentAt && now()->diffInSeconds($lastSentAt) < 120) {
+                $wait = 120 - now()->diffInSeconds($lastSentAt);
+
+                return back()->with('message', 'Please wait '.$wait.' seconds before requesting another verification link.');
+            }
+
+            $request->user()->sendEmailVerificationNotification();
+            Cache::put($cacheKey, now(), now()->addMinutes(10));
+
+            return back()->with('message', 'Verification link sent to your email. If you do not receive it, you can request a new one after 2 minutes.');
+        })->middleware('throttle:6,1')->name('verification.send');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 });

@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Order;
 use App\Models\Address;
@@ -127,6 +128,29 @@ class Dashboard extends Component
         $this->avatar = null;
 
         session()->flash('profile_success', 'Profile updated successfully.');
+    }
+
+    public function sendVerificationEmail(): void
+    {
+        if ($this->user->hasVerifiedEmail()) {
+            session()->flash('message', 'Your email is already verified.');
+            return;
+        }
+
+        $cacheKey = 'customer-email-verification-sent:'.$this->user->id;
+        $lastSentAt = Cache::get($cacheKey);
+
+        if ($lastSentAt && now()->diffInSeconds($lastSentAt) < 120) {
+            $wait = 120 - now()->diffInSeconds($lastSentAt);
+
+            session()->flash('message', 'Please wait '.$wait.' seconds before requesting another verification link.');
+            return;
+        }
+
+        $this->user->sendEmailVerificationNotification();
+        Cache::put($cacheKey, now(), now()->addMinutes(10));
+
+        session()->flash('message', 'Verification link sent to your email. If you do not receive it, you can request a new one after 2 minutes.');
     }
 
     // --- Order Logic ---

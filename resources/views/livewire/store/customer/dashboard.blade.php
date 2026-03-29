@@ -30,6 +30,27 @@
                         </div>
                         <h2 class="font-bold text-gray-900 truncate w-full">{{ auth()->user()->name }}</h2>
                         <p class="text-xs text-gray-500 truncate w-full mb-2">{{ auth()->user()->email }}</p>
+                        <div class="mb-2 inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]
+                            {{ $user->hasVerifiedEmail() ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700' }}">
+                            {{ $user->hasVerifiedEmail() ? 'Verified' : 'Unverified' }}
+                        </div>
+                        @if(! $user->hasVerifiedEmail())
+                            <button type="button"
+                                    wire:click="sendVerificationEmail"
+                                    wire:loading.attr="disabled"
+                                    wire:target="sendVerificationEmail"
+                                    class="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-3 py-1 text-[11px] font-semibold text-amber-700 transition hover:border-amber-300 hover:bg-amber-50 disabled:cursor-wait disabled:opacity-80">
+                                <svg wire:loading.remove wire:target="sendVerificationEmail" class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8m-18 8l7.89-4.26a2 2 0 012.22 0L21 16"></path>
+                                </svg>
+                                <svg wire:loading wire:target="sendVerificationEmail" class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                                <span wire:loading.remove wire:target="sendVerificationEmail">Send verification link</span>
+                                <span wire:loading wire:target="sendVerificationEmail">Sending...</span>
+                            </button>
+                        @endif
                         <div class="mt-2 inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
                             Member since {{ auth()->user()->created_at?->format('M Y') }}
                         </div>
@@ -66,6 +87,37 @@
             </aside>
 
             <main class="flex-1 min-w-0">
+                @if(session('message'))
+                    <div class="mb-6 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 shadow-sm">
+                        {{ session('message') }}
+                    </div>
+                @endif
+
+                @if(! $user->hasVerifiedEmail())
+                    <div class="mb-6 rounded-2xl border border-amber-200 bg-amber-50/90 p-4 md:p-5 shadow-sm">
+                        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-600">Email not verified</p>
+                                <p class="mt-1 text-sm text-amber-900">Verify your email to keep your account secure and receive important order updates.</p>
+                            </div>
+                            <button type="button"
+                                    wire:click="sendVerificationEmail"
+                                    wire:loading.attr="disabled"
+                                    wire:target="sendVerificationEmail"
+                                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-amber-700 disabled:cursor-wait disabled:opacity-80">
+                                <svg wire:loading.remove wire:target="sendVerificationEmail" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8m-18 8l7.89-4.26a2 2 0 012.22 0L21 16"></path>
+                                </svg>
+                                <svg wire:loading wire:target="sendVerificationEmail" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                                <span wire:loading.remove wire:target="sendVerificationEmail">Send verification link</span>
+                                <span wire:loading wire:target="sendVerificationEmail">Sending...</span>
+                            </button>
+                        </div>
+                    </div>
+                @endif
                 
                 @if($activeTab === 'overview')
                     <div class="space-y-6 animate-fade-in">
@@ -108,6 +160,10 @@
                                 <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
                                     <p class="text-xs font-semibold text-gray-500 uppercase">Email</p>
                                     <p class="text-gray-700 mt-1">{{ $user->email }}</p>
+                                    <span class="mt-2 inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]
+                                        {{ $user->hasVerifiedEmail() ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700' }}">
+                                        {{ $user->hasVerifiedEmail() ? 'Verified' : 'Unverified' }}
+                                    </span>
                                 </div>
                                 <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4">
                                     <p class="text-xs font-semibold text-gray-500 uppercase">Phone</p>

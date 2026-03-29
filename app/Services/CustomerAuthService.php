@@ -89,10 +89,11 @@ class CustomerAuthService
             'name' => $name,
             'email' => strtolower(trim($email)),
             'password' => $password,
-            'email_verified_at' => now(),
+            'email_verified_at' => null,
         ]);
 
         Auth::login($user);
+        $user->sendEmailVerificationNotification();
 
         return $user;
     }
