@@ -50,7 +50,7 @@
                  onkeydown="if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('button, a, [wire\\:click]')) { event.preventDefault(); window.location='{{ route('store.product.show', $product->slug) }}'; }">
                 <div class="relative aspect-square overflow-hidden bg-gray-100">
                     @php
-                        $imageUrl = 'https://placehold.co/500x500?text=No+Image';
+                        $imageUrl = 'https://placehold.co/500x500?text=' . urlencode(__('store.no_image'));
                         if ($product->thumbnail) {
                             $imageUrl = \Illuminate\Support\Str::startsWith($product->thumbnail, ['http://', 'https://'])
                                 ? $product->thumbnail
@@ -85,7 +85,7 @@
                         @livewire('store.add-to-cart-button', ['productId' => $product->id], key('flash-sale-'.$product->id))
                     </div>
                     <p class="mt-1 text-xs font-semibold text-green-700">
-                        Save {{ $saleInfo['discount_percent'] }}%
+                        {{ __('store.save_percent', ['percent' => $saleInfo['discount_percent']]) }}
                     </p>
                 </div>
             </div>

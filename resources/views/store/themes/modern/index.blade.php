@@ -5,6 +5,12 @@
 
 @php
     $homepageSettings = $homepageSettings ?? [];
+    $heroTitle = ($homepageSettings['home_hero_title'] ?? '') === 'Find what fits your life'
+        ? __('store.hero_title_default')
+        : ($homepageSettings['home_hero_title'] ?? __('store.hero_title_default'));
+    $heroSubtitle = ($homepageSettings['home_hero_subtitle'] ?? '') === 'Curated products, fast delivery, and a storefront built for easy browsing.'
+        ? __('store.hero_subtitle_default')
+        : ($homepageSettings['home_hero_subtitle'] ?? __('store.hero_subtitle_default'));
     $newsletterTitle = ($homepageSettings['home_newsletter_title'] ?? '') === 'Stay Updated'
         ? __('store.stay_updated')
         : ($homepageSettings['home_newsletter_title'] ?? __('store.stay_updated'));
@@ -20,10 +26,10 @@
         <div class="px-5 py-5 lg:px-8 lg:py-6">
             <div class="mx-auto flex max-w-4xl flex-col items-center text-center">
                 <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 lg:text-4xl">
-                    {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
+                    {{ $heroTitle }}
                 </h1>
                 <p class="mt-2.5 max-w-2xl text-sm leading-5 text-gray-600 lg:text-sm">
-                    {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
+                    {{ $heroSubtitle }}
                 </p>
 
                 @if(!empty($homepageSettings['home_banner_chips'] ?? []))
@@ -56,7 +62,7 @@
                                 data-slide-index="{{ $index }}"
                                 class="absolute inset-0 block transition-opacity duration-700 ease-out {{ $index === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }}"
                             >
-                                <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? 'Homepage banner' }}" class="h-full w-full object-cover">
+                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? __('store.homepage_banner') }}" class="h-full w-full object-cover">
                             </a>
                         @endforeach
 
@@ -103,10 +109,10 @@
 
             <div class="flex flex-col justify-center gap-3">
                 <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 lg:text-[2.35rem]">
-                    {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
+                    {{ $heroTitle }}
                 </h1>
                 <p class="text-sm leading-5 text-gray-600 lg:text-sm">
-                    {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
+                    {{ $heroSubtitle }}
                 </p>
 
                 @if(!empty($homepageSettings['home_banner_chips'] ?? []))
@@ -137,7 +143,7 @@
                         data-slide-index="{{ $index }}"
                         class="absolute inset-0 block transition-opacity duration-700 ease-out {{ $index === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }}"
                     >
-                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? 'Homepage banner' }}" class="h-full w-full object-cover">
+                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? __('store.homepage_banner') }}" class="h-full w-full object-cover">
                     </a>
                 @endforeach
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950/25 via-transparent to-transparent pointer-events-none"></div>
@@ -156,10 +162,10 @@
 
             <div class="mx-auto flex max-w-4xl flex-col items-center text-center">
                 <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">
-                    {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
+                    {{ $heroTitle }}
                 </h1>
                 <p class="mt-2.5 text-sm leading-5 text-gray-600">
-                    {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
+                    {{ $heroSubtitle }}
                 </p>
 
                 @if(!empty($homepageSettings['home_banner_chips'] ?? []))

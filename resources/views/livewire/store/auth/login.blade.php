@@ -1,8 +1,5 @@
 <div class="bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div class="mx-auto h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary text-xl font-bold mb-4">
-            S
-        </div>
         <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">{{ __('store.customer_login') }}</h2>
         <p class="mt-2 text-sm text-gray-600">{{ __('store.customer_login_intro') }}</p>
     </div>

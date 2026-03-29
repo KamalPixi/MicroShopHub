@@ -5,6 +5,12 @@
 
 @php
     $homepageSettings = $homepageSettings ?? [];
+    $heroTitle = ($homepageSettings['home_hero_title'] ?? '') === 'Find what fits your life'
+        ? __('store.hero_title_default')
+        : ($homepageSettings['home_hero_title'] ?? __('store.hero_title_default'));
+    $heroSubtitle = ($homepageSettings['home_hero_subtitle'] ?? '') === 'Curated products, fast delivery, and a storefront built for easy browsing.'
+        ? __('store.hero_subtitle_default')
+        : ($homepageSettings['home_hero_subtitle'] ?? __('store.hero_subtitle_default'));
     $newsletterTitle = ($homepageSettings['home_newsletter_title'] ?? '') === 'Stay Updated'
         ? __('store.stay_updated')
         : ($homepageSettings['home_newsletter_title'] ?? __('store.stay_updated'));
@@ -28,10 +34,10 @@
         <div class="relative z-10 grid gap-3 px-6 py-6 md:grid-cols-[1.15fr_0.85fr] md:px-10 md:py-8">
             <div class="flex flex-col justify-center">
                 <h1 class="text-2xl md:text-4xl font-extrabold leading-tight tracking-tight">
-                    {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
+                    {{ $heroTitle }}
                 </h1>
                 <p class="mt-2 max-w-3xl text-sm md:text-base leading-5 text-white/82">
-                    {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
+                    {{ $heroSubtitle }}
                 </p>
 
                 <div class="mt-4 flex flex-wrap items-center gap-3">
@@ -92,7 +98,7 @@
                         data-slide-index="{{ $index }}"
                         class="absolute inset-0 block transition-opacity duration-700 ease-out {{ $index === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }}"
                     >
-                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? 'Homepage banner' }}" class="h-full w-full object-cover">
+                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? __('store.homepage_banner') }}" class="h-full w-full object-cover">
                     </a>
                 @endforeach
 
@@ -130,10 +136,10 @@
 
             <div class="flex flex-col justify-center md:pl-2">
                 <h1 class="text-2xl md:text-[1.7rem] font-extrabold leading-tight tracking-tight">
-                    {{ $homepageSettings['home_hero_title'] ?? 'Find what fits your life' }}
+                    {{ $heroTitle }}
                 </h1>
                 <p class="mt-2 max-w-2xl text-sm md:text-[0.85rem] leading-5 text-white/82">
-                    {{ $homepageSettings['home_hero_subtitle'] ?? 'Curated products, fast delivery, and a storefront built for easy browsing.' }}
+                    {{ $heroSubtitle }}
                 </p>
 
                 <div class="mt-3.5 flex flex-wrap items-center gap-3">
@@ -167,7 +173,7 @@
                         data-slide-index="{{ $index }}"
                         class="absolute inset-0 block transition-opacity duration-700 ease-out {{ $index === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }}"
                     >
-                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? 'Homepage banner' }}" class="h-full w-full object-cover">
+                        <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? __('store.homepage_banner') }}" class="h-full w-full object-cover">
                     </a>
                 @endforeach
 

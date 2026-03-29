@@ -38,7 +38,7 @@
                         
                         <div class="block aspect-square rounded-lg mb-3 overflow-hidden bg-gray-100 relative">
                             @php
-                                $imageUrl = 'https://placehold.co/500x500?text=No+Image';
+                                $imageUrl = 'https://placehold.co/500x500?text=' . urlencode(__('store.no_image'));
                                 if ($product->thumbnail) {
                                     if (Str::startsWith($product->thumbnail, ['http://', 'https://'])) {
                                         $imageUrl = $product->thumbnail;
