@@ -48,17 +48,17 @@
 
                     <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
                         @foreach ($templateOptions as $key => $template)
-                            <label class="cursor-pointer rounded-2xl border p-4 transition h-full {{ $template_key === $key ? 'border-black bg-white ring-1 ring-black/10' : 'border-gray-200 bg-white hover:border-gray-300' }}">
-                                <div class="flex h-full items-start gap-3">
+                            <label class="cursor-pointer rounded-2xl border p-3.5 transition h-full {{ $template_key === $key ? 'border-black bg-white ring-1 ring-black/10' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                                <div class="flex h-full items-start gap-2.5">
                                     <input type="radio" wire:model.live="template_key" value="{{ $key }}" class="mt-1 h-4 w-4 border-gray-300 text-black focus:ring-black">
                                     <div class="min-w-0 flex-1">
                                         <div class="flex flex-wrap items-center gap-2">
-                                            <span class="text-sm font-semibold text-gray-900">{{ $template['name'] }}</span>
+                                            <span class="text-[13px] font-semibold text-gray-900">{{ $template['name'] }}</span>
                                             @if($template_key === $key)
                                                 <span class="rounded-full bg-black px-2 py-0.5 text-[10px] font-semibold text-white">Active</span>
                                             @endif
                                         </div>
-                                        <p class="mt-1 text-xs leading-5 text-gray-500">{{ $template['description'] }}</p>
+                                        <p class="mt-1 text-[11px] leading-4 text-gray-500">{{ $template['description'] }}</p>
                                     </div>
                                 </div>
                             </label>
