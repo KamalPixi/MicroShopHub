@@ -167,7 +167,10 @@
                         </td>
                         <td class="p-2">{{ $displaySymbol }}{{ number_format($order->total, 2) }}</td>
                         <td class="p-2">{{ $displaySymbol }}{{ number_format($order->shipping_cost, 2) }}</td>
-                        <td class="p-2">{{ $order->created_at->format('Y-m-d H:i') }}</td>
+                        <td class="p-2">
+                            <div class="text-xs font-medium text-gray-800 leading-tight">{{ $order->created_at?->diffForHumans() }}</div>
+                            <div class="text-[11px] text-gray-500 leading-tight">{{ $order->created_at?->format('M d, Y h:i A') }}</div>
+                        </td>
                         <td class="p-2 text-end space-x-2" onclick="event.stopPropagation()">
                             <!-- View -->
                             <a href="{{ route('admin.orders.show', ['order' => $order->id]) }}" class="admin-action-btn admin-action-view" title="View">
