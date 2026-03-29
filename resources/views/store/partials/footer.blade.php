@@ -16,16 +16,16 @@
         ? $footerSettings['footer_policy_title']
         : __('store.policies');
     $quickLinks = [
-        ['label' => $footerSettings['footer_link_1_label'] ?? __('store.about_us'), 'url' => $footerSettings['footer_link_1_url'] ?? '/about'],
-        ['label' => $footerSettings['footer_link_2_label'] ?? __('store.contact_us'), 'url' => $footerSettings['footer_link_2_url'] ?? '/contact'],
-        ['label' => $footerSettings['footer_link_3_label'] ?? __('store.faq'), 'url' => $footerSettings['footer_link_3_url'] ?? '/faq'],
-        ['label' => $footerSettings['footer_link_4_label'] ?? __('store.shipping_info'), 'url' => $footerSettings['footer_link_4_url'] ?? '/shipping'],
+        ['label' => !empty($footerSettings['footer_link_1_label']) && $footerSettings['footer_link_1_label'] !== 'About Us' ? $footerSettings['footer_link_1_label'] : __('store.about_us'), 'url' => $footerSettings['footer_link_1_url'] ?? '/about'],
+        ['label' => !empty($footerSettings['footer_link_2_label']) && $footerSettings['footer_link_2_label'] !== 'Contact' ? $footerSettings['footer_link_2_label'] : __('store.contact_us'), 'url' => $footerSettings['footer_link_2_url'] ?? '/contact'],
+        ['label' => !empty($footerSettings['footer_link_3_label']) && $footerSettings['footer_link_3_label'] !== 'FAQ' ? $footerSettings['footer_link_3_label'] : __('store.faq'), 'url' => $footerSettings['footer_link_3_url'] ?? '/faq'],
+        ['label' => !empty($footerSettings['footer_link_4_label']) && $footerSettings['footer_link_4_label'] !== 'Shipping Info' ? $footerSettings['footer_link_4_label'] : __('store.shipping_info'), 'url' => $footerSettings['footer_link_4_url'] ?? '/shipping'],
     ];
     $policyLinks = [
-        ['label' => $footerSettings['footer_policy_1_label'] ?? __('store.privacy_policy'), 'url' => $footerSettings['footer_policy_1_url'] ?? '/privacy-policy'],
-        ['label' => $footerSettings['footer_policy_2_label'] ?? __('store.terms_of_service'), 'url' => $footerSettings['footer_policy_2_url'] ?? '/terms'],
-        ['label' => $footerSettings['footer_policy_3_label'] ?? __('store.cookie_policy'), 'url' => $footerSettings['footer_policy_3_url'] ?? '/cookie-policy'],
-        ['label' => $footerSettings['footer_policy_4_label'] ?? __('store.refund_policy'), 'url' => $footerSettings['footer_policy_4_url'] ?? '/refund-policy'],
+        ['label' => !empty($footerSettings['footer_policy_1_label']) && $footerSettings['footer_policy_1_label'] !== 'Privacy Policy' ? $footerSettings['footer_policy_1_label'] : __('store.privacy_policy'), 'url' => $footerSettings['footer_policy_1_url'] ?? '/privacy-policy'],
+        ['label' => !empty($footerSettings['footer_policy_2_label']) && $footerSettings['footer_policy_2_label'] !== 'Terms of Service' ? $footerSettings['footer_policy_2_label'] : __('store.terms_of_service'), 'url' => $footerSettings['footer_policy_2_url'] ?? '/terms'],
+        ['label' => !empty($footerSettings['footer_policy_3_label']) && $footerSettings['footer_policy_3_label'] !== 'Cookie Policy' ? $footerSettings['footer_policy_3_label'] : __('store.cookie_policy'), 'url' => $footerSettings['footer_policy_3_url'] ?? '/cookie-policy'],
+        ['label' => !empty($footerSettings['footer_policy_4_label']) && $footerSettings['footer_policy_4_label'] !== 'Refund Policy' ? $footerSettings['footer_policy_4_label'] : __('store.refund_policy'), 'url' => $footerSettings['footer_policy_4_url'] ?? '/refund-policy'],
     ];
     $normalizeSocialUrl = function (?string $url): string {
         $url = trim((string) $url);
