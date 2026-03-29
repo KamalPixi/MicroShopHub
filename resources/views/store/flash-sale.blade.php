@@ -13,7 +13,12 @@
         <section class="mb-8 rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/10 via-white to-primary/5 p-5 md:p-6 shadow-sm">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div class="space-y-1">
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary/80">Flash Sale</p>
+                    <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary/90">
+                        <svg class="h-3.5 w-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.5 2.25 4.5 14.25H11l-1.5 7.5 9-12H12l1.5-7.5Z"></path>
+                        </svg>
+                        <span>Flash Sale</span>
+                    </div>
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                         <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 md:text-3xl">
                             {{ $activeFlashSale->title }}
@@ -98,7 +103,12 @@
         </section>
     @else
         <section class="rounded-3xl border border-dashed border-gray-300 bg-white p-10 text-center shadow-sm">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary/80">Flash Sale</p>
+            <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary/90">
+                <svg class="h-3.5 w-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.5 2.25 4.5 14.25H11l-1.5 7.5 9-12H12l1.5-7.5Z"></path>
+                </svg>
+                <span>Flash Sale</span>
+            </div>
             <h1 class="mt-2 text-2xl font-extrabold text-gray-900">No active flash sale right now</h1>
             <p class="mx-auto mt-2 max-w-xl text-sm text-gray-600">
                 Check back later for limited-time deals and special product offers.
