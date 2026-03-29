@@ -221,7 +221,7 @@
                                                     <div class="text-xs text-gray-600 leading-snug">
                                                         <p class="font-bold text-gray-900 truncate mb-0.5">{{ $addr->name }}</p>
                                                         <p class="truncate text-gray-500">{{ $addr->address_line1 }}</p>
-                                                        <p class="text-[10px] text-gray-400 mt-0.5">{{ $addr->city }}, {{ $addr->country_code }}</p>
+                                                        <p class="text-[10px] text-gray-400 mt-0.5">{{ $addr->city }}, {{ $addr->country_label }}</p>
                                                     </div>
                                                 </div>
                                             @endforeach

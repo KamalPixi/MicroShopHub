@@ -498,13 +498,16 @@
                 <div class="flex flex-wrap gap-2 mb-4">
                     @foreach($countries as $country)
                         <span class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-700">
-                            {{ $country->name }} ({{ $country->code }})
-                            <button type="button" wire:click="removeCountry('{{ $country->code }}')" class="text-red-500 hover:text-red-700">x</button>
+                            <span class="{{ $country->active ? 'text-gray-700' : 'text-gray-400 line-through' }}">
+                                {{ $country->name }} ({{ $country->code }})
+                            </span>
+                            <button type="button" wire:click="startCountryEdit('{{ $country->code }}')" class="text-gray-500 hover:text-gray-700" title="Edit">✎</button>
+                            <button type="button" wire:click="removeCountry('{{ $country->code }}')" class="text-red-500 hover:text-red-700" title="Delete">x</button>
                         </span>
                     @endforeach
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-gray-700">Country Code</label>
                         <input wire:model="newCountry.code" type="text" maxlength="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm uppercase" placeholder="AE">
@@ -516,11 +519,56 @@
                         @error('newCountry.name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div class="flex items-end">
+                        <label class="inline-flex items-center justify-between gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 w-full">
+                            <span>Active</span>
+                            <input wire:model="newCountry.active" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                        </label>
+                    </div>
+                    <div class="flex items-end">
                         <button wire:click="addCountry" type="button" class="w-full bg-secondary text-white rounded-lg px-3 py-2 text-sm font-semibold hover:bg-secondary">
                             Add Country
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <div class="mt-5 rounded-lg border border-dashed border-gray-300 p-4 bg-gray-50">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h5 class="text-sm font-bold text-gray-800">Edit Country</h5>
+                        <p class="text-xs text-gray-500 mt-1">Update the display name or active status. Country code stays fixed to protect saved addresses.</p>
+                    </div>
+                    @if($editingCountryCode)
+                        <button type="button" wire:click="cancelCountryEdit" class="text-xs font-semibold text-gray-500 hover:text-gray-700">Cancel edit</button>
+                    @endif
+                </div>
+
+                @if($editingCountryCode)
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700">Country Code</label>
+                            <input type="text" value="{{ $editingCountryCode }}" disabled class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-100 text-gray-500 uppercase">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700">Country Name</label>
+                            <input wire:model="editingCountry.name" type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            @error('editingCountry.name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="flex items-end">
+                            <label class="inline-flex items-center justify-between gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 w-full">
+                                <span>Active</span>
+                                <input wire:model="editingCountry.active" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                            </label>
+                        </div>
+                        <div class="flex items-end">
+                            <button wire:click="updateCountry" type="button" class="w-full bg-primary text-white rounded-lg px-3 py-2 text-sm font-semibold hover:bg-primary">
+                                Save Country
+                            </button>
+                        </div>
+                    </div>
+                @else
+                    <div class="mt-3 text-xs text-gray-500">Select a country above to edit it.</div>
+                @endif
             </div>
 
             <div class="mt-5 flex items-center justify-end gap-3">

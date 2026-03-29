@@ -132,7 +132,7 @@
                                 {{ $customer->defaultAddress->address_line2 ? ', '.$customer->defaultAddress->address_line2 : '' }}
                                 {{ $customer->defaultAddress->city ? ', '.$customer->defaultAddress->city : '' }}
                                 {{ $customer->defaultAddress->postal_code ? ', '.$customer->defaultAddress->postal_code : '' }}
-                                {{ $customer->defaultAddress->country ? ', '.$customer->defaultAddress->country : '' }}
+                                {{ $customer->defaultAddress->country_label ? ', '.$customer->defaultAddress->country_label : '' }}
                             @else
                                 No address
                             @endif

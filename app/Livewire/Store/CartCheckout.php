@@ -142,7 +142,7 @@ class CartCheckout extends Component
             $this->selectedShippingMethod = $this->shippingMethods->first()->id;
         }
 
-        $defaultCountry = $this->supportedCountries[0]['code'] ?? 'BD';
+        $defaultCountry = $this->getDefaultCountryCode();
         if (empty($this->billing['country_code'])) {
             $this->billing['country_code'] = $defaultCountry;
         }
@@ -749,7 +749,7 @@ class CartCheckout extends Component
 
     public function clearAddressSelection(): void
     {
-        $defaultCountry = $this->supportedCountries[0]['code'] ?? 'BD';
+        $defaultCountry = $this->getDefaultCountryCode();
 
         $this->selectedAddressId = 'new';
         $this->billing = [
@@ -760,6 +760,17 @@ class CartCheckout extends Component
             'state' => '',
             'postal_code' => '',
         ];
+    }
+
+    protected function getDefaultCountryCode(): string
+    {
+        $codes = collect($this->supportedCountries)->pluck('code')->all();
+
+        if (in_array('BD', $codes, true)) {
+            return 'BD';
+        }
+
+        return $codes[0] ?? 'BD';
     }
 
     public function render()

@@ -16,7 +16,7 @@ class Address extends Model
         'city', 
         'state', 
         'postal_code', 
-        'country',
+        'country_code',
         'is_default'
     ];
 
@@ -26,5 +26,28 @@ class Address extends Model
     public function addressable()
     {
         return $this->morphTo();
+    }
+
+    public function getCountryLabelAttribute(): string
+    {
+        static $cache = [];
+
+        $value = trim((string) ($this->country_code ?? $this->country ?? ''));
+
+        if ($value === '') {
+            return '';
+        }
+
+        if (strlen($value) === 2) {
+            $code = strtoupper($value);
+
+            if (! array_key_exists($code, $cache)) {
+                $cache[$code] = Country::query()->where('code', $code)->value('name') ?: $value;
+            }
+
+            return $cache[$code];
+        }
+
+        return $value;
     }
 }

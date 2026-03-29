@@ -54,7 +54,7 @@
                                 {{ $address->city ? ', '.$address->city : '' }}
                                 {{ $address->state ? ', '.$address->state : '' }}
                                 {{ $address->postal_code ? ', '.$address->postal_code : '' }}
-                                {{ $address->country ? ', '.$address->country : '' }}
+                                {{ $address->country_label ? ', '.$address->country_label : '' }}
                             </div>
                         </div>
                     @empty

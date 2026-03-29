@@ -108,6 +108,13 @@ class Settings extends Component
     public $newCountry = [
         'code' => '',
         'name' => '',
+        'active' => true,
+    ];
+
+    public ?string $editingCountryCode = null;
+    public array $editingCountry = [
+        'name' => '',
+        'active' => true,
     ];
 
     public $logo;
@@ -230,12 +237,13 @@ class Settings extends Component
         $validated = $this->validate([
             'newCountry.code' => 'required|string|size:2|alpha|unique:countries,code',
             'newCountry.name' => 'required|string|max:120',
+            'newCountry.active' => 'boolean',
         ]);
 
         Country::query()->create([
             'code' => $validated['newCountry']['code'],
             'name' => $validated['newCountry']['name'],
-            'active' => true,
+            'active' => (bool) ($validated['newCountry']['active'] ?? true),
         ]);
 
         $this->countries = Country::query()->orderBy('name')->get();
@@ -243,15 +251,64 @@ class Settings extends Component
         $this->newCountry = [
             'code' => '',
             'name' => '',
+            'active' => true,
         ];
 
         session()->flash('message', 'Country added successfully.');
+    }
+
+    public function startCountryEdit(string $code): void
+    {
+        $country = Country::query()->where('code', strtoupper($code))->firstOrFail();
+
+        $this->editingCountryCode = $country->code;
+        $this->editingCountry = [
+            'name' => $country->name,
+            'active' => (bool) $country->active,
+        ];
+    }
+
+    public function updateCountry(): void
+    {
+        if (! $this->editingCountryCode) {
+            return;
+        }
+
+        $validated = $this->validate([
+            'editingCountry.name' => 'required|string|max:120',
+            'editingCountry.active' => 'boolean',
+        ]);
+
+        Country::query()
+            ->where('code', $this->editingCountryCode)
+            ->update([
+                'name' => $validated['editingCountry']['name'],
+                'active' => (bool) ($validated['editingCountry']['active'] ?? true),
+            ]);
+
+        $this->countries = Country::query()->orderBy('name')->get();
+        $this->cancelCountryEdit();
+
+        session()->flash('message', 'Country updated successfully.');
+    }
+
+    public function cancelCountryEdit(): void
+    {
+        $this->editingCountryCode = null;
+        $this->editingCountry = [
+            'name' => '',
+            'active' => true,
+        ];
     }
 
     public function removeCountry(string $code)
     {
         Country::query()->where('code', strtoupper($code))->delete();
         $this->countries = Country::query()->orderBy('name')->get();
+
+        if ($this->editingCountryCode === strtoupper($code)) {
+            $this->cancelCountryEdit();
+        }
     }
 
     public function addCurrency()

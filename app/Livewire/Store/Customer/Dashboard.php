@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Order;
 use App\Models\Address;
 use App\Models\Currency;
+use App\Models\Country;
 
 class Dashboard extends Component
 {
@@ -39,6 +40,7 @@ class Dashboard extends Component
     public $currencyCode = 'BDT';
     public $showAddressForm = false;
     public array $addressTypeOptions = [];
+    public array $supportedCountries = [];
     public $newAddress = [
         'type' => 'home',
         'name' => '',
@@ -48,7 +50,7 @@ class Dashboard extends Component
         'city' => '',
         'state' => '',
         'postal_code' => '',
-        'country' => '',
+        'country' => 'BD',
         'is_default' => false,
     ];
 
@@ -72,6 +74,15 @@ class Dashboard extends Component
         $this->currencySymbol = $currency?->symbol ?? '$';
         $this->currencyCode = $currency?->code ?? 'BDT';
         $this->addressTypeOptions = $this->getAddressTypeOptions();
+        $this->supportedCountries = Country::query()
+            ->where('active', true)
+            ->orderBy('name')
+            ->get(['code', 'name'])
+            ->map(fn ($country) => ['code' => $country->code, 'name' => $country->name])
+            ->values()
+            ->all();
+
+        $this->newAddress['country'] = $this->getDefaultCountryCode();
     }
 
     // --- Tab Switching ---
@@ -232,7 +243,7 @@ class Dashboard extends Component
             'newAddress.city' => 'required|string|max:100',
             'newAddress.state' => 'nullable|string|max:100',
             'newAddress.postal_code' => 'nullable|string|max:30',
-            'newAddress.country' => 'nullable|string|max:100',
+            'newAddress.country' => 'required|string|exists:countries,code',
             'newAddress.is_default' => 'boolean',
         ]);
 
@@ -240,7 +251,11 @@ class Dashboard extends Component
             $this->user->addresses()->update(['is_default' => false]);
         }
 
-        $this->user->addresses()->create($validated['newAddress']);
+        $addressData = $validated['newAddress'];
+        $addressData['country_code'] = $addressData['country'];
+        unset($addressData['country']);
+
+        $this->user->addresses()->create($addressData);
 
         $this->newAddress = [
             'type' => 'home',
@@ -251,11 +266,22 @@ class Dashboard extends Component
             'city' => '',
             'state' => '',
             'postal_code' => '',
-            'country' => '',
+            'country' => $this->getDefaultCountryCode(),
             'is_default' => false,
         ];
         $this->showAddressForm = false;
         session()->flash('address_success', __('store.address_added'));
+    }
+
+    public function getDefaultCountryCode(): string
+    {
+        $codes = collect($this->supportedCountries)->pluck('code')->all();
+
+        if (in_array('BD', $codes, true)) {
+            return 'BD';
+        }
+
+        return $codes[0] ?? 'BD';
     }
 
     public function getAddressTypeOptions(): array

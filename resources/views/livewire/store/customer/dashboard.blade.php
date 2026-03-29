@@ -508,7 +508,18 @@
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-600">{{ __('store.country') }}</label>
-                                        <input wire:model="newAddress.country" type="text" class="{{ $fieldClass }}">
+                                        <div class="relative">
+                                            <select wire:model="newAddress.country" class="{{ $selectClass }}">
+                                                @foreach($supportedCountries as $country)
+                                                    <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
                                         @error('newAddress.country') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                                     </div>
                                     <div class="flex items-center gap-2 mt-2 md:pt-4">
@@ -534,8 +545,8 @@
                                         <p class="text-sm text-gray-600">{{ $addr->address_line2 }}</p>
                                     @endif
                                     <p class="text-sm text-gray-600">{{ $addr->city }}, {{ $addr->state }} {{ $addr->postal_code }}</p>
-                                    @if($addr->country)
-                                        <p class="text-sm text-gray-600">{{ $addr->country }}</p>
+                                    @if($addr->country_label)
+                                        <p class="text-sm text-gray-600">{{ $addr->country_label }}</p>
                                     @endif
                                 </div>
                             @empty
