@@ -5,12 +5,20 @@
 
 @if($flashSale && $saleProducts->count() > 0)
 <section class="mb-8 rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/10 via-white to-primary/5 p-5 md:p-6 shadow-sm">
-    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div class="space-y-1">
             <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary/80">Flash Sale</p>
-            <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-gray-900 md:text-3xl">
-                {{ $flashSale->title }}
-            </h2>
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 md:text-3xl">
+                    {{ $flashSale->title }}
+                </h2>
+                @if($saleEndsAt)
+                    <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-3 py-1.5 shadow-sm">
+                        <span class="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">Ends in</span>
+                        <span class="text-sm font-extrabold text-primary" data-flash-sale-countdown="{{ $saleEndsAt }}">Loading…</span>
+                    </div>
+                @endif
+            </div>
             @if($flashSale->subtitle)
                 <p class="mt-1 text-sm text-gray-600">{{ $flashSale->subtitle }}</p>
             @endif
@@ -19,19 +27,18 @@
             @endif
         </div>
 
-        @if($saleEndsAt)
-            <div class="rounded-2xl border border-primary/20 bg-white px-4 py-3 shadow-sm">
-                <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-500">Ends in</p>
-                <div class="mt-1 text-lg font-extrabold text-primary" data-flash-sale-countdown="{{ $saleEndsAt }}">Loading…</div>
-            </div>
-        @endif
+        <div class="flex items-start gap-2">
+            <a href="{{ route('store.flash-sale') }}" class="inline-flex items-center rounded-full border border-primary/20 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm transition hover:bg-primary hover:text-white">
+                View All
+            </a>
+        </div>
     </div>
 
-    <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-5 flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar">
         @foreach($saleProducts as $product)
             @php $saleInfo = $flashSaleMap[$product->id] ?? null; @endphp
             @continue(empty($saleInfo))
-            <div class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md cursor-pointer"
+            <div class="group flex-none w-[220px] sm:w-[240px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md cursor-pointer snap-start"
                  role="link"
                  tabindex="0"
                  onclick="if (!event.target.closest('button, a, [wire\\:click]')) window.location='{{ route('store.product.show', $product->slug) }}'"

@@ -41,6 +41,7 @@ use App\Http\Controllers\Admin\UserController;
 Route::middleware('store.analytics')->name('store.')->group(function () {
     Route::get('/', [StoreController::class, 'index'])->name('index');
     Route::get('/search', [StoreController::class, 'search'])->name('search');
+    Route::get('/flash-sale', [StoreController::class, 'flashSale'])->name('flash-sale');
     Route::get('/product/{slug}', [StoreController::class, 'show'])->name('product.show');
     Route::get('/about', [StoreController::class, 'about'])->name('about');
     Route::get('/faq', [StoreController::class, 'faq'])->name('faq');

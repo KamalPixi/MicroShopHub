@@ -188,6 +188,15 @@ class StoreController extends Controller
         return view('store.search', compact('products', 'categories', 'query', 'categoryId', 'minPrice', 'maxPrice', 'sort', 'activeFlashSale', 'flashSaleMap'));
     }
 
+    public function flashSale()
+    {
+        $flashSaleService = app(FlashSaleService::class);
+        $activeFlashSale = $flashSaleService->currentSale();
+        $flashSaleMap = $activeFlashSale ? $flashSaleService->productMap($activeFlashSale) : [];
+
+        return view('store.flash-sale', compact('activeFlashSale', 'flashSaleMap'));
+    }
+
     /**
      * Resolve a category and all descendant category IDs for storefront filtering.
      */
@@ -271,6 +280,7 @@ class StoreController extends Controller
             ['loc' => $baseUrl . '/about', 'changefreq' => 'monthly', 'priority' => '0.6'],
             ['loc' => $baseUrl . '/faq', 'changefreq' => 'monthly', 'priority' => '0.5'],
             ['loc' => $baseUrl . '/contact', 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => $baseUrl . '/flash-sale', 'changefreq' => 'daily', 'priority' => '0.7'],
             ['loc' => $baseUrl . '/privacy-policy', 'changefreq' => 'yearly', 'priority' => '0.3'],
             ['loc' => $baseUrl . '/terms', 'changefreq' => 'yearly', 'priority' => '0.3'],
             ['loc' => $baseUrl . '/refund-policy', 'changefreq' => 'yearly', 'priority' => '0.3'],
