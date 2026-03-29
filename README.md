@@ -1,1 +1,1 @@
-E-Commerce Laravel System.
+SlimCart | Lightweight & Breathable eCommerce Laravel System

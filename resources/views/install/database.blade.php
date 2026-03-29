@@ -1,20 +1,8 @@
 @extends('install.layout')
 
 @section('content')
-    @php($progress = 50)
-    <div class="progress-shell">
-        <div class="progress-top">
-            <div>
-                <div class="progress-meta">Step 2 of 4</div>
-                <div class="small" style="font-weight:700;color:#111827">Database Setup</div>
-            </div>
-            <div class="progress-meta">50%</div>
-        </div>
-        <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
-    </div>
-
     <div class="stepbar">
-        <span class="step">1. Requirements</span>
+        <span class="step done">1. Requirements</span>
         <span class="step active">2. Database</span>
         <span class="step">3. Settings</span>
         <span class="step">4. Finish</span>
