@@ -18,9 +18,8 @@ class StoreLocale
             'store_language_bn_enabled',
         ])->pluck('value', 'key');
 
-        $defaultLocale = in_array(($settings['store_default_locale'] ?? 'en'), ['en', 'bn'], true)
-            ? $settings['store_default_locale']
-            : 'en';
+        $defaultLocale = $settings['store_default_locale'] ?? 'en';
+        $defaultLocale = in_array($defaultLocale, ['en', 'bn'], true) ? $defaultLocale : 'en';
 
         $availableLocales = [
             'en' => [
