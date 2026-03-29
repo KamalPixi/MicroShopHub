@@ -21,6 +21,7 @@ class Admin extends Authenticatable implements CanResetPassword
         'email',
         'password',
         'role',
+        'role_id',
         'permissions',
     ];
 
@@ -29,35 +30,60 @@ class Admin extends Authenticatable implements CanResetPassword
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role_id' => 'integer',
             'permissions' => 'array',
         ];
     }
 
     public function hasPermission(string $permission): bool
     {
-        if ($this->role === 'super_admin') {
+        if ($this->roleSlug() === 'super_admin') {
             return true;
         }
 
-        if (is_null($this->getRawOriginal('permissions'))) {
-            return in_array($permission, $this->defaultPermissions(), true);
+        if ($this->adminRole) {
+            return $this->adminRole->hasPermission($permission);
         }
 
-        return in_array($permission, $this->permissions ?? [], true);
+        return in_array($permission, $this->defaultPermissions(), true);
     }
 
     public function effectivePermissions(): array
     {
-        if (is_null($this->getRawOriginal('permissions'))) {
-            return $this->defaultPermissions();
+        if ($this->adminRole) {
+            return $this->adminRole->permissions ?? [];
         }
 
-        return $this->permissions ?? [];
+        return $this->defaultPermissions();
     }
 
     public function defaultPermissions(): array
     {
-        return config('admin_permissions.role_defaults.' . $this->role, []);
+        return config('admin_permissions.role_defaults.' . $this->roleSlug(), []);
+    }
+
+    public function roleSlug(): string
+    {
+        return $this->adminRole?->slug ?: ($this->role ?: 'editor');
+    }
+
+    public function getRoleLabelAttribute(): string
+    {
+        return $this->adminRole?->name ?: ucfirst(str_replace('_', ' ', $this->roleSlug()));
+    }
+
+    public function adminRole()
+    {
+        return $this->belongsTo(AdminRole::class, 'role_id');
+    }
+
+    public function rolePermissions(): array
+    {
+        if ($this->adminRole) {
+            return $this->adminRole->permissions ?? [];
+        }
+
+        return $this->defaultPermissions();
     }
 
 }

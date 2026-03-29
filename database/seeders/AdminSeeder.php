@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
+use App\Models\AdminRole;
 use App\Models\Admin;
 
 class AdminSeeder extends Seeder
@@ -14,11 +14,14 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
+        $roleId = AdminRole::where('slug', 'super_admin')->value('id');
+
         Admin::updateOrCreate(
             ['email' => 'admin@e.com'],
             [
                 'name' => 'Admin',
                 'role' => 'super_admin',
+                'role_id' => $roleId,
                 'password' => Hash::make('password'),
             ]
         );

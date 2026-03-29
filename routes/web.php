@@ -190,6 +190,7 @@ Route::prefix('admin')
 
             Route::middleware('admin.permission:admins.manage')->group(function () {
                 Route::resource('users', UserController::class)->only(['index']);
+                Route::get('/roles', [DashboardController::class, 'roles'])->name('roles');
             });
 
             Route::middleware('admin.permission:contact.manage')->group(function () {

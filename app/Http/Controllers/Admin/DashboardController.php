@@ -79,4 +79,9 @@ class DashboardController extends Controller
     public function contactMessages() {
         return view('admin.contact-messages');
     }
+
+    public function roles()
+    {
+        return view('admin.roles');
+    }
 }

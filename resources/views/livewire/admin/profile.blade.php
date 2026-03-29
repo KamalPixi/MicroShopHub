@@ -15,7 +15,7 @@
             <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
                 <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
                     <p class="text-[11px] uppercase tracking-[0.18em] text-gray-500">Role</p>
-                    <p class="mt-1 font-semibold text-gray-900">{{ ucfirst(str_replace('_', ' ', $admin->role)) }}</p>
+                    <p class="mt-1 font-semibold text-gray-900">{{ $admin->role_label }}</p>
                 </div>
                 <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
                     <p class="text-[11px] uppercase tracking-[0.18em] text-gray-500">Permissions</p>

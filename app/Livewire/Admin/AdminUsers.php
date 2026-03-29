@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Admin;
+use App\Models\AdminRole;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -16,17 +17,14 @@ class AdminUsers extends Component
     public $name = '';
     public $email = '';
     public $password = '';
-    public $role = 'editor';
-    public array $permissions = [];
+    public $role_id = null;
     public $editingId = null;
 
     protected $rules = [
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255|unique:admins,email',
         'password' => 'required|string|min:8',
-        'role' => 'required|in:super_admin,editor,viewer',
-        'permissions' => 'array',
-        'permissions.*' => 'string',
+        'role_id' => 'required|exists:admin_roles,id',
     ];
 
     protected $queryString = ['search' => ['except' => ''], 'perPage' => ['except' => 10]];
@@ -41,20 +39,14 @@ class AdminUsers extends Component
         $this->name = '';
         $this->email = '';
         $this->password = '';
-        $this->role = 'editor';
-        $this->permissions = $this->defaultPermissionsForRole('editor');
+        $this->role_id = $this->defaultRoleId('editor');
         $this->editingId = null;
         $this->resetValidation();
     }
 
     public function mount(): void
     {
-        $this->permissions = $this->defaultPermissionsForRole($this->role);
-    }
-
-    public function updatedRole($value): void
-    {
-        $this->permissions = $this->defaultPermissionsForRole($value);
+        $this->role_id = $this->defaultRoleId('editor');
     }
 
     public function save()
@@ -66,14 +58,13 @@ class AdminUsers extends Component
 
         $this->validate();
 
-        $allowedPermissions = $this->allPermissionKeys();
-        $selectedPermissions = array_values(array_intersect($this->permissions ?? [], $allowedPermissions));
+        $role = AdminRole::findOrFail($this->role_id);
 
         $data = [
             'name' => $this->name,
             'email' => $this->email,
-            'role' => $this->role,
-            'permissions' => $this->role === 'super_admin' ? null : $selectedPermissions,
+            'role' => $role->slug,
+            'role_id' => $role->id,
         ];
 
         if ($this->password && !$this->editingId) {
@@ -97,8 +88,7 @@ class AdminUsers extends Component
         $this->editingId = $admin->id;
         $this->name = $admin->name;
         $this->email = $admin->email;
-        $this->role = $admin->role;
-        $this->permissions = $admin->effectivePermissions();
+        $this->role_id = $admin->role_id ?: $this->defaultRoleId($admin->roleSlug());
         $this->password = '';
     }
 
@@ -112,6 +102,7 @@ class AdminUsers extends Component
     public function render()
     {
         $admins = Admin::query()
+            ->with('adminRole')
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                       ->orWhere('email', 'like', '%' . $this->search . '%');
@@ -121,20 +112,13 @@ class AdminUsers extends Component
 
         return view('livewire.admin.admin-users', [
             'admins' => $admins,
-            'permissionGroups' => config('admin_permissions.groups', []),
+            'roles' => AdminRole::query()->orderBy('name')->get(),
         ]);
     }
 
-    public function defaultPermissionsForRole(string $role): array
+    public function defaultRoleId(string $slug): ?int
     {
-        return config('admin_permissions.role_defaults.' . $role, []);
-    }
-
-    public function allPermissionKeys(): array
-    {
-        return collect(config('admin_permissions.groups', []))
-            ->flatMap(fn ($group) => array_keys($group))
-            ->values()
-            ->all();
+        return AdminRole::where('slug', $slug)->value('id')
+            ?: AdminRole::query()->orderBy('id')->value('id');
     }
 }
