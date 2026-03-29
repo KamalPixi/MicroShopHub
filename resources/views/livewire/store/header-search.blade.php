@@ -57,6 +57,9 @@
             @if(count($results) > 0)
                 <ul class="divide-y divide-gray-100">
                     @foreach($results as $product)
+                        @php
+                            $saleInfo = !empty($flashSaleMap) ? ($flashSaleMap[$product->id] ?? null) : null;
+                        @endphp
                         <li class="hover:bg-gray-50 transition-colors">
                             <a href="{{ route('store.product.show', $product->slug) }}" class="flex items-center px-4 py-3 group">
                                 <div class="flex-shrink-0 h-10 w-10 border border-gray-200 rounded overflow-hidden bg-gray-100">
@@ -69,7 +72,19 @@
                                     <p class="text-xs text-gray-500 truncate">{{ Str::limit(strip_tags($product->description), 40) }}</p>
                                 </div>
                                 <div class="ml-2">
-                                    <span class="text-sm font-bold text-primary">{{$product->currency_symbol}}{{ number_format($product->price, 2) }}</span>
+                                    @if($saleInfo)
+                                        @if($product->has_variations && empty($product->price))
+                                            <span class="block text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500 text-right">From</span>
+                                        @endif
+                                        <span class="block text-[10px] font-medium text-gray-400 line-through text-right">{{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}</span>
+                                        <span class="text-sm font-bold text-primary">{{ $product->currency_symbol }}{{ number_format($saleInfo['sale_price'], 2) }}</span>
+                                    @else
+                                        @if($product->price)
+                                            <span class="text-sm font-bold text-primary">{{ $product->currency_symbol }}{{ number_format($product->price, 2) }}</span>
+                                        @elseif($product->has_variations)
+                                            <span class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">See Options</span>
+                                        @endif
+                                    @endif
                                 </div>
                             </a>
                         </li>

@@ -5,6 +5,7 @@ namespace App\Livewire\Store;
 use Livewire\Component;
 use App\Models\AttributeValue;
 use App\Services\CartService;
+use App\Services\FlashSaleService;
 
 class ProductDetails extends Component
 {
@@ -21,8 +22,14 @@ class ProductDetails extends Component
     public $quantity = 1;
     public $selectedAttributes = []; // [attribute_id => value_id]
     public $currentPrice;
+    public $basePrice;
+    public $originalPrice;
     public $currentStock;
     public $selectedVariation = null;
+    public $flashSale = [];
+    public $flashSaleTitle = null;
+    public $flashSaleEndsAt = null;
+    public $hasFlashSale = false;
     
     // UI Feedback
     public $showSuccess = false;
@@ -33,21 +40,31 @@ class ProductDetails extends Component
         $this->cartService = $cartService;
     }
 
-    public function mount($product, $relatedProducts)
+    public function mount($product, $relatedProducts, $flashSale = [])
     {
         $this->product = $product;
         $this->relatedProducts = $relatedProducts;
-        
-        $this->currentPrice = $product->price;
+
+        $this->flashSale = is_array($flashSale) ? $flashSale : [];
+        $this->basePrice = (float) $product->price;
+        $this->originalPrice = (float) $product->price;
+        $this->currentPrice = (float) $product->price;
         $this->currentStock = $product->stock;
+        $this->flashSaleTitle = $this->flashSale['title'] ?? null;
+        $this->flashSaleEndsAt = $this->flashSale['ends_at'] ?? null;
+        $this->hasFlashSale = ! empty($this->flashSale);
         
         // Build options for BOTH Variation products and Simple products with attributes
         $this->buildProductOptions();
 
         if ($this->product->has_variations) {
             $this->currentStock = 0; // Wait for selection
-            $this->currentPrice = $product->variations->min('price'); 
+            $this->basePrice = (float) $product->variations->min('price');
+            $this->originalPrice = $this->basePrice;
+            $this->currentPrice = $this->basePrice;
         }
+
+        $this->applyFlashSalePricing();
     }
 
     public function buildProductOptions()
@@ -111,12 +128,16 @@ class ProductDetails extends Component
         
         if ($this->product->has_variations) {
             $this->currentStock = 0;
-            $this->currentPrice = $this->product->variations->min('price');
+            $this->basePrice = (float) $this->product->variations->min('price');
         } else {
             // Reset to base
             $this->currentStock = $this->product->stock;
-            $this->currentPrice = $this->product->price;
+            $this->basePrice = (float) $this->product->price;
         }
+
+        $this->originalPrice = $this->basePrice;
+        $this->currentPrice = $this->basePrice;
+        $this->applyFlashSalePricing();
     }
 
     public function checkSelection()
@@ -124,7 +145,13 @@ class ProductDetails extends Component
         // 1. Check Completeness
         if (count($this->selectedAttributes) < count($this->productOptions)) {
             $this->selectedVariation = null;
-            if ($this->product->has_variations) $this->currentStock = 0;
+            if ($this->product->has_variations) {
+                $this->currentStock = 0;
+                $this->basePrice = (float) $this->product->variations->min('price');
+                $this->originalPrice = $this->basePrice;
+                $this->currentPrice = $this->basePrice;
+                $this->applyFlashSalePricing();
+            }
             return; 
         }
 
@@ -138,11 +165,18 @@ class ProductDetails extends Component
 
             if ($variation) {
                 $this->selectedVariation = $variation;
-                $this->currentPrice = $variation->price;
+                $this->basePrice = (float) $variation->price;
+                $this->originalPrice = $this->basePrice;
+                $this->currentPrice = $this->basePrice;
                 $this->currentStock = $variation->stock;
+                $this->applyFlashSalePricing();
             } else {
                 $this->selectedVariation = null;
                 $this->currentStock = 0;
+                $this->basePrice = (float) $this->product->variations->min('price');
+                $this->originalPrice = $this->basePrice;
+                $this->currentPrice = $this->basePrice;
+                $this->applyFlashSalePricing();
             }
         }
         // 3. Simple Products: No extra logic needed, stock/price is already base
@@ -221,5 +255,36 @@ class ProductDetails extends Component
     public function render()
     {
         return view('livewire.store.product-details');
+    }
+
+    protected function applyFlashSalePricing(): void
+    {
+        if (empty($this->flashSale) || empty($this->flashSale['product_ids']) || ! in_array($this->product->id, $this->flashSale['product_ids'], true)) {
+            $this->hasFlashSale = false;
+            $this->currentPrice = $this->basePrice;
+            $this->originalPrice = $this->basePrice;
+            return;
+        }
+
+        $flashSaleService = app(FlashSaleService::class);
+        $salePrice = $flashSaleService->applySale(
+            (float) $this->basePrice,
+            (string) ($this->flashSale['sale_type'] ?? 'percentage'),
+            (float) ($this->flashSale['sale_value'] ?? 0)
+        );
+
+        $salePrice = max(0, round($salePrice, 2));
+        if ($salePrice < $this->basePrice) {
+            $this->hasFlashSale = true;
+            $this->currentPrice = $salePrice;
+            $this->originalPrice = $this->basePrice;
+            $this->flashSaleTitle = $this->flashSale['title'] ?? 'Flash Sale';
+            $this->flashSaleEndsAt = $this->flashSale['ends_at'] ?? null;
+            return;
+        }
+
+        $this->hasFlashSale = false;
+        $this->currentPrice = $this->basePrice;
+        $this->originalPrice = $this->basePrice;
     }
 }

@@ -180,6 +180,7 @@ Route::prefix('admin')
             Route::get('/homepage-settings', [DashboardController::class, 'homepageSettings'])->name('homepage.settings');
             Route::get('/marketing/subscriptions', [DashboardController::class, 'marketingSubscriptions'])->name('marketing.subscriptions');
             Route::get('/marketing/campaigns', [DashboardController::class, 'marketingCampaigns'])->name('marketing.campaigns');
+            Route::get('/marketing/flash-sales', [DashboardController::class, 'marketingFlashSales'])->name('marketing.flash-sales');
 
             // Resources
             Route::resource('products', ProductController::class)->except(['destroy']);

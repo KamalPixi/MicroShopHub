@@ -178,6 +178,10 @@
 </section>
 @endif
 
+@if(!empty($activeFlashSale) && !empty($flashSaleMap))
+    @include('store.partials.flash-sale', ['flashSale' => $activeFlashSale, 'flashSaleMap' => $flashSaleMap])
+@endif
+
 @if($homepageSettings['home_shop_by_category_enabled'] ?? true)
     @include('store.partials.category-home', ['homepageSettings' => $homepageSettings, 'homeCategories' => $homeCategories])
 @endif

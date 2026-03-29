@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Support\StorefrontTheme;
+use App\Services\FlashSaleService;
 use Illuminate\Support\Facades\Storage;
 
 class StoreController extends Controller
@@ -17,6 +18,10 @@ class StoreController extends Controller
      */
     public function index()
     {
+        $flashSaleService = app(FlashSaleService::class);
+        $activeFlashSale = $flashSaleService->currentSale();
+        $flashSaleMap = $activeFlashSale ? $flashSaleService->productMap($activeFlashSale) : [];
+
         $homepageSettings = Setting::whereIn('key', [
                 'home_hero_enabled',
                 'home_banner_type',
@@ -103,7 +108,7 @@ class StoreController extends Controller
             ->take(10)
             ->get();
 
-        return view(StorefrontTheme::homepageView(), compact('homeCategories', 'featuredProducts', 'newArrivals', 'homepageSettings', 'homeBannerSlides'));
+        return view(StorefrontTheme::homepageView(), compact('homeCategories', 'featuredProducts', 'newArrivals', 'homepageSettings', 'homeBannerSlides', 'activeFlashSale', 'flashSaleMap'));
     }
 
     protected function resolveSettingImageUrl(?string $path): string
@@ -126,6 +131,10 @@ class StoreController extends Controller
      */
     public function search(Request $request)
     {
+        $flashSaleService = app(FlashSaleService::class);
+        $activeFlashSale = $flashSaleService->currentSale();
+        $flashSaleMap = $activeFlashSale ? $flashSaleService->productMap($activeFlashSale) : [];
+
         $query = $request->input('query');
         $categoryId = $request->input('category');
         $minPrice = $request->input('min_price');
@@ -176,7 +185,7 @@ class StoreController extends Controller
         
         $categories = Category::whereNull('parent_id')->with('children')->get();
         
-        return view('store.search', compact('products', 'categories', 'query', 'categoryId', 'minPrice', 'maxPrice', 'sort'));
+        return view('store.search', compact('products', 'categories', 'query', 'categoryId', 'minPrice', 'maxPrice', 'sort', 'activeFlashSale', 'flashSaleMap'));
     }
 
     /**
@@ -217,6 +226,20 @@ class StoreController extends Controller
      */
     public function show($slug)
     {
+        $flashSaleService = app(FlashSaleService::class);
+        $activeFlashSale = $flashSaleService->currentSale();
+        $flashSaleMap = $activeFlashSale ? $flashSaleService->productMap($activeFlashSale) : [];
+        $flashSale = $activeFlashSale ? [
+            'title' => $activeFlashSale->title,
+            'subtitle' => $activeFlashSale->subtitle,
+            'description' => $activeFlashSale->description,
+            'sale_type' => $activeFlashSale->sale_type,
+            'sale_value' => (float) $activeFlashSale->sale_value,
+            'starts_at' => $activeFlashSale->starts_at?->toIso8601String(),
+            'ends_at' => $activeFlashSale->ends_at?->toIso8601String(),
+            'product_ids' => array_keys($flashSaleMap),
+        ] : [];
+
         $product = Product::where('slug', $slug)
             ->where('status', 1)
             ->with(['categories', 'attributes', 'variations']) 
@@ -231,7 +254,7 @@ class StoreController extends Controller
             ->take(4)
             ->get();
 
-        return view('store.product', compact('product', 'relatedProducts'));
+        return view('store.product', compact('product', 'relatedProducts', 'activeFlashSale', 'flashSaleMap', 'flashSale'));
     }
 
     public function cart()

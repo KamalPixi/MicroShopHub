@@ -111,12 +111,11 @@
 
                 {{-- Price Section --}}
                 @php
-                    $basePrice = (float) $product->price;
-                    $minVariationPrice = $product->has_variations ? (float) $product->variations->min('price') : $basePrice;
-                    $maxVariationPrice = $product->has_variations ? (float) $product->variations->max('price') : $basePrice;
+                    $minVariationPrice = $product->has_variations ? (float) $product->variations->min('price') : (float) $basePrice;
+                    $maxVariationPrice = $product->has_variations ? (float) $product->variations->max('price') : (float) $basePrice;
                     $hasPriceRange = $product->has_variations && $minVariationPrice !== $maxVariationPrice;
-                    $discountPercent = ($basePrice > 0 && $currentPrice < $basePrice)
-                        ? (int) round((($basePrice - $currentPrice) / $basePrice) * 100)
+                    $discountPercent = ($originalPrice > 0 && $currentPrice < $originalPrice)
+                        ? (int) round((($originalPrice - $currentPrice) / $originalPrice) * 100)
                         : 0;
                 @endphp
                 <div class="mb-2 pb-3 border-b border-gray-100">
@@ -130,13 +129,21 @@
                         </span>
                         @if($discountPercent > 0)
                             <span class="text-base text-gray-400 line-through">
-                                {{ $product->currency_symbol }}{{ number_format($basePrice, 2) }}
+                                {{ $product->currency_symbol }}{{ number_format($originalPrice, 2) }}
                             </span>
                             <span class="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">
                                 Save {{ $discountPercent }}%
                             </span>
                         @endif
                         </div>
+                        @if($hasFlashSale)
+                            <div class="inline-flex items-center gap-1.5 text-xs font-medium text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-md">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                {{ $flashSaleTitle ?? 'Flash Sale' }}
+                            </div>
+                        @endif
                         @if($product->has_variations && count($selectedAttributes) == 0)
                             <div class="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-md">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -268,9 +275,9 @@
                                     Total
                                 </label>
                                 <span class="text-xl font-bold text-primary">
-                                    {{ $product->currency_symbol }}{{ number_format($currentPrice * $quantity, 2) }}
-                                </span>
-                            </div>
+                                        {{ $product->currency_symbol }}{{ number_format($currentPrice * $quantity, 2) }}
+                                    </span>
+                                </div>
                         </div>
 
                         {{-- Stock Status --}}

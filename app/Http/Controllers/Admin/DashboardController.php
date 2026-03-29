@@ -67,6 +67,10 @@ class DashboardController extends Controller
         return view('admin.marketing-campaigns');
     }
 
+    public function marketingFlashSales() {
+        return view('admin.flash-sales');
+    }
+
     public function contactMessages() {
         return view('admin.contact-messages');
     }

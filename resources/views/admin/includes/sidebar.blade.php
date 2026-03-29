@@ -229,6 +229,12 @@
                             Campaigns
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.marketing.flash-sales') }}" 
+                           class="block text-sm px-2.5 py-1.5 rounded-md {{ request()->routeIs('admin.marketing.flash-sales') ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800' }}">
+                            Flash Sales
+                        </a>
+                    </li>
                 </ul>
             </li>
 

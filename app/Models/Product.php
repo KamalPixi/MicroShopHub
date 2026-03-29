@@ -68,6 +68,11 @@ class Product extends Model
         return $this->hasMany(Review::class)->where('status', true)->latest();
     }
 
+    public function flashSales()
+    {
+        return $this->belongsToMany(FlashSale::class, 'flash_sale_product')->withTimestamps();
+    }
+
     // Helper to get average rating (e.g., 4.5)
     public function getAverageRatingAttribute()
     {

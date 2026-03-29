@@ -194,6 +194,9 @@
                 @if($products->count() > 0)
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         @foreach($products as $product)
+                        @php
+                            $saleInfo = !empty($flashSaleMap) ? ($flashSaleMap[$product->id] ?? null) : null;
+                        @endphp
                         <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group border border-gray-100 flex flex-col cursor-pointer"
                              role="link"
                              tabindex="0"
@@ -210,9 +213,8 @@
                                     }
                                 @endphp
                                 <img src="{{ $img }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                
-                                @if($product->price < 50) 
-                                    <span class="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded">DEAL</span>
+                                @if($saleInfo)
+                                    <span class="absolute top-2 left-2 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">Flash Sale</span>
                                 @endif
                             </div>
                             
@@ -227,9 +229,21 @@
                                     {{ $product->categories->first()->name ?? 'General' }}
                                 </p>
                                 
-                                <div class="mt-auto flex items-center justify-between">
+                                <div class="mt-auto flex items-end justify-between gap-2">
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-bold text-gray-900">{{$product->currency_symbol}}{{ number_format($product->price, 2) }}</span>
+                                        @if($saleInfo)
+                                            @if($product->has_variations && empty($product->price))
+                                                <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">From</span>
+                                            @endif
+                                            <span class="text-xs font-medium text-gray-400 line-through">{{ $product->currency_symbol }}{{ number_format($saleInfo['original_price'], 2) }}</span>
+                                            <span class="text-sm font-bold text-gray-900">{{ $product->currency_symbol }}{{ number_format($saleInfo['sale_price'], 2) }}</span>
+                                        @else
+                                            @if($product->price)
+                                                <span class="text-sm font-bold text-gray-900">{{ $product->currency_symbol }}{{ number_format($product->price, 2) }}</span>
+                                            @elseif($product->has_variations)
+                                                <span class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">See Options</span>
+                                            @endif
+                                        @endif
                                     </div>
                                     @livewire('store.add-to-cart-button', ['productId' => $product->id], key($product->id))
                                 </div>

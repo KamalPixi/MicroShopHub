@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Store;
 
+use App\Services\FlashSaleService;
 use Livewire\Component;
 use App\Models\Product;
 use App\Models\Category;
@@ -26,6 +27,9 @@ class HeaderSearch extends Component
     public function render()
     {
         $results = [];
+        $flashSaleService = app(FlashSaleService::class);
+        $activeFlashSale = $flashSaleService->currentSale();
+        $flashSaleMap = $activeFlashSale ? $flashSaleService->productMap($activeFlashSale) : [];
 
         // Only search if query has at least 2 characters
         if (strlen($this->query) >= 2) {
@@ -47,6 +51,7 @@ class HeaderSearch extends Component
         return view('livewire.store.header-search', [
             'results' => $results,
             'categories' => $categories,
+            'flashSaleMap' => $flashSaleMap,
         ]);
     }
 }

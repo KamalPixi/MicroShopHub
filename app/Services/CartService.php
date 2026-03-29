@@ -76,6 +76,10 @@ class CartService
 
         if (isset($cart[$key])) {
             $cart[$key]['quantity'] += $quantity;
+            $cart[$key]['price'] = $item['price'];
+            $cart[$key]['currency_symbol'] = $item['currency_symbol'] ?? ($cart[$key]['currency_symbol'] ?? null);
+            $cart[$key]['thumbnail'] = $item['thumbnail'] ?? ($cart[$key]['thumbnail'] ?? null);
+            $cart[$key]['attributes'] = $item['attributes'] ?? ($cart[$key]['attributes'] ?? []);
         } else {
             $item['quantity'] = $quantity;
             $cart[$key] = $item;
@@ -88,6 +92,8 @@ class CartService
     {
         $key = (string) $product->id;
         $cart = $this->getCart();
+        $salePrice = app(\App\Services\FlashSaleService::class)->salePriceForProduct($product);
+        $resolvedPrice = $salePrice !== null ? $salePrice : (float) $product->price;
 
         if (isset($cart[$key])) {
             if ($replaceQuantity) {
@@ -95,11 +101,14 @@ class CartService
             } else {
                 $cart[$key]['quantity'] += $quantity;
             }
+            $cart[$key]['price'] = $resolvedPrice;
+            $cart[$key]['currency_symbol'] = $product->currency_symbol;
+            $cart[$key]['thumbnail'] = $product->thumbnail;
         } else {
             $cart[$key] = [
                 'name' => $product->name,
                 'quantity' => $quantity,
-                'price' => $product->price,
+                'price' => $resolvedPrice,
                 'currency_symbol' => $product->currency_symbol,
                 'thumbnail' => $product->thumbnail,
             ];
