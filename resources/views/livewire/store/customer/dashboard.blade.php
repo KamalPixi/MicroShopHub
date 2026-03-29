@@ -136,46 +136,74 @@
                         </div>
                         
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-                            <h3 class="font-bold text-gray-900 mb-4">My Orders</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <button wire:click="switchOrderTab('to_pay')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition group border border-transparent hover:border-primary/10">
-                                    <div class="relative mb-2">
-                                        <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                                        @if($stats['pending_payment'] > 0)
-                                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $stats['pending_payment'] }}</span>
-                                        @endif
+                            <div class="flex items-center justify-between gap-4 mb-5">
+                                <div>
+                                    <h3 class="font-bold text-gray-900">My Orders</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Quick access to the order states you need most.</p>
+                                </div>
+                                <button wire:click="switchTab('orders')" class="rounded-xl border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-primary/30 hover:text-primary transition">
+                                    View all orders
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                                <button wire:click="switchOrderTab('to_pay')" class="group rounded-2xl border border-gray-200 bg-gray-50/80 p-4 text-left transition hover:-translate-y-0.5 hover:border-primary/30 hover:bg-white hover:shadow-sm">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
+                                            <svg class="h-5 w-5 text-gray-500 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                                        </div>
+                                        <span class="rounded-full bg-red-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-red-600">
+                                            {{ $stats['pending_payment'] }}
+                                        </span>
                                     </div>
-                                    <span class="text-xs font-medium text-gray-600 group-hover:text-primary">To Pay</span>
+                                    <div class="mt-4">
+                                        <p class="text-sm font-bold text-gray-900">To Pay</p>
+                                        <p class="mt-1 text-xs text-gray-500">Orders waiting for payment</p>
+                                    </div>
                                 </button>
 
-                                <button wire:click="switchOrderTab('to_ship')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition group border border-transparent hover:border-primary/10">
-                                    <div class="relative mb-2">
-                                        <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                                        @if($stats['to_ship'] > 0)
-                                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $stats['to_ship'] }}</span>
-                                        @endif
+                                <button wire:click="switchOrderTab('to_ship')" class="group rounded-2xl border border-gray-200 bg-gray-50/80 p-4 text-left transition hover:-translate-y-0.5 hover:border-primary/30 hover:bg-white hover:shadow-sm">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
+                                            <svg class="h-5 w-5 text-gray-500 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                        </div>
+                                        <span class="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-600">
+                                            {{ $stats['to_ship'] }}
+                                        </span>
                                     </div>
-                                    <span class="text-xs font-medium text-gray-600 group-hover:text-primary">To Ship</span>
+                                    <div class="mt-4">
+                                        <p class="text-sm font-bold text-gray-900">To Ship</p>
+                                        <p class="mt-1 text-xs text-gray-500">Ready to be processed by support</p>
+                                    </div>
                                 </button>
 
-                                <button wire:click="switchOrderTab('to_receive')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition group border border-transparent hover:border-primary/10">
-                                    <div class="relative mb-2">
-                                        <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-                                        @if($stats['to_receive'] > 0)
-                                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $stats['to_receive'] }}</span>
-                                        @endif
+                                <button wire:click="switchOrderTab('to_receive')" class="group rounded-2xl border border-gray-200 bg-gray-50/80 p-4 text-left transition hover:-translate-y-0.5 hover:border-primary/30 hover:bg-white hover:shadow-sm">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
+                                            <svg class="h-5 w-5 text-gray-500 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                                        </div>
+                                        <span class="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-amber-600">
+                                            {{ $stats['to_receive'] }}
+                                        </span>
                                     </div>
-                                    <span class="text-xs font-medium text-gray-600 group-hover:text-primary">To Receive</span>
+                                    <div class="mt-4">
+                                        <p class="text-sm font-bold text-gray-900">To Receive</p>
+                                        <p class="mt-1 text-xs text-gray-500">Shipped and on the way</p>
+                                    </div>
                                 </button>
 
-                                <button wire:click="switchOrderTab('completed')" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition group border border-transparent hover:border-primary/10">
-                                    <div class="relative mb-2">
-                                        <svg class="w-8 h-8 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        @if($stats['completed'] > 0)
-                                            <span class="absolute -top-1 -right-1 bg-green-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $stats['completed'] }}</span>
-                                        @endif
+                                <button wire:click="switchOrderTab('completed')" class="group rounded-2xl border border-gray-200 bg-gray-50/80 p-4 text-left transition hover:-translate-y-0.5 hover:border-primary/30 hover:bg-white hover:shadow-sm">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
+                                            <svg class="h-5 w-5 text-gray-500 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </div>
+                                        <span class="rounded-full bg-green-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-green-600">
+                                            {{ $stats['completed'] }}
+                                        </span>
                                     </div>
-                                    <span class="text-xs font-medium text-gray-600 group-hover:text-primary">Completed</span>
+                                    <div class="mt-4">
+                                        <p class="text-sm font-bold text-gray-900">Completed</p>
+                                        <p class="mt-1 text-xs text-gray-500">Delivered orders only</p>
+                                    </div>
                                 </button>
                             </div>
                         </div>
