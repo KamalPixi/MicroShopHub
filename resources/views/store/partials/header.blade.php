@@ -14,7 +14,7 @@
                         <div>
                             <h1 class="text-xl font-bold text-gray-900 leading-none">{{ $storeName ?? 'ShopHub' }}</h1>
                             @if(!empty($storeSlogan ?? ''))
-                                <p class="mt-0 text-[9px] font-medium uppercase tracking-[0.16em] leading-none text-primary/80">{{ $storeSlogan }}</p>
+                                <p class="mt-0.5 text-[9px] font-medium uppercase tracking-[0.16em] leading-none text-primary/80">{{ $storeSlogan }}</p>
                             @endif
                         </div>
                     </div>
