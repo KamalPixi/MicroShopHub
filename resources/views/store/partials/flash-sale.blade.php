@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="p-4">
-                    <h3 class="text-sm font-semibold text-gray-900 transition group-hover:text-primary">
+                    <h3 class="text-sm font-semibold text-gray-900 transition group-hover:text-primary leading-snug line-clamp-2">
                         {{ $product->name }}
                     </h3>
                     <div class="mt-2 flex items-end justify-between gap-2">
