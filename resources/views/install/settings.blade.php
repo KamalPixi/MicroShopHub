@@ -10,6 +10,7 @@
 
     <form method="POST" action="{{ route('install.settings.store') }}" enctype="multipart/form-data" class="card stack">
         @csrf
+        @php($customCurrencies = old('custom_currencies', $settings['custom_currencies'] ?? []))
         <div>
             <h2 style="margin:0 0 6px;font-size:18px">Default store settings</h2>
             <p class="muted small" style="margin:0">Fill what you need now. You can skip optional fields and edit them later from admin.</p>
@@ -50,18 +51,61 @@
             </div>
         </div>
 
-        <div class="grid grid-3">
+        <div class="grid grid-2">
             <div>
                 <label>Default Language</label>
-                <select name="store_default_locale">
+                <select name="store_default_locale" class="select-field">
                     <option value="en" @selected(old('store_default_locale', $settings['store_default_locale'] ?? 'en') === 'en')>English</option>
                     <option value="bn" @selected(old('store_default_locale', $settings['store_default_locale'] ?? 'en') === 'bn')>Bengali</option>
                 </select>
+                <div class="help">This is the first language customers will see on the storefront.</div>
             </div>
             <div>
-                <label>Currency</label>
-                <input type="text" name="currency" value="{{ old('currency', $settings['currency'] ?? 'BDT') }}" placeholder="BDT">
+                <label>Default Currency</label>
+                <select name="currency" class="select-field">
+                    @foreach($currencyPresets as $code => $currency)
+                        <option value="{{ $code }}" @selected(old('currency', $settings['currency'] ?? 'BDT') === $code)>
+                            {{ $code }} - {{ $currency['symbol'] }} {{ $currency['name'] }}
+                        </option>
+                    @endforeach
+                </select>
+                <div class="help">This is the base currency for the store. Add any extra currencies below if needed.</div>
             </div>
+        </div>
+
+        <div class="card" style="padding:16px">
+            <h3 style="margin:0 0 8px;font-size:16px">Additional Currencies</h3>
+            <p class="muted xsmall" style="margin:0 0 12px">Add only what you need. Leave empty rows blank. Exchange rate is relative to the default currency above.</p>
+            <div class="stack">
+                @foreach([0,1,2] as $index)
+                    @php($currencyRow = $customCurrencies[$index] ?? [])
+                    <div class="grid grid-4" style="gap:10px">
+                        <div>
+                            <label>Code</label>
+                            <input type="text" name="custom_currencies[{{ $index }}][code]" value="{{ old("custom_currencies.$index.code", $currencyRow['code'] ?? '') }}" placeholder="USD">
+                        </div>
+                        <div>
+                            <label>Name</label>
+                            <input type="text" name="custom_currencies[{{ $index }}][name]" value="{{ old("custom_currencies.$index.name", $currencyRow['name'] ?? '') }}" placeholder="US Dollar">
+                        </div>
+                        <div>
+                            <label>Symbol</label>
+                            <input type="text" name="custom_currencies[{{ $index }}][symbol]" value="{{ old("custom_currencies.$index.symbol", $currencyRow['symbol'] ?? '') }}" placeholder="$">
+                        </div>
+                        <div>
+                            <label>Exchange Rate</label>
+                            <input type="number" step="0.0001" min="0.0001" name="custom_currencies[{{ $index }}][exchange_rate]" value="{{ old("custom_currencies.$index.exchange_rate", $currencyRow['exchange_rate'] ?? 1) }}" placeholder="1.0000">
+                        </div>
+                    </div>
+                    <label class="checkbox" style="margin-top:-4px">
+                        <input type="checkbox" name="custom_currencies[{{ $index }}][active]" value="1" @checked(old("custom_currencies.$index.active", $currencyRow['active'] ?? true))>
+                        <span class="small">Active</span>
+                    </label>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="grid grid-2">
             <div>
                 <label>Enable COD</label>
                 <div class="checkbox" style="margin-top:0">

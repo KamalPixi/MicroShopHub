@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Country;
+use App\Models\Currency;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -38,6 +39,26 @@ class InstallController extends Controller
         'LK' => 'Sri Lanka',
         'NP' => 'Nepal',
     ];
+
+    protected function currencyPresets(): array
+    {
+        return [
+            'BDT' => ['name' => 'Bangladeshi Taka', 'symbol' => '৳', 'exchange_rate' => 1.0000],
+            'USD' => ['name' => 'US Dollar', 'symbol' => '$', 'exchange_rate' => 120.0000],
+            'EUR' => ['name' => 'Euro', 'symbol' => '€', 'exchange_rate' => 130.0000],
+            'GBP' => ['name' => 'British Pound', 'symbol' => '£', 'exchange_rate' => 150.0000],
+            'CAD' => ['name' => 'Canadian Dollar', 'symbol' => 'C$', 'exchange_rate' => 88.0000],
+            'AUD' => ['name' => 'Australian Dollar', 'symbol' => 'A$', 'exchange_rate' => 78.0000],
+            'MYR' => ['name' => 'Malaysian Ringgit', 'symbol' => 'RM', 'exchange_rate' => 27.0000],
+            'SGD' => ['name' => 'Singapore Dollar', 'symbol' => 'S$', 'exchange_rate' => 90.0000],
+            'INR' => ['name' => 'Indian Rupee', 'symbol' => '₹', 'exchange_rate' => 1.4000],
+            'AED' => ['name' => 'UAE Dirham', 'symbol' => 'د.إ', 'exchange_rate' => 32.0000],
+            'SAR' => ['name' => 'Saudi Riyal', 'symbol' => '﷼', 'exchange_rate' => 32.0000],
+            'PKR' => ['name' => 'Pakistani Rupee', 'symbol' => '₨', 'exchange_rate' => 0.4300],
+            'CNY' => ['name' => 'Chinese Yuan', 'symbol' => '¥', 'exchange_rate' => 17.0000],
+            'JPY' => ['name' => 'Japanese Yen', 'symbol' => '¥', 'exchange_rate' => 0.8500],
+        ];
+    }
 
     public function index()
     {
@@ -134,6 +155,7 @@ class InstallController extends Controller
         return view('install.settings', [
             'settings' => session('installer.settings', $this->defaultSettings()),
             'countryOptions' => $this->countryOptions,
+            'currencyPresets' => $this->currencyPresets(),
         ]);
     }
 
@@ -142,6 +164,8 @@ class InstallController extends Controller
         if ($this->installed()) {
             return redirect()->route('store.index');
         }
+
+        $currencyCodes = array_keys($this->currencyPresets());
 
         $data = $request->validate([
             'app_url' => ['nullable', 'url', 'max:255'],
@@ -153,7 +177,7 @@ class InstallController extends Controller
             'store_default_locale' => ['required', 'in:en,bn'],
             'store_language_en_enabled' => ['sometimes', 'boolean'],
             'store_language_bn_enabled' => ['sometimes', 'boolean'],
-            'currency' => ['nullable', 'string', 'max:10'],
+            'currency' => ['required', 'string', 'in:'.implode(',', $currencyCodes)],
             'cod_enabled' => ['sometimes', 'boolean'],
             'home_hero_title' => ['nullable', 'string', 'max:255'],
             'home_hero_subtitle' => ['nullable', 'string', 'max:500'],
@@ -166,6 +190,12 @@ class InstallController extends Controller
             'footer_about_description' => ['nullable', 'string', 'max:500'],
             'footer_support_hours_1' => ['nullable', 'string', 'max:255'],
             'footer_support_hours_2' => ['nullable', 'string', 'max:255'],
+            'custom_currencies' => ['nullable', 'array'],
+            'custom_currencies.*.code' => ['nullable', 'string', 'size:3', 'alpha'],
+            'custom_currencies.*.name' => ['nullable', 'string', 'max:120'],
+            'custom_currencies.*.symbol' => ['nullable', 'string', 'max:10'],
+            'custom_currencies.*.exchange_rate' => ['nullable', 'numeric', 'min:0.0001'],
+            'custom_currencies.*.active' => ['sometimes', 'boolean'],
             'stripe_api_key' => ['nullable', 'string', 'max:255'],
             'stripe_label' => ['nullable', 'string', 'max:255'],
             'paypal_api_key' => ['nullable', 'string', 'max:255'],
@@ -204,6 +234,29 @@ class InstallController extends Controller
         $data['cod_enabled'] = (bool) ($data['cod_enabled'] ?? true);
         $data['sslcommerz_sandbox'] = (bool) ($data['sslcommerz_sandbox'] ?? false);
         $data['country_codes'] = array_values(array_intersect(array_keys($this->countryOptions), $data['country_codes'] ?? []));
+        $data['currency'] = strtoupper((string) ($data['currency'] ?? 'BDT'));
+        $data['custom_currencies'] = collect($data['custom_currencies'] ?? [])
+            ->map(function (array $currency): ?array {
+                $code = strtoupper(trim((string) ($currency['code'] ?? '')));
+                $name = trim((string) ($currency['name'] ?? ''));
+                $symbol = trim((string) ($currency['symbol'] ?? ''));
+                $exchangeRate = (float) ($currency['exchange_rate'] ?? 0);
+
+                if ($code === '' || $name === '' || $symbol === '' || $exchangeRate <= 0) {
+                    return null;
+                }
+
+                return [
+                    'code' => $code,
+                    'name' => $name,
+                    'symbol' => $symbol,
+                    'exchange_rate' => $exchangeRate,
+                    'active' => (bool) ($currency['active'] ?? true),
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
 
         if (! $data['country_codes']) {
             $data['country_codes'] = ['BD'];
@@ -229,7 +282,7 @@ class InstallController extends Controller
 
         try {
             $this->applyDatabaseConfig($database);
-            $this->writeEnvFile($database, $settings);
+        $this->writeEnvFile($database, $settings);
 
             Artisan::call('config:clear');
             Artisan::call('cache:clear');
@@ -248,6 +301,7 @@ class InstallController extends Controller
         }
 
         $this->persistSettings($settings);
+        $this->persistCurrencies($settings['currency'] ?? 'BDT', $settings['custom_currencies'] ?? []);
         $this->syncCountries($settings['country_codes'] ?? ['BD']);
         $this->createLockFile($settings['app_url'] ?? config('app.url'));
 
@@ -354,6 +408,61 @@ class InstallController extends Controller
         }
     }
 
+    protected function persistCurrencies(string $defaultCode, array $customCurrencies): void
+    {
+        $defaultCode = strtoupper(trim($defaultCode)) ?: 'BDT';
+        $rows = $this->currencyPresets();
+
+        foreach ($customCurrencies as $currency) {
+            $code = strtoupper(trim((string) ($currency['code'] ?? '')));
+            $name = trim((string) ($currency['name'] ?? ''));
+            $symbol = trim((string) ($currency['symbol'] ?? ''));
+            $exchangeRate = (float) ($currency['exchange_rate'] ?? 0);
+
+            if ($code === '' || $name === '' || $symbol === '' || $exchangeRate <= 0) {
+                continue;
+            }
+
+            $rows[$code] = [
+                'name' => $name,
+                'symbol' => $symbol,
+                'exchange_rate' => $exchangeRate,
+            ];
+        }
+
+        Currency::query()->update(['is_default' => false]);
+
+        foreach ($rows as $code => $currency) {
+            Currency::query()->updateOrInsert(
+                ['code' => $code],
+                [
+                    'name' => $currency['name'],
+                    'symbol' => $currency['symbol'],
+                    'exchange_rate' => $currency['exchange_rate'],
+                    'active' => true,
+                    'is_default' => $code === $defaultCode,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+
+        if (! Currency::query()->where('code', $defaultCode)->exists() && isset($rows[$defaultCode])) {
+            Currency::query()->updateOrInsert(
+                ['code' => $defaultCode],
+                [
+                    'name' => $rows[$defaultCode]['name'],
+                    'symbol' => $rows[$defaultCode]['symbol'],
+                    'exchange_rate' => $rows[$defaultCode]['exchange_rate'],
+                    'active' => true,
+                    'is_default' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+    }
+
     protected function syncCountries(array $codes): void
     {
         $codes = array_values(array_unique(array_map('strtoupper', $codes)));
@@ -457,6 +566,11 @@ class InstallController extends Controller
             'footer_about_description' => 'Your trusted marketplace for clothing, health products, and unique handmade items.',
             'footer_support_hours_1' => 'Mon-Fri: 9AM-6PM',
             'footer_support_hours_2' => 'Sat-Sun: 10AM-4PM',
+            'custom_currencies' => [
+                ['code' => '', 'name' => '', 'symbol' => '', 'exchange_rate' => 1, 'active' => true],
+                ['code' => '', 'name' => '', 'symbol' => '', 'exchange_rate' => 1, 'active' => true],
+                ['code' => '', 'name' => '', 'symbol' => '', 'exchange_rate' => 1, 'active' => true],
+            ],
             'footer_link_1_label' => 'About Us',
             'footer_link_1_url' => '/about',
             'footer_link_2_label' => 'Contact',

@@ -30,6 +30,7 @@
         .step.done::before{content:"✓";display:inline-block;margin-right:6px;font-weight:800}
         label{display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px}
         input, select, textarea{width:100%;padding:10px 12px;border:1px solid #cfd5dd;border-radius:12px;font:inherit;background:#fff;color:var(--text)}
+        .select-field{appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%236b7280' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:38px;height:42px}
         textarea{min-height:112px;resize:vertical}
         .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:14px;padding:10px 14px;font-weight:700;cursor:pointer}
         .btn-primary{background:var(--primary);color:#fff}
@@ -44,7 +45,7 @@
         .footer{padding:16px 24px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
         .two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
         .inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-        .checkboxes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+        .checkboxes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
         .checkbox{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
         .checkbox input{width:auto}
         .help{font-size:12px;color:var(--muted);margin-top:6px}
