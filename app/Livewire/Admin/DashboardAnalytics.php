@@ -15,9 +15,12 @@ use App\Models\SiteAnalyticsSession;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
+use Livewire\WithPagination;
 
 class DashboardAnalytics extends Component
 {
+    use WithPagination;
+
     public $totalSales;
     public $totalOrders;
     public $ordersToday;
@@ -30,12 +33,12 @@ class DashboardAnalytics extends Component
     public $revenueToday;
     public $revenueThisWeek;
     public $activeShippingMethods;
-    public $recentOrders;
-    public $topProducts;
     public $newCustomersThisMonth;
-    public $lowStockProducts;
     public $outOfStockCount;
-    public $recentProducts;
+    public $recentOrdersTotal = 0;
+    public $topProductsTotal = 0;
+    public $lowStockProductsTotal = 0;
+    public $recentProductsTotal = 0;
     public $currencySymbol;
     public $shopName;
     public $siteVisitors = 0;
@@ -98,53 +101,18 @@ class DashboardAnalytics extends Component
             Carbon::now()->endOfMonth()
         ])->count();
 
-        // Low Stock Products (<= 5, > 0)
-        $this->lowStockProducts = Product::where('stock', '>', 0)
-            ->where('stock', '<=', 5)
-            ->orderBy('stock', 'asc')
-            ->take(5)
-            ->get();
-
         // Out of Stock Count
         $this->outOfStockCount = Product::where('stock', '<=', 0)->count();
 
-        // Recent Orders: Last 5 orders with customer name, total, status
-        $this->recentOrders = Order::with('user')
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function ($order) {
-                return [
-                    'id' => $order->id,
-                    'customer_name' => $order->user ? $order->user->name : 'Guest',
-                    'total' => $order->total,
-                    'status' => $order->status,
-                    'created_at_human' => $order->created_at?->diffForHumans(),
-                    'created_at_time' => $order->created_at?->format('d M Y, h:i A'),
-                ];
-            });
-
-        // Top Products: Top 5 products by sales (sum of subtotals from order_items)
-        $this->topProducts = OrderItem::join('products', 'order_items.product_id', '=', 'products.id')
-            ->select(
-                'products.name', 
-                DB::raw('SUM(order_items.quantity * order_items.price) as total_sales')
-            )
-            ->groupBy('products.id', 'products.name')
-            ->orderBy('total_sales', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'name' => $item->name,
-                    'total_sales' => (float) $item->total_sales,
-                ];
-            });
-
-        // Recent Products
-        $this->recentProducts = Product::orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
+        $this->recentOrdersTotal = Order::count();
+        $this->topProductsTotal = OrderItem::join('products', 'order_items.product_id', '=', 'products.id')
+            ->select('products.id')
+            ->groupBy('products.id')
+            ->count();
+        $this->lowStockProductsTotal = Product::where('stock', '>', 0)
+            ->where('stock', '<=', 5)
+            ->count();
+        $this->recentProductsTotal = Product::count();
 
         if (Schema::hasTable('site_analytics_sessions') && Schema::hasTable('site_analytics_page_views')) {
             $this->siteSessions = SiteAnalyticsSession::count();
@@ -198,7 +166,51 @@ class DashboardAnalytics extends Component
 
     public function render()
     {
-        return view('livewire.admin.dashboard-analytics');
+        $recentOrders = Order::with('user')
+            ->orderByDesc('created_at')
+            ->paginate(5, ['*'], 'recentOrdersPage');
+
+        $recentOrders->getCollection()->transform(function ($order) {
+            return [
+                'id' => $order->id,
+                'customer_name' => $order->user ? $order->user->name : 'Guest',
+                'total' => $order->total,
+                'status' => $order->status,
+                'created_at_human' => $order->created_at?->diffForHumans(),
+                'created_at_time' => $order->created_at?->format('d M Y, h:i A'),
+            ];
+        });
+
+        $topProducts = OrderItem::join('products', 'order_items.product_id', '=', 'products.id')
+            ->select(
+                'products.name',
+                DB::raw('SUM(order_items.quantity * order_items.price) as total_sales')
+            )
+            ->groupBy('products.id', 'products.name')
+            ->orderByDesc('total_sales')
+            ->paginate(5, ['*'], 'topProductsPage');
+
+        $topProducts->getCollection()->transform(function ($item) {
+            return [
+                'name' => $item->name,
+                'total_sales' => (float) $item->total_sales,
+            ];
+        });
+
+        $lowStockProducts = Product::where('stock', '>', 0)
+            ->where('stock', '<=', 5)
+            ->orderBy('stock', 'asc')
+            ->paginate(5, ['*'], 'lowStockPage');
+
+        $recentProducts = Product::orderByDesc('created_at')
+            ->paginate(5, ['*'], 'recentProductsPage');
+
+        return view('livewire.admin.dashboard-analytics', compact(
+            'recentOrders',
+            'topProducts',
+            'lowStockProducts',
+            'recentProducts'
+        ));
     }
 
     public function clearSiteAnalytics(): void

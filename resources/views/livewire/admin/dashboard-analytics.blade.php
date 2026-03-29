@@ -59,7 +59,7 @@
             <div class="min-w-0">
                 <h3 class="text-xs font-medium text-gray-600">Total Products</h3>
                 <p class="text-lg font-bold leading-tight text-gray-800">{{ $totalProducts }}</p>
-                <p class="text-[11px] leading-tight text-gray-500">Low Stock: {{ $lowStockProducts->count() }}</p>
+                <p class="text-[11px] leading-tight text-gray-500">Low Stock: {{ $lowStockProductsTotal }}</p>
             </div>
         </div>
         <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
@@ -145,7 +145,7 @@
             </div>
             <div class="min-w-0">
                 <h3 class="text-xs font-medium text-gray-600">Low Stock Items</h3>
-                <p class="text-lg font-bold leading-tight text-gray-800">{{ $lowStockProducts->count() }}</p>
+                <p class="text-lg font-bold leading-tight text-gray-800">{{ $lowStockProductsTotal }}</p>
             </div>
         </div>
         <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
@@ -189,7 +189,7 @@
                     <div class="min-w-0">
                         <h3 class="text-xs font-medium text-gray-600">Total Products</h3>
                         <p class="text-lg font-bold leading-tight text-gray-800">{{ $totalProducts }}</p>
-                        <p class="text-[11px] leading-tight text-gray-500">Low Stock: {{ $lowStockProducts->count() }}</p>
+                <p class="text-[11px] leading-tight text-gray-500">Low Stock: {{ $lowStockProductsTotal }}</p>
                     </div>
                 </div>
                 <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
@@ -200,7 +200,7 @@
                     </div>
                     <div class="min-w-0">
                         <h3 class="text-xs font-medium text-gray-600">Low Stock Items</h3>
-                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $lowStockProducts->count() }}</p>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $lowStockProductsTotal }}</p>
                     </div>
                 </div>
                 <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
@@ -274,12 +274,18 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <!-- Recent Orders Table -->
         <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-            <h3 class="text-base font-semibold text-gray-800 mb-3 flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                </svg>
-                Recent Orders
-            </h3>
+            <div class="mb-3 flex items-start justify-between gap-3">
+                <h3 class="text-base font-semibold text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                    Recent Orders
+                </h3>
+                <div class="text-right">
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">Showing</p>
+                    <p class="text-xs font-semibold text-gray-700">{{ $recentOrders?->firstItem() ?? 0 }}-{{ $recentOrders?->lastItem() ?? 0 }} of {{ $recentOrders?->total() ?? 0 }}</p>
+                </div>
+            </div>
             <div class="overflow-x-auto rounded-lg border border-gray-200">
                 <table class="w-full text-left text-sm">
                     <thead>
@@ -322,16 +328,25 @@
                     </tbody>
                 </table>
             </div>
+            <div class="mt-3">
+                {{ $recentOrders?->links() }}
+            </div>
         </div>
 
         <!-- Top Products Table -->
         <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-            <h3 class="text-base font-semibold text-gray-800 mb-3 flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-7 5h7"></path>
-                </svg>
-                Top Products
-            </h3>
+            <div class="mb-3 flex items-start justify-between gap-3">
+                <h3 class="text-base font-semibold text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-7 5h7"></path>
+                    </svg>
+                    Top Products
+                </h3>
+                <div class="text-right">
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">Showing</p>
+                    <p class="text-xs font-semibold text-gray-700">{{ $topProducts?->firstItem() ?? 0 }}-{{ $topProducts?->lastItem() ?? 0 }} of {{ $topProducts?->total() ?? 0 }}</p>
+                </div>
+            </div>
             <div class="overflow-x-auto rounded-lg border border-gray-200">
                 <table class="w-full text-left text-sm">
                     <thead>
@@ -355,18 +370,27 @@
                     </tbody>
                 </table>
             </div>
+            <div class="mt-3">
+                {{ $topProducts?->links() }}
+            </div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <!-- Inventory Alerts -->
         <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-            <h3 class="text-base font-semibold text-gray-800 mb-3 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-                Inventory Alerts
-            </h3>
+            <div class="mb-3 flex items-start justify-between gap-3">
+                <h3 class="text-base font-semibold text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Inventory Alerts
+                </h3>
+                <div class="text-right">
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">Showing</p>
+                    <p class="text-xs font-semibold text-gray-700">{{ $lowStockProducts?->firstItem() ?? 0 }}-{{ $lowStockProducts?->lastItem() ?? 0 }} of {{ $lowStockProductsTotal }}</p>
+                </div>
+            </div>
             <div class="text-xs text-gray-500 mb-2">Low stock (≤ 5)</div>
             <div class="overflow-x-auto rounded-lg border border-gray-200">
                 <table class="w-full text-left text-sm">
@@ -391,17 +415,26 @@
                     </tbody>
                 </table>
             </div>
+            <div class="mt-3">
+                {{ $lowStockProducts?->links() }}
+            </div>
             <div class="mt-3 text-xs text-gray-600">Out of stock: <span class="font-semibold text-gray-900">{{ $outOfStockCount }}</span></div>
         </div>
 
         <!-- Recent Products -->
         <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-            <h3 class="text-base font-semibold text-gray-800 mb-3 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"></path>
-                </svg>
-                Recent Products
-            </h3>
+            <div class="mb-3 flex items-start justify-between gap-3">
+                <h3 class="text-base font-semibold text-gray-800 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"></path>
+                    </svg>
+                    Recent Products
+                </h3>
+                <div class="text-right">
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-gray-400">Showing</p>
+                    <p class="text-xs font-semibold text-gray-700">{{ $recentProducts?->firstItem() ?? 0 }}-{{ $recentProducts?->lastItem() ?? 0 }} of {{ $recentProductsTotal }}</p>
+                </div>
+            </div>
             <div class="overflow-x-auto rounded-lg border border-gray-200">
                 <table class="w-full text-left text-sm">
                     <thead>
@@ -426,6 +459,9 @@
                     @endif
                     </tbody>
                 </table>
+            </div>
+            <div class="mt-3">
+                {{ $recentProducts?->links() }}
             </div>
         </div>
     </div>
