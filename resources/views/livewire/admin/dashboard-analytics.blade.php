@@ -7,7 +7,13 @@
         </div>
     </div>
     <!-- Analytics Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="space-y-5">
+        <div>
+            <div class="mb-2 flex items-center justify-between">
+                <h3 class="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">Sales</h3>
+                <p class="text-[11px] text-gray-400">Revenue and order value</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
         <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
             <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,6 +159,116 @@
             <div class="min-w-0">
                 <h3 class="text-xs font-medium text-gray-600">Out of Stock</h3>
                 <p class="text-lg font-bold leading-tight text-gray-800">{{ $outOfStockCount }}</p>
+            </div>
+        </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="mb-2 flex items-center justify-between">
+                <h3 class="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">Catalog</h3>
+                <p class="text-[11px] text-gray-400">Products and stock status</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-medium text-gray-600">Total Customers</h3>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $totalCustomers }}</p>
+                        <p class="text-[11px] leading-tight text-gray-500">New This Month: {{ $newCustomersThisMonth }}</p>
+                    </div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-yellow-50 text-yellow-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-medium text-gray-600">Total Products</h3>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $totalProducts }}</p>
+                        <p class="text-[11px] leading-tight text-gray-500">Low Stock: {{ $lowStockProducts->count() }}</p>
+                    </div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-medium text-gray-600">Low Stock Items</h3>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $lowStockProducts->count() }}</p>
+                    </div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-medium text-gray-600">Out of Stock</h3>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $outOfStockCount }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="mb-2 flex items-center justify-between">
+                <h3 class="text-xs font-semibold uppercase tracking-[0.22em] text-gray-500">Operations</h3>
+                <p class="text-[11px] text-gray-400">Active workload</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-medium text-gray-600">Pending Orders</h3>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $pendingOrders }}</p>
+                    </div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-medium text-gray-600">Revenue This Month</h3>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $currencySymbol }}{{ number_format($revenueThisMonth, 2) }}</p>
+                    </div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-medium text-gray-600">Revenue Today</h3>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $currencySymbol }}{{ number_format($revenueToday, 2) }}</p>
+                    </div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex items-start gap-3">
+                    <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"></path>
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-medium text-gray-600">Revenue This Week</h3>
+                        <p class="text-lg font-bold leading-tight text-gray-800">{{ $currencySymbol }}{{ number_format($revenueThisWeek, 2) }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
