@@ -305,15 +305,6 @@
             @php
                 $isSettingsOpen = request()->routeIs('admin.settings*', 'admin.homepage-settings*', 'admin.shipping-methods*');
             @endphp
-            <li>
-                <a href="{{ route('admin.profile') }}"
-                   class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition {{ request()->routeIs('admin.profile') ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
-                    <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A10.97 10.97 0 0012 20c2.755 0 5.26-1.02 7.179-2.696M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Profile
-                </a>
-            </li>
             @if($adminUser?->hasPermission('settings.manage'))
                 <li class="px-2 pt-2">
                     <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">System</p>
@@ -364,6 +355,16 @@
                     </ul>
                 </li>
             @endif
+
+            <li class="pt-2 mt-2 border-t border-white/10">
+                <a href="{{ route('admin.profile') }}"
+                   class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition {{ request()->routeIs('admin.profile') ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A10.97 10.97 0 0012 20c2.755 0 5.26-1.02 7.179-2.696M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Profile
+                </a>
+            </li>
 
             <li>
                 <form action="{{ route('admin.logout') }}" method="POST">
