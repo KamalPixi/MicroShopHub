@@ -12,7 +12,7 @@ return [
     'quick_actions' => 'দ্রুত কাজ',
     'browse_categories_hint' => 'ক্যাটালগে ঢুকে ক্যাটাগরি অনুযায়ী দেখুন।',
     'see_new_arrivals_hint' => 'স্টোরে যোগ হওয়া নতুন পণ্য দেখুন।',
-    'stay_updated_hint' => 'অফার ও আপডেট পেতে সাবস্ক্রাইব সেকশনে যান।',
+    'stay_updated_hint' => 'অফার ও আপডেট পেতে সাবস্ক্রাইব করুন।',
     'view_all' => 'সব দেখুন',
     'from' => 'থেকে',
     'see_options' => 'বিবরণ দেখুন',

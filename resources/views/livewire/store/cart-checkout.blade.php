@@ -612,7 +612,7 @@
                                 @endif
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600">{{ __('store.reference_optional') }}</label>
-                                    <input type="text" wire:model.live="offlineReference" class="mt-1 block w-full border border-gray-300 rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" placeholder="{{ __('store.transaction_id_note') }}">
+                                    <input type="text" wire:model="offlineReference" class="mt-1 block w-full border border-gray-300 rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" placeholder="{{ __('store.transaction_id_note') }}">
                                     @error('offlineReference') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
@@ -683,7 +683,7 @@
                     <p class="text-gray-600 mb-6">{{ session('order_success') }}</p>
                     <div class="grid grid-cols-1 gap-3">
                         <a href="{{ route('store.index') }}" class="block w-full bg-primary text-white py-2 rounded-lg font-bold hover:bg-primary">{{ __('store.continue_shopping') }}</a>
-                        <a href="{{ route('store.index') }}" class="block w-full border border-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-50">{{ __('store.visit_home') }}</a>
+                        <a href="{{ route('customer.dashboard') }}" class="block w-full border border-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-50">{{ __('store.visit_home') }}</a>
                     </div>
                 </div>
             </div>
