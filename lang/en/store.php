@@ -20,6 +20,11 @@ return [
     'view_all_results' => 'View all results',
     'search_products' => 'Search products...',
     'all_categories' => 'All Categories',
+    'enter_your_email' => 'Enter your email',
+    'subscribe' => 'Subscribe',
+    'already_subscribed' => 'You are already subscribed with this email.',
+    'newsletter_success' => 'Thanks for subscribing. We will keep you updated with new products and offers.',
+    'all_rights_reserved' => 'All rights reserved.',
 
     'shop_by_category' => 'Shop by Category',
     'featured_products' => 'Featured Products',

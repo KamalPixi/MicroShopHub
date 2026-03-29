@@ -5,6 +5,12 @@
 
 @php
     $homepageSettings = $homepageSettings ?? [];
+    $newsletterTitle = ($homepageSettings['home_newsletter_title'] ?? '') === 'Stay Updated'
+        ? __('store.stay_updated')
+        : ($homepageSettings['home_newsletter_title'] ?? __('store.stay_updated'));
+    $newsletterSubtitle = ($homepageSettings['home_newsletter_subtitle'] ?? '') === 'Subscribe for new arrivals, exclusive offers, and restock alerts.'
+        ? __('store.stay_updated_hint')
+        : ($homepageSettings['home_newsletter_subtitle'] ?? __('store.stay_updated_hint'));
 @endphp
 
 <div class="space-y-8 pb-8 md:pb-10">
@@ -194,8 +200,8 @@
 
 @if($homepageSettings['home_newsletter_enabled'] ?? true)
 <section id="newsletter" class="mb-6 rounded-3xl bg-primary px-5 py-5 text-center text-white shadow-sm md:mb-8 md:px-6 md:py-6">
-    <h2 class="mb-1 text-xl font-bold md:text-2xl">{{ $homepageSettings['home_newsletter_title'] ?? 'Stay Updated' }}</h2>
-    <p class="mb-3 text-sm text-white/80 md:mb-4">{{ $homepageSettings['home_newsletter_subtitle'] ?? __('store.stay_updated_hint') }}</p>
+    <h2 class="mb-1 text-xl font-bold md:text-2xl">{{ $newsletterTitle }}</h2>
+    <p class="mb-3 text-sm text-white/80 md:mb-4">{{ $newsletterSubtitle }}</p>
     <livewire:store.newsletter-subscribe />
 </section>
 @endif

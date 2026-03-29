@@ -20,6 +20,11 @@ return [
     'view_all_results' => 'সব ফলাফল দেখুন',
     'search_products' => 'পণ্য খুঁজুন...',
     'all_categories' => 'সব ক্যাটাগরি',
+    'enter_your_email' => 'আপনার ইমেইল লিখুন',
+    'subscribe' => 'সাবস্ক্রাইব',
+    'already_subscribed' => 'এই ইমেইল দিয়ে আপনি ইতিমধ্যেই সাবস্ক্রাইব করেছেন।',
+    'newsletter_success' => 'সাবস্ক্রাইব করার জন্য ধন্যবাদ। নতুন পণ্য ও অফার সম্পর্কে আপনাকে জানানো হবে।',
+    'all_rights_reserved' => 'সর্বস্বত্ব সংরক্ষিত।',
 
     'shop_by_category' => 'ক্যাটাগরি অনুযায়ী দেখুন',
     'featured_products' => 'বৈশিষ্ট্যযুক্ত পণ্য',

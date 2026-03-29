@@ -30,7 +30,7 @@ class NewsletterSubscribe extends Component
 
         if ($subscription) {
             if ($subscription->status === 'subscribed') {
-                $this->errorMessage = 'You are already subscribed with this email.';
+                $this->errorMessage = __('store.already_subscribed');
                 return;
             }
             $subscription->update([
@@ -51,7 +51,7 @@ class NewsletterSubscribe extends Component
             ]);
         }
 
-        $this->successMessage = 'Thanks for subscribing. We will keep you updated with new products and offers.';
+        $this->successMessage = __('store.newsletter_success');
         $this->reset('email', 'name');
     }
 

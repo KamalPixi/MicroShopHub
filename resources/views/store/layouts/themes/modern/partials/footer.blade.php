@@ -6,6 +6,15 @@
     $year = date('Y');
     $footerTitle = $footerSettings['footer_about_title'] ?? $storeName;
     $footerDescription = $footerSettings['footer_about_description'] ?? __('store.support_intro');
+    $footerLinksTitle = !empty($footerSettings['footer_links_title']) && $footerSettings['footer_links_title'] !== 'Quick Links'
+        ? $footerSettings['footer_links_title']
+        : __('store.footer_quick_links');
+    $footerSupportTitle = !empty($footerSettings['footer_support_title']) && $footerSettings['footer_support_title'] !== 'Customer Support'
+        ? $footerSettings['footer_support_title']
+        : __('store.customer_support');
+    $footerPolicyTitle = !empty($footerSettings['footer_policy_title']) && $footerSettings['footer_policy_title'] !== 'Policies'
+        ? $footerSettings['footer_policy_title']
+        : __('store.policies');
     $quickLinks = [
         ['label' => $footerSettings['footer_link_1_label'] ?? __('store.about_us'), 'url' => $footerSettings['footer_link_1_url'] ?? '/about'],
         ['label' => $footerSettings['footer_link_2_label'] ?? __('store.contact_us'), 'url' => $footerSettings['footer_link_2_url'] ?? '/contact'],
@@ -31,7 +40,7 @@
 
         return 'https://' . ltrim($url, '/');
     };
-    $copyrightText = str_replace('{year}', $year, $footerSettings['footer_copyright_text'] ?? '© {year} ' . __('store.shop_name_default') . '. All rights reserved.');
+    $copyrightText = str_replace('{year}', $year, $footerSettings['footer_copyright_text'] ?? '© {year} ' . $storeName . '. ' . __('store.all_rights_reserved'));
 @endphp
 
 <footer class="mt-auto border-t border-gray-200 bg-white">
@@ -78,7 +87,7 @@
             </div>
 
             <div>
-                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerSettings['footer_links_title'] ?? __('store.footer_quick_links') }}</h4>
+                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerLinksTitle }}</h4>
                 <ul class="mt-4 space-y-2 text-sm">
                     @foreach($quickLinks as $link)
                         @if(!empty($link['label']))
@@ -89,7 +98,7 @@
             </div>
 
             <div>
-                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerSettings['footer_support_title'] ?? __('store.customer_support') }}</h4>
+                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerSupportTitle }}</h4>
                 <ul class="mt-4 space-y-2 text-sm text-gray-600">
                     @if(!empty($footerSettings['footer_support_email'] ?? ''))
                         <li>{{ $footerSettings['footer_support_email'] }}</li>
@@ -107,7 +116,7 @@
             </div>
 
             <div>
-                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerSettings['footer_policy_title'] ?? __('store.policies') }}</h4>
+                <h4 class="text-sm font-bold uppercase tracking-[0.18em] text-gray-900">{{ $footerPolicyTitle }}</h4>
                 <ul class="mt-4 space-y-2 text-sm">
                     @foreach($policyLinks as $link)
                         @if(!empty($link['label']))
