@@ -169,6 +169,7 @@ class InstallController extends Controller
             'settings' => $settings,
             'countryOptions' => $this->countrySuggestions(),
             'currencyPresets' => $this->currencyPresets(),
+            'adminEmailSuggestion' => $this->suggestAdminEmail($settings['app_url']),
         ]);
     }
 
@@ -321,31 +322,48 @@ class InstallController extends Controller
 
         $database = session('installer.database');
         $settings = session('installer.settings', $this->defaultSettings());
+        session(['installer.finalize_logs' => []]);
 
         try {
+            $this->appendFinalizeLog('Writing environment configuration.');
             $this->applyDatabaseConfig($database);
-        $this->writeEnvFile($database, $settings);
+            $this->writeEnvFile($database, $settings);
 
+            $this->appendFinalizeLog('Clearing cached configuration and routes.');
             Artisan::call('config:clear');
             Artisan::call('cache:clear');
+
+            $this->appendFinalizeLog('Running database migrations.');
             Artisan::call('migrate', ['--force' => true]);
+
+            $this->appendFinalizeLog('Seeding default data.');
             Artisan::call('db:seed', ['--force' => true]);
+
             if (empty(config('app.key'))) {
+                $this->appendFinalizeLog('Generating application key.');
                 Artisan::call('key:generate', ['--force' => true]);
             }
+
             if (! is_link(public_path('storage')) && ! file_exists(public_path('storage'))) {
+                $this->appendFinalizeLog('Creating storage symlink.');
                 Artisan::call('storage:link');
             }
         } catch (Throwable $e) {
+            $this->appendFinalizeLog('Installation failed: '.$e->getMessage());
             return redirect()->route('install.database')
                 ->withInput()
                 ->withErrors(['database' => 'Installation could not complete: '.$e->getMessage()]);
         }
 
+        $this->appendFinalizeLog('Saving store settings.');
         $this->persistSettings($settings);
+        $this->appendFinalizeLog('Saving currency settings.');
         $this->persistCurrencies($settings['currency'] ?? 'BDT', $settings['custom_currencies'] ?? []);
+        $this->appendFinalizeLog('Saving supported countries.');
         $this->syncCountries($settings['country_codes'] ?? ['BD'], $settings['custom_countries'] ?? []);
+        $this->appendFinalizeLog('Creating admin account.');
         $this->persistAdminAccount($settings);
+        $this->appendFinalizeLog('Locking installer.');
         $this->createLockFile($settings['app_url'] ?? config('app.url'));
 
         session()->forget(['installer.database', 'installer.settings']);
@@ -354,6 +372,23 @@ class InstallController extends Controller
         session()->flash('installer.admin_url', url('/admin'));
 
         return redirect()->route('install.complete');
+    }
+
+    public function finalizePage()
+    {
+        if ($this->installed()) {
+            return redirect()->route('store.index');
+        }
+
+        if (! session()->has('installer.database')) {
+            return redirect()->route('install.database');
+        }
+
+        return view('install.finalize', [
+            'logs' => session('installer.finalize_logs', []),
+            'adminEmail' => session('installer.settings.admin_email', $this->suggestAdminEmail($this->guessAppUrl(request()))),
+            'permissions' => $this->finalizePermissions(),
+        ]);
     }
 
     public function complete()
@@ -619,7 +654,7 @@ class InstallController extends Controller
             'shop_name' => '',
             'slogan' => '',
             'admin_name' => 'Admin',
-            'admin_email' => 'admin@e.com',
+            'admin_email' => $this->suggestAdminEmail($this->guessAppUrl(request())),
             'admin_password' => '',
             'branding_color' => '#111111',
             'secondary_color' => '#6B7280',
@@ -725,6 +760,51 @@ class InstallController extends Controller
     protected function suggestSlogan(?string $shopName): string
     {
         return 'Quality products you can trust.';
+    }
+
+    protected function suggestAdminEmail(?string $appUrl): string
+    {
+        $host = parse_url((string) $appUrl, PHP_URL_HOST) ?: (string) $appUrl;
+        $host = preg_replace('/^www\./i', '', (string) $host);
+        $host = preg_replace('/\.[a-z]{2,}$/i', '', (string) $host);
+        $host = preg_replace('/[^a-z0-9]+/i', '.', strtolower((string) $host));
+        $host = trim((string) $host, '.');
+
+        if ($host === '') {
+            $host = 'store';
+        }
+
+        return 'admin@'.$host.'.com';
+    }
+
+    protected function appendFinalizeLog(string $message): void
+    {
+        $logs = session('installer.finalize_logs', []);
+        $logs[] = ['time' => now()->format('H:i:s'), 'message' => $message];
+        session(['installer.finalize_logs' => $logs]);
+    }
+
+    protected function finalizePermissions(): array
+    {
+        $targets = [
+            'Environment file' => base_path('.env'),
+            'Storage directory' => storage_path(),
+            'Cache directory' => base_path('bootstrap/cache'),
+            'Public storage link' => public_path('storage'),
+        ];
+
+        return collect($targets)->map(function (string $path, string $label): array {
+            $exists = file_exists($path) || is_link($path);
+            $writable = $label === 'Public storage link'
+                ? (is_link($path) || is_dir($path) || ! file_exists($path))
+                : is_writable($path) || (! $exists && is_writable(dirname($path)));
+
+            return [
+                'label' => $label,
+                'path' => $path,
+                'ok' => $writable,
+            ];
+        })->values()->all();
     }
 
     protected function persistAdminAccount(array $settings): void

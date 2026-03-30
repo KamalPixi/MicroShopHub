@@ -5,7 +5,8 @@
         <span class="step done">1. Requirements</span>
         <span class="step done">2. Database</span>
         <span class="step active">3. Settings</span>
-        <span class="step">4. Finish</span>
+        <span class="step">4. Finalize</span>
+        <span class="step">5. Complete</span>
     </div>
 
     <form method="POST" action="{{ route('install.settings.store') }}" enctype="multipart/form-data" class="card stack">
@@ -75,6 +76,29 @@
             </div>
         </div>
 
+        <div class="card" style="padding:16px">
+            <h3 style="margin:0 0 10px;font-size:16px">Admin Login</h3>
+            <p class="muted small" style="margin:0 0 14px">Set the first admin account you will use after installation.</p>
+            <div class="grid grid-2">
+                <div>
+                    <label>Admin Name</label>
+                    <input type="text" name="admin_name" value="{{ old('admin_name', $settings['admin_name'] ?? 'Admin') }}" placeholder="Admin">
+                </div>
+                <div>
+                    <label>Admin Email</label>
+                    <input type="email" name="admin_email" value="{{ old('admin_email', $settings['admin_email'] ?? ($adminEmailSuggestion ?? 'admin@e.com')) }}" placeholder="{{ $adminEmailSuggestion ?? 'admin@e.com' }}">
+                </div>
+                <div>
+                    <label>Admin Password</label>
+                    <input type="password" name="admin_password" value="{{ old('admin_password', $settings['admin_password'] ?? '') }}" placeholder="Choose a strong password">
+                </div>
+                <div>
+                    <label>Confirm Password</label>
+                    <input type="password" name="admin_password_confirmation" value="{{ old('admin_password_confirmation', '') }}" placeholder="Repeat the password">
+                </div>
+            </div>
+        </div>
+
         <div class="card" style="padding:16px" x-data="{ rows: @js(array_values($customCurrencies ?: [])) }">
             <div class="inline" style="justify-content:space-between;align-items:center;margin-bottom:8px">
                 <div>
@@ -134,30 +158,37 @@
                 <div>
                     <label>Hero Title</label>
                     <input type="text" name="home_hero_title" value="{{ old('home_hero_title', $settings['home_hero_title'] ?? '') }}" placeholder="Find what fits your life">
+                    <p class="muted small">Main headline shown in the storefront hero section.</p>
                 </div>
                 <div>
                     <label>Hero Subtitle</label>
                     <input type="text" name="home_hero_subtitle" value="{{ old('home_hero_subtitle', $settings['home_hero_subtitle'] ?? '') }}" placeholder="Curated products, fast delivery, and easy browsing.">
+                    <p class="muted small">Short supporting line shown under the main hero title.</p>
                 </div>
                 <div>
                     <label>Shop by Category Title</label>
                     <input type="text" name="home_shop_by_category_title" value="{{ old('home_shop_by_category_title', $settings['home_shop_by_category_title'] ?? '') }}" placeholder="Shop by Category">
+                    <p class="muted small">Title for the category section on the homepage.</p>
                 </div>
                 <div>
                     <label>Featured Products Title</label>
                     <input type="text" name="home_featured_products_title" value="{{ old('home_featured_products_title', $settings['home_featured_products_title'] ?? '') }}" placeholder="Featured Products">
+                    <p class="muted small">Title for the featured products section.</p>
                 </div>
                 <div>
                     <label>New Arrivals Title</label>
                     <input type="text" name="home_new_arrivals_title" value="{{ old('home_new_arrivals_title', $settings['home_new_arrivals_title'] ?? '') }}" placeholder="New Arrivals">
+                    <p class="muted small">Title for the latest products section.</p>
                 </div>
                 <div>
                     <label>Newsletter Title</label>
                     <input type="text" name="home_newsletter_title" value="{{ old('home_newsletter_title', $settings['home_newsletter_title'] ?? '') }}" placeholder="Stay Updated">
+                    <p class="muted small">Heading shown above the newsletter signup box.</p>
                 </div>
                 <div class="md:col-span-2">
                     <label>Newsletter Subtitle</label>
                     <input type="text" name="home_newsletter_subtitle" value="{{ old('home_newsletter_subtitle', $settings['home_newsletter_subtitle'] ?? '') }}" placeholder="Subscribe for new arrivals, exclusive offers, and restock alerts.">
+                    <p class="muted small">Short message that explains why customers should subscribe.</p>
                 </div>
             </div>
         </div>
@@ -277,29 +308,6 @@
         </div>
 
         <div class="card" style="padding:16px">
-            <h3 style="margin:0 0 10px;font-size:16px">Admin Login</h3>
-            <p class="muted small" style="margin:0 0 14px">Set the first admin account you will use after installation.</p>
-            <div class="grid grid-2">
-                <div>
-                    <label>Admin Name</label>
-                    <input type="text" name="admin_name" value="{{ old('admin_name', $settings['admin_name'] ?? 'Admin') }}" placeholder="Admin">
-                </div>
-                <div>
-                    <label>Admin Email</label>
-                    <input type="email" name="admin_email" value="{{ old('admin_email', $settings['admin_email'] ?? 'admin@e.com') }}" placeholder="admin@e.com">
-                </div>
-                <div>
-                    <label>Admin Password</label>
-                    <input type="password" name="admin_password" value="{{ old('admin_password', $settings['admin_password'] ?? '') }}" placeholder="Choose a strong password">
-                </div>
-                <div>
-                    <label>Confirm Password</label>
-                    <input type="password" name="admin_password_confirmation" value="{{ old('admin_password_confirmation', '') }}" placeholder="Repeat the password">
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="padding:16px">
             <h3 style="margin:0 0 10px;font-size:16px">Gateway Details (Optional)</h3>
             <div class="grid grid-2">
                 <div class="card" style="padding:14px">
@@ -400,7 +408,7 @@
 
         <div class="btn-row">
             <a class="btn btn-soft" href="{{ route('install.database') }}">Back</a>
-            <button class="btn btn-primary" type="submit">Finalize Installation</button>
+            <button class="btn btn-primary" type="submit">Review Finalize Step</button>
         </div>
     </form>
 @endsection

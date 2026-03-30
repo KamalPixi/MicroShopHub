@@ -46,8 +46,9 @@ Route::get('/install/database', [InstallController::class, 'database'])->name('i
 Route::post('/install/database', [InstallController::class, 'storeDatabase'])->name('install.database.store');
 Route::get('/install/settings', [InstallController::class, 'settings'])->name('install.settings');
 Route::post('/install/settings', [InstallController::class, 'storeSettings'])->name('install.settings.store');
+Route::get('/install/finalize', [InstallController::class, 'finalizePage'])->name('install.finalize');
+Route::post('/install/finalize', [InstallController::class, 'finalize'])->name('install.finalize.run');
 Route::get('/install/complete', [InstallController::class, 'complete'])->name('install.complete');
-Route::post('/install/finalize', [InstallController::class, 'finalize'])->name('install.finalize');
 
 Route::get('/language/{locale}', function (Request $request, string $locale) {
     $settings = Cache::remember('store_language_settings', 300, function () {

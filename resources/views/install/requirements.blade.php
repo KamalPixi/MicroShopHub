@@ -5,7 +5,8 @@
         <span class="step active">1. Requirements</span>
         <span class="step">2. Database</span>
         <span class="step">3. Settings</span>
-        <span class="step">4. Finish</span>
+        <span class="step">4. Finalize</span>
+        <span class="step">5. Complete</span>
     </div>
 
     <div class="two-col">

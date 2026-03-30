@@ -5,7 +5,8 @@
         <span class="step done">1. Requirements</span>
         <span class="step done">2. Database</span>
         <span class="step done">3. Settings</span>
-        <span class="step active">4. Finish</span>
+        <span class="step done">4. Finalize</span>
+        <span class="step active">5. Complete</span>
     </div>
 
     <div class="two-col">
@@ -30,6 +31,16 @@
                 <div>3. Add products, shipping methods, and coupons.</div>
                 <div>4. Test a storefront order before going live.</div>
             </div>
+            @if(!empty(session('installer.finalize_logs')))
+                <div class="card" style="padding:14px;background:#f8fafc">
+                    <h4 style="margin:0 0 8px;font-size:14px">Installation log</h4>
+                    <div class="stack small muted">
+                        @foreach(session('installer.finalize_logs') as $log)
+                            <div>• {{ $log['time'] ?? '' }} {{ $log['message'] ?? '' }}</div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
             <div class="btn-row" style="justify-content:flex-start">
                 <a class="btn btn-primary" href="{{ route('admin.login') }}">Open Admin Login</a>
                 <a class="btn btn-soft" href="{{ route('store.index') }}">Visit Storefront</a>
