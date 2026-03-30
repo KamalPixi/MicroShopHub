@@ -28,6 +28,9 @@ class PaymentController extends Controller
             case 'bkash':
                 return $this->payWithBkash($request);
 
+            case 'portpos':
+                return $this->payWithPortPos($request);
+
             case 'stripe':
                 return redirect()->back()->with('error', 'Stripe not implemented yet.');
 
@@ -187,6 +190,71 @@ class PaymentController extends Controller
         return redirect()->away($bkashUrl);
     }
 
+    private function payWithPortPos(Request $request)
+    {
+        $settings = Setting::whereIn('key', [
+            'portpos_app_key',
+            'portpos_secret_key',
+            'portpos_sandbox',
+        ])->pluck('value', 'key');
+
+        $appKey = $settings['portpos_app_key'] ?? null;
+        $secretKey = $settings['portpos_secret_key'] ?? null;
+        $isSandbox = filter_var($settings['portpos_sandbox'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        if (! $appKey || ! $secretKey) {
+            return redirect()->back()->with('error', 'PortPos credentials are missing.');
+        }
+
+        $amount = (float) $request->input('amount', 0);
+        if ($amount <= 0) {
+            return redirect()->back()->with('error', 'Invalid payment amount.');
+        }
+
+        $currencyCode = strtoupper(Currency::getActive()->code ?? 'BDT');
+        $timestamp = time();
+        $token = md5($secretKey.$timestamp);
+        $authorization = 'Bearer '.base64_encode($appKey.':'.$token);
+        $baseUrl = $isSandbox ? 'https://api-sandbox.portpos.com' : 'https://api.portpos.com';
+        $paymentUrl = $isSandbox ? 'https://payment-sandbox.portpos.com/payment/?invoice=' : 'https://payment.portpos.com/payment/?invoice=';
+
+        $response = Http::withHeaders([
+            'Authorization' => $authorization,
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->post($baseUrl.'/payment/v2/invoice', [
+            'order' => [
+                'amount' => number_format($amount, 2, '.', ''),
+                'currency' => $currencyCode,
+                'redirect_url' => route('payment.success', ['gateway' => 'portpos']),
+                'ipn_url' => route('payment.ipn', ['gateway' => 'portpos']),
+                'reference' => 'PORTPOS-'.strtoupper(uniqid()),
+                'validity' => 900,
+            ],
+        ]);
+
+        $result = $response->json();
+        $invoiceId = data_get($result, 'data.invoice_id');
+
+        if (! $response->successful() || ! $invoiceId) {
+            Log::error('PortPos invoice creation failed.', [
+                'status' => $response->status(),
+                'response' => $result,
+            ]);
+
+            return redirect()->back()->with('error', 'PortPos invoice creation failed.');
+        }
+
+        session()->put("portpos.payment.{$invoiceId}", [
+            'amount' => $amount,
+            'currency' => $currencyCode,
+            'sandbox' => $isSandbox,
+            'created_at' => now()->toDateTimeString(),
+        ]);
+
+        return redirect()->away($paymentUrl.$invoiceId);
+    }
+
     // --- 4. GLOBAL CALLBACK HANDLERS ---
 
     public function success($gateway, Request $request)
@@ -195,6 +263,35 @@ class PaymentController extends Controller
             $tran_id = $request->input('tran_id');
             // Update Database Logic Here...
             return redirect()->route('store.index')->with('success', "Payment Successful via SSLCommerz! TRX: $tran_id");
+        }
+
+        if ($gateway == 'portpos') {
+            $invoiceId = $request->input('invoice') ?? $request->input('invoice_id') ?? $request->input('invoiceId');
+            if (! $invoiceId) {
+                return redirect()->route('store.index')->with('error', 'Invalid PortPos callback.');
+            }
+
+            $sessionKey = "portpos.payment.{$invoiceId}";
+            $paymentSession = session()->get($sessionKey, []);
+            $amount = (float) ($paymentSession['amount'] ?? $request->input('amount', 0));
+
+            if ($amount <= 0) {
+                return redirect()->route('store.index')->with('error', 'PortPos payment amount is missing.');
+            }
+
+            $validation = $this->validatePortPosInvoice($invoiceId, $amount);
+
+            if ($validation['ok'] ?? false) {
+                session()->forget($sessionKey);
+
+                return redirect()->route('store.index')->with('success', 'PortPos payment successful.');
+            }
+
+            if ($validation['pending'] ?? false) {
+                return redirect()->route('store.index')->with('warning', 'PortPos payment is pending confirmation.');
+            }
+
+            return redirect()->route('store.index')->with('error', 'PortPos payment failed or could not be verified.');
         }
 
         return redirect()->route('store.index')->with('error', 'Unknown Payment Gateway.');
@@ -217,6 +314,9 @@ class PaymentController extends Controller
         switch ($gateway) {
             case 'sslcommerz':
                 return $this->handleSslCommerzIpn($request);
+
+            case 'portpos':
+                return $this->handlePortPosIpn($request);
             
             case 'stripe':
                 return response()->json(['status' => 'Stripe not implemented'], 404);
@@ -280,6 +380,30 @@ class PaymentController extends Controller
         return response()->json(['status' => 'Validation Failed'], 400);
     }
 
+    private function handlePortPosIpn(Request $request)
+    {
+        $invoiceId = $request->input('invoice') ?? $request->input('invoice_id') ?? $request->input('invoiceId');
+        $amount = (float) ($request->input('amount') ?? 0);
+
+        if (! $invoiceId || $amount <= 0) {
+            return response()->json(['status' => 'Invalid Data'], 400);
+        }
+
+        $validation = $this->validatePortPosInvoice($invoiceId, $amount);
+
+        if ($validation['ok'] ?? false) {
+            Log::info("PortPos invoice {$invoiceId} validated successfully.");
+
+            return response()->json(['status' => 'IPN Processed Successfully']);
+        }
+
+        if ($validation['pending'] ?? false) {
+            return response()->json(['status' => 'IPN Pending']);
+        }
+
+        return response()->json(['status' => 'Validation Failed'], 400);
+    }
+
     // --- 5. bKash Callback ---
     public function bkashCallback(Request $request)
     {
@@ -320,5 +444,50 @@ class PaymentController extends Controller
         }
 
         return redirect()->route('store.index')->with('error', 'bKash payment execution failed.');
+    }
+
+    private function validatePortPosInvoice(string $invoiceId, float $amount): array
+    {
+        $settings = Setting::whereIn('key', [
+            'portpos_app_key',
+            'portpos_secret_key',
+            'portpos_sandbox',
+        ])->pluck('value', 'key');
+
+        $appKey = $settings['portpos_app_key'] ?? null;
+        $secretKey = $settings['portpos_secret_key'] ?? null;
+        $isSandbox = filter_var($settings['portpos_sandbox'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+        if (! $appKey || ! $secretKey) {
+            return ['ok' => false, 'pending' => false, 'response' => null];
+        }
+
+        $timestamp = time();
+        $token = md5($secretKey.$timestamp);
+        $baseUrl = $isSandbox ? 'https://api-sandbox.portpos.com' : 'https://api.portpos.com';
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer '.base64_encode($appKey.':'.$token),
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->post($baseUrl.'/payment/v2/invoice', [
+            'app_key' => $appKey,
+            'timestamp' => $timestamp,
+            'token' => $token,
+            'call' => 'get_invoice',
+            'invoice' => $invoiceId,
+            'amount' => number_format($amount, 2, '.', ''),
+        ]);
+
+        $result = $response->json();
+        $status = (int) ($result['status'] ?? 0);
+        $invoiceStatus = strtoupper((string) data_get($result, 'data.status', ''));
+
+        return [
+            'ok' => $response->successful() && $status === 200 && $invoiceStatus === 'ACCEPTED',
+            'pending' => $response->successful() && ($status === 100 || $invoiceStatus === 'PENDING'),
+            'status' => $invoiceStatus,
+            'response' => $result,
+        ];
     }
 }

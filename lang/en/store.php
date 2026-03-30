@@ -348,6 +348,8 @@ return [
     'shipped' => 'Shipped',
     'delivered' => 'Delivered',
     'cancelled' => 'Cancelled',
+    'pay_with_portpos' => 'Pay with PortPos',
+    'portpos_invoice_checkout' => 'Invoice checkout',
     'pay_with_sslcommerz' => 'Pay with SSLCommerz',
     'transaction_id_note' => 'Transaction ID or note',
     'provide_reference_or_proof' => 'Provide at least one: reference or proof.',

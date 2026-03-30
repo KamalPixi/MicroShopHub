@@ -290,6 +290,48 @@
 
                 <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
                     <div class="flex items-center mb-4 justify-between">
+                        <div class="flex items-center">
+                            <span class="font-bold text-gray-800 text-sm">PortPos</span>
+                            <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-700 border border-gray-200">Invoice</span>
+                        </div>
+                        <div class="h-8 w-8 rounded-lg bg-black text-white flex items-center justify-center text-xs font-bold">PP</div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gateway Display Name</label>
+                            <input wire:model="settings.portpos_label" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Pay with PortPos">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">App Key</label>
+                                <input wire:model="settings.portpos_app_key" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="portpos_app_key">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Secret Key</label>
+                                <input wire:model="settings.portpos_secret_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="portpos_secret_key">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center pt-2">
+                            <input wire:model="settings.portpos_sandbox" type="checkbox" id="portpos_sandbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="portpos_sandbox" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">Enable Sandbox Mode (Test Mode)</label>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-end gap-3">
+                        @if($savedSection === 'portpos')
+                            <span class="text-xs font-semibold text-green-600">Saved</span>
+                        @endif
+                        <button wire:click="savePortPosGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            Save PortPos
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                    <div class="flex items-center mb-4 justify-between">
                         <span class="font-bold text-gray-800 text-sm">Stripe</span>
                         <svg class="h-6 w-auto text-blue-600" viewBox="0 0 40 17" fill="currentColor"><path d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z"/></svg>
                     </div>

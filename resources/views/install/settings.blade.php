@@ -326,6 +326,27 @@
                     </div>
                 </div>
                 <div class="card" style="padding:14px">
+                    <h4 style="margin:0 0 10px;font-size:14px">PortPos</h4>
+                    <div class="stack">
+                        <div>
+                            <label>App Key</label>
+                            <input type="text" name="portpos_app_key" value="{{ old('portpos_app_key', $settings['portpos_app_key'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Secret Key</label>
+                            <input type="password" name="portpos_secret_key" value="{{ old('portpos_secret_key', $settings['portpos_secret_key'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Label</label>
+                            <input type="text" name="portpos_label" value="{{ old('portpos_label', $settings['portpos_label'] ?? '') }}" placeholder="Pay with PortPos">
+                        </div>
+                        <label class="checkbox" style="margin-top:0">
+                            <input type="checkbox" name="portpos_sandbox" value="1" @checked(old('portpos_sandbox', $settings['portpos_sandbox'] ?? false))>
+                            <span class="small">Use sandbox</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="card" style="padding:14px">
                     <h4 style="margin:0 0 10px;font-size:14px">bKash</h4>
                     <div class="stack">
                         <div>

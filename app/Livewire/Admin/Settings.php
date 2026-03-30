@@ -52,6 +52,11 @@ class Settings extends Component
         'sslcommerz_label' => '',
         'sslcommerz_sandbox' => false,
 
+        'portpos_app_key' => '',
+        'portpos_secret_key' => '',
+        'portpos_label' => '',
+        'portpos_sandbox' => false,
+
         // bKash
         'bkash_base_url' => '',
         'bkash_app_key' => '',
@@ -152,6 +157,10 @@ class Settings extends Component
         'settings.sslcommerz_api_key' => 'nullable|string|max:255',
         'settings.sslcommerz_label' => 'nullable|string|max:255',
         'settings.sslcommerz_sandbox' => 'boolean',
+        'settings.portpos_app_key' => 'nullable|string|max:255',
+        'settings.portpos_secret_key' => 'nullable|string|max:255',
+        'settings.portpos_label' => 'nullable|string|max:255',
+        'settings.portpos_sandbox' => 'boolean',
         'settings.cod_label' => 'nullable|string|max:255',
         'settings.cod_enabled' => 'boolean',
         'settings.bkash_base_url' => 'nullable|string|max:255',
@@ -422,6 +431,10 @@ class Settings extends Component
             'sslcommerz_api_key',
             'sslcommerz_label',
             'sslcommerz_sandbox',
+            'portpos_app_key',
+            'portpos_secret_key',
+            'portpos_label',
+            'portpos_sandbox',
             'stripe_api_key',
             'stripe_label',
             'paypal_api_key',
@@ -438,6 +451,10 @@ class Settings extends Component
             'settings.sslcommerz_api_key' => $this->rules['settings.sslcommerz_api_key'],
             'settings.sslcommerz_label' => $this->rules['settings.sslcommerz_label'],
             'settings.sslcommerz_sandbox' => $this->rules['settings.sslcommerz_sandbox'],
+            'settings.portpos_app_key' => $this->rules['settings.portpos_app_key'],
+            'settings.portpos_secret_key' => $this->rules['settings.portpos_secret_key'],
+            'settings.portpos_label' => $this->rules['settings.portpos_label'],
+            'settings.portpos_sandbox' => $this->rules['settings.portpos_sandbox'],
             'settings.stripe_api_key' => $this->rules['settings.stripe_api_key'],
             'settings.stripe_label' => $this->rules['settings.stripe_label'],
             'settings.paypal_api_key' => $this->rules['settings.paypal_api_key'],
@@ -474,6 +491,21 @@ class Settings extends Component
             'settings.sslcommerz_label' => $this->rules['settings.sslcommerz_label'],
             'settings.sslcommerz_sandbox' => $this->rules['settings.sslcommerz_sandbox'],
         ], false, 'sslcommerz');
+    }
+
+    public function savePortPosGateway()
+    {
+        $this->saveSettings([
+            'portpos_app_key',
+            'portpos_secret_key',
+            'portpos_label',
+            'portpos_sandbox',
+        ], [
+            'settings.portpos_app_key' => $this->rules['settings.portpos_app_key'],
+            'settings.portpos_secret_key' => $this->rules['settings.portpos_secret_key'],
+            'settings.portpos_label' => $this->rules['settings.portpos_label'],
+            'settings.portpos_sandbox' => $this->rules['settings.portpos_sandbox'],
+        ], false, 'portpos');
     }
 
     public function saveStripeGateway()

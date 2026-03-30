@@ -560,6 +560,24 @@
                                     </button>
                                 @endif
 
+                                @if(!empty($settings['portpos_app_key']) && !empty($settings['portpos_secret_key']))
+                                    <button type="button"
+                                            wire:click="$set('paymentMethod','portpos')"
+                                            class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                                   {{ $paymentMethod === 'portpos' ? 'border-black ring-1 ring-black/10' : 'border-gray-200 hover:border-black' }}">
+                                        <div class="flex flex-col items-start text-left">
+                                            <div class="h-7 w-7 mb-1 text-white bg-black rounded-lg flex items-center justify-center font-bold text-[10px]">PP</div>
+                                            <span class="text-sm font-bold text-gray-800 group-hover:text-black transition-colors">
+                                                {{ $settings['portpos_label'] ?: __('store.pay_with_portpos') }}
+                                            </span>
+                                            <span class="text-[10px] text-gray-500">{{ __('store.portpos_invoice_checkout') }}</span>
+                                        </div>
+                                        <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors text-gray-400">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                        </div>
+                                    </button>
+                                @endif
+
                                 @if(!empty($offlinePaymentMethods))
                                     <button type="button"
                                             wire:click="$set('paymentMethod','offline')"
@@ -645,6 +663,14 @@
                                 <input type="hidden" name="gateway" value="{{ $paymentMethod }}">
                                 <input type="hidden" name="amount" value="{{ number_format($total, 2, '.', '') }}">
                                 <input type="hidden" name="payer_reference" value="{{ $phone }}">
+                                <input type="hidden" name="billing_name" value="{{ $billing['name'] }}">
+                                <input type="hidden" name="billing_email" value="{{ $email }}">
+                                <input type="hidden" name="billing_phone" value="{{ $phone }}">
+                                <input type="hidden" name="billing_address" value="{{ $billing['address_line1'] }}">
+                                <input type="hidden" name="billing_city" value="{{ $billing['city'] }}">
+                                <input type="hidden" name="billing_state" value="{{ $billing['state'] }}">
+                                <input type="hidden" name="billing_postal_code" value="{{ $billing['postal_code'] }}">
+                                <input type="hidden" name="billing_country" value="{{ $billing['country_code'] }}">
                                 <button type="submit"
                                         class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center">
                                     {{ __('store.proceed_to_payment') }}

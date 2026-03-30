@@ -314,6 +314,8 @@ return [
     'shipped' => 'পাঠানো হয়েছে',
     'delivered' => 'ডেলিভারি হয়েছে',
     'cancelled' => 'বাতিল',
+    'pay_with_portpos' => 'PortPos দিয়ে পেমেন্ট করুন',
+    'portpos_invoice_checkout' => 'ইনভয়েস চেকআউট',
     'pay_with_sslcommerz' => 'SSLCommerz দিয়ে পেমেন্ট করুন',
     'transaction_id_note' => 'ট্রানজেকশন আইডি বা নোট',
     'provide_reference_or_proof' => 'কমপক্ষে একটি দিন: রেফারেন্স বা প্রমাণ।',

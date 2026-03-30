@@ -42,6 +42,14 @@ class PaymentGatewaySeeder extends Seeder
                 'sort_order' => 4,
                 'config' => json_encode(['store_id' => '', 'store_password' => '']),
             ],
+            [
+                'name' => 'PortPos',
+                'code' => 'portpos',
+                'description' => 'Invoice-based checkout via PortPos.',
+                'is_active' => true,
+                'sort_order' => 5,
+                'config' => json_encode(['app_key' => '', 'secret_key' => '', 'sandbox' => false]),
+            ],
         ];
 
         DB::table('payment_gateways')->insert($gateways);
