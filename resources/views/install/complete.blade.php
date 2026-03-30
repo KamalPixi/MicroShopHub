@@ -15,6 +15,8 @@
             <p class="muted small" style="margin:0 0 14px">Your store is ready to use.</p>
             <div class="stack small muted" style="text-align:left">
                 <div>• Store: {{ $storeName }}</div>
+                <div>• Admin login: {{ $adminEmail }}</div>
+                <div>• Admin URL: {{ $adminUrl }}</div>
                 <div>• Default data, languages, currencies, countries, and settings are loaded.</div>
                 <div>• The installer is locked and will not appear again.</div>
             </div>

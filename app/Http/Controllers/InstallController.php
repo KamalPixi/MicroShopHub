@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\Admin;
+use App\Models\AdminRole;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -181,6 +184,9 @@ class InstallController extends Controller
             'app_url' => ['nullable', 'url', 'max:255'],
             'shop_name' => ['nullable', 'string', 'max:255'],
             'slogan' => ['nullable', 'string', 'max:255'],
+            'admin_name' => ['required', 'string', 'max:255'],
+            'admin_email' => ['required', 'email', 'max:255'],
+            'admin_password' => ['required', 'string', 'min:8', 'confirmed'],
             'branding_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'secondary_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'accent_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
@@ -339,10 +345,13 @@ class InstallController extends Controller
         $this->persistSettings($settings);
         $this->persistCurrencies($settings['currency'] ?? 'BDT', $settings['custom_currencies'] ?? []);
         $this->syncCountries($settings['country_codes'] ?? ['BD'], $settings['custom_countries'] ?? []);
+        $this->persistAdminAccount($settings);
         $this->createLockFile($settings['app_url'] ?? config('app.url'));
 
         session()->forget(['installer.database', 'installer.settings']);
         session()->flash('installer.completed', true);
+        session()->flash('installer.admin_email', $settings['admin_email'] ?? 'admin@e.com');
+        session()->flash('installer.admin_url', url('/admin'));
 
         return redirect()->route('install.complete');
     }
@@ -359,6 +368,8 @@ class InstallController extends Controller
 
         return view('install.complete', [
             'storeName' => Setting::query()->where('key', 'shop_name')->value('value') ?: config('app.name', 'ShopHub'),
+            'adminEmail' => session('installer.admin_email', 'admin@e.com'),
+            'adminUrl' => session('installer.admin_url', url('/admin')),
         ]);
     }
 
@@ -607,6 +618,9 @@ class InstallController extends Controller
             'app_url' => $this->guessAppUrl(request()),
             'shop_name' => '',
             'slogan' => '',
+            'admin_name' => 'Admin',
+            'admin_email' => 'admin@e.com',
+            'admin_password' => '',
             'branding_color' => '#111111',
             'secondary_color' => '#6B7280',
             'accent_color' => '#F59E0B',
@@ -711,5 +725,33 @@ class InstallController extends Controller
     protected function suggestSlogan(?string $shopName): string
     {
         return 'Quality products you can trust.';
+    }
+
+    protected function persistAdminAccount(array $settings): void
+    {
+        $roleId = AdminRole::query()->where('slug', 'super_admin')->value('id');
+        $name = trim((string) ($settings['admin_name'] ?? 'Admin')) ?: 'Admin';
+        $email = trim((string) ($settings['admin_email'] ?? 'admin@e.com')) ?: 'admin@e.com';
+        $password = (string) ($settings['admin_password'] ?? '');
+
+        if ($password === '') {
+            $password = 'password';
+        }
+
+        Admin::query()->updateOrCreate(
+            ['email' => $email],
+            [
+                'name' => $name,
+                'role_id' => $roleId,
+                'password' => Hash::make($password),
+            ]
+        );
+
+        if ($email !== 'admin@e.com') {
+            Admin::query()
+                ->where('email', 'admin@e.com')
+                ->where('email', '!=', $email)
+                ->delete();
+        }
     }
 }

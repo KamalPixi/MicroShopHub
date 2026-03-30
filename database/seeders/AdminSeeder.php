@@ -15,14 +15,22 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         $roleId = AdminRole::where('slug', 'super_admin')->value('id');
+        $installerSettings = session('installer.settings', []);
+        $name = trim((string) ($installerSettings['admin_name'] ?? 'Admin')) ?: 'Admin';
+        $email = trim((string) ($installerSettings['admin_email'] ?? 'admin@e.com')) ?: 'admin@e.com';
+        $password = (string) ($installerSettings['admin_password'] ?? 'password');
 
         Admin::updateOrCreate(
-            ['email' => 'admin@e.com'],
+            ['email' => $email],
             [
-                'name' => 'Admin',
+                'name' => $name,
                 'role_id' => $roleId,
-                'password' => Hash::make('password'),
+                'password' => Hash::make($password),
             ]
         );
+
+        if ($email !== 'admin@e.com') {
+            Admin::where('email', 'admin@e.com')->where('email', '!=', $email)->delete();
+        }
     }
 }

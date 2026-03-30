@@ -129,6 +129,7 @@
 
         <div class="card" style="padding:16px">
             <h3 style="margin:0 0 10px;font-size:16px">Homepage Defaults</h3>
+            <p class="muted small" style="margin:0 0 14px">These are starter homepage values. You can change them later from Shop Settings.</p>
             <div class="grid grid-2">
                 <div>
                     <label>Hero Title</label>
@@ -271,6 +272,29 @@
                 <div>
                     <label>Mail From Name</label>
                     <input type="text" name="mail_from_name" value="{{ old('mail_from_name', $settings['mail_from_name'] ?? '') }}" placeholder="Store Name">
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="padding:16px">
+            <h3 style="margin:0 0 10px;font-size:16px">Admin Login</h3>
+            <p class="muted small" style="margin:0 0 14px">Set the first admin account you will use after installation.</p>
+            <div class="grid grid-2">
+                <div>
+                    <label>Admin Name</label>
+                    <input type="text" name="admin_name" value="{{ old('admin_name', $settings['admin_name'] ?? 'Admin') }}" placeholder="Admin">
+                </div>
+                <div>
+                    <label>Admin Email</label>
+                    <input type="email" name="admin_email" value="{{ old('admin_email', $settings['admin_email'] ?? 'admin@e.com') }}" placeholder="admin@e.com">
+                </div>
+                <div>
+                    <label>Admin Password</label>
+                    <input type="password" name="admin_password" value="{{ old('admin_password', $settings['admin_password'] ?? '') }}" placeholder="Choose a strong password">
+                </div>
+                <div>
+                    <label>Confirm Password</label>
+                    <input type="password" name="admin_password_confirmation" value="{{ old('admin_password_confirmation', '') }}" placeholder="Repeat the password">
                 </div>
             </div>
         </div>
