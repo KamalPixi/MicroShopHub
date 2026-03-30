@@ -3,13 +3,15 @@
 namespace App\Livewire\Admin;
 
 use App\Models\FlashSale;
-use App\Models\Product;
+use App\Services\Admin\FlashSaleAdminService;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class FlashSales extends Component
 {
     use WithPagination;
+
+    protected FlashSaleAdminService $service;
 
     public $search = '';
     public $perPage = 10;
@@ -70,8 +72,9 @@ class FlashSales extends Component
         $this->resetValidation();
     }
 
-    public function mount(): void
+    public function mount(FlashSaleAdminService $service): void
     {
+        $this->service = $service;
         $this->resetForm();
     }
 
@@ -85,23 +88,21 @@ class FlashSales extends Component
     public function save(): void
     {
         $this->validate();
-
-        $flashSale = FlashSale::updateOrCreate(
-            ['id' => $this->flashSaleId],
+        $this->service->save(
             [
                 'title' => $this->title,
-                'subtitle' => $this->subtitle ?: null,
-                'description' => $this->description ?: null,
-                'sale_type' => $this->saleType,
-                'sale_value' => $this->saleValue,
-                'starts_at' => $this->startsAt,
-                'ends_at' => $this->endsAt,
+                'subtitle' => $this->subtitle,
+                'description' => $this->description,
+                'saleType' => $this->saleType,
+                'saleValue' => $this->saleValue,
+                'startsAt' => $this->startsAt,
+                'endsAt' => $this->endsAt,
                 'active' => $this->active,
-                'created_by' => auth('admin')->id(),
-            ]
+            ],
+            $this->flashSaleId,
+            (int) auth('admin')->id(),
+            $this->selectedProductIds
         );
-
-        $flashSale->products()->sync($this->selectedProductIds);
 
         session()->flash('message', $this->flashSaleId ? 'Flash sale updated successfully.' : 'Flash sale created successfully.');
         $this->resetForm();
@@ -125,7 +126,7 @@ class FlashSales extends Component
 
     public function delete(int $id): void
     {
-        FlashSale::findOrFail($id)->delete();
+        $this->service->delete($id);
         session()->flash('message', 'Flash sale deleted successfully.');
         if ($this->flashSaleId === $id) {
             $this->resetForm();
@@ -139,34 +140,17 @@ class FlashSales extends Component
             ->orderByDesc('starts_at')
             ->paginate($this->perPage);
 
-        $products = Product::query()
-            ->where('status', true)
-            ->when($this->search, function ($query) {
-                $search = trim((string) $this->search);
-                $query->where(function ($subQuery) use ($search) {
-                    $subQuery->where('name', 'like', "%{$search}%")
-                        ->orWhere('sku', 'like', "%{$search}%")
-                        ->orWhere('slug', 'like', "%{$search}%");
-                });
-            })
-            ->latest()
-            ->limit(24)
-            ->get();
-
-        $selectedProducts = Product::query()
-            ->whereIn('id', $this->selectedProductIds)
-            ->get();
+        $products = $this->service->searchProducts(trim((string) $this->search));
+        $selectedProducts = $this->service->selectedProducts($this->selectedProductIds);
+        $stats = $this->service->stats();
 
         return view('livewire.admin.flash-sales', [
             'flashSales' => $sales,
             'products' => $products,
             'selectedProducts' => $selectedProducts,
-            'totalCount' => FlashSale::count(),
-            'activeCount' => FlashSale::activeNow()->count(),
-            'scheduledCount' => FlashSale::query()
-                ->where('active', true)
-                ->where('starts_at', '>', now())
-                ->count(),
+            'totalCount' => $stats['totalCount'],
+            'activeCount' => $stats['activeCount'],
+            'scheduledCount' => $stats['scheduledCount'],
         ]);
     }
 }
