@@ -369,7 +369,7 @@ class InstallController extends Controller
         session()->forget(['installer.database', 'installer.settings']);
         session()->flash('installer.completed', true);
         session()->flash('installer.admin_email', $settings['admin_email'] ?? 'admin@e.com');
-        session()->flash('installer.admin_url', url('/admin'));
+        session()->flash('installer.admin_url', $this->installerAdminUrl());
 
         return redirect()->route('install.complete');
     }
@@ -622,13 +622,18 @@ class InstallController extends Controller
 
         $replacements = [
             'APP_NAME' => $settings['shop_name'] ?: config('app.name', 'ShopHub'),
-            'APP_URL' => $settings['app_url'] ?? config('app.url'),
             'DB_HOST' => $database['host'],
             'DB_PORT' => $database['port'],
             'DB_DATABASE' => $database['database'],
             'DB_USERNAME' => $database['username'],
             'DB_PASSWORD' => $database['password'] ?? '',
         ];
+
+        $appUrl = trim((string) ($settings['app_url'] ?? ''));
+
+        if ($appUrl !== '') {
+            $replacements['APP_URL'] = $appUrl;
+        }
 
         $env = file_get_contents($envPath);
 
@@ -775,6 +780,11 @@ class InstallController extends Controller
         }
 
         return 'admin@'.$host.'.com';
+    }
+
+    protected function installerAdminUrl(): string
+    {
+        return rtrim(request()->getSchemeAndHttpHost(), '/').'/admin';
     }
 
     protected function appendFinalizeLog(string $message): void
