@@ -44,7 +44,7 @@
         .checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
         .checkitem{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
         .footer{padding:16px 24px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
-        .two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
+        .two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start}
         .inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
         .checkboxes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
         .checkbox{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}

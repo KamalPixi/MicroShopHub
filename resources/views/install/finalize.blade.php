@@ -60,7 +60,7 @@
             <p class="muted small" style="margin:0">The log below will show the installation steps once you run the installer.</p>
 
             @if(!empty($logs))
-                <div class="stack" style="max-height:320px;overflow:auto;padding-right:4px">
+                <div class="stack" style="max-height:260px;overflow:auto;padding-right:4px">
                     @foreach($logs as $log)
                         <div class="card" style="padding:10px;background:#f8fafc">
                             <div class="small muted" style="font-size:10px;line-height:1.2">{{ $log['time'] ?? '' }}</div>
@@ -70,7 +70,7 @@
                 </div>
             @else
                 <div class="card" style="padding:12px;background:#f8fafc">
-                    <div class="muted small" style="font-size:12px">No installation log yet.</div>
+                    <div class="muted small" style="font-size:12px">Run installation to see the log here.</div>
                 </div>
             @endif
 
