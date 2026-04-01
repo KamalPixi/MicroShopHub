@@ -14,6 +14,11 @@ services:
       CACHE_STORE: file
       QUEUE_CONNECTION: database
       LOG_CHANNEL: stack
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${MYSQL_DATABASE_NAME:-microshophub}
+      DB_USERNAME: ${MYSQL_USERNAME:-microshophub}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-microshophub}
     depends_on:
       db:
         condition: service_healthy
@@ -79,6 +84,11 @@ services:
       CACHE_STORE: file
       QUEUE_CONNECTION: database
       LOG_CHANNEL: stack
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${MYSQL_DATABASE_NAME:-microshophub}
+      DB_USERNAME: ${MYSQL_USERNAME:-microshophub}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-microshophub}
     depends_on:
       db:
         condition: service_healthy
@@ -102,6 +112,11 @@ services:
       CACHE_STORE: file
       QUEUE_CONNECTION: database
       LOG_CHANNEL: stack
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${MYSQL_DATABASE_NAME:-microshophub}
+      DB_USERNAME: ${MYSQL_USERNAME:-microshophub}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-microshophub}
     depends_on:
       db:
         condition: service_healthy
@@ -121,6 +136,11 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${MYSQL_DATABASE_NAME:-microshophub}
+      DB_USERNAME: ${MYSQL_USERNAME:-microshophub}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-microshophub}
     depends_on:
       - db
     profiles:

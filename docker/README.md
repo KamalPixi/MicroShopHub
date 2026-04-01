@@ -19,6 +19,10 @@ Frontend assets:
 - Build the frontend locally once, commit `public/build`, and the server will not need npm or Vite.
 - The Docker setup helper now only installs PHP dependencies.
 
+Startup behavior:
+- The PHP image now waits for the database itself before starting Laravel.
+- This avoids nerdctl Compose dependency warnings and keeps startup predictable.
+
 First deploy flow:
 1. Make sure the project files are on the server.
 2. Optionally export the MySQL Docker variables from `docker/.env.example` if you want to override the defaults.
