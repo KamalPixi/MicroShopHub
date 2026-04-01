@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 set -e
 
+if [ "${SKIP_DB_WAIT:-0}" = "1" ]; then
+    exec "$@"
+fi
+
 if [ -n "${DB_HOST:-}" ]; then
     DB_PORT="${DB_PORT:-3306}"
     echo "Waiting for database at ${DB_HOST}:${DB_PORT}..."

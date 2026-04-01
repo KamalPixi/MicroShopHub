@@ -10,6 +10,7 @@ Services included:
 - setup: one-time dependency and asset build helper
 
 If you are deploying with containerd/nerdctl, use `docker-compose.nerdctl.yml` instead of the production compose file.
+For nerdctl, use `docker/nerdctl-start.sh` so db starts first, setup runs once, and the rest of the services come up in order.
 
 PHP requirement:
 - The Docker image is now PHP 8.4 to match the current Composer platform requirements.
@@ -26,9 +27,8 @@ Startup behavior:
 First deploy flow:
 1. Make sure the project files are on the server.
 2. Optionally export the MySQL Docker variables from `docker/.env.example` if you want to override the defaults.
-3. Run the setup helper once to install PHP dependencies and build frontend assets.
-4. Start the stack.
-5. Open the installer in the browser and complete setup.
+3. Run the nerdctl start helper or the setup helper once to install PHP dependencies and bring the services up in order.
+4. Open the installer in the browser and complete setup.
 
 Notes:
 - The installer writes back to the mounted `.env` file on the server.
