@@ -622,6 +622,7 @@ class InstallController extends Controller
 
         $replacements = [
             'APP_NAME' => $settings['shop_name'] ?: config('app.name', 'ShopHub'),
+            'DB_CONNECTION' => 'mysql',
             'DB_HOST' => $database['host'],
             'DB_PORT' => $database['port'],
             'DB_DATABASE' => $database['database'],

@@ -1,6 +1,14 @@
 #!/usr/bin/env sh
 set -e
 
+if [ -f /var/www/html/.env ] && ! grep -q '^APP_KEY=base64:' /var/www/html/.env 2>/dev/null; then
+    php artisan key:generate --force --no-interaction >/dev/null 2>&1 || true
+fi
+
+if [ ! -f /var/www/html/storage/app/installed.lock ] && [ -f /var/www/html/.env ] && grep -q '^DB_CONNECTION=sqlite' /var/www/html/.env 2>/dev/null; then
+    sed -i 's/^DB_CONNECTION=sqlite/DB_CONNECTION=mysql/' /var/www/html/.env
+fi
+
 if [ "${SKIP_DB_WAIT:-0}" = "1" ]; then
     exec "$@"
 fi
