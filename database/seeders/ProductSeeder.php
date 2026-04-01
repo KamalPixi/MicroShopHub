@@ -6,18 +6,42 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Str;
-use Faker\Factory as Faker;
 
 class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create();
+        $sampleNames = [
+            'Alpha Focus',
+            'Nova Blend',
+            'Urban Craft',
+            'Prime Select',
+            'Eco Choice',
+            'Fresh Line',
+            'Daily Edge',
+            'Golden Leaf',
+            'Pure Touch',
+            'Modern Nest',
+            'Swift Move',
+            'Classic Stone',
+            'Bright Path',
+            'Silver Bay',
+            'Blue Orbit',
+            'Vista Point',
+            'Amber Ridge',
+            'Core Pulse',
+            'Luxe Harbor',
+            'True North',
+        ];
+
         $categoryIds = Category::pluck('id')->toArray();
 
         for ($i = 1; $i <= 20; $i++) {
-            $name = ucwords($faker->unique()->words(rand(2, 3), true));
+            $name = $sampleNames[$i - 1] ?? ('Sample Product '.$i);
             $slug = Str::slug($name);
+            $description = 'A reliable product designed for everyday store use and easy presentation.';
+            $price = 19.99 + ($i * 4.25);
+            $stock = 10 + ($i * 2);
             
             // Create Dummy Gallery Images
             $galleryImages = [];
@@ -30,19 +54,19 @@ class ProductSeeder extends Seeder
                 'name' => $name,
                 'slug' => $slug,
                 'sku' => uniqid(),
-                'description' => $faker->paragraph(3),
-                'price' => $faker->randomFloat(2, 10, 300),
-                'stock' => $faker->numberBetween(5, 50),
+                'description' => $description,
+                'price' => round($price, 2),
+                'stock' => $stock,
                 'has_variations' => false,
                 'status' => true,
-                'featured' => $faker->boolean(30),
+                'featured' => $i % 3 === 0,
                 'thumbnail' => "https://placehold.co/500x500/e2e8f0/1e293b?text=" . str_replace(' ', '+', $name),
                 'images' => $galleryImages,
             ]);
 
             if (!empty($categoryIds)) {
                 $product->categories()->attach(
-                    $faker->randomElements($categoryIds, rand(1, 3))
+                    array_slice($categoryIds, 0, min(3, count($categoryIds)))
                 );
             }
         }
