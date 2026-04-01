@@ -20,7 +20,7 @@
             <div class="card" style="padding:14px;background:#f8fafc">
                 <h3 style="margin:0 0 8px;font-size:14px">What will happen</h3>
                 <div class="stack small muted">
-                    <div>• Write database and environment settings</div>
+                    <div>• Write the database configuration into the running installer session</div>
                     <div>• Run migrations and seed default data</div>
                     <div>• Save store settings and currency data</div>
                     <div>• Create the first admin account</div>
@@ -30,6 +30,7 @@
 
             <div class="card" style="padding:14px;background:#f8fafc">
                 <h3 style="margin:0 0 6px;font-size:13px">File permissions check</h3>
+                <p class="muted xsmall" style="margin:0 0 8px">The installer no longer needs web access to edit <code>.env</code> during finalize.</p>
                 <div class="stack" style="gap:8px">
                     @foreach($permissions as $permission)
                         <div class="inline" style="justify-content:space-between;padding:8px 10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff">

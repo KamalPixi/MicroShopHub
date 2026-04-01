@@ -325,9 +325,7 @@ class InstallController extends Controller
         session(['installer.finalize_logs' => []]);
 
         try {
-            $this->appendFinalizeLog('Writing environment configuration.');
             $this->applyDatabaseConfig($database);
-            $this->writeEnvFile($database, $settings);
 
             $this->appendFinalizeLog('Clearing cached configuration and routes.');
             Artisan::call('config:clear');
@@ -809,7 +807,6 @@ class InstallController extends Controller
     protected function finalizePermissions(): array
     {
         $targets = [
-            'Environment file' => base_path('.env'),
             'Storage directory' => storage_path(),
             'Cache directory' => base_path('bootstrap/cache'),
             'Public storage link' => public_path('storage'),
