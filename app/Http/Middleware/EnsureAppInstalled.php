@@ -10,8 +10,8 @@ class EnsureAppInstalled
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $lockPath = storage_path('app/installed.lock');
-        $isInstalled = file_exists($lockPath);
+        $isInstalled = file_exists(storage_path('app/private/installed.lock'))
+            || file_exists(storage_path('app/installed.lock'));
 
         if ($isInstalled) {
             return $next($request);

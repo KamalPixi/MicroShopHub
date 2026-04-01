@@ -583,7 +583,14 @@ class InstallController extends Controller
 
     protected function createLockFile(?string $appUrl = null): void
     {
-        Storage::disk('local')->put('installed.lock', json_encode([
+        $lockPath = storage_path('app/private/installed.lock');
+        $directory = dirname($lockPath);
+
+        if (! is_dir($directory)) {
+            @mkdir($directory, 0755, true);
+        }
+
+        file_put_contents($lockPath, json_encode([
             'installed_at' => now()->toDateTimeString(),
             'app_url' => $appUrl ?: config('app.url'),
         ], JSON_PRETTY_PRINT));
@@ -600,7 +607,8 @@ class InstallController extends Controller
 
     protected function installed(): bool
     {
-        return Storage::disk('local')->exists('installed.lock');
+        return file_exists(storage_path('app/private/installed.lock'))
+            || file_exists(storage_path('app/installed.lock'));
     }
 
     protected function applyDatabaseConfig(array $database): void
