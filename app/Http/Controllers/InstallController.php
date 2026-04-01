@@ -365,6 +365,8 @@ class InstallController extends Controller
         $this->persistAdminAccount($settings);
         $this->appendFinalizeLog('Locking installer.');
         $this->createLockFile($settings['app_url'] ?? config('app.url'));
+        $this->appendFinalizeLog('Sealing environment file.');
+        $this->sealEnvironmentFile();
 
         session()->forget(['installer.database', 'installer.settings']);
         session()->flash('installer.completed', true);
@@ -587,6 +589,15 @@ class InstallController extends Controller
             'installed_at' => now()->toDateTimeString(),
             'app_url' => $appUrl ?: config('app.url'),
         ], JSON_PRETTY_PRINT));
+    }
+
+    protected function sealEnvironmentFile(): void
+    {
+        $envPath = base_path('.env');
+
+        if (file_exists($envPath)) {
+            @chmod($envPath, 0444);
+        }
     }
 
     protected function installed(): bool
