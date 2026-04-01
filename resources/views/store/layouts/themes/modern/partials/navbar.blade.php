@@ -18,18 +18,19 @@
                     @if(isset($navbarCategories) && $navbarCategories->count() > 0)
                         @foreach($navbarCategories as $category)
                             @if($category->children->isNotEmpty())
-                                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                                    <div class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition focus:outline-none">
+                                <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                                    <div class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition group-hover:border-primary/25 group-hover:text-primary focus:outline-none">
                                         <a href="{{ route('store.search', ['category' => $category->id]) }}" class="hover:text-primary">
                                             {{ $category->name }}
                                         </a>
-                                        <button type="button" @click="open = !open" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
+                                        <button type="button" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
                                             <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                             </svg>
                                         </button>
                                     </div>
                                     <div x-show="open"
+                                         x-cloak
                                          x-transition:enter="transition ease-out duration-200"
                                          x-transition:enter-start="opacity-0 translate-y-1"
                                          x-transition:enter-end="opacity-100 translate-y-0"
@@ -62,7 +63,7 @@
             @if(isset($navbarCategories) && $navbarCategories->count() > 0)
                 @foreach($navbarCategories as $category)
                     @if($category->children->isNotEmpty())
-                        <div x-data="{ expanded: false }" @click.outside="expanded = false">
+                        <div x-data="{ expanded: false }">
                             <div class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary">
                                 <a href="{{ route('store.search', ['category' => $category->id]) }}" class="hover:text-primary">{{ $category->name }}</a>
                                 <button type="button" @click="expanded = !expanded" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
@@ -71,7 +72,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div x-show="expanded" x-transition class="pl-3 pt-1 space-y-1">
+                            <div x-show="expanded" x-cloak x-transition class="pl-3 pt-1 space-y-1">
                                 @foreach($category->children as $child)
                                     <a href="{{ route('store.search', ['category' => $child->id]) }}" class="block rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-primary/5 hover:text-primary">{{ $child->name }}</a>
                                 @endforeach
