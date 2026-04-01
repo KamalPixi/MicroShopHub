@@ -27,7 +27,7 @@ Startup behavior:
 First deploy flow:
 1. Make sure the project files are on the server.
 2. Optionally export the MySQL Docker variables from `docker/.env.example` if you want to override the defaults.
-3. Run the nerdctl start helper or the setup helper once to install PHP dependencies and bring the services up in order.
+3. Run the nerdctl start helper or the setup helper once to install PHP dependencies, generate the app key if needed, and bring the services up in order.
 4. Open the installer in the browser and complete setup.
 
 Notes:

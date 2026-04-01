@@ -101,7 +101,7 @@ services:
       context: .
       dockerfile: Dockerfile
     working_dir: /var/www/html
-    command: sh -lc "composer install --no-dev --optimize-autoloader"
+    command: sh -lc "composer install --no-dev --optimize-autoloader && if ! grep -q '^APP_KEY=base64:' .env 2>/dev/null; then php artisan key:generate --force; fi"
     volumes:
       - ./:/var/www/html
     environment:
