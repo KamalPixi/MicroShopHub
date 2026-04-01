@@ -34,7 +34,6 @@ services:
   db:
     image: mysql:8.0
     container_name: microshophub-mysql
-    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE_NAME:-microshophub}
       MYSQL_USER: ${MYSQL_USERNAME:-microshophub}
