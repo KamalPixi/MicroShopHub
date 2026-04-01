@@ -115,7 +115,7 @@ services:
       dockerfile: Dockerfile
     container_name: microshophub-setup
     working_dir: /var/www/html
-    command: sh -lc "composer install --no-dev --optimize-autoloader && npm install && npm run build"
+    command: sh -lc "composer install --no-dev --optimize-autoloader"
     volumes:
       - ./:/var/www/html
     environment:

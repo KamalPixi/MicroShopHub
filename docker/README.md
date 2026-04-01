@@ -14,6 +14,11 @@ If you are deploying with containerd/nerdctl, use `docker-compose.nerdctl.yml` i
 PHP requirement:
 - The Docker image is now PHP 8.4 to match the current Composer platform requirements.
 
+Frontend assets:
+- Tailwind is now loaded from the committed Vite build instead of the CDN.
+- Build the frontend locally once, commit `public/build`, and the server will not need npm or Vite.
+- The Docker setup helper now only installs PHP dependencies.
+
 First deploy flow:
 1. Make sure the project files are on the server.
 2. Optionally export the MySQL Docker variables from `docker/.env.example` if you want to override the defaults.

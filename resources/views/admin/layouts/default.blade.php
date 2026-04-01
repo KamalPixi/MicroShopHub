@@ -9,7 +9,7 @@
         $storeName = trim((string) ($sidebarSettings['shop_name'] ?? '')) ?: config('app.name', 'Store Name');
     @endphp
     <title>{{ $storeName }} Admin Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
             --color-primary: #111111;
