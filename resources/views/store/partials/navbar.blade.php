@@ -25,12 +25,12 @@
                     @foreach($navbarCategories as $category)
                         
                         @if($category->children->isNotEmpty())
-                            <div class="relative group h-full flex items-center" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                                <div class="flex items-center space-x-1 text-gray-600 group-hover:text-primary font-medium transition-colors focus:outline-none">
+                            <div class="relative h-full flex items-center" x-data="{ open: false }" @click.outside="open = false">
+                                <div class="flex items-center space-x-1 text-gray-600 font-medium transition-colors focus:outline-none">
                                     <a href="{{ route('store.search', ['category' => $category->id]) }}" class="text-sm lg:text-base hover:text-primary">
                                         {{ $category->name }}
                                     </a>
-                                    <button type="button" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
+                                    <button type="button" @click="open = !open" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
                                         <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
                                 </div>
@@ -73,7 +73,7 @@
                 @foreach($navbarCategories as $category)
                     
                     @if($category->children->isNotEmpty())
-                        <div x-data="{ expanded: false }">
+                        <div x-data="{ expanded: false }" @click.outside="expanded = false">
                             <div class="w-full flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-100 focus:outline-none">
                                 <a href="{{ route('store.search', ['category' => $category->id]) }}" class="hover:text-primary">
                                     {{ $category->name }}
