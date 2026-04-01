@@ -9,6 +9,8 @@ Services included:
 - scheduler: Laravel scheduler worker
 - setup: one-time dependency and asset build helper
 
+If you are deploying with containerd/nerdctl, use `docker-compose.nerdctl.yml` instead of the production compose file.
+
 First deploy flow:
 1. Make sure the project files are on the server.
 2. Optionally export the MySQL Docker variables from `docker/.env.example` if you want to override the defaults.
