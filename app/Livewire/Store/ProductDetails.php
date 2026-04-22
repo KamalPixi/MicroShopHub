@@ -252,6 +252,11 @@ class ProductDetails extends Component
         $this->dispatch('reset-success'); 
     }
 
+    public function buyNow()
+    {
+        $this->addToCart(true);
+    }
+
     public function render()
     {
         return view('livewire.store.product-details');
