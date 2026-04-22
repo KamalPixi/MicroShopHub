@@ -496,7 +496,7 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                             </div>
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-green-700 transition-colors">
-                                                {{ $settings['cod_label'] ?: __('store.cash_on_delivery') }}
+                                                {{ $settings['cod_label'] ?? null ?: __('store.cash_on_delivery') }}
                                             </span>
                                             <span class="text-[10px] text-gray-500">{{ __('store.pay_when_you_receive') }}</span>
                                         </div>
@@ -514,7 +514,7 @@
                                         <div class="flex flex-col items-start text-left">
                                             <img src="https://securepay.sslcommerz.com/public/image/sslcommerz.png" alt="SSLCommerz" class="h-5 mb-1 opacity-90 group-hover:opacity-100 transition-opacity">
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
-                                                {{ $settings['sslcommerz_label'] ?: __('store.pay_with_sslcommerz') }}
+                                                {{ $settings['sslcommerz_label'] ?? null ?: __('store.pay_with_sslcommerz') }}
                                             </span>
                                             <span class="text-[10px] text-gray-500">bKash / Cards / Banking</span>
                                         </div>
@@ -532,7 +532,7 @@
                                         <div class="flex flex-col items-start text-left">
                                             <svg class="h-5 mb-1 text-primary" viewBox="0 0 40 17" fill="currentColor"><path d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z"/></svg>
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
-                                                {{ $settings['stripe_label'] ?: __('store.credit_debit_card') }}
+                                                {{ $settings['stripe_label'] ?? null ?: __('store.credit_debit_card') }}
                                             </span>
                                             <span class="text-[10px] text-gray-500">{{ __('store.international') }}</span>
                                         </div>
@@ -568,7 +568,7 @@
                                         <div class="flex flex-col items-start text-left">
                                             <div class="h-7 w-7 mb-1 text-white bg-black rounded-lg flex items-center justify-center font-bold text-[10px]">PP</div>
                                             <span class="text-sm font-bold text-gray-800 group-hover:text-black transition-colors">
-                                                {{ $settings['portpos_label'] ?: __('store.pay_with_portpos') }}
+                                                {{ $settings['portpos_label'] ?? null ?: __('store.pay_with_portpos') }}
                                             </span>
                                             <span class="text-[10px] text-gray-500">{{ __('store.portpos_invoice_checkout') }}</span>
                                         </div>
