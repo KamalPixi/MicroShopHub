@@ -8,21 +8,19 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-primary: var(--color-primary);
+    --color-secondary: var(--color-secondary);
+    --color-accent: var(--color-accent);
 }
 
 @layer base {
     table {
-        width: 100%;
-        text-align: left;
-        border-collapse: collapse;
+        @apply w-full text-left border-collapse;
     }
     th, td {
-        padding: 0.75rem;
-        border-bottom: 1px solid var(--color-gray-200);
+        @apply p-3 border-b border-gray-200;
     }
     th {
-        font-weight: 600;
-        background-color: var(--color-gray-50);
-        color: var(--color-gray-700);
+        @apply font-semibold bg-gray-50 text-gray-700;
     }
 }
