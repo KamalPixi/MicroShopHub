@@ -327,6 +327,9 @@ class InstallController extends Controller
         try {
             $this->applyDatabaseConfig($database);
 
+            $this->appendFinalizeLog('Writing environment configuration.');
+            $this->writeEnvFile($database, $settings);
+
             $this->appendFinalizeLog('Clearing cached configuration and routes.');
             Artisan::call('config:clear');
             Artisan::call('cache:clear');
