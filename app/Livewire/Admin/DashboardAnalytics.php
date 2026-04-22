@@ -137,7 +137,7 @@ class DashboardAnalytics extends Component
             $referrerSourceSql = "CASE WHEN referrer_host IS NULL OR referrer_host = '' THEN 'Direct / None' ELSE referrer_host END";
             $this->topReferrers = SiteAnalyticsPageView::query()
                 ->selectRaw("{$referrerSourceSql} as source, COUNT(*) as total_views")
-                ->groupByRaw($referrerSourceSql)
+                ->groupBy('source')
                 ->orderByDesc('total_views')
                 ->take(5)
                 ->get()
