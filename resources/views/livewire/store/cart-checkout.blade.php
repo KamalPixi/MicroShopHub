@@ -55,7 +55,7 @@
                     </div>
 
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-                        <div class="flex items-center justify-between mb-4 border-b pb-2">
+                        <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
                             <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">{{ __('store.customer_details') }}</h2>
                             @if(auth()->check())
                                 <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold flex items-center">
@@ -422,7 +422,7 @@
 
                 <div class="lg:col-span-4 mt-8 lg:mt-0">
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sticky top-24">
-                        <h2 class="text-base font-bold text-gray-900 mb-4 border-b pb-2">{{ __('store.order_summary') }}</h2>
+                        <h2 class="text-base font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">{{ __('store.order_summary') }}</h2>
 
                         <div class="space-y-3 text-sm mb-6">
                             <div class="flex justify-between text-gray-600">
