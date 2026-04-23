@@ -72,9 +72,13 @@ class FlashSales extends Component
         $this->resetValidation();
     }
 
-    public function mount(FlashSaleAdminService $service): void
+    public function boot(FlashSaleAdminService $service): void
     {
         $this->service = $service;
+    }
+
+    public function mount(): void
+    {
         $this->resetForm();
     }
 
