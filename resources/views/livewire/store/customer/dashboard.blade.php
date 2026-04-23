@@ -348,77 +348,55 @@
 
                         <div class="p-4 md:p-6">
                             @forelse($orders as $order)
-                                <div class="mb-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-primary/30 hover:shadow-md">
-                                    <div class="border-b border-gray-100 bg-gray-50/60 px-5 py-4">
-                                        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                                            <div class="flex items-center gap-3">
-                                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
-                                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                                                </div>
-                                                <div>
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="font-bold text-gray-900">#{{ $order->order_number }}</span>
-                                                        <span class="text-xs text-gray-400">•</span>
-                                                        <span class="text-sm text-gray-500">{{ $order->created_at->format('d M Y, h:i A') }}</span>
-                                                    </div>
-                                                    <p class="mt-1 text-xs text-gray-500">
-                                                        {{ __('store.items_in_this_order', ['count' => $order->items->count()]) }}
-                                                    </p>
-                                                </div>
+                                <div class="mb-3 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:border-primary/30 hover:shadow-md">
+                                    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between px-4 py-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-50 border border-gray-100">
+                                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                                             </div>
-                                            <div class="flex flex-wrap items-center gap-2">
-                                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.18em]
-                                                    {{ $order->status == 'delivered' ? 'bg-green-100 text-green-700' : 
-                                                      ($order->status == 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700') }}">
-                                                    {{ __('store.' . $order->status) }}
-                                                </span>
-                                                <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.18em] bg-gray-100 text-gray-600">
-                                                    {{ $order->payment_status ? __('store.' . $order->payment_status) : __('store.pending') }}
-                                                </span>
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-sm font-bold text-gray-900">#{{ $order->order_number }}</span>
+                                                    <span class="text-xs text-gray-400">•</span>
+                                                    <span class="text-xs text-gray-500">{{ $order->created_at->format('d M Y, h:i A') }}</span>
+                                                </div>
+                                                <p class="text-[11px] text-gray-500 mt-0.5">
+                                                    {{ $order->items->count() }} {{ __('store.items') }} • {{ __('store.payment') }}: <span class="font-medium text-gray-700">{{ $order->payment_method ?? '—' }}</span>
+                                                </p>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="px-5 py-4">
-                                        <div class="text-xs text-gray-500 mb-4">
-                                            {{ __('store.payment_method') }}: <span class="font-semibold text-gray-700">{{ $order->payment_method ?? '—' }}</span>
-                                        </div>
-
-                                        <div class="space-y-3">
-                                            @foreach($order->items->take(2) as $item)
-                                                <div class="flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50/60 p-3">
-                                                    <div class="w-14 h-14 bg-gray-100 rounded-xl border border-gray-200 overflow-hidden flex-shrink-0">
-                                                    </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-medium text-gray-900 line-clamp-1">{{ $item->name }}</p>
-                                                        <p class="text-xs text-gray-500">x{{ $item->quantity }}</p>
-                                                    </div>
-                                                    <div class="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                                                        @php
-                                                            $itemSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
-                                                        @endphp
-                                                        {{ $itemSymbol }}{{ number_format($item->price, 2) }}
-                                                    </div>
+                                        
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto mt-2 lg:mt-0">
+                                            <div class="flex items-center justify-between sm:justify-start gap-4 text-xs border-t lg:border-t-0 lg:border-l border-gray-100 pt-3 lg:pt-0 lg:pl-4">
+                                                <div class="flex flex-col">
+                                                    <span class="text-[9px] text-gray-400 uppercase tracking-wider font-semibold mb-0.5">{{ __('store.order_status') }}</span>
+                                                    <span class="font-bold text-[11px] uppercase tracking-wide {{ $order->status == 'delivered' ? 'text-green-600' : ($order->status == 'cancelled' ? 'text-red-500' : 'text-orange-500') }}">
+                                                        {{ __('store.' . $order->status) }}
+                                                    </span>
                                                 </div>
-                                            @endforeach
-                                        </div>
-                                        @if($order->items->count() > 2)
-                                            <p class="mt-3 text-xs text-gray-500">{{ __('store.more_items', ['count' => $order->items->count() - 2]) }}</p>
-                                        @endif
-                                    </div>
+                                                <div class="w-px h-6 bg-gray-200 hidden sm:block"></div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-[9px] text-gray-400 uppercase tracking-wider font-semibold mb-0.5">{{ __('store.payment_status') }}</span>
+                                                    <span class="font-bold text-[11px] uppercase tracking-wide {{ $order->payment_status == 'paid' ? 'text-green-600' : 'text-gray-600' }}">
+                                                        {{ $order->payment_status ? __('store.' . $order->payment_status) : __('store.pending') }}
+                                                    </span>
+                                                </div>
+                                            </div>
 
-                                    <div class="flex flex-col gap-3 border-t border-dashed border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-                                        <div class="text-sm">
-                                            @php
-                                                $totalSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
-                                            @endphp
-                                            <span class="text-gray-500">{{ __('store.total') }}</span>
-                                            <span class="ml-2 text-xl font-bold text-primary">{{ $totalSymbol }}{{ number_format($order->total, 2) }}</span>
-                                        </div>
-                                        <div class="flex flex-wrap gap-2">
-                                            @if($order->status == 'pending')
-                                                <button class="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white transition hover:bg-primary/90">{{ __('store.pay_now') }}</button>
-                                            @endif
-                                            <button wire:click="viewOrder({{ $order->id }})" class="rounded-xl border border-gray-300 px-4 py-2 text-xs font-bold text-gray-700 transition hover:border-primary/30 hover:text-primary hover:bg-gray-50">{{ __('store.view_details') }}</button>
+                                            <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto border-t sm:border-none border-gray-100 pt-3 sm:pt-0">
+                                                @php
+                                                    $totalSymbol = $order->currency?->symbol ?: ($order->currency_code ? $order->currency_code . ' ' : $currencySymbol);
+                                                @endphp
+                                                <div class="text-left sm:text-right mr-2">
+                                                    <span class="block text-sm font-extrabold text-primary">{{ $totalSymbol }}{{ number_format($order->total, 2) }}</span>
+                                                </div>
+                                                <div class="flex gap-2">
+                                                    @if($order->status == 'pending')
+                                                        <button class="rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-white transition hover:bg-primary/90 shadow-sm">{{ __('store.pay') }}</button>
+                                                    @endif
+                                                    <button wire:click="viewOrder({{ $order->id }})" class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 transition hover:border-primary hover:text-primary shadow-sm">{{ __('store.view') }}</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
