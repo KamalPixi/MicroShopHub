@@ -499,6 +499,7 @@ class CartCheckout extends Component
         $this->loginOtpSent = false;
         $this->fillFromAuthenticatedUser();
         session()->flash('auth_success', 'Logged in successfully.');
+        $this->redirect(request()->header('Referer') ?? '/checkout');
     }
 
     public function loginWithPasswordInline(): void
@@ -521,6 +522,7 @@ class CartCheckout extends Component
         $this->loginPassword = '';
         $this->fillFromAuthenticatedUser();
         session()->flash('auth_success', 'Logged in successfully.');
+        $this->redirect(request()->header('Referer') ?? '/checkout');
     }
 
     public function registerInline(): void
@@ -552,6 +554,7 @@ class CartCheckout extends Component
         $this->registerPassword = '';
         $this->fillFromAuthenticatedUser();
         session()->flash('auth_success', 'Account created and logged in.');
+        $this->redirect(request()->header('Referer') ?? '/checkout');
     }
 
     private function fillFromAuthenticatedUser(): void
