@@ -84,7 +84,7 @@
                                 && ($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled'])
                                 && (!$authSettings['guest_checkout_enabled'] || $showAuthSection)
                             )
-                                <div class="rounded-lg border {{ $authSettings['guest_checkout_enabled'] ? 'border-gray-200 bg-gray-50' : 'border-yellow-200 bg-yellow-50' }} p-4 space-y-3">
+                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
                                     <div class="flex items-center justify-between">
                                         <p class="text-sm font-semibold text-gray-800">
                                             {{ $authSettings['guest_checkout_enabled'] ? __('store.optional_account_access') : __('store.login_required') }}
@@ -95,7 +95,7 @@
                                     </div>
 
                                     @if(!$authSettings['guest_checkout_enabled'])
-                                        <p class="text-xs text-yellow-800">{{ __('store.login_or_register_to_place_order') }}</p>
+                                        <p class="text-xs text-gray-600">{{ __('store.login_or_register_to_place_order') }}</p>
                                     @endif
 
                                     @if(session('auth_success'))
@@ -133,7 +133,7 @@
                                                 <input wire:model="loginPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.password') }}">
                                                 @error('loginPassword') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
-                                                <div class="flex items-center justify-between">
+                                                <div class="flex flex-col items-start gap-4 pt-2">
                                                     <label class="inline-flex items-center text-xs text-gray-700">
                                                         <input wire:model="loginRemember" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary mr-2">
                                                         {{ __('store.remember_me') }}
@@ -148,9 +148,11 @@
                                         @if($authMethod === 'otp' && $authSettings['email_otp_enabled'])
                                             <div class="space-y-2">
                                                 @if(!$loginOtpSent)
-                                                    <button wire:click="sendLoginOtp" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                                        {{ __('store.send_otp') }}
-                                                    </button>
+                                                    <div class="pt-2">
+                                                        <button wire:click="sendLoginOtp" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
+                                                            {{ __('store.send_otp') }}
+                                                        </button>
+                                                    </div>
                                                 @else
                                                     <div class="flex gap-2">
                                                         <input wire:model="loginOtp" type="text" maxlength="6" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3 tracking-widest text-center font-mono" placeholder="123456">
@@ -174,9 +176,11 @@
                                             <input wire:model="registerPassword" type="password" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="{{ __('store.create_password') }}">
                                             @error('registerPassword') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
-                                            <button wire:click="registerInline" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                        {{ __('store.create_account_continue') }}
-                                            </button>
+                                            <div class="pt-2">
+                                                <button wire:click="registerInline" type="button" class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
+                                                    {{ __('store.create_account_continue') }}
+                                                </button>
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
@@ -193,8 +197,8 @@
                                     </div>
                                 </div>
                             @elseif(!auth()->check())
-                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                                    <p class="text-xs text-yellow-800">{{ __('store.login_or_register_to_place_order') }}</p>
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                    <p class="text-xs text-gray-600">{{ __('store.login_or_register_to_place_order') }}</p>
                                 </div>
                             @endif
                         </div>
