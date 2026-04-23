@@ -131,6 +131,7 @@ return [
     'addresses' => 'Addresses',
     'recent_orders' => 'Recent Orders',
     'order_details' => 'Order Details',
+    'orders' => 'Orders',
     'order_status' => 'Order Status',
     'payment_status' => 'Payment Status',
     'pay' => 'Pay',

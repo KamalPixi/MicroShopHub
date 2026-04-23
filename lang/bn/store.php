@@ -131,6 +131,7 @@ return [
     'addresses' => 'ঠিকানা',
     'recent_orders' => 'সাম্প্রতিক অর্ডার',
     'order_details' => 'অর্ডার ডিটেইলস',
+    'orders' => 'অর্ডারস',
     'order_status' => 'অর্ডার স্ট্যাটাস',
     'payment_status' => 'পেমেন্ট স্ট্যাটাস',
     'pay' => 'পে করুন',
