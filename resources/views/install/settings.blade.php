@@ -313,8 +313,52 @@
                 </div>
             </div>
             </div>
-                <div class="card" style="padding:14px">
-                    <h4 style="margin:0 0 10px;font-size:14px">Stripe</h4>
+
+            <div class="card" style="padding:14px">
+                <h4 style="margin:0 0 10px;font-size:14px">AWS S3 Storage</h4>
+                <div class="stack">
+                    <div>
+                        <label>AWS Access Key ID</label>
+                        <input type="text" name="aws_access_key_id" value="{{ old('aws_access_key_id', $settings['aws_access_key_id'] ?? '') }}" placeholder="Optional">
+                    </div>
+                    <div>
+                        <label>AWS Secret Access Key</label>
+                        <input type="password" name="aws_secret_access_key" value="{{ old('aws_secret_access_key', $settings['aws_secret_access_key'] ?? '') }}" placeholder="Optional">
+                    </div>
+                    <div>
+                        <label>AWS Default Region</label>
+                        <input type="text" name="aws_default_region" value="{{ old('aws_default_region', $settings['aws_default_region'] ?? 'us-east-1') }}">
+                    </div>
+                    <div>
+                        <label>AWS Bucket</label>
+                        <input type="text" name="aws_bucket" value="{{ old('aws_bucket', $settings['aws_bucket'] ?? '') }}" placeholder="Optional">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="padding:14px">
+                <h4 style="margin:0 0 10px;font-size:14px">System Maintenance</h4>
+                <div class="stack">
+                    <div>
+                        <label>Automatic Database Backups</label>
+                        <select name="backup_enabled">
+                            <option value="1" @selected(old('backup_enabled', $settings['backup_enabled'] ?? '1') === '1')>Enabled (Daily)</option>
+                            <option value="0" @selected(old('backup_enabled', $settings['backup_enabled'] ?? '1') === '0')>Disabled</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Execution Mode (Backups & Queues)</label>
+                        <select name="background_mode">
+                            <option value="cron" @selected(old('background_mode', $settings['background_mode'] ?? 'cron') === 'cron')>Shared Hosting (Cron Way)</option>
+                            <option value="worker" @selected(old('background_mode', $settings['background_mode'] ?? 'cron') === 'worker')>VPS / Dedicated (Worker Way)</option>
+                        </select>
+                    </div>
+                    <p style="font-size: 11px; color: #666; margin-top: 4px;">"Cron Way" uses system cron for all tasks. "Worker Way" requires a persistent background worker (VPS).</p>
+                </div>
+            </div>
+
+            <div class="card" style="padding:14px">
+                <h4 style="margin:0 0 10px;font-size:14px">Stripe</h4>
                     <div class="stack">
                         <div>
                             <label>API Key</label>

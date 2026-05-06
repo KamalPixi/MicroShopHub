@@ -254,6 +254,8 @@ class InstallController extends Controller
             'aws_url' => ['nullable', 'string', 'max:255'],
             'aws_endpoint' => ['nullable', 'string', 'max:255'],
             'aws_use_path_style_endpoint' => ['sometimes', 'boolean'],
+            'backup_enabled' => ['sometimes', 'boolean'],
+            'background_mode' => ['sometimes', 'string', 'in:cron,worker'],
         ]);
 
         if ($request->hasFile('logo')) {
@@ -659,6 +661,8 @@ class InstallController extends Controller
             'DB_USERNAME' => $database['username'],
             'DB_PASSWORD' => $database['password'] ?? '',
             'QUEUE_CONNECTION' => ($settings['mail_queue_enabled'] ?? false) ? 'database' : 'sync',
+            'BACKUP_ENABLED' => ($settings['backup_enabled'] ?? '1') === '1' ? 'true' : 'false',
+            'BACKGROUND_MODE' => $settings['background_mode'] ?? 'cron',
         ];
 
         if (! empty($settings['aws_access_key_id']) && ! empty($settings['aws_secret_access_key']) && ! empty($settings['aws_bucket'])) {
@@ -783,6 +787,8 @@ class InstallController extends Controller
             'aws_url' => '',
             'aws_endpoint' => '',
             'aws_use_path_style_endpoint' => false,
+            'backup_enabled' => true,
+            'background_mode' => 'cron',
         ];
     }
 
