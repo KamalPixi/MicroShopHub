@@ -305,11 +305,6 @@
                     <input type="text" name="mail_from_name" value="{{ old('mail_from_name', $settings['mail_from_name'] ?? '') }}" placeholder="Store Name">
                 </div>
             </div>
-        </div>
-
-        <div class="card" style="padding:16px">
-            <h3 style="margin:0 0 10px;font-size:16px">Gateway Details (Optional)</h3>
-            <div class="grid grid-2">
                 <div class="card" style="padding:14px">
                     <h4 style="margin:0 0 10px;font-size:14px">Stripe</h4>
                     <div class="stack">

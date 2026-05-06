@@ -85,7 +85,7 @@ class ProductReviews extends Component
         // Handle File Uploads
         $mediaPaths = [];
         foreach ($this->photos as $photo) {
-            $mediaPaths[] = $photo->store('reviews', 'public');
+            $mediaPaths[] = $photo->store('reviews');
         }
 
         Review::create([

@@ -246,10 +246,17 @@ class InstallController extends Controller
             'custom_countries.*.name' => ['nullable', 'string', 'max:120'],
             'custom_countries.*.active' => ['sometimes', 'boolean'],
             'logo' => ['nullable', 'image', 'max:2048'],
+            'aws_access_key_id' => ['nullable', 'string', 'max:255'],
+            'aws_secret_access_key' => ['nullable', 'string', 'max:255'],
+            'aws_default_region' => ['nullable', 'string', 'max:255'],
+            'aws_bucket' => ['nullable', 'string', 'max:255'],
+            'aws_url' => ['nullable', 'string', 'max:255'],
+            'aws_endpoint' => ['nullable', 'string', 'max:255'],
+            'aws_use_path_style_endpoint' => ['sometimes', 'boolean'],
         ]);
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('branding', 'public');
+            $data['logo'] = $request->file('logo')->store('branding');
         } else {
             $data['logo'] = session('installer.settings.logo');
         }
@@ -258,6 +265,7 @@ class InstallController extends Controller
         $data['store_language_bn_enabled'] = (bool) ($data['store_language_bn_enabled'] ?? true);
         $data['cod_enabled'] = (bool) ($data['cod_enabled'] ?? true);
         $data['sslcommerz_sandbox'] = (bool) ($data['sslcommerz_sandbox'] ?? false);
+        $data['aws_use_path_style_endpoint'] = (bool) ($data['aws_use_path_style_endpoint'] ?? false);
         $data['country_codes'] = array_values(array_intersect(array_keys($this->countryOptions), $data['country_codes'] ?? []));
         $data['custom_countries'] = collect($data['custom_countries'] ?? [])
             ->map(function (array $country): ?array {
@@ -650,6 +658,23 @@ class InstallController extends Controller
             'DB_PASSWORD' => $database['password'] ?? '',
         ];
 
+        if (! empty($settings['aws_access_key_id']) && ! empty($settings['aws_secret_access_key']) && ! empty($settings['aws_bucket'])) {
+            $replacements['FILESYSTEM_DISK'] = 's3';
+            $replacements['AWS_ACCESS_KEY_ID'] = $settings['aws_access_key_id'];
+            $replacements['AWS_SECRET_ACCESS_KEY'] = $settings['aws_secret_access_key'];
+            $replacements['AWS_DEFAULT_REGION'] = $settings['aws_default_region'] ?? 'us-east-1';
+            $replacements['AWS_BUCKET'] = $settings['aws_bucket'];
+            if (! empty($settings['aws_url'])) {
+                $replacements['AWS_URL'] = $settings['aws_url'];
+            }
+            if (! empty($settings['aws_endpoint'])) {
+                $replacements['AWS_ENDPOINT'] = $settings['aws_endpoint'];
+            }
+            $replacements['AWS_USE_PATH_STYLE_ENDPOINT'] = ($settings['aws_use_path_style_endpoint'] ?? false) ? 'true' : 'false';
+        } else {
+            $replacements['FILESYSTEM_DISK'] = 'public';
+        }
+
         $appUrl = trim((string) ($settings['app_url'] ?? ''));
 
         if ($appUrl !== '') {
@@ -747,6 +772,13 @@ class InstallController extends Controller
             'logo' => '',
             'country_codes' => ['BD'],
             'custom_countries' => [],
+            'aws_access_key_id' => '',
+            'aws_secret_access_key' => '',
+            'aws_default_region' => 'us-east-1',
+            'aws_bucket' => '',
+            'aws_url' => '',
+            'aws_endpoint' => '',
+            'aws_use_path_style_endpoint' => false,
         ];
     }
 

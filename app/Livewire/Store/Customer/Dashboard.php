@@ -130,7 +130,7 @@ class Dashboard extends Component
             if ($this->user->avatar) {
                 Storage::delete($this->user->avatar);
             }
-            $path = $this->avatar->store('avatars', 'public');
+            $path = $this->avatar->store('avatars');
             $data['avatar'] = $path;
             $this->existingAvatar = $path; // Update UI preview
         }

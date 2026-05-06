@@ -395,7 +395,7 @@ class CartCheckout extends Component
             if ($this->paymentMethod === 'offline') {
                 $methodIndex = (int) $this->offlinePaymentMethodId;
                 $selectedMethod = $this->offlinePaymentMethods[$methodIndex] ?? null;
-                $attachmentPath = $this->offlineProof?->store('offline-payments', 'public');
+                $attachmentPath = $this->offlineProof?->store('offline-payments');
                 $order->offlinePayments()->create([
                     'method_name' => $selectedMethod['name'] ?? 'Offline Payment',
                     'instructions' => $selectedMethod['instructions'] ?? null,

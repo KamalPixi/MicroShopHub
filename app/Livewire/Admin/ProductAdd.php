@@ -242,10 +242,10 @@ class ProductAdd extends Component
     {
         $this->validateStep();
         
-        $thumbnailPath = $this->thumbnail ? $this->thumbnail->store('images/products', 'public') : null;
+        $thumbnailPath = $this->thumbnail ? $this->thumbnail->store('images/products') : null;
         $galleryPaths = [];
         foreach ($this->images as $image) {
-            $galleryPaths[] = $image->store('images/products', 'public');
+            $galleryPaths[] = $image->store('images/products');
         }
 
         $product = Product::create([

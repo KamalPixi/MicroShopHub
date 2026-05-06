@@ -180,8 +180,6 @@ class ProductEdit extends Component
     {
         // For JSON array, we just remove the item from the array by index
         if (isset($this->existingGallery[$index])) {
-            // Optional: Immediately delete file from storage if you want strict cleanup
-            // Storage::disk('public')->delete($this->existingGallery[$index]);
             
             unset($this->existingGallery[$index]);
             // Re-index array to avoid gaps which might cause issues with JSON encoding
@@ -260,14 +258,14 @@ class ProductEdit extends Component
 
         // Save New Images
         foreach ($this->newImages as $img) {
-            $finalImages[] = $img->store('products/gallery', 'public');
+            $finalImages[] = $img->store('products/gallery');
         }
 
         // Handle Thumbnail
         $thumbnailPath = $this->product->thumbnail;
         if ($this->thumbnail) {
-             if ($thumbnailPath) Storage::disk('public')->delete($thumbnailPath);
-             $thumbnailPath = $this->thumbnail->store('products/thumbnails', 'public');
+             if ($thumbnailPath) Storage::disk()->delete($thumbnailPath);
+             $thumbnailPath = $this->thumbnail->store('products/thumbnails');
         }
 
         // 2. Update Product

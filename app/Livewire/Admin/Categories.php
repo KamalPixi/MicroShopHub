@@ -85,7 +85,7 @@ class Categories extends Component
         ];
 
         if ($this->thumbnail) {
-            $path = $this->thumbnail->store('categories', 'public');
+            $path = $this->thumbnail->store('categories');
             $data['thumbnail'] = $path;
         }
 
@@ -116,7 +116,7 @@ class Categories extends Component
     {
         $category = Category::findOrFail($categoryId);
         if ($category->thumbnail) {
-            Storage::disk('public')->delete($category->thumbnail);
+            Storage::disk()->delete($category->thumbnail);
         }
         $category->delete();
         session()->flash('message', 'Category deleted successfully.');

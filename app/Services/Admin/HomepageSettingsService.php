@@ -220,9 +220,9 @@ class HomepageSettingsService
 
             if (! empty($slide['image_file'])) {
                 if ($imagePath !== '') {
-                    Storage::disk('public')->delete($imagePath);
+                    Storage::disk()->delete($imagePath);
                 }
-                $imagePath = $slide['image_file']->store('homepage/banners', 'public');
+                $imagePath = $slide['image_file']->store('homepage/banners');
             }
 
             if ($imagePath === '') {

@@ -841,9 +841,9 @@ class Settings extends Component
 
         if (in_array('shop_logo', $keys, true) && $this->logo) {
             if ($oldLogo = Setting::where('key', 'shop_logo')->value('value')) {
-                Storage::disk('public')->delete($oldLogo);
+                Storage::disk()->delete($oldLogo);
             }
-            $this->settings['shop_logo'] = $this->logo->store('logos', 'public');
+            $this->settings['shop_logo'] = $this->logo->store('logos');
             $this->logo = null;
         }
 
