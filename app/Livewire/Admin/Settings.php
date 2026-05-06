@@ -132,6 +132,8 @@ class Settings extends Component
     public array $offlinePaymentMethods = [];
     public string $backupMessage = '';
     public bool $isBackingUp = false;
+    public string $testEmailRecipient = '';
+    public string $testEmailStatus = '';
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -831,6 +833,28 @@ class Settings extends Component
 
         $this->isBackingUp = false;
         $this->savedSection = 'system';
+    }
+
+    public function sendTestEmail(): void
+    {
+        $this->validate([
+            'testEmailRecipient' => 'required|email',
+        ]);
+
+        $this->testEmailStatus = 'Sending...';
+
+        try {
+            \App\Jobs\SendRawEmail::dispatch(
+                $this->testEmailRecipient,
+                'Test Email from ' . ($this->settings['shop_name'] ?: config('app.name')),
+                'Hello! This is a test email to verify your SMTP settings are working correctly.'
+            );
+            $this->testEmailStatus = 'Test email dispatched to queue successfully!';
+        } catch (\Exception $e) {
+            $this->testEmailStatus = 'Failed to send test email: ' . $e->getMessage();
+        }
+
+        $this->savedSection = 'email';
     }
 
     public function saveOfflinePaymentMethods(): void
