@@ -7,6 +7,7 @@ use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
+use App\Jobs\SendRawEmail;
 
 class ContactForm extends Component
 {
@@ -72,10 +73,11 @@ class ContactForm extends Component
                 "Message:\n{$contact->message}";
 
             try {
-                Mail::raw($body, function ($message) use ($recipient, $contact) {
-                    $message->to($recipient);
-                    $message->subject('New contact message: '.$contact->subject);
-                });
+                SendRawEmail::dispatch(
+                    $recipient,
+                    'New contact message: '.$contact->subject,
+                    $body
+                );
             } catch (\Throwable $e) {
                 // Keep the saved contact message even if mail delivery fails.
             }

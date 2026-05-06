@@ -9,6 +9,7 @@ use App\Models\Setting;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Jobs\SendNewsletterEmail;
 
 class NewsletterCampaignService
 {
@@ -66,10 +67,11 @@ class NewsletterCampaignService
                 products: $products
             );
 
-            Mail::html($html, function ($message) use ($subscriber, $campaign) {
-                $message->to($subscriber->email);
-                $message->subject(trim((string) $campaign->subject) ?: 'Newsletter Update');
-            });
+            SendNewsletterEmail::dispatch(
+                $subscriber->email,
+                trim((string) $campaign->subject) ?: 'Newsletter Update',
+                $html
+            );
         }
 
         $campaign->forceFill([
@@ -120,14 +122,14 @@ class NewsletterCampaignService
         $greeting = $subscriberName ? 'Hi ' . e($subscriberName) . ',' : 'Hi there,';
         $content = nl2br(e(trim((string) ($campaign->content ?? ''))));
         $logoHtml = $storeLogo
-            ? '<img src="' . e(asset('storage/' . $storeLogo)) . '" alt="' . e($storeName) . '" style="height:42px; width:auto; display:block; object-fit:contain;">'
+            ? '<img src="' . e(\Illuminate\Support\Facades\Storage::url($storeLogo)) . '" alt="' . e($storeName) . '" style="height:42px; width:auto; display:block; object-fit:contain;">'
             : '<div style="font-size:22px;font-weight:800;line-height:1;color:#111;">' . e($storeName) . '</div>';
 
         $heroColor = e($brandColor ?: '#111111');
         $productCards = '';
 
         foreach ($products as $product) {
-            $image = $product->thumbnail ? asset('storage/' . $product->thumbnail) : null;
+            $image = $product->thumbnail ? \Illuminate\Support\Facades\Storage::url($product->thumbnail) : null;
             $price = $product->currency_symbol . number_format((float) $product->price, 2);
             $categories = $product->categories->pluck('name')->take(2)->implode(', ');
             $productCards .= '

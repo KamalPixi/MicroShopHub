@@ -953,5 +953,36 @@
                 </div>
             </div>
         </section>
+
+        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+            <h4 class="text-base font-bold text-gray-800">System & Maintenance</h4>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Manage database backups and system health.</p>
+
+            <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h5 class="text-sm font-semibold text-gray-800">Database Backup</h5>
+                        <p class="text-xs text-gray-500 mt-1">Create a snapshot of your database. Backups are stored locally and uploaded to S3 if configured.</p>
+                    </div>
+                    <button 
+                        wire:click="backupDatabase" 
+                        wire:loading.attr="disabled"
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150"
+                    >
+                        <svg wire:loading wire:target="backupDatabase" class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Backup Now</span>
+                    </button>
+                </div>
+
+                @if($backupMessage)
+                    <div class="mt-4 p-3 rounded-lg {{ str_contains($backupMessage, 'successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }} text-xs font-medium">
+                        {{ $backupMessage }}
+                    </div>
+                @endif
+            </div>
+        </section>
     </div>
 </div>

@@ -299,11 +299,19 @@
                 <div>
                     <label>Mail From Address</label>
                     <input type="email" name="mail_from_address" value="{{ old('mail_from_address', $settings['mail_from_address'] ?? '') }}" placeholder="noreply@example.com">
-                </div>
-                <div>
+                    <div>
                     <label>Mail From Name</label>
                     <input type="text" name="mail_from_name" value="{{ old('mail_from_name', $settings['mail_from_name'] ?? '') }}" placeholder="Store Name">
                 </div>
+                <div>
+                    <label>Email Sending Mode</label>
+                    <select name="mail_queue_enabled">
+                        <option value="0" @selected(old('mail_queue_enabled', $settings['mail_queue_enabled'] ?? '0') === '0')>Synchronous (Immediate)</option>
+                        <option value="1" @selected(old('mail_queue_enabled', $settings['mail_queue_enabled'] ?? '0') === '1')>Asynchronous (Queued)</option>
+                    </select>
+                    <p style="font-size: 11px; color: #666; margin-top: 4px;">Queued mode requires a background worker but improves performance.</p>
+                </div>
+            </div>
             </div>
                 <div class="card" style="padding:14px">
                     <h4 style="margin:0 0 10px;font-size:14px">Stripe</h4>

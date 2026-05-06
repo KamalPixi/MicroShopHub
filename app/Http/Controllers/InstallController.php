@@ -239,6 +239,7 @@ class InstallController extends Controller
             'mail_encryption' => ['nullable', 'in:tls,ssl,none'],
             'mail_from_address' => ['nullable', 'email', 'max:255'],
             'mail_from_name' => ['nullable', 'string', 'max:255'],
+            'mail_queue_enabled' => ['sometimes', 'boolean'],
             'country_codes' => ['nullable', 'array'],
             'country_codes.*' => ['string', 'size:2'],
             'custom_countries' => ['nullable', 'array'],
@@ -498,6 +499,7 @@ class InstallController extends Controller
             'customer_auth_email_otp_enabled' => '0',
             'customer_auth_email_password_enabled' => '1',
             'customer_auth_guest_checkout_enabled' => '0',
+            'mail_queue_enabled' => ($settings['mail_queue_enabled'] ?? false) ? '1' : '0',
         ];
 
         foreach ($rows as $key => $value) {
@@ -656,6 +658,7 @@ class InstallController extends Controller
             'DB_DATABASE' => $database['database'],
             'DB_USERNAME' => $database['username'],
             'DB_PASSWORD' => $database['password'] ?? '',
+            'QUEUE_CONNECTION' => ($settings['mail_queue_enabled'] ?? false) ? 'database' : 'sync',
         ];
 
         if (! empty($settings['aws_access_key_id']) && ! empty($settings['aws_secret_access_key']) && ! empty($settings['aws_bucket'])) {
@@ -769,6 +772,7 @@ class InstallController extends Controller
             'mail_encryption' => 'tls',
             'mail_from_address' => '',
             'mail_from_name' => '',
+            'mail_queue_enabled' => false,
             'logo' => '',
             'country_codes' => ['BD'],
             'custom_countries' => [],

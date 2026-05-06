@@ -6,7 +6,7 @@ use App\Models\Order;
 use App\Models\OrderEmailLog;
 use App\Models\Setting;
 use Livewire\Component;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendRawEmail;
 
 class OrderShow extends Component
 {
@@ -146,16 +146,11 @@ class OrderShow extends Component
             return;
         }
 
-        $fromAddress = trim((string) Setting::where('key', 'mail_from_address')->value('value'));
-        $fromName = trim((string) Setting::where('key', 'mail_from_name')->value('value'));
-
-        Mail::raw($messageBody, function ($message) use ($toEmail, $subject, $fromAddress, $fromName) {
-            if ($fromAddress) {
-                $message->from($fromAddress, $fromName ?: null);
-            }
-            $message->to($toEmail);
-            $message->subject($subject);
-        });
+        SendRawEmail::dispatch(
+            $toEmail,
+            $subject,
+            $messageBody
+        );
 
         OrderEmailLog::create([
             'order_id' => $this->order->id,
