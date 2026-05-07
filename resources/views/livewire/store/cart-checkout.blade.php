@@ -27,7 +27,7 @@
                             @foreach($cart as $key => $item)
                                 <li class="p-5 flex items-center gap-x-6 group hover:bg-gray-50/50 transition-colors">
                                     <div
-                                        class="relative flex-shrink-0 w-20 h-20 border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm group-hover:shadow-md transition-shadow pr-4">
+                                        class="relative flex-shrink-0 w-20 h-20 border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm group-hover:shadow-md transition-shadow mr-4">
                                         @php
                                             $img = !empty($item['thumbnail'])
                                                 ? (Str::startsWith($item['thumbnail'], ['http']) ? $item['thumbnail'] : Storage::url($item['thumbnail']))
