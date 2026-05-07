@@ -723,8 +723,8 @@
                     <p class="text-[10px] text-gray-500 mb-3 uppercase tracking-wider">How emails should be processed and sent</p>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <label class="relative flex cursor-pointer rounded-xl border border-gray-200 p-4 shadow-sm focus:outline-none transition hover:border-primary/50 {{ $settings['queue_connection'] === 'sync' ? 'ring-2 ring-primary border-primary bg-primary/5' : '' }}">
-                            <input type="radio" wire:model="settings.queue_connection" value="sync" class="sr-only">
+                        <label for="queue_sync" class="relative flex cursor-pointer rounded-xl border border-gray-200 p-4 shadow-sm focus:outline-none transition hover:border-primary/50 {{ $settings['queue_connection'] === 'sync' ? 'ring-2 ring-primary border-primary bg-primary/5' : '' }}">
+                            <input id="queue_sync" type="radio" wire:model.live="settings.queue_connection" value="sync" class="sr-only">
                             <span class="flex flex-1">
                                 <span class="flex flex-col">
                                     <span class="block text-sm font-bold text-gray-900">Synchronize (Immediate)</span>
@@ -736,8 +736,8 @@
                             @endif
                         </label>
 
-                        <label class="relative flex cursor-pointer rounded-xl border border-gray-200 p-4 shadow-sm focus:outline-none transition hover:border-primary/50 {{ $settings['queue_connection'] === 'database' ? 'ring-2 ring-primary border-primary bg-primary/5' : '' }}">
-                            <input type="radio" wire:model="settings.queue_connection" value="database" class="sr-only">
+                        <label for="queue_database" class="relative flex cursor-pointer rounded-xl border border-gray-200 p-4 shadow-sm focus:outline-none transition hover:border-primary/50 {{ $settings['queue_connection'] === 'database' ? 'ring-2 ring-primary border-primary bg-primary/5' : '' }}">
+                            <input id="queue_database" type="radio" wire:model.live="settings.queue_connection" value="database" class="sr-only">
                             <span class="flex flex-1">
                                 <span class="flex flex-col">
                                     <span class="block text-sm font-bold text-gray-900">Asyncronize (via Worker)</span>
