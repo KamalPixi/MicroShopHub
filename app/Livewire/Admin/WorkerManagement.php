@@ -23,57 +23,55 @@ class WorkerManagement extends Component
 
     public function checkStatus()
     {
-        // Use pgrep if available for more reliable PID detection
-        $pid = shell_exec("pgrep -f 'artisan queue:work' | head -n 1");
+        $finalPid = null;
         $storedPid = \App\Models\Setting::where('key', 'worker_last_pid')->value('value');
-        
+
+        // 1. Try pgrep (fastest/cleanest)
+        $pid = shell_exec("pgrep -f 'artisan queue:work' | head -n 1");
         if ($pid && is_numeric(trim($pid))) {
-            $this->status = 'running';
-            $this->workerProcessId = trim($pid);
-            
-            // Sync with DB if different
-            if ($this->workerProcessId !== $storedPid) {
-                \App\Models\Setting::updateOrCreate(['key' => 'worker_last_pid'], ['value' => $this->workerProcessId]);
-            }
-        } elseif ($storedPid && is_numeric($storedPid)) {
-            // Check if the stored PID is actually running
-            $cmd = shell_exec("ps -p {$storedPid} -o user=,command=");
+            $finalPid = trim($pid);
+        } 
+        
+        // 2. Try stored PID
+        if (!$finalPid && $storedPid && is_numeric($storedPid)) {
+            $cmd = shell_exec("ps -p {$storedPid} -o command=");
             if ($cmd && str_contains($cmd, 'artisan queue:work')) {
-                $this->status = 'running';
-                $this->workerProcessId = $storedPid;
-                
-                // Extract User and Binary
-                $parts = preg_split('/\s+/', trim($cmd));
-                $this->workerUser = $parts[0] ?? 'Unknown';
-                $this->workerBinary = $parts[1] ?? 'Unknown';
-            } else {
-                $this->status = 'stopped';
-                $this->workerProcessId = null;
-                $this->workerUser = null;
-                $this->workerBinary = null;
+                $finalPid = $storedPid;
             }
-        } else {
-            // Fallback for systems without pgrep
+        }
+
+        // 3. Fallback to ps aux grep
+        if (!$finalPid) {
             $output = shell_exec('ps aux | grep "artisan queue:work" | grep -v "grep" | grep -v "php-fpm" | grep -v "nginx" | head -n 1');
             if ($output) {
                 $parts = preg_split('/\s+/', trim($output));
-                $this->status = 'running';
-                $this->workerProcessId = $parts[1] ?? 'Unknown';
-                $this->workerUser = $parts[0] ?? 'Unknown';
-                // Find where the PHP binary is
-                $this->workerBinary = 'PHP'; // Default
-                foreach ($parts as $part) {
-                    if (str_contains($part, 'php') && !str_contains($part, 'artisan')) {
-                        $this->workerBinary = $part;
-                        break;
-                    }
-                }
-            } else {
-                $this->status = 'stopped';
-                $this->workerProcessId = null;
-                $this->workerUser = null;
-                $this->workerBinary = null;
+                $finalPid = $parts[1] ?? null;
             }
+        }
+
+        // Finalize state
+        if ($finalPid && is_numeric($finalPid)) {
+            $this->status = 'running';
+            $this->workerProcessId = $finalPid;
+            
+            // Unified details fetch
+            $details = shell_exec("ps -p {$finalPid} -o user=,command=");
+            if ($details) {
+                $parts = preg_split('/\s+/', trim($details));
+                $this->workerUser = $parts[0] ?? 'Unknown';
+                // Find binary in command string
+                $this->workerBinary = $parts[1] ?? 'PHP';
+            }
+
+            // Keep DB in sync
+            if ($this->workerProcessId !== $storedPid) {
+                \App\Models\Setting::updateOrCreate(['key' => 'worker_last_pid'], ['value' => $this->workerProcessId]);
+            }
+        } else {
+            $this->status = 'stopped';
+            $this->workerProcessId = null;
+            $this->workerUser = null;
+            $this->workerBinary = null;
         }
     }
 
