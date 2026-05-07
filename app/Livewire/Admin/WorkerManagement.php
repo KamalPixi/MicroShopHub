@@ -86,12 +86,11 @@ class WorkerManagement extends Component
             return;
         }
 
-        // Start worker in background
-        // Note: Using nohup to keep it running after request
-        $command = 'nohup php ' . base_path('artisan') . ' queue:work --stop-when-empty > /dev/null 2>&1 &';
+        // Fetch the connection from settings to ensure worker listens to the right place
+        $connection = \App\Models\Setting::where('key', 'queue_connection')->value('value') ?? 'database';
         
-        // Actually, for a persistent worker:
-        $command = 'nohup php ' . base_path('artisan') . ' queue:work --tries=3 > ' . storage_path('logs/worker.log') . ' 2>&1 &';
+        // Start worker in background with explicit connection
+        $command = 'nohup php ' . base_path('artisan') . ' queue:work ' . $connection . ' --tries=3 > ' . storage_path('logs/worker.log') . ' 2>&1 &';
         
         shell_exec($command);
         
