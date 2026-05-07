@@ -66,12 +66,6 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl p-4 border border-indigo-100/50 shadow-sm">
-                <div class="flex items-center gap-2 mb-2">
-                    <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <h4 class="text-[10px] font-bold text-indigo-900 uppercase tracking-tight">System Info</h4>
-                </div>
-                <p class="text-[10px] text-slate-500 leading-relaxed font-medium">For high-traffic stores, use **Supervisor** to ensure background jobs are never interrupted.</p>
             </div>
         </div>
 
