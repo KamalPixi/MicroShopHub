@@ -9,75 +9,95 @@
         <span class="step">5. Complete</span>
     </div>
 
-    <div class="two-col">
-        <div class="card stack">
-            @php($canRun = collect($permissions)->every(fn ($permission) => $permission['ok']))
-            <div>
-                <h2 style="margin:0 0 6px;font-size:18px">Ready to install</h2>
-                <p class="muted small" style="margin:0">This step will run migrations, seed the default data, save your settings, and lock the installer.</p>
-            </div>
-
-            <div class="card" style="padding:14px;background:#f8fafc">
-                <h3 style="margin:0 0 8px;font-size:14px">What will happen</h3>
-                <div class="stack small muted">
-                    <div>• Write the database configuration into the running installer session</div>
-                    <div>• Run migrations and seed default data</div>
-                    <div>• Save store settings and currency data</div>
-                    <div>• Create the first admin account</div>
-                    <div>• Lock the installer so it cannot run again</div>
+    <div class="stack" style="gap: 32px;">
+        <div class="grid grid-2" style="gap: 24px;">
+            <div class="card stack" style="gap: 20px;">
+                @php($canRun = collect($permissions)->every(fn ($permission) => $permission['ok']))
+                <div>
+                    <h2 class="section-title">Finalize Installation</h2>
+                    <p class="section-desc">We'll run migrations, seed initial data, and lock the setup.</p>
                 </div>
-            </div>
 
-            <div class="card" style="padding:14px;background:#f8fafc">
-                <h3 style="margin:0 0 6px;font-size:13px">File permissions check</h3>
-                <p class="muted xsmall" style="margin:0 0 8px">The installer no longer needs web access to edit <code>.env</code> during finalize.</p>
-                <div class="stack" style="gap:8px">
-                    @foreach($permissions as $permission)
-                        <div class="inline" style="justify-content:space-between;padding:8px 10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff">
-                            <div>
-                                <div style="font-weight:700;font-size:12px">{{ $permission['label'] }}</div>
-                                <div class="muted xsmall" style="font-size:10px">{{ $permission['path'] }}</div>
+                <div style="padding: 16px; background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-md);">
+                    <h3 class="section-title" style="font-size: 14px; margin-bottom: 12px;">What will happen</h3>
+                    <div class="stack" style="gap: 10px;">
+                        <div class="small muted" style="display: flex; gap: 10px;">
+                            <span style="color: var(--accent); font-weight: 800;">•</span>
+                            <span>Write session configuration to environment</span>
+                        </div>
+                        <div class="small muted" style="display: flex; gap: 10px;">
+                            <span style="color: var(--accent); font-weight: 800;">•</span>
+                            <span>Execute database migrations & seeders</span>
+                        </div>
+                        <div class="small muted" style="display: flex; gap: 10px;">
+                            <span style="color: var(--accent); font-weight: 800;">•</span>
+                            <span>Initialize store settings & currencies</span>
+                        </div>
+                        <div class="small muted" style="display: flex; gap: 10px;">
+                            <span style="color: var(--accent); font-weight: 800;">•</span>
+                            <span>Secure the installer automatically</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 16px; background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-md);">
+                    <h3 class="section-title" style="font-size: 14px; margin-bottom: 8px;">Permissions Check</h3>
+                    <div class="stack" style="gap: 8px;">
+                        @foreach($permissions as $permission)
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm);">
+                                <div>
+                                    <div class="small" style="font-weight: 600;">{{ $permission['label'] }}</div>
+                                    <div class="xsmall muted">{{ $permission['path'] }}</div>
+                                </div>
+                                @if($permission['ok'])
+                                    <span class="xsmall" style="color: var(--good); font-weight: 700;">Writable</span>
+                                @else
+                                    <span class="xsmall" style="color: var(--bad); font-weight: 700;">Fix needed</span>
+                                @endif
                             </div>
-                            <span class="pill {{ $permission['ok'] ? 'ok' : 'bad' }}" style="padding:4px 8px;font-size:11px">{{ $permission['ok'] ? 'Writable' : 'Fix needed' }}</span>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
+
+                <div class="btn-row" style="margin-top: 12px; padding-top: 16px; justify-content: flex-start; border-top: 1px dashed var(--line);">
+                    <form method="POST" action="{{ route('install.finalize.run') }}">
+                        @csrf
+                        <button class="btn btn-primary" type="submit" @disabled(! $canRun)>Run installation</button>
+                    </form>
+                    <a class="btn btn-soft" href="{{ route('install.settings') }}">Back to settings</a>
+                </div>
+                @if(! $canRun)
+                    <p class="xsmall" style="color: var(--bad); font-weight: 500;">Please fix permissions before continuing.</p>
+                @endif
             </div>
 
-            <div class="btn-row" style="justify-content:flex-start">
-                <form method="POST" action="{{ route('install.finalize.run') }}">
-                    @csrf
-                    <button class="btn btn-primary" type="submit" @disabled(! $canRun)>Run installation</button>
-                </form>
-                <a class="btn btn-soft" style="padding:9px 12px;font-size:12px" href="{{ route('install.settings') }}">Back to settings</a>
-            </div>
-            @if(! $canRun)
-                <p class="muted small" style="margin:0;color:#b45309">Fix the file permissions above before running the installation.</p>
-            @endif
-        </div>
+            <div class="card stack" style="gap: 20px;">
+                <div>
+                    <h3 class="section-title">Installation Log</h3>
+                    <p class="section-desc">Real-time feedback of the setup process.</p>
+                </div>
 
-        <div class="card stack">
-            <h3 style="margin:0;font-size:18px">Installation log</h3>
-            <p class="muted small" style="margin:0">The log below will show the installation steps once you run the installer.</p>
-
-            @if(!empty($logs))
-                <div class="stack" style="max-height:260px;overflow:auto;padding-right:4px">
-                    @foreach($logs as $log)
-                        <div class="card" style="padding:10px;background:#f8fafc">
-                            <div class="small muted" style="font-size:10px;line-height:1.2">{{ $log['time'] ?? '' }}</div>
-                            <div style="font-size:12px;font-weight:600;line-height:1.35">{{ $log['message'] ?? '' }}</div>
+                <div class="stack" style="gap: 12px; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 24px;">
+                    @if(!empty($logs))
+                        <div class="stack" style="max-height: 320px; overflow: auto; gap: 8px;">
+                            @foreach($logs as $log)
+                                <div style="padding: 12px; background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-sm);">
+                                    <div class="xsmall muted" style="font-size: 9px; margin-bottom: 2px;">{{ $log['time'] ?? '' }}</div>
+                                    <div class="small" style="font-weight: 600; line-height: 1.4;">{{ $log['message'] ?? '' }}</div>
+                                </div>
+                            @endforeach
                         </div>
-                    @endforeach
+                    @else
+                        <div style="padding: 24px; text-align: center; background: #f8fafc; border: 1px dashed var(--line); border-radius: var(--radius-sm);">
+                            <p class="small muted">Run installation to see the live log here.</p>
+                        </div>
+                    @endif
                 </div>
-            @else
-                <div class="card" style="padding:12px;background:#f8fafc">
-                    <div class="muted small" style="font-size:12px">Run installation to see the log here.</div>
-                </div>
-            @endif
 
-            <div class="card" style="padding:12px;background:#f8fafc">
-                <div class="small muted" style="font-size:11px">Admin login</div>
-                <div style="font-weight:700;font-size:13px">{{ $adminEmail }}</div>
+                <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--line);">
+                    <div class="xsmall muted" style="margin-bottom: 4px;">Primary Administrator</div>
+                    <div class="small" style="font-weight: 700;">{{ $adminEmail }}</div>
+                </div>
             </div>
         </div>
     </div>
