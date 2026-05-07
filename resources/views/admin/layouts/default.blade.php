@@ -155,35 +155,34 @@
         }
 
         ::-webkit-scrollbar {
-            display: none;
+            width: 8px;
         }
 
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
         }
 
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        ::-webkit-scrollbar-thumb {
+            background: #6b7280;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
         }
 
         /* Sidebar transition */
         aside {
-            transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
-            overflow-x: hidden;
-            z-index: 40;
+            transition: transform 0.3s ease;
         }
 
         .sidebar-collapsed {
-            width: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            opacity: 0;
-            border-right-width: 0 !important;
+            transform: translateX(-100%);
         }
 
-        main {
-            transition: all 0.3s ease;
+        .sidebar-collapsed+main {
+            margin-left: 0;
         }
 
         /* Floating toggle button */
@@ -482,29 +481,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </head>
 
-<body class="bg-gray-50 font-sans antialiased h-screen overflow-hidden">
+<body class="bg-gray-50 font-sans antialiased flex flex-col min-h-screen">
     <div id="admin-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden">
         <div class="bg-primary text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-lg">
             <span id="admin-toast-text">Copied to clipboard</span>
         </div>
     </div>
     <!-- Main Dashboard Layout -->
-    <div class="flex h-full overflow-hidden">
+    <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar -->
         @include('admin.includes.sidebar')
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 overflow-y-auto no-scrollbar">
+        <main class="flex-1 p-4 overflow-y-auto ml-60">
             <!-- Header -->
             @include('admin.includes.header')
 
             @yield('content')
-            
-            <!-- Footer -->
-            @include('admin.includes.footer')
 
         </main>
     </div>
+
+    <!-- Footer -->
+    @include('admin.includes.footer')
 
     <!-- JavaScript for Sidebar Toggle -->
     <script>
@@ -529,7 +528,12 @@
         function toggleSidebar() {
             sidebar.classList.toggle('sidebar-collapsed');
             toggleButtonFloating.classList.toggle('show-floating');
-            
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                mainContent.classList.remove('ml-60');
+            } else {
+                mainContent.classList.add('ml-60');
+            }
             if (toggleButton) {
                 toggleButton.querySelector('svg').innerHTML = breadcrumbIcon;
             }
