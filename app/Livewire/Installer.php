@@ -144,8 +144,29 @@ class Installer extends Component
         if (empty($this->settings['app_url'])) {
             $this->settings['app_url'] = url('/');
         }
+
+        // Generate Shop Name from URL if empty
+        if (empty($this->settings['shop_name'])) {
+            $host = parse_url($this->settings['app_url'], PHP_URL_HOST);
+            $parts = explode('.', $host);
+            $name = count($parts) > 1 ? $parts[count($parts) - 2] : $parts[0];
+            $this->settings['shop_name'] = ucfirst($name);
+        }
+
+        // Default nice slogan
+        if (empty($this->settings['slogan'])) {
+            $this->settings['slogan'] = 'Your One-Stop Shop for Everything.';
+        }
+
+        // Generate default password: $shopname$YY
+        if (empty($this->settings['admin_password'])) {
+            $pass = str_replace(' ', '', $this->settings['shop_name']) . date('y');
+            $this->settings['admin_password'] = $pass;
+            $this->settings['admin_password_confirmation'] = $pass;
+        }
+
         if (empty($this->settings['mail_from_address'])) {
-            $this->settings['mail_from_address'] = 'noreply@' . parse_url(url('/'), PHP_URL_HOST);
+            $this->settings['mail_from_address'] = 'noreply@' . parse_url($this->settings['app_url'], PHP_URL_HOST);
         }
     }
 
