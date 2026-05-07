@@ -278,6 +278,10 @@ class Installer extends Component
                 $this->installationProgress = 30;
                 try {
                     Artisan::call('migrate:fresh', ['--force' => true]);
+                    $output = Artisan::output();
+                    if (!empty(trim($output))) {
+                        $this->addLog($output);
+                    }
                     $this->addLog('Migrations completed successfully.');
                     $this->dispatch('run-task', task: 'seed');
                 } catch (\Exception $e) {
@@ -291,6 +295,10 @@ class Installer extends Component
                 $this->installationProgress = 60;
                 try {
                     Artisan::call('db:seed', ['--force' => true]);
+                    $output = Artisan::output();
+                    if (!empty(trim($output))) {
+                        $this->addLog($output);
+                    }
                     $this->saveStoreSettings();
                     $this->addLog('Seeding and settings saved.');
                     $this->dispatch('run-task', task: 'finalize');

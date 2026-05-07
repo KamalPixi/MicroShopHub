@@ -236,8 +236,8 @@
 
                         <div class="stack" id="log-container" style="gap: 8px; max-height: 320px; overflow: auto; background: #0f172a; padding: 16px; border-radius: var(--radius-sm); font-family: 'Courier New', monospace;">
                             @foreach($logs as $log)
-                                <div style="display: flex; gap: 10px; font-size: 12px;">
-                                    <span style="color: #64748b;">[{{ $log['time'] }}]</span>
+                                <div style="display: flex; gap: 10px; font-size: 12px; white-space: pre-wrap;">
+                                    <span style="color: #64748b; flex-shrink: 0;">[{{ $log['time'] }}]</span>
                                     <span style="color: #f8fafc;">{{ $log['message'] }}</span>
                                 </div>
                             @endforeach
