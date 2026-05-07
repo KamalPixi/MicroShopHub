@@ -14,7 +14,7 @@ return [
     */
 
     'temporary_file_upload' => [
-        'disk' => 'local',        // Force local storage for temporary uploads to avoid CORS issues with S3/R2
+        'disk' => env('FILESYSTEM_DISK', 'local'), 
         'middleware' => null,     // Middleware to apply to the temporary upload endpoint
         'directory' => null,      // Directory to store temporary uploads
         'rules' => null,          // Validation rules for temporary uploads

@@ -226,8 +226,8 @@ class ProductEdit extends Component
         }
         elseif ($step == 3) {
             $this->validate([
-                'thumbnail' => 'nullable|image|max:2048', 
-                'newImages.*' => 'image|max:2048',
+                'thumbnail' => 'nullable|image|max:10240', 
+                'newImages.*' => 'image|max:10240',
             ]);
         }
     }

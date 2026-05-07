@@ -93,8 +93,8 @@ class ProductAdd extends Component
         }
         elseif ($this->currentStep == 3) {
             $this->validate([
-                'thumbnail' => 'nullable|image|max:2048',
-                'images.*' => 'image|max:2048',
+                'thumbnail' => 'nullable|image|max:10240',
+                'images.*' => 'image|max:10240',
             ]);
         }
         elseif ($this->currentStep == 4) {
