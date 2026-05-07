@@ -20,6 +20,7 @@ class Installer extends Component
 
     // Requirements Step
     public $requirements = [];
+    public $permissions = [];
 
     // Database Step
     public $db = [
@@ -138,6 +139,7 @@ class Installer extends Component
 
         $this->checkRequirements();
         $this->checkDrivers();
+        $this->checkPermissions();
         
         if (empty($this->settings['app_url'])) {
             $this->settings['app_url'] = url('/');
@@ -178,8 +180,15 @@ class Installer extends Component
             ['label' => 'cURL', 'ok' => extension_loaded('curl')],
             ['label' => 'Fileinfo', 'ok' => extension_loaded('fileinfo')],
             ['label' => 'Zip', 'ok' => extension_loaded('zip')],
-            ['label' => 'Storage writable', 'ok' => is_writable(storage_path())],
-            ['label' => 'Cache writable', 'ok' => is_writable(base_path('bootstrap/cache'))],
+        ];
+    }
+
+    public function checkPermissions()
+    {
+        $this->permissions = [
+            ['label' => '.env File', 'path' => base_path('.env'), 'ok' => is_writable(base_path('.env'))],
+            ['label' => 'Storage Directory', 'path' => storage_path(), 'ok' => is_writable(storage_path())],
+            ['label' => 'Bootstrap Cache', 'path' => base_path('bootstrap/cache'), 'ok' => is_writable(base_path('bootstrap/cache'))],
         ];
     }
 
@@ -201,6 +210,9 @@ class Installer extends Component
             }
             if ($this->step == 2) {
                 if (!$this->testDatabase()) return;
+            }
+            if ($step == 4) {
+                $this->checkPermissions();
             }
         }
         $this->step = $step;

@@ -210,7 +210,32 @@
                         </div>
 
                         <div style="padding: 16px; background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-md);">
-                            <h3 class="section-title" style="font-size: 14px; margin-bottom: 12px;">Tasks Queue</h3>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                <h3 class="section-title" style="font-size: 14px; margin-bottom: 0;">File Permissions</h3>
+                                <button wire:click="checkPermissions" class="xsmall" style="background: none; border: none; color: var(--accent); cursor: pointer; font-weight: 700; text-decoration: underline;">Recheck</button>
+                            </div>
+                            <div class="stack" style="gap: 8px;">
+                                @foreach($permissions as $perm)
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm);">
+                                        <div>
+                                            <div class="small" style="font-weight: 600;">{{ $perm['label'] }}</div>
+                                            <div class="xsmall muted">{{ basename($perm['path']) }}</div>
+                                        </div>
+                                        @if($perm['ok'])
+                                            <span class="xsmall" style="color: var(--good); font-weight: 700;">Writable</span>
+                                        @else
+                                            <span class="xsmall" style="color: var(--bad); font-weight: 700;">Fix needed</span>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                            @if(collect($permissions)->contains('ok', false))
+                                <p class="xsmall" style="color: var(--bad); margin-top: 10px; font-weight: 500;">Please fix permissions before continuing.</p>
+                            @endif
+                        </div>
+
+                        <div style="padding: 16px; background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-md);">
+                            <h3 class="section-title" style="font-size: 14px; margin-bottom: 12px;">Installation Progress</h3>
                             <div class="stack" style="gap: 10px;">
                                 <div class="small @if($installationProgress > 10) done @endif" style="display: flex; gap: 10px;">
                                     <span>• Environment Configuration</span>
@@ -225,6 +250,13 @@
                                     <span>• Security Finalization</span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="btn-row" style="margin-top: 12px; padding-top: 16px; justify-content: flex-start; border-top: 1px dashed var(--line);">
+                            <button class="btn btn-primary" wire:click="startInstallation" @disabled(collect($permissions)->contains('ok', false) || $isInstalling)>
+                                @if($isInstalling) Installing... @else Run Installation @endif
+                            </button>
+                            <button class="btn btn-soft" wire:click="goToStep(3)" @disabled($isInstalling)>Back</button>
                         </div>
                     </div>
 
