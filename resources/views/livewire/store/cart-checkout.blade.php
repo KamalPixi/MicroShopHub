@@ -638,14 +638,63 @@
                                     @error('offlineReference') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-600">{{ __('store.upload_payment_proof_optional') }}</label>
-                                    <input type="file" wire:model="offlineProof" class="mt-1 block w-full text-sm text-gray-600">
-                                    @error('offlineProof') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                                    <p class="text-[11px] text-amber-700 mt-2 flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-md px-2 py-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">{{ __('store.upload_payment_proof_optional') }}</label>
+                                    
+                                    <div 
+                                        x-data="{ isDragging: false }" 
+                                        class="relative group"
+                                    >
+                                        <div 
+                                            class="flex flex-col items-center justify-center w-full min-h-[100px] border-2 border-dashed rounded-xl transition-all duration-200
+                                                {{ $offlineProof ? 'border-green-300 bg-green-50' : 'border-gray-300 bg-gray-50 group-hover:bg-gray-100 group-hover:border-primary/50' }}"
+                                            :class="isDragging ? 'border-primary bg-primary/5' : ''"
+                                        >
+                                            <div class="flex flex-col items-center justify-center py-4 px-4 text-center">
+                                                @if($offlineProof)
+                                                    <div class="flex items-center gap-2 text-green-700 bg-green-100 px-3 py-1.5 rounded-full mb-1">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                        <span class="text-xs font-bold truncate max-w-[200px]">{{ __('store.file_selected') }} {{ $offlineProof->getClientOriginalName() }}</span>
+                                                    </div>
+                                                    <p class="text-[10px] text-green-600 font-medium">{{ __('store.click_to_replace') }}</p>
+                                                @else
+                                                    <div class="h-10 w-10 mb-2 text-gray-400 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                                    </div>
+                                                    <p class="text-xs text-gray-600 font-bold mb-0.5">
+                                                        <span class="text-primary">{{ __('store.click_to_upload') }}</span> {{ __('store.or_drag_and_drop') }}
+                                                    </p>
+                                                    <p class="text-[10px] text-gray-400 font-medium">{{ __('store.file_formats_limit') }}</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        
+                                        <input 
+                                            id="offlineProof" 
+                                            type="file" 
+                                            wire:model="offlineProof" 
+                                            @dragenter="isDragging = true"
+                                            @dragleave="isDragging = false"
+                                            @drop="isDragging = false"
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                                        />
+
+                                        @if($offlineProof)
+                                            <button 
+                                                type="button" 
+                                                wire:click="$set('offlineProof', null)" 
+                                                class="absolute -top-2 -right-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200 transition-colors shadow-sm border border-red-200 z-20"
+                                            >
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                            </button>
+                                        @endif
+                                    </div>
+                                    @error('offlineProof') <p class="text-red-500 text-xs mt-1.5 font-medium">{{ $message }}</p> @enderror
+
+                                    <p class="text-[10px] text-amber-700 mt-3 flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-lg px-2 py-1.5">
+                                        <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86l-7.1 12.29A1.5 1.5 0 004.5 18h15a1.5 1.5 0 001.31-2.25l-7.1-12.29a1.5 1.5 0 00-2.62 0z"></path>
                                         </svg>
-                                        {{ __('store.provide_reference_or_proof') }}
+                                        <span class="font-medium">{{ __('store.provide_reference_or_proof') }}</span>
                                     </p>
                                 </div>
                             </div>

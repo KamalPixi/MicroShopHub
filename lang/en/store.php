@@ -362,4 +362,9 @@ return [
     'your_cart_is_empty' => 'Your cart is empty',
     'start_shopping' => 'Start Shopping',
     'order_placed_successfully' => 'Order Placed Successfully',
+    'click_to_upload' => 'Click to upload',
+    'or_drag_and_drop' => 'or drag and drop',
+    'file_formats_limit' => 'SVG, PNG, JPG or PDF (MAX. 2MB)',
+    'file_selected' => 'File selected:',
+    'click_to_replace' => 'Click to replace',
 ];
