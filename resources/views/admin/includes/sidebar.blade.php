@@ -1,4 +1,4 @@
-<aside id="sidebar" class="w-72 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 p-4 flex flex-col fixed top-0 bottom-0 border-r border-white/10 shadow-[0_24px_60px_rgba(2,6,23,0.45)]">
+<aside id="sidebar" class="w-72 h-screen sticky top-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 p-4 flex flex-col border-r border-white/10 shadow-[0_24px_60px_rgba(2,6,23,0.45)] flex-shrink-0">
 @php
         $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title', 'shop_logo'])->pluck('value', 'key');
         $sidebarStoreName = trim((string) ($sidebarSettings['shop_name'] ?? '')) ?: config('app.name', 'Store Name');

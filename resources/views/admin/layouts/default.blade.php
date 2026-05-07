@@ -169,20 +169,21 @@
 
         /* Sidebar transition */
         aside {
-            transition: transform 0.3s ease;
+            transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+            overflow-x: hidden;
             z-index: 40;
         }
 
-        main {
-            transition: margin-left 0.3s ease;
-        }
-
         .sidebar-collapsed {
-            transform: translateX(-100%);
+            width: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            opacity: 0;
+            border-right-width: 0 !important;
         }
 
-        .sidebar-collapsed+main {
-            margin-left: 0;
+        main {
+            transition: all 0.3s ease;
         }
 
         /* Floating toggle button */
@@ -493,7 +494,7 @@
         @include('admin.includes.sidebar')
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 overflow-y-auto ml-72 no-scrollbar">
+        <main class="flex-1 p-4 overflow-y-auto no-scrollbar">
             <!-- Header -->
             @include('admin.includes.header')
 
@@ -528,12 +529,7 @@
         function toggleSidebar() {
             sidebar.classList.toggle('sidebar-collapsed');
             toggleButtonFloating.classList.toggle('show-floating');
-            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
-            if (sidebar.classList.contains('sidebar-collapsed')) {
-                mainContent.classList.remove('ml-72');
-            } else {
-                mainContent.classList.add('ml-72');
-            }
+            
             if (toggleButton) {
                 toggleButton.querySelector('svg').innerHTML = breadcrumbIcon;
             }
