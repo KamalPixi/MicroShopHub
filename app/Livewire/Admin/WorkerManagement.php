@@ -21,16 +21,24 @@ class WorkerManagement extends Component
 
     public function checkStatus()
     {
-        // Check for running queue worker process
-        $output = shell_exec('ps aux | grep "artisan queue:work" | grep -v grep');
-        if ($output) {
+        // Use pgrep if available for more reliable PID detection, otherwise fallback to ps aux
+        $pid = shell_exec("pgrep -f 'artisan queue:work' | head -n 1");
+        
+        if ($pid && is_numeric(trim($pid))) {
             $this->status = 'running';
-            // Extract PID
-            $parts = preg_split('/\s+/', trim($output));
-            $this->workerProcessId = $parts[1] ?? null;
+            $this->workerProcessId = trim($pid);
         } else {
-            $this->status = 'stopped';
-            $this->workerProcessId = null;
+            // Fallback for systems without pgrep
+            $output = shell_exec('ps aux | grep "artisan queue:work" | grep -v "grep" | grep -v "php-fpm" | grep -v "nginx"');
+            if ($output) {
+                $parts = preg_split('/\s+/', trim($output));
+                // PID is usually the second column in ps aux
+                $this->status = 'running';
+                $this->workerProcessId = $parts[1] ?? 'Unknown';
+            } else {
+                $this->status = 'stopped';
+                $this->workerProcessId = null;
+            }
         }
     }
 
