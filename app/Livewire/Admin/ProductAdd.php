@@ -81,7 +81,7 @@ class ProductAdd extends Component
             $this->validate([
                 'name' => 'required|string|max:255',
                 'slug' => 'required|string|unique:products,slug',
-                'sku' => 'nullable|string|max:100',
+                'sku' => 'nullable|string|max:100|unique:products,sku',
                 'description' => 'nullable|string',
                 'status' => 'required|integer|in:0,1',
             ]);

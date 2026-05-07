@@ -215,7 +215,7 @@ class ProductEdit extends Component
             $this->validate([
                 'name' => 'required|min:3',
                 'slug' => ['required', Rule::unique('products', 'slug')->ignore($this->product->id)],
-                // Note: 'sku' is on variations usually, but if your product table has it (based on fillable), validate it here
+                'sku' => ['nullable', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($this->product->id)],
                 'description' => 'nullable',
             ]);
         }
