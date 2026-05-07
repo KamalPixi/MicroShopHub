@@ -367,4 +367,5 @@ return [
     'file_formats_limit' => 'SVG, PNG, JPG or PDF (MAX. 2MB)',
     'file_selected' => 'File selected:',
     'click_to_replace' => 'Click to replace',
+    'per_unit' => 'per unit',
 ];

@@ -11,42 +11,51 @@
                 <div class="lg:col-span-8 space-y-6">
                     
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">{{ __('store.items_in_cart') }}</h2>
-                            <span class="text-xs font-medium text-gray-500">{{ __('store.items_count', ['count' => count($cart)]) }}</span>
+                        <div class="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                                <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">{{ __('store.items_in_cart') }}</h2>
+                            </div>
+                            <span class="text-xs font-bold bg-white px-2 py-1 rounded-full border border-gray-200 text-gray-600 shadow-sm">{{ __('store.items_count', ['count' => count($cart)]) }}</span>
                         </div>
                         <ul class="divide-y divide-gray-100">
                             @foreach($cart as $key => $item)
-                                <li class="p-4 flex items-center">
-                                    <div class="flex-shrink-0 w-16 h-16 border border-gray-200 rounded-md overflow-hidden bg-gray-100">
+                                <li class="p-5 flex items-center group hover:bg-gray-50/50 transition-colors">
+                                    <div class="relative flex-shrink-0 w-20 h-20 border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm group-hover:shadow-md transition-shadow">
                                         @php
                                             $img = !empty($item['thumbnail']) 
                                                 ? (Str::startsWith($item['thumbnail'], ['http']) ? $item['thumbnail'] : Storage::url($item['thumbnail'])) 
                                                 : 'https://placehold.co/100';
                                         @endphp
-                                        <img src="{{ $img }}" class="w-full h-full object-cover">
+                                        <img src="{{ $img }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     </div>
-                                    <div class="ml-4 flex-1">
+                                    <div class="ml-5 flex-1">
                                         <div class="flex justify-between items-start">
-                                            <div>
-                                                <h3 class="text-sm font-bold text-gray-900 line-clamp-1 hover:text-primary cursor-pointer">{{ $item['name'] }}</h3>
+                                            <div class="max-w-[70%]">
+                                                <h3 class="text-sm font-bold text-gray-900 line-clamp-2 hover:text-primary transition-colors cursor-pointer">{{ $item['name'] }}</h3>
                                                 @if(!empty($item['attributes']))
-                                                    <div class="text-xs text-gray-500 mt-0.5 flex flex-wrap gap-2">
+                                                    <div class="text-[10px] text-gray-500 mt-1.5 flex flex-wrap gap-1.5">
                                                         @foreach($item['attributes'] as $k => $v)
-                                                            <span class="bg-gray-100 px-1.5 py-0.5 rounded">{{ $k }}: {{ $v }}</span>
+                                                            <span class="bg-gray-100 px-2 py-0.5 rounded-md font-medium border border-gray-200/50">{{ $k }}: {{ $v }}</span>
                                                         @endforeach
                                                     </div>
                                                 @endif
                                             </div>
-                                            <p class="text-sm font-bold text-gray-900">{{ $item['currency_symbol'] ?? $currencySymbol }}{{ number_format($item['price'], 2) }}</p>
-                                        </div>
-                                        <div class="flex justify-between items-center mt-2">
-                                            <div class="flex items-center border border-gray-300 rounded h-7">
-                                                <button wire:click="decrement('{{ $key }}')" class="px-2 text-gray-500 hover:text-primary hover:bg-gray-50 h-full border-r border-gray-300 text-xs">-</button>
-                                                <input type="text" value="{{ $item['quantity'] }}" readonly class="w-8 text-center border-none p-0 text-gray-900 font-bold text-xs h-full focus:ring-0">
-                                                <button wire:click="increment('{{ $key }}')" class="px-2 text-gray-500 hover:text-primary hover:bg-gray-50 h-full border-l border-gray-300 text-xs">+</button>
+                                            <div class="text-right">
+                                                <p class="text-sm font-black text-gray-900">{{ $item['currency_symbol'] ?? $currencySymbol }}{{ number_format($item['price'], 2) }}</p>
+                                                <p class="text-[10px] text-gray-400 mt-0.5">{{ __('store.per_unit') }}</p>
                                             </div>
-                                            <button wire:click="removeItem('{{ $key }}')" class="text-xs text-red-500 hover:underline">{{ __('store.remove') }}</button>
+                                        </div>
+                                        <div class="flex justify-between items-center mt-3">
+                                            <div class="flex items-center bg-gray-100/80 rounded-lg p-0.5 border border-gray-200 shadow-inner">
+                                                <button wire:click="decrement('{{ $key }}')" class="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-primary hover:bg-white rounded-md transition-all text-sm font-bold shadow-sm">-</button>
+                                                <input type="text" value="{{ $item['quantity'] }}" readonly class="w-9 text-center border-none bg-transparent p-0 text-gray-900 font-black text-xs focus:ring-0">
+                                                <button wire:click="increment('{{ $key }}')" class="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-primary hover:bg-white rounded-md transition-all text-sm font-bold shadow-sm">+</button>
+                                            </div>
+                                            <button wire:click="removeItem('{{ $key }}')" class="flex items-center gap-1.5 text-[11px] font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-tight">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m5 0H6"></path></svg>
+                                                {{ __('store.remove') }}
+                                            </button>
                                         </div>
                                     </div>
                                 </li>
@@ -741,12 +750,21 @@
 
             </div>
         @else
-            <div class="flex flex-col items-center justify-center py-16 bg-white rounded-lg border border-dashed border-gray-300 text-center">
-                <div class="bg-gray-50 p-4 rounded-full mb-4">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+            <div class="max-w-md mx-auto text-center py-24 px-6 bg-white rounded-3xl border border-gray-100 shadow-sm">
+                <div class="relative mb-8 inline-flex">
+                    <div class="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-20"></div>
+                    <div class="relative z-10 flex items-center justify-center w-24 h-24 bg-gray-50 rounded-full text-gray-300 border-2 border-gray-100">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900 mb-2">{{ __('store.your_cart_is_empty') }}</h2>
-                <a href="{{ route('store.index') }}" class="px-6 py-2 bg-primary text-white text-sm font-bold rounded hover:bg-primary transition">{{ __('store.start_shopping') }}</a>
+                <h2 class="text-2xl font-black text-gray-900 mb-3 tracking-tight">{{ __('store.your_cart_is_empty') }}</h2>
+                <p class="text-gray-500 mb-10 text-sm font-medium leading-relaxed">Looks like you haven't added anything to your cart yet. Let's find something amazing for you!</p>
+                <a href="{{ route('store.index') }}" class="inline-flex items-center justify-center bg-primary text-white px-10 py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 group">
+                    {{ __('store.start_shopping') }}
+                    <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                </a>
             </div>
         @endif
 
