@@ -134,6 +134,7 @@ class Settings extends Component
     public bool $isBackingUp = false;
     public string $testEmailRecipient = '';
     public string $testEmailStatus = '';
+    public string $s3TestStatus = '';
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -801,6 +802,31 @@ class Settings extends Component
     {
         unset($this->offlinePaymentMethods[$index]);
         $this->offlinePaymentMethods = array_values($this->offlinePaymentMethods);
+    }
+
+    public function testS3Connection(): void
+    {
+        $this->s3TestStatus = 'Testing connection...';
+
+        try {
+            $disk = Storage::disk('s3');
+            
+            // Try to write a small test file
+            $filename = 'test-connection-' . time() . '.txt';
+            $disk->put($filename, 'Connection test successful.');
+            
+            // Try to read it back
+            if ($disk->exists($filename)) {
+                $disk->delete($filename);
+                $this->s3TestStatus = 'Success! Successfully connected to R2/S3 bucket.';
+            } else {
+                $this->s3TestStatus = 'Failed: Could not verify written file.';
+            }
+        } catch (\Exception $e) {
+            $this->s3TestStatus = 'Error: ' . $e->getMessage();
+        }
+
+        $this->savedSection = 'system';
     }
 
     public function backupDatabase(): void

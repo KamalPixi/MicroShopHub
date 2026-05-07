@@ -1006,6 +1006,31 @@
                     </div>
                 @endif
             </div>
+            <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 mt-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h5 class="text-sm font-semibold text-gray-800">S3 / Cloudflare R2 Connection</h5>
+                        <p class="text-xs text-gray-500 mt-1">Verify if your cloud storage credentials are correct by running a read/write test.</p>
+                    </div>
+                    <button 
+                        wire:click="testS3Connection" 
+                        wire:loading.attr="disabled"
+                        class="inline-flex items-center px-4 py-2 bg-secondary border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-secondary active:bg-secondary focus:outline-none disabled:opacity-25 transition ease-in-out duration-150"
+                    >
+                        <svg wire:loading wire:target="testS3Connection" class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Test Connection</span>
+                    </button>
+                </div>
+
+                @if($s3TestStatus)
+                    <div class="mt-4 p-3 rounded-lg {{ str_contains($s3TestStatus, 'Success') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }} text-xs font-medium">
+                        {{ $s3TestStatus }}
+                    </div>
+                @endif
+            </div>
         </section>
     </div>
 </div>
