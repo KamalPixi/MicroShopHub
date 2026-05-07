@@ -984,8 +984,13 @@
             <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h5 class="text-sm font-semibold text-gray-800">Database Backup</h5>
-                        <p class="text-xs text-gray-500 mt-1">Create a snapshot of your database. Backups are stored locally and uploaded to S3 if configured.</p>
+                        <div class="flex items-center gap-2">
+                            <h5 class="text-sm font-semibold text-gray-800">Database Backup</h5>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $backupDisk === 's3' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700' }} border border-current opacity-70 uppercase">
+                                {{ $backupDisk }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Create a snapshot of your database. Path: <code class="bg-gray-100 px-1 rounded text-[10px]">{{ $backupPath }}</code></p>
                     </div>
                     <button 
                         wire:click="backupDatabase" 

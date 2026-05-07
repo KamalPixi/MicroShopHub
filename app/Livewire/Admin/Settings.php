@@ -135,6 +135,8 @@ class Settings extends Component
     public string $testEmailRecipient = '';
     public string $testEmailStatus = '';
     public string $s3TestStatus = '';
+    public string $backupDisk = '';
+    public string $backupPath = '';
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -241,6 +243,9 @@ class Settings extends Component
         if (! $this->settings['currency'] && $this->currencies->isNotEmpty()) {
             $this->settings['currency'] = $this->currencies->first()->code;
         }
+
+        $this->backupDisk = env('BACKUP_DISK', 'local');
+        $this->backupPath = env('BACKUP_PATH', 'backups/');
     }
 
     public function addCountry()
