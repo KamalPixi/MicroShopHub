@@ -265,7 +265,7 @@ class ProductEdit extends Component
         // Save New Images with SEO Friendly Names
         foreach ($this->newImages as $index => $img) {
             $name = $this->slug . '-gallery-' . (count($finalImages) + 1) . '-' . Str::lower(Str::random(5)) . '.' . $img->getClientOriginalExtension();
-            $finalImages[] = $img->storeAs('products/gallery', $name);
+            $finalImages[] = $img->storeAs('images/products', $name, config('filesystems.default'));
         }
 
         // Handle Thumbnail with SEO Friendly Name
@@ -273,7 +273,7 @@ class ProductEdit extends Component
         if ($this->thumbnail) {
              if ($thumbnailPath) Storage::disk()->delete($thumbnailPath);
              $name = $this->slug . '-' . Str::lower(Str::random(5)) . '.' . $this->thumbnail->getClientOriginalExtension();
-             $thumbnailPath = $this->thumbnail->storeAs('products/thumbnails', $name);
+             $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, config('filesystems.default'));
         }
 
         // 2. Update Product

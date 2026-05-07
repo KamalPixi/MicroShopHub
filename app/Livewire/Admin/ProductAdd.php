@@ -253,13 +253,13 @@ class ProductAdd extends Component
         $thumbnailPath = null;
         if ($this->thumbnail) {
             $name = $this->slug . '-' . Str::lower(Str::random(5)) . '.' . $this->thumbnail->getClientOriginalExtension();
-            $thumbnailPath = $this->thumbnail->storeAs('images/products', $name);
+            $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, config('filesystems.default'));
         }
 
         $galleryPaths = [];
         foreach ($this->images as $index => $image) {
             $name = $this->slug . '-gallery-' . ($index + 1) . '-' . Str::lower(Str::random(5)) . '.' . $image->getClientOriginalExtension();
-            $galleryPaths[] = $image->storeAs('images/products', $name);
+            $galleryPaths[] = $image->storeAs('images/products', $name, config('filesystems.default'));
         }
 
         $product = Product::create([
