@@ -882,7 +882,12 @@ class Settings extends Component
                 'Test Email from ' . ($this->settings['shop_name'] ?: config('app.name')),
                 'Hello! This is a test email to verify your SMTP settings are working correctly.'
             );
-            $this->testEmailStatus = 'Test email dispatched to queue successfully!';
+            $conn = Setting::where('key', 'queue_connection')->value('value') ?? 'sync';
+            if ($conn === 'sync') {
+                $this->testEmailStatus = 'Test email sent successfully! (Immediate Mode)';
+            } else {
+                $this->testEmailStatus = 'Test email dispatched to worker successfully! Check logs.';
+            }
         } catch (\Exception $e) {
             $this->testEmailStatus = 'Failed to send test email: ' . $e->getMessage();
         }

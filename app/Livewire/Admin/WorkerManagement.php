@@ -12,6 +12,8 @@ class WorkerManagement extends Component
     public $status = 'stopped';
     public $logs = '';
     public $workerProcessId = null;
+    public $workerUser = null;
+    public $workerBinary = null;
 
     public function mount()
     {
@@ -35,25 +37,42 @@ class WorkerManagement extends Component
             }
         } elseif ($storedPid && is_numeric($storedPid)) {
             // Check if the stored PID is actually running
-            $isRun = shell_exec("ps -p {$storedPid} -o pid=");
-            if ($isRun && trim($isRun) == $storedPid) {
+            $cmd = shell_exec("ps -p {$storedPid} -o user=,command=");
+            if ($cmd && str_contains($cmd, 'artisan queue:work')) {
                 $this->status = 'running';
                 $this->workerProcessId = $storedPid;
+                
+                // Extract User and Binary
+                $parts = preg_split('/\s+/', trim($cmd));
+                $this->workerUser = $parts[0] ?? 'Unknown';
+                $this->workerBinary = $parts[1] ?? 'Unknown';
             } else {
                 $this->status = 'stopped';
                 $this->workerProcessId = null;
+                $this->workerUser = null;
+                $this->workerBinary = null;
             }
         } else {
             // Fallback for systems without pgrep
-            $output = shell_exec('ps aux | grep "artisan queue:work" | grep -v "grep" | grep -v "php-fpm" | grep -v "nginx"');
+            $output = shell_exec('ps aux | grep "artisan queue:work" | grep -v "grep" | grep -v "php-fpm" | grep -v "nginx" | head -n 1');
             if ($output) {
                 $parts = preg_split('/\s+/', trim($output));
-                // PID is usually the second column in ps aux
                 $this->status = 'running';
                 $this->workerProcessId = $parts[1] ?? 'Unknown';
+                $this->workerUser = $parts[0] ?? 'Unknown';
+                // Find where the PHP binary is
+                $this->workerBinary = 'PHP'; // Default
+                foreach ($parts as $part) {
+                    if (str_contains($part, 'php') && !str_contains($part, 'artisan')) {
+                        $this->workerBinary = $part;
+                        break;
+                    }
+                }
             } else {
                 $this->status = 'stopped';
                 $this->workerProcessId = null;
+                $this->workerUser = null;
+                $this->workerBinary = null;
             }
         }
     }
