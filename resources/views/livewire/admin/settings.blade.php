@@ -1020,7 +1020,7 @@
                     <button 
                         wire:click="testS3Connection" 
                         wire:loading.attr="disabled"
-                        class="inline-flex items-center px-4 py-2 bg-secondary border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-secondary active:bg-secondary focus:outline-none disabled:opacity-25 transition ease-in-out duration-150"
+                        class="inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary active:bg-primary focus:outline-none disabled:opacity-25 transition ease-in-out duration-150"
                     >
                         <svg wire:loading wire:target="testS3Connection" class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
