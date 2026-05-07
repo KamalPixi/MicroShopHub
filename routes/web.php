@@ -39,16 +39,14 @@ use App\Http\Controllers\Admin\UserController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/install', [InstallController::class, 'index'])->name('install.index');
-Route::get('/install/requirements', [InstallController::class, 'requirements'])->name('install.requirements');
-Route::post('/install/requirements', [InstallController::class, 'storeRequirements'])->name('install.requirements.store');
-Route::get('/install/database', [InstallController::class, 'database'])->name('install.database');
-Route::post('/install/database', [InstallController::class, 'storeDatabase'])->name('install.database.store');
-Route::get('/install/settings', [InstallController::class, 'settings'])->name('install.settings');
-Route::post('/install/settings', [InstallController::class, 'storeSettings'])->name('install.settings.store');
-Route::get('/install/finalize', [InstallController::class, 'finalizePage'])->name('install.finalize');
-Route::post('/install/finalize', [InstallController::class, 'finalize'])->name('install.finalize.run');
-Route::get('/install/complete', [InstallController::class, 'complete'])->name('install.complete');
+use App\Livewire\Installer;
+
+Route::get('/install', Installer::class)->name('install.index');
+Route::get('/install/requirements', fn() => redirect()->route('install.index'))->name('install.requirements');
+Route::get('/install/database', fn() => redirect()->route('install.index'))->name('install.database');
+Route::get('/install/settings', fn() => redirect()->route('install.index'))->name('install.settings');
+Route::get('/install/finalize', fn() => redirect()->route('install.index'))->name('install.finalize');
+Route::get('/install/complete', fn() => redirect()->route('install.index'))->name('install.complete');
 
 Route::get('/language/{locale}', function (Request $request, string $locale) {
     $settings = Cache::remember('store_language_settings', 300, function () {
