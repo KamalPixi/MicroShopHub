@@ -48,6 +48,13 @@ class BackupDatabaseCommand extends Command
         $filename = 'backup-' . date('Y-m-d-H-i-s') . '.sqlite';
         $diskName = env('BACKUP_DISK', 'local');
         $backupPath = rtrim(env('BACKUP_PATH', 'backups'), '/') . '/';
+        $backupBucket = env('BACKUP_BUCKET');
+
+        // If we are using S3 and a specific backup bucket is defined, override the config
+        if ($diskName === 's3' && !empty($backupBucket)) {
+            config(['filesystems.disks.s3.bucket' => $backupBucket]);
+        }
+
         $disk = \Illuminate\Support\Facades\Storage::disk($diskName);
 
         try {
