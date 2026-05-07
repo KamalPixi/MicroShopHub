@@ -92,6 +92,9 @@
             50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
             100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
         }
+        .hidden { display: none !important; }
+        .hub-spinner { display: none; }
+        [wire\:loading] .hub-spinner { display: inline-block; }
 
         @media (max-width: 640px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .content { padding: 24px; } .top { padding: 24px; } }
     </style>
