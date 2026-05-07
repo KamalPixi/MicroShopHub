@@ -21,12 +21,28 @@ class WorkerManagement extends Component
 
     public function checkStatus()
     {
-        // Use pgrep if available for more reliable PID detection, otherwise fallback to ps aux
+        // Use pgrep if available for more reliable PID detection
         $pid = shell_exec("pgrep -f 'artisan queue:work' | head -n 1");
+        $storedPid = \App\Models\Setting::where('key', 'worker_last_pid')->value('value');
         
         if ($pid && is_numeric(trim($pid))) {
             $this->status = 'running';
             $this->workerProcessId = trim($pid);
+            
+            // Sync with DB if different
+            if ($this->workerProcessId !== $storedPid) {
+                \App\Models\Setting::updateOrCreate(['key' => 'worker_last_pid'], ['value' => $this->workerProcessId]);
+            }
+        } elseif ($storedPid && is_numeric($storedPid)) {
+            // Check if the stored PID is actually running
+            $isRun = shell_exec("ps -p {$storedPid} -o pid=");
+            if ($isRun && trim($isRun) == $storedPid) {
+                $this->status = 'running';
+                $this->workerProcessId = $storedPid;
+            } else {
+                $this->status = 'stopped';
+                $this->workerProcessId = null;
+            }
         } else {
             // Fallback for systems without pgrep
             $output = shell_exec('ps aux | grep "artisan queue:work" | grep -v "grep" | grep -v "php-fpm" | grep -v "nginx"');
@@ -59,6 +75,13 @@ class WorkerManagement extends Component
         shell_exec($command);
         
         sleep(1); // Give it a second to start
+        
+        // Find the new PID
+        $newPid = shell_exec("pgrep -f 'artisan queue:work' | head -n 1");
+        if ($newPid && is_numeric(trim($newPid))) {
+            \App\Models\Setting::updateOrCreate(['key' => 'worker_last_pid'], ['value' => trim($newPid)]);
+        }
+
         $this->checkStatus();
         session()->flash('success', 'Worker started successfully.');
     }
@@ -71,6 +94,9 @@ class WorkerManagement extends Component
         }
 
         shell_exec("kill {$this->workerProcessId}");
+        
+        // Clear stored PID
+        \App\Models\Setting::where('key', 'worker_last_pid')->delete();
         
         sleep(1);
         $this->checkStatus();
