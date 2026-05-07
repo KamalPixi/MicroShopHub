@@ -315,24 +315,41 @@
             </div>
 
             <div class="card" style="padding:14px">
-                <h4 style="margin:0 0 10px;font-size:14px">AWS S3 Storage</h4>
+                <h4 style="margin:0 0 10px;font-size:14px">Cloud Storage (S3 / R2)</h4>
                 <div class="stack">
-                    <div>
-                        <label>AWS Access Key ID</label>
-                        <input type="text" name="aws_access_key_id" value="{{ old('aws_access_key_id', $settings['aws_access_key_id'] ?? '') }}" placeholder="Optional">
+                    <div class="grid grid-2" style="gap:10px">
+                        <div>
+                            <label>Access Key ID</label>
+                            <input type="text" name="aws_access_key_id" value="{{ old('aws_access_key_id', $settings['aws_access_key_id'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Secret Access Key</label>
+                            <input type="password" name="aws_secret_access_key" value="{{ old('aws_secret_access_key', $settings['aws_secret_access_key'] ?? '') }}" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label>Default Region</label>
+                            <input type="text" name="aws_default_region" value="{{ old('aws_default_region', $settings['aws_default_region'] ?? 'us-east-1') }}">
+                            <div class="help">Use <code style="background:#eee;padding:0 3px">auto</code> for Cloudflare R2.</div>
+                        </div>
+                        <div>
+                            <label>Bucket Name</label>
+                            <input type="text" name="aws_bucket" value="{{ old('aws_bucket', $settings['aws_bucket'] ?? '') }}" placeholder="my-bucket">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label>S3 Endpoint</label>
+                            <input type="text" name="aws_endpoint" value="{{ old('aws_endpoint', $settings['aws_endpoint'] ?? '') }}" placeholder="https://<accountid>.r2.cloudflarestorage.com">
+                            <div class="help">Required for R2/DigitalOcean. Leave empty for standard AWS S3.</div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label>Custom Public URL</label>
+                            <input type="text" name="aws_url" value="{{ old('aws_url', $settings['aws_url'] ?? '') }}" placeholder="https://pub-xyz.r2.dev">
+                            <div class="help">Optional. The public URL for accessing uploaded files.</div>
+                        </div>
                     </div>
-                    <div>
-                        <label>AWS Secret Access Key</label>
-                        <input type="password" name="aws_secret_access_key" value="{{ old('aws_secret_access_key', $settings['aws_secret_access_key'] ?? '') }}" placeholder="Optional">
-                    </div>
-                    <div>
-                        <label>AWS Default Region</label>
-                        <input type="text" name="aws_default_region" value="{{ old('aws_default_region', $settings['aws_default_region'] ?? 'us-east-1') }}">
-                    </div>
-                    <div>
-                        <label>AWS Bucket</label>
-                        <input type="text" name="aws_bucket" value="{{ old('aws_bucket', $settings['aws_bucket'] ?? '') }}" placeholder="Optional">
-                    </div>
+                    <label class="checkbox" style="margin-top:4px">
+                        <input type="checkbox" name="aws_use_path_style_endpoint" value="1" @checked(old('aws_use_path_style_endpoint', $settings['aws_use_path_style_endpoint'] ?? false))>
+                        <span class="small">Use path-style endpoint (Recommended for MinIO)</span>
+                    </label>
                 </div>
             </div>
 
