@@ -54,14 +54,20 @@
                         Stop Worker
                     </button>
                 </div>
-                <div class="px-4 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
-                    <div class="flex flex-col">
-                        <span class="text-[9px] text-slate-400 uppercase font-bold tracking-tighter">Process ID</span>
-                        <span class="text-[11px] text-slate-700 font-mono font-bold">{{ $workerProcessId ?: 'Inactive' }}</span>
+                <div class="px-4 py-4 bg-gray-50/50 border-t border-gray-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] text-slate-400 uppercase font-bold tracking-tighter">Process ID</span>
+                            <span class="text-[11px] text-slate-700 font-mono font-bold">{{ $workerProcessId ?: 'Inactive' }}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[9px] text-slate-400 uppercase font-bold tracking-tighter">Process Owner</span>
+                            <span class="block text-[11px] text-indigo-600 font-mono font-bold">{{ $workerUser ?: 'N/A' }}</span>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <span class="text-[9px] text-slate-400 uppercase font-bold tracking-tighter">Driver</span>
-                        <span class="block text-[11px] text-slate-700 font-mono font-bold">Database</span>
+                    <div class="pt-2 border-t border-gray-100">
+                        <span class="text-[9px] text-slate-400 uppercase font-bold tracking-tighter block mb-1">Execution Binary</span>
+                        <span class="block text-[10px] text-slate-600 font-mono break-all leading-tight">{{ $workerBinary ?: 'None' }}</span>
                     </div>
                 </div>
             </div>
