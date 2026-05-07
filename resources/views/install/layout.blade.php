@@ -58,6 +58,9 @@
 <body>
     <div class="wrap">
         <div class="shell">
+            <div style="background:#fffbeb;border-bottom:1px solid #fef3c7;padding:10px 24px;font-size:12px;color:#92400e;font-weight:600">
+                ⚠️ Installer must be completed once. After finalization the installer is locked automatically.
+            </div>
             <div class="top">
                 <h1 class="title">{{ config('app.name', 'MicroShopHub') }} Installer</h1>
                 <p class="subtitle">Step-by-step setup for a fresh installation.</p>
@@ -81,7 +84,7 @@
                 @yield('content')
             </div>
             <div class="footer">
-                Installer must be completed once. After finalization the installer is locked automatically.
+                &copy; {{ date('Y') }} {{ config('app.name', 'MicroShopHub') }}. All rights reserved.
             </div>
         </div>
     </div>
