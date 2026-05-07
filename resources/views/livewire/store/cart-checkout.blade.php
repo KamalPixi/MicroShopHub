@@ -20,7 +20,7 @@
                         </div>
                         <ul class="divide-y divide-gray-100">
                             @foreach($cart as $key => $item)
-                                <li class="p-5 flex items-center group hover:bg-gray-50/50 transition-colors">
+                                <li class="p-5 flex items-center gap-x-6 group hover:bg-gray-50/50 transition-colors">
                                     <div class="relative flex-shrink-0 w-20 h-20 border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm group-hover:shadow-md transition-shadow">
                                         @php
                                             $img = !empty($item['thumbnail']) 
@@ -29,7 +29,7 @@
                                         @endphp
                                         <img src="{{ $img }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     </div>
-                                    <div class="ml-8 flex-1">
+                                    <div class="flex-1">
                                         <div class="flex justify-between items-start">
                                             <div class="max-w-[70%]">
                                                 <h3 class="text-sm font-bold text-gray-900 line-clamp-2 hover:text-primary transition-colors cursor-pointer">{{ $item['name'] }}</h3>
