@@ -137,6 +137,7 @@ class Settings extends Component
     public string $s3TestStatus = '';
     public string $backupDisk = '';
     public string $backupPath = '';
+    public string $backupBucket = '';
 
     protected $rules = [
         'logo' => 'nullable|image|max:2048',
@@ -246,6 +247,7 @@ class Settings extends Component
 
         $this->backupDisk = env('BACKUP_DISK', 'local');
         $this->backupPath = env('BACKUP_PATH', 'backups/');
+        $this->backupBucket = env('BACKUP_BUCKET') ?: env('AWS_BUCKET');
     }
 
     public function addCountry()
