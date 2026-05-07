@@ -17,6 +17,9 @@ if (env('BACKUP_ENABLED', true)) {
 }
 
 // If in "Cron Mode", we can also schedule the queue to run if no persistent worker is available
+// REMOVED: Manual control via dashboard is preferred
+/*
 if (env('BACKGROUND_MODE') === 'cron') {
     Schedule::command('queue:work --stop-when-empty')->everyMinute()->withoutOverlapping();
 }
+*/
