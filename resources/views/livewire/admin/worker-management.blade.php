@@ -34,6 +34,46 @@
         </div>
     @endif
 
+    <!-- Queue Stats Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div class="p-2 bg-indigo-50 rounded-lg">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pending Jobs</p>
+                <p class="text-xl font-black text-slate-800">{{ $pendingJobsCount }}</p>
+            </div>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div class="p-2 bg-rose-50 rounded-lg">
+                <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Failed Jobs</p>
+                <p class="text-xl font-black text-slate-800">{{ $failedJobsCount }}</p>
+            </div>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div class="p-2 bg-emerald-50 rounded-lg">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Worker Status</p>
+                <p class="text-sm font-bold text-emerald-600 uppercase">{{ $status }}</p>
+            </div>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div class="p-2 bg-amber-50 rounded-lg">
+                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            </div>
+            <button wire:click="refreshStats" class="text-left w-full">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Last Update</p>
+                <p class="text-[11px] font-bold text-slate-600 uppercase">{{ now()->format('H:i:s') }}</p>
+            </button>
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
         <!-- Professional Control Sidebar -->
         <div class="xl:col-span-1 space-y-4">
@@ -71,11 +111,37 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Recent Jobs List -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Recent Jobs</h3>
+                    <span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 text-[9px] rounded font-bold">{{ count($recentJobs) }}</span>
+                </div>
+                <div class="divide-y divide-gray-100 max-h-[300px] overflow-auto custom-scrollbar">
+                    @forelse($recentJobs as $job)
+                        <div class="p-3 hover:bg-gray-50 transition-colors">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="text-[10px] font-bold text-slate-700 truncate pr-2">{{ $job['name'] }}</span>
+                                <span class="text-[8px] bg-indigo-50 text-indigo-600 px-1 rounded font-bold">#{{ $job['id'] }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[9px] text-slate-400">{{ $job['created_at'] }}</span>
+                                <span class="text-[9px] text-slate-500">Tries: {{ $job['attempts'] }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-8 text-center">
+                            <p class="text-[10px] text-slate-400 font-medium">No pending jobs</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
         </div>
 
         <!-- Terminal View -->
         <div class="xl:col-span-3">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-[480px] overflow-hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-[550px] overflow-hidden">
                 <div class="px-5 py-3.5 border-b border-gray-100 bg-gray-50/30 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="flex gap-1.5">

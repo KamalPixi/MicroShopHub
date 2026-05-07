@@ -14,11 +14,15 @@ class WorkerManagement extends Component
     public $workerProcessId = null;
     public $workerUser = null;
     public $workerBinary = null;
+    public $pendingJobsCount = 0;
+    public $failedJobsCount = 0;
+    public $recentJobs = [];
 
     public function mount()
     {
         $this->checkStatus();
         $this->loadLogs();
+        $this->refreshStats();
     }
 
     public function checkStatus()
@@ -118,6 +122,38 @@ class WorkerManagement extends Component
         sleep(1);
         $this->checkStatus();
         session()->flash('success', 'Worker stopped successfully.');
+    }
+
+    public function refreshStats()
+    {
+        try {
+            $this->pendingJobsCount = \Illuminate\Support\Facades\DB::table('jobs')->count();
+            $this->failedJobsCount = \Illuminate\Support\Facades\DB::table('failed_jobs')->count();
+            
+            // Fetch recent jobs with some payload info
+            $this->recentJobs = \Illuminate\Support\Facades\DB::table('jobs')
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function($job) {
+                    $payload = json_decode($job->payload, true);
+                    $jobName = $payload['displayName'] ?? ($payload['job'] ?? 'Unknown Job');
+                    // Strip namespace
+                    $jobName = class_basename($jobName);
+                    
+                    return [
+                        'id' => $job->id,
+                        'name' => $jobName,
+                        'attempts' => $job->attempts,
+                        'created_at' => \Carbon\Carbon::createFromTimestamp($job->created_at)->diffForHumans(),
+                    ];
+                })->toArray();
+        } catch (\Exception $e) {
+            // Tables might not exist
+            $this->pendingJobsCount = 0;
+            $this->failedJobsCount = 0;
+            $this->recentJobs = [];
+        }
     }
 
     public function loadLogs()
