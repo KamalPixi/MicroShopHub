@@ -246,7 +246,13 @@ class Settings extends Component
         }
 
         $this->backupDisk = env('BACKUP_DISK', 'local');
-        $this->backupPath = env('BACKUP_PATH', 'backups/');
+        $this->backupPath = env('BACKUP_PATH');
+        if (empty($this->backupPath)) {
+            $appName = str_replace([' ', '-', '.'], '_', config('app.name', 'App'));
+            $this->backupPath = $appName . '_database_backup';
+        }
+        $this->backupPath = rtrim($this->backupPath, '/') . '/';
+        
         $this->backupBucket = env('BACKUP_BUCKET') ?: env('AWS_BUCKET');
     }
 

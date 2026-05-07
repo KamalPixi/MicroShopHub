@@ -47,9 +47,15 @@ class BackupDatabaseCommand extends Command
 
         $filename = 'backup-' . date('Y-m-d-H-i-s') . '.sqlite';
         $diskName = env('BACKUP_DISK', 'local');
-        $appName = str_replace(' ', '_', config('app.name', 'App'));
-        $defaultPath = $appName . '_database_backup';
-        $backupPath = rtrim(env('BACKUP_PATH', $defaultPath), '/') . '/';
+        
+        // Get path from env, fallback to app name if empty
+        $backupPath = env('BACKUP_PATH');
+        if (empty($backupPath)) {
+            $appName = str_replace([' ', '-', '.'], '_', config('app.name', 'App'));
+            $backupPath = $appName . '_database_backup';
+        }
+        $backupPath = rtrim($backupPath, '/') . '/';
+        
         $backupBucket = env('BACKUP_BUCKET');
 
         // If we are using S3 and a specific backup bucket is defined, override the config
