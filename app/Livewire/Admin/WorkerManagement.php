@@ -94,6 +94,6 @@ class WorkerManagement extends Component
     public function render()
     {
         return view('livewire.admin.worker-management')
-            ->layout('admin.layouts.app');
+            ->layout('admin.layouts.default');
     }
 }
