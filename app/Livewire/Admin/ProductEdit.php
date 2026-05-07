@@ -45,6 +45,9 @@ class ProductEdit extends Component
 
     // Step 4: Pricing & Inventory
     public $has_variations = false;
+    public $imagesToDelete = [];
+
+    protected $listeners = ['refresh' => '$refresh'];
     public $price;
     public $stock;
 
@@ -178,17 +181,15 @@ class ProductEdit extends Component
 
     public function deleteExistingImage($index)
     {
-        // For JSON array, we just remove the item from the array by index
-        if (isset($this->existingGallery[$index])) {
-            
-            unset($this->existingGallery[$index]);
-            // Re-index array to avoid gaps which might cause issues with JSON encoding
-            $this->existingGallery = array_values($this->existingGallery);
-        }
+        $this->imagesToDelete[] = $this->existingGallery[$index];
+        array_splice($this->existingGallery, $index, 1);
     }
 
     public function removeThumbnail()
     {
+        if ($this->existingThumbnail) {
+            $this->imagesToDelete[] = $this->existingThumbnail;
+        }
         $this->thumbnail = null;
         $this->existingThumbnail = null;
     }
@@ -320,6 +321,12 @@ class ProductEdit extends Component
         } else {
             $this->product->variations()->delete();
         }
+
+        // 5. Cleanup Deleted Files
+        foreach ($this->imagesToDelete as $path) {
+            Storage::disk(config('filesystems.default'))->delete($path);
+        }
+        $this->imagesToDelete = [];
 
         session()->flash('success', 'Product updated successfully.');
         return redirect()->route('admin.products.index');

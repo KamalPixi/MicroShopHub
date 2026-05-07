@@ -3,9 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($product) {
+            $disk = config('filesystems.default');
+            if ($product->thumbnail) {
+                Storage::disk($disk)->delete($product->thumbnail);
+            }
+            if ($product->images && is_array($product->images)) {
+                foreach ($product->images as $image) {
+                    Storage::disk($disk)->delete($image);
+                }
+            }
+        });
+    }
+
     protected static $activeCurrencySymbol = null;
 
     protected $casts = [
