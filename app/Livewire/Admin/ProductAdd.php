@@ -249,10 +249,17 @@ class ProductAdd extends Component
     {
         $this->validateStep();
         
-        $thumbnailPath = $this->thumbnail ? $this->thumbnail->store('images/products') : null;
+        // SEO Friendly Filenames
+        $thumbnailPath = null;
+        if ($this->thumbnail) {
+            $name = $this->slug . '-' . Str::lower(Str::random(5)) . '.' . $this->thumbnail->getClientOriginalExtension();
+            $thumbnailPath = $this->thumbnail->storeAs('images/products', $name);
+        }
+
         $galleryPaths = [];
-        foreach ($this->images as $image) {
-            $galleryPaths[] = $image->store('images/products');
+        foreach ($this->images as $index => $image) {
+            $name = $this->slug . '-gallery-' . ($index + 1) . '-' . Str::lower(Str::random(5)) . '.' . $image->getClientOriginalExtension();
+            $galleryPaths[] = $image->storeAs('images/products', $name);
         }
 
         $product = Product::create([

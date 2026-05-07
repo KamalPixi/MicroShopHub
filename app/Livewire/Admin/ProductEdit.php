@@ -262,16 +262,18 @@ class ProductEdit extends Component
         // 1. Prepare Images (Merge Existing + New)
         $finalImages = $this->existingGallery; // Start with what wasn't deleted
 
-        // Save New Images
-        foreach ($this->newImages as $img) {
-            $finalImages[] = $img->store('products/gallery');
+        // Save New Images with SEO Friendly Names
+        foreach ($this->newImages as $index => $img) {
+            $name = $this->slug . '-gallery-' . (count($finalImages) + 1) . '-' . Str::lower(Str::random(5)) . '.' . $img->getClientOriginalExtension();
+            $finalImages[] = $img->storeAs('products/gallery', $name);
         }
 
-        // Handle Thumbnail
+        // Handle Thumbnail with SEO Friendly Name
         $thumbnailPath = $this->product->thumbnail;
         if ($this->thumbnail) {
              if ($thumbnailPath) Storage::disk()->delete($thumbnailPath);
-             $thumbnailPath = $this->thumbnail->store('products/thumbnails');
+             $name = $this->slug . '-' . Str::lower(Str::random(5)) . '.' . $this->thumbnail->getClientOriginalExtension();
+             $thumbnailPath = $this->thumbnail->storeAs('products/thumbnails', $name);
         }
 
         // 2. Update Product
