@@ -100,6 +100,9 @@ class Settings extends Component
         'customer_auth_email_otp_enabled' => false,
         'customer_auth_email_password_enabled' => true,
         'customer_auth_guest_checkout_enabled' => false,
+
+        // Queue / Email Execution
+        'queue_connection' => 'sync',
     ];
 
     public $newCurrency = [
@@ -202,6 +205,7 @@ class Settings extends Component
         'settings.customer_auth_email_otp_enabled' => 'boolean',
         'settings.customer_auth_email_password_enabled' => 'boolean',
         'settings.customer_auth_guest_checkout_enabled' => 'boolean',
+        'settings.queue_connection' => 'required|in:sync,database,redis',
     ];
 
     public function mount()

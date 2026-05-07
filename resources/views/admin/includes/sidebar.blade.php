@@ -352,6 +352,12 @@
                                 Shipping Methods
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('admin.worker.management') }}" 
+                               class="block text-sm px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.worker.management*') ? 'bg-white text-slate-950 shadow-md ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
+                                Worker Management
+                            </a>
+                        </li>
                     </ul>
                 </li>
             @endif

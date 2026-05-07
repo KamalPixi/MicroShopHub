@@ -48,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
                 'pusher_app_key',
                 'pusher_app_secret',
                 'pusher_app_cluster',
+                'queue_connection',
             ])->pluck('value', 'key');
 
             $mailHost = trim((string) ($settings['mail_host'] ?? ''));
@@ -90,6 +91,9 @@ class AppServiceProvider extends ServiceProvider
                     'services.pusher.cluster' => $pusherCluster,
                 ]);
             }
+
+            $queueConnection = trim((string) ($settings['queue_connection'] ?? 'sync')) ?: 'sync';
+            config(['queue.default' => $queueConnection]);
 
             $navbarCategories = Category::whereNull('parent_id')
                 ->with('children')

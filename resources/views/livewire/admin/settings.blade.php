@@ -717,6 +717,39 @@
                     <label class="block text-sm font-semibold text-gray-700">From Address</label>
                     <input wire:model="settings.mail_from_address" type="email" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2" placeholder="no-reply@example.com">
                 </div>
+                
+                <div class="md:col-span-2 mt-4 pt-4 border-t border-gray-100">
+                    <label class="block text-sm font-bold text-gray-800">Email Execution Mode</label>
+                    <p class="text-[10px] text-gray-500 mb-3 uppercase tracking-wider">How emails should be processed and sent</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="relative flex cursor-pointer rounded-xl border border-gray-200 p-4 shadow-sm focus:outline-none transition hover:border-primary/50 {{ $settings['queue_connection'] === 'sync' ? 'ring-2 ring-primary border-primary bg-primary/5' : '' }}">
+                            <input type="radio" wire:model="settings.queue_connection" value="sync" class="sr-only">
+                            <span class="flex flex-1">
+                                <span class="flex flex-col">
+                                    <span class="block text-sm font-bold text-gray-900">Synchronize (Immediate)</span>
+                                    <span class="mt-1 flex items-center text-xs text-gray-500">Sends email during request. Slower for users, but simpler.</span>
+                                </span>
+                            </span>
+                            @if($settings['queue_connection'] === 'sync')
+                                <svg class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            @endif
+                        </label>
+
+                        <label class="relative flex cursor-pointer rounded-xl border border-gray-200 p-4 shadow-sm focus:outline-none transition hover:border-primary/50 {{ $settings['queue_connection'] === 'database' ? 'ring-2 ring-primary border-primary bg-primary/5' : '' }}">
+                            <input type="radio" wire:model="settings.queue_connection" value="database" class="sr-only">
+                            <span class="flex flex-1">
+                                <span class="flex flex-col">
+                                    <span class="block text-sm font-bold text-gray-900">Asyncronize (via Worker)</span>
+                                    <span class="mt-1 flex items-center text-xs text-gray-500">Jobs are sent to queue. Faster for users, requires Worker.</span>
+                                </span>
+                            </span>
+                            @if($settings['queue_connection'] === 'database')
+                                <svg class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            @endif
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="mt-8 pt-6 border-t border-gray-100">
                 <h5 class="text-sm font-bold text-gray-800 mb-3">Send Test Email</h5>

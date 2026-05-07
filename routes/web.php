@@ -255,6 +255,7 @@ Route::prefix('admin')
                 Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
                 Route::get('/shipping-methods', [DashboardController::class, 'shippingMethods'])->name('shipping.methods');
                 Route::get('/homepage-settings', [DashboardController::class, 'homepageSettings'])->name('homepage.settings');
+                Route::get('/worker-management', \App\Livewire\Admin\WorkerManagement::class)->name('worker.management');
             });
         });
     });
