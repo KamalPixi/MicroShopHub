@@ -17,7 +17,6 @@ class Installer extends Component
 
     public $step = 1;
     public $logs = [];
-    public $errors = [];
 
     // Requirements Step
     public $requirements = [];
