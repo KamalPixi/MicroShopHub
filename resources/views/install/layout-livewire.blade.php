@@ -74,18 +74,20 @@
         .checkbox-group input { width: auto; margin: 0; }
         .select-field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 40px; }
         
-        .spinner {
-            animation: rotate 2s linear infinite;
+        .hub-spinner {
+            animation: hub-rotate 2s linear infinite;
             width: 16px;
             height: 16px;
+            display: inline-block;
+            vertical-align: middle;
         }
-        .spinner circle {
+        .hub-spinner circle {
             stroke: currentColor;
             stroke-linecap: round;
-            animation: dash 1.5s ease-in-out infinite;
+            animation: hub-dash 1.5s ease-in-out infinite;
         }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
-        @keyframes dash {
+        @keyframes hub-rotate { 100% { transform: rotate(360deg); } }
+        @keyframes hub-dash {
             0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
             50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
             100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
