@@ -482,14 +482,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </head>
 
-<body class="bg-gray-50 font-sans antialiased flex flex-col min-h-screen">
+<body class="bg-gray-50 font-sans antialiased h-screen overflow-hidden">
     <div id="admin-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden">
         <div class="bg-primary text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-lg">
             <span id="admin-toast-text">Copied to clipboard</span>
         </div>
     </div>
     <!-- Main Dashboard Layout -->
-    <div class="flex flex-1 overflow-hidden">
+    <div class="flex h-full overflow-hidden">
         <!-- Sidebar -->
         @include('admin.includes.sidebar')
 
