@@ -9,17 +9,17 @@
         <span class="step">5. Complete</span>
     </div>
 
-    <form method="POST" action="{{ route('install.database.store') }}" class="card stack">
+    <form method="POST" action="{{ route('install.database.store') }}" class="stack">
         @csrf
         <div>
-            <h2 style="margin:0 0 6px;font-size:18px">Database credentials</h2>
-            <p class="muted small" style="margin:0">Enter the database details now. The installer will test the connection here and use it during the final install step.</p>
+            <h2 class="section-title">Database credentials</h2>
+            <p class="section-desc">Enter your database details. We'll test the connection before moving to the next step.</p>
         </div>
 
-        <div class="grid grid-2">
+        <div class="card grid grid-2">
             <div style="grid-column: 1 / -1">
                 <label>Database Type</label>
-                <select name="connection" id="db_connection" onchange="toggleDbFields()">
+                <select name="connection" id="db_connection" onchange="toggleDbFields()" class="select-field">
                     <option value="mysql" {{ old('connection', $database['connection'] ?? 'mysql') === 'mysql' ? 'selected' : '' }}>
                         MySQL / MariaDB ({{ $drivers['mysql'] ? 'Enabled' : 'Disabled' }})
                     </option>
