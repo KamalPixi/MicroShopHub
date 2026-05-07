@@ -131,6 +131,11 @@ class ProductAdd extends Component
         }
     }
 
+    public function removeThumbnail()
+    {
+        $this->thumbnail = null;
+    }
+
     public function removeImage($index)
     {
         unset($this->images[$index]);

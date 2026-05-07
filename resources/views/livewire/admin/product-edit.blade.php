@@ -175,11 +175,17 @@
                                 @error('thumbnail') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
                             </div>
                             
-                            <div class="w-32 h-32 bg-white border border-gray-300 rounded-lg flex items-center justify-center overflow-hidden shadow-sm">
+                            <div class="w-32 h-32 bg-white border border-gray-300 rounded-lg flex items-center justify-center overflow-hidden shadow-sm relative group">
                                 @if ($thumbnail)
                                     <img src="{{ $thumbnail->temporaryUrl() }}" class="w-full h-full object-cover">
+                                    <button type="button" wire:click="removeThumbnail" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-md">
+                                        &times;
+                                    </button>
                                 @elseif (!empty($existingThumbnail))
                                     <img src="{{ Storage::url($existingThumbnail) }}" class="w-full h-full object-cover">
+                                    <button type="button" wire:click="removeThumbnail" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-md">
+                                        &times;
+                                    </button>
                                 @else
                                     <span class="text-gray-400 text-xs text-center font-medium">No Image</span>
                                 @endif

@@ -187,6 +187,12 @@ class ProductEdit extends Component
         }
     }
 
+    public function removeThumbnail()
+    {
+        $this->thumbnail = null;
+        $this->existingThumbnail = null;
+    }
+
     public function removeNewImage($index)
     {
         array_splice($this->newImages, $index, 1);
