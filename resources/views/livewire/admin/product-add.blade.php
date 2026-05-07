@@ -525,7 +525,8 @@
                     this.cropper.getCroppedCanvas({
                         width: this.outputWidth, 
                     }).toBlob((blob) => {
-                        @this.upload(this.targetProperty, blob, (uploadedFilename) => {
+                        const file = new File([blob], 'cropped-image.jpg', { type: 'image/jpeg' });
+                        @this.upload(this.targetProperty, file, (uploadedFilename) => {
                             this.cancelCrop();
                         }, () => {
                             alert('Upload failed');
