@@ -20,9 +20,15 @@
             <div style="grid-column: 1 / -1">
                 <label>Database Type</label>
                 <select name="connection" id="db_connection" onchange="toggleDbFields()">
-                    <option value="mysql" {{ old('connection', $database['connection'] ?? 'mysql') === 'mysql' ? 'selected' : '' }}>MySQL / MariaDB</option>
-                    <option value="pgsql" {{ old('connection', $database['connection'] ?? 'mysql') === 'pgsql' ? 'selected' : '' }}>PostgreSQL</option>
-                    <option value="sqlite" {{ old('connection', $database['connection'] ?? 'mysql') === 'sqlite' ? 'selected' : '' }}>SQLite</option>
+                    <option value="mysql" {{ old('connection', $database['connection'] ?? 'mysql') === 'mysql' ? 'selected' : '' }}>
+                        MySQL / MariaDB ({{ $drivers['mysql'] ? 'Enabled' : 'Disabled' }})
+                    </option>
+                    <option value="pgsql" {{ old('connection', $database['connection'] ?? 'mysql') === 'pgsql' ? 'selected' : '' }}>
+                        PostgreSQL ({{ $drivers['pgsql'] ? 'Enabled' : 'Disabled' }})
+                    </option>
+                    <option value="sqlite" {{ old('connection', $database['connection'] ?? 'mysql') === 'sqlite' ? 'selected' : '' }}>
+                        SQLite ({{ $drivers['sqlite'] ? 'Enabled' : 'Disabled' }})
+                    </option>
                 </select>
             </div>
 

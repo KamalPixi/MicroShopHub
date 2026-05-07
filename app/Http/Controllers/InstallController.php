@@ -108,7 +108,14 @@ class InstallController extends Controller
             return redirect()->route('store.index');
         }
 
+        $drivers = [
+            'mysql' => extension_loaded('pdo_mysql'),
+            'pgsql' => extension_loaded('pdo_pgsql'),
+            'sqlite' => extension_loaded('pdo_sqlite'),
+        ];
+
         return view('install.database', [
+            'drivers' => $drivers,
             'database' => session('installer.database', [
                 'connection' => config('database.default', 'mysql'),
                 'host' => config('database.connections.mysql.host', '127.0.0.1'),
@@ -138,6 +145,12 @@ class InstallController extends Controller
         ]);
 
         $this->applyDatabaseConfig($data);
+
+        if (! extension_loaded('pdo_'.$data['connection'])) {
+            return back()
+                ->withInput()
+                ->withErrors(['database' => "The PHP extension 'pdo_{$data['connection']}' is not enabled on this server."]);
+        }
 
         if ($data['connection'] === 'sqlite') {
             $path = $data['database'];
