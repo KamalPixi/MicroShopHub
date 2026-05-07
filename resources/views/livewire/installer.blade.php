@@ -77,10 +77,10 @@
                 </div>
 
                 <div class="btn-row">
-                    <button class="btn btn-primary" wire:click="goToStep(2)" wire:loading.attr="disabled" wire:target="goToStep(2)">
-                        <span wire:loading.remove wire:target="goToStep(2)">Check & Continue</span>
-                        <span wire:loading wire:target="goToStep(2)" style="display: flex; align-items: center; gap: 8px;">
-                            <svg class="hub-spinner" style="display:inline-block" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg>
+                    <button class="btn btn-primary" wire:click="goToStep(2)" wire:loading.class="is-loading" wire:target="goToStep(2)">
+                        <span class="normal-state">Check & Continue</span>
+                        <span class="loading-state">
+                            <svg class="hub-spinner" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="currentColor"></circle></svg>
                             Checking...
                         </span>
                     </button>
@@ -141,10 +141,10 @@
 
                 <div class="btn-row">
                     <button class="btn btn-soft" wire:click="goToStep(1)" @disabled($isInstalling)>Back</button>
-                    <button class="btn btn-primary" wire:click="goToStep(3)" wire:loading.attr="disabled" wire:target="goToStep(3)">
-                        <span wire:loading.remove wire:target="goToStep(3)">Test & Continue</span>
-                        <span wire:loading wire:target="goToStep(3)" style="display: flex; align-items: center; gap: 8px;">
-                            <svg class="hub-spinner" style="display:inline-block" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg>
+                    <button class="btn btn-primary" wire:click="goToStep(3)" wire:loading.class="is-loading" wire:target="goToStep(3)">
+                        <span class="normal-state">Test & Continue</span>
+                        <span class="loading-state">
+                            <svg class="hub-spinner" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="currentColor"></circle></svg>
                             Testing...
                         </span>
                     </button>
@@ -208,10 +208,10 @@
 
                 <div class="btn-row">
                     <button class="btn btn-soft" wire:click="goToStep(2)" @disabled($isInstalling)>Back</button>
-                    <button class="btn btn-primary" wire:click="startInstallation" wire:loading.attr="disabled" wire:target="startInstallation">
-                        <span wire:loading.remove wire:target="startInstallation">Finalize & Install</span>
-                        <span wire:loading wire:target="startInstallation" style="display: flex; align-items: center; gap: 8px;">
-                            <svg class="hub-spinner" style="display:inline-block" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg>
+                    <button class="btn btn-primary" wire:click="startInstallation" wire:loading.class="is-loading" wire:target="startInstallation">
+                        <span class="normal-state">Finalize & Install</span>
+                        <span class="loading-state">
+                            <svg class="hub-spinner" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="currentColor"></circle></svg>
                             Processing...
                         </span>
                     </button>
@@ -236,9 +236,11 @@
                         <div style="padding: 16px; background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-md);">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                                 <h3 class="section-title" style="font-size: 14px; margin-bottom: 0;">File Permissions</h3>
-                                <button wire:click="checkPermissions" wire:loading.attr="disabled" wire:target="checkPermissions" class="xsmall" style="background: none; border: none; color: var(--accent); cursor: pointer; font-weight: 700; text-decoration: underline; display: flex; align-items: center; gap: 4px;">
-                                    <span wire:loading.remove wire:target="checkPermissions">Recheck</span>
-                                    <svg wire:loading wire:target="checkPermissions" class="hub-spinner" viewBox="0 0 50 50" style="width:12px; height:12px; display:inline-block;"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg>
+                                <button wire:click="checkPermissions" wire:loading.class="is-loading" wire:target="checkPermissions" class="xsmall" style="background: none; border: none; color: var(--accent); cursor: pointer; font-weight: 700; text-decoration: underline; display: flex; align-items: center; gap: 4px;">
+                                    <span class="normal-state">Recheck</span>
+                                    <span class="loading-state">
+                                        <svg class="hub-spinner" viewBox="0 0 50 50" style="width:12px; height:12px;"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="currentColor"></circle></svg>
+                                    </span>
                                 </button>
                             </div>
                             <div class="stack" style="gap: 8px;">
@@ -280,10 +282,10 @@
                         </div>
 
                         <div class="btn-row" style="margin-top: 12px; padding-top: 16px; justify-content: flex-start; border-top: 1px dashed var(--line);">
-                            <button class="btn btn-primary" wire:click="runTask('initialize')" wire:loading.attr="disabled" wire:target="runTask">
-                                <span wire:loading.remove wire:target="runTask">Run Installation</span>
-                                <span wire:loading wire:target="runTask" style="display: flex; align-items: center; gap: 8px;">
-                                    <svg class="hub-spinner" style="display:inline-block" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg>
+                            <button class="btn btn-primary" wire:click="runTask('initialize')" wire:loading.class="is-loading" wire:target="runTask">
+                                <span class="normal-state">Run Installation</span>
+                                <span class="loading-state">
+                                    <svg class="hub-spinner" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke="currentColor"></circle></svg>
                                     Installing...
                                 </span>
                             </button>

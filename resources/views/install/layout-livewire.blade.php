@@ -93,8 +93,12 @@
             100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
         }
         .hidden { display: none !important; }
-        .hub-spinner { display: none; }
-        [wire\:loading] .hub-spinner { display: inline-block; }
+        
+        /* Livewire 3 Loading states */
+        .loading-state { display: none !important; }
+        .is-loading .loading-state { display: flex !important; align-items: center; gap: 8px; }
+        .is-loading .normal-state { display: none !important; }
+        .hub-spinner { width: 16px; height: 16px; display: inline-block; vertical-align: middle; animation: hub-rotate 2s linear infinite; }
 
         @media (max-width: 640px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .content { padding: 24px; } .top { padding: 24px; } }
     </style>
