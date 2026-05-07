@@ -609,6 +609,7 @@ class Settings extends Component
             'mail_encryption',
             'mail_from_address',
             'mail_from_name',
+            'queue_connection',
         ], [
             'settings.mail_host' => $this->rules['settings.mail_host'],
             'settings.mail_port' => $this->rules['settings.mail_port'],
@@ -617,6 +618,7 @@ class Settings extends Component
             'settings.mail_encryption' => $this->rules['settings.mail_encryption'],
             'settings.mail_from_address' => $this->rules['settings.mail_from_address'],
             'settings.mail_from_name' => $this->rules['settings.mail_from_name'],
+            'settings.queue_connection' => $this->rules['settings.queue_connection'],
         ], false, 'email');
     }
 
