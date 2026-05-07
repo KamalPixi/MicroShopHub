@@ -120,7 +120,7 @@ class CartCheckout extends Component
             ->values()
             ->all();
         if (! empty($this->offlinePaymentMethods)) {
-            $this->offlinePaymentMethodId = (string) (0);
+            $this->offlinePaymentMethodId = '';
         }
         $this->supportedCountries = Country::query()
             ->where('active', true)

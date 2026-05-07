@@ -778,6 +778,7 @@
                                     <div class="relative mt-1">
                                         <select wire:model.live="offlinePaymentMethodId"
                                             class="block w-full appearance-none border border-gray-300 rounded-lg text-sm px-3 py-2 bg-white pr-8 focus:outline-none focus:ring-0 focus:border-gray-300">
+                                            <option value="">{{ __('store.select_method') }}</option>
                                             @foreach($offlinePaymentMethods as $index => $method)
                                                 <option value="{{ $index }}">{{ $method['name'] }}</option>
                                             @endforeach
