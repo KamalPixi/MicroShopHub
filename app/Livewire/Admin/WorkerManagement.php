@@ -113,14 +113,20 @@ class WorkerManagement extends Component
             return;
         }
 
-        shell_exec("kill {$this->workerProcessId}");
+        shell_exec("kill -9 {$this->workerProcessId} > /dev/null 2>&1");
+        shell_exec("pkill -9 -f 'artisan queue:work' > /dev/null 2>&1");
         
         // Clear stored PID
         \App\Models\Setting::where('key', 'worker_last_pid')->delete();
         
         sleep(1);
         $this->checkStatus();
-        session()->flash('success', 'Worker stopped successfully.');
+
+        if ($this->status === 'stopped') {
+            session()->flash('success', 'Worker stopped successfully.');
+        } else {
+            session()->flash('error', 'Failed to stop worker. It might be managed by Supervisor or Systemd.');
+        }
     }
 
     public function refreshStats()
