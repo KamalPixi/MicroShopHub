@@ -86,6 +86,10 @@ class CartCheckout extends Component
         'country_code' => 'BD',
     ];
 
+    protected $validationAttributes = [
+        'offlinePaymentMethodId' => 'offline payment method',
+    ];
+
     protected function rules()
     {
         return [
