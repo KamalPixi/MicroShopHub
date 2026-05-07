@@ -22,6 +22,7 @@ class ProductAdd extends Component
     // Step 1: Basic Info
     public $name = '';
     public $slug = '';
+    public $sku = '';
     public $description = '';
     public $status = 1;
     public $featured = false;
@@ -80,6 +81,7 @@ class ProductAdd extends Component
             $this->validate([
                 'name' => 'required|string|max:255',
                 'slug' => 'required|string|unique:products,slug',
+                'sku' => 'nullable|string|max:100',
                 'description' => 'nullable|string',
                 'status' => 'required|integer|in:0,1',
             ]);
@@ -251,6 +253,7 @@ class ProductAdd extends Component
         $product = Product::create([
             'name' => $this->name,
             'slug' => $this->slug,
+            'sku' => $this->sku,
             'description' => $this->description,
             'price' => $this->has_variations ? null : $this->price,
             'stock' => $this->has_variations ? null : $this->stock,

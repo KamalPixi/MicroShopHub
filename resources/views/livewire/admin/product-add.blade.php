@@ -183,25 +183,40 @@
                             </div>
                         </div>
                         
-                        <div x-show="isCropping" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-                                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
-                                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Image</h3>
-                                        <div class="relative w-full h-[400px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                                            <img x-ref="cropImage" class="max-w-full max-h-full block" style="max-width: 100%;">
+                        <div x-show="isCropping" 
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             class="fixed inset-0 z-[100] overflow-y-auto" 
+                             style="display: none;">
+                            <div class="flex items-center justify-center min-h-screen p-4">
+                                <div class="fixed inset-0 bg-black bg-opacity-60 transition-opacity" @click="cancelCrop"></div>
+                                
+                                <div class="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full overflow-hidden transform transition-all">
+                                    <div class="bg-white px-6 py-4 border-b flex justify-between items-center">
+                                        <h3 class="text-lg font-bold text-gray-900">Crop Product Thumbnail</h3>
+                                        <button type="button" @click="cancelCrop" class="text-gray-400 hover:text-gray-600">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="p-6 bg-gray-50">
+                                        <div class="relative w-full aspect-square max-h-[50vh] bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                                            <img x-ref="cropImage" class="max-w-full max-h-full block">
                                         </div>
                                     </div>
-                                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
-                                        <button type="button" @click="cropAndUpload" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:w-auto sm:text-sm">
-                                            Crop & Use
+                                    
+                                    <div class="bg-white px-6 py-4 border-t flex flex-col sm:flex-row-reverse gap-3">
+                                        <button type="button" @click="cropAndUpload" class="inline-flex justify-center items-center px-6 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition">
+                                            Crop & Done
                                         </button>
-                                        <button type="button" @click="uploadOriginal" class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">
+                                        <button type="button" @click="uploadOriginal" class="inline-flex justify-center items-center px-6 py-2.5 bg-gray-900 text-white font-bold text-sm rounded-xl hover:bg-black shadow-lg shadow-gray-200 transition">
                                             Use Original
                                         </button>
-                                        <button type="button" @click="cancelCrop" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">
+                                        <button type="button" @click="cancelCrop" class="inline-flex justify-center items-center px-6 py-2.5 bg-white text-gray-700 border border-gray-300 font-bold text-sm rounded-xl hover:bg-gray-50 transition">
                                             Cancel
                                         </button>
                                     </div>
@@ -243,25 +258,40 @@
                         @endif
                         @error('images.*') <span class="text-red-600 text-xs block mt-1">{{ $message }}</span> @enderror
                         
-                        <div x-show="isCropping" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-                                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
-                                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Image</h3>
-                                        <div class="relative w-full h-[400px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                                            <img x-ref="cropImage" class="max-w-full max-h-full block" style="max-width: 100%;">
+                        <div x-show="isCropping" 
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             class="fixed inset-0 z-[100] overflow-y-auto" 
+                             style="display: none;">
+                            <div class="flex items-center justify-center min-h-screen p-4">
+                                <div class="fixed inset-0 bg-black bg-opacity-60 transition-opacity" @click="cancelCrop"></div>
+                                
+                                <div class="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden transform transition-all">
+                                    <div class="bg-white px-6 py-4 border-b flex justify-between items-center">
+                                        <h3 class="text-lg font-bold text-gray-900">Crop Gallery Image</h3>
+                                        <button type="button" @click="cancelCrop" class="text-gray-400 hover:text-gray-600">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="p-6 bg-gray-50">
+                                        <div class="relative w-full aspect-video max-h-[60vh] bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                                            <img x-ref="cropImage" class="max-w-full max-h-full block">
                                         </div>
                                     </div>
-                                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
-                                        <button type="button" @click="cropAndUpload" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:w-auto sm:text-sm">
-                                            Crop & Use
+                                    
+                                    <div class="bg-white px-6 py-4 border-t flex flex-col sm:flex-row-reverse gap-3">
+                                        <button type="button" @click="cropAndUpload" class="inline-flex justify-center items-center px-6 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition">
+                                            Crop & Done
                                         </button>
-                                        <button type="button" @click="uploadOriginal" class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">
+                                        <button type="button" @click="uploadOriginal" class="inline-flex justify-center items-center px-6 py-2.5 bg-gray-900 text-white font-bold text-sm rounded-xl hover:bg-black shadow-lg shadow-gray-200 transition">
                                             Use Original
                                         </button>
-                                        <button type="button" @click="cancelCrop" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">
+                                        <button type="button" @click="cancelCrop" class="inline-flex justify-center items-center px-6 py-2.5 bg-white text-gray-700 border border-gray-300 font-bold text-sm rounded-xl hover:bg-gray-50 transition">
                                             Cancel
                                         </button>
                                     </div>
