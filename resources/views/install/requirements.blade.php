@@ -10,14 +10,14 @@
     </div>
 
     <div class="stack" style="gap: 32px;">
-        <div class="grid grid-2" style="align-items: start; gap: 24px;">
-            <div class="stack" style="gap: 16px;">
+        <div class="grid grid-2" style="gap: 24px;">
+            <div class="card stack" style="gap: 16px;">
                 <div>
                     <h2 class="section-title">System Requirements</h2>
-                    <p class="section-desc">We need to ensure your server environment meets the minimum requirements to run MicroShopHub.</p>
+                    <p class="section-desc">Verify your server environment meets the requirements.</p>
                 </div>
 
-                <div class="card grid grid-2" style="padding: 12px; gap: 8px;">
+                <div class="grid grid-2" style="gap: 8px;">
                     @foreach($checks as $check)
                         <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-sm);">
                             <span class="small" style="font-weight: 500;">{{ $check['label'] }}</span>
@@ -38,7 +38,10 @@
             </div>
 
             <div class="card stack" style="gap: 16px;">
-                <h3 class="section-title" style="font-size: 15px;">Installation Overview</h3>
+                <div>
+                    <h3 class="section-title">Installation Overview</h3>
+                    <p class="section-desc">A quick guide to the setup process.</p>
+                </div>
                 <div class="stack" style="gap: 10px;">
                     <div class="small muted" style="display: flex; gap: 10px;">
                         <span style="color: var(--accent); font-weight: 800;">01</span>
