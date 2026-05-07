@@ -809,23 +809,13 @@ class Settings extends Component
         $this->backupMessage = 'Starting backup...';
 
         try {
-            $exitCode = \Illuminate\Support\Facades\Artisan::call('db:backup');
+            $exitCode = \Illuminate\Support\Facades\Artisan::call('app:backup-db');
+            $output = \Illuminate\Support\Facades\Artisan::output();
             
             if ($exitCode === 0) {
-                $this->backupMessage = 'Backup created successfully in local storage.';
-                
-                // Try uploading to S3 if configured
-                if (config('filesystems.disks.s3.bucket')) {
-                    $this->backupMessage .= ' Uploading to S3...';
-                    $uploadExitCode = \Illuminate\Support\Facades\Artisan::call('db:upload-s3');
-                    if ($uploadExitCode === 0) {
-                        $this->backupMessage = 'Backup created and uploaded to S3 successfully.';
-                    } else {
-                        $this->backupMessage .= ' S3 upload failed.';
-                    }
-                }
+                $this->backupMessage = 'Backup completed successfully! ' . (str_contains($output, 'Uploading backup to disk: s3') ? '(Uploaded to R2/S3)' : '(Saved locally)');
             } else {
-                $this->backupMessage = 'Backup failed. Check logs.';
+                $this->backupMessage = 'Backup failed: ' . $output;
             }
         } catch (\Exception $e) {
             $this->backupMessage = 'Backup failed: ' . $e->getMessage();
