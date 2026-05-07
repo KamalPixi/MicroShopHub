@@ -110,6 +110,7 @@ class InstallController extends Controller
 
         return view('install.database', [
             'database' => session('installer.database', [
+                'connection' => config('database.default', 'mysql'),
                 'host' => config('database.connections.mysql.host', '127.0.0.1'),
                 'port' => config('database.connections.mysql.port', '3306'),
                 'database' => config('database.connections.mysql.database', ''),
@@ -127,18 +128,29 @@ class InstallController extends Controller
         }
 
         $data = $request->validate([
-            'host' => ['required', 'string', 'max:255'],
-            'port' => ['required', 'numeric', 'min:1', 'max:65535'],
+            'connection' => ['required', 'string', 'in:mysql,pgsql,sqlite'],
+            'host' => ['required_if:connection,mysql,pgsql', 'nullable', 'string', 'max:255'],
+            'port' => ['required_if:connection,mysql,pgsql', 'nullable', 'numeric', 'min:1', 'max:65535'],
             'database' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255'],
+            'username' => ['required_if:connection,mysql,pgsql', 'nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'max:255'],
             'prefix' => ['nullable', 'string', 'max:20'],
         ]);
 
         $this->applyDatabaseConfig($data);
 
+        if ($data['connection'] === 'sqlite') {
+            $path = $data['database'];
+            if (! str_starts_with($path, '/') && ! str_starts_with($path, 'memory')) {
+                $path = base_path($path);
+            }
+            if ($path !== ':memory:' && ! file_exists($path)) {
+                @touch($path);
+            }
+        }
+
         try {
-            DB::connection('mysql')->getPdo();
+            DB::connection($data['connection'])->getPdo();
         } catch (Throwable $e) {
             return back()
                 ->withInput()
@@ -628,16 +640,27 @@ class InstallController extends Controller
 
     protected function applyDatabaseConfig(array $database): void
     {
-        config([
-            'database.connections.mysql.host' => $database['host'],
-            'database.connections.mysql.port' => $database['port'],
-            'database.connections.mysql.database' => $database['database'],
-            'database.connections.mysql.username' => $database['username'],
-            'database.connections.mysql.password' => $database['password'] ?? '',
-            'database.connections.mysql.prefix' => $database['prefix'] ?? '',
-        ]);
+        $connection = $database['connection'] ?? 'mysql';
 
-        DB::purge('mysql');
+        if ($connection === 'sqlite') {
+            config([
+                'database.default' => 'sqlite',
+                'database.connections.sqlite.database' => $database['database'],
+                'database.connections.sqlite.prefix' => $database['prefix'] ?? '',
+            ]);
+        } else {
+            config([
+                'database.default' => $connection,
+                "database.connections.{$connection}.host" => $database['host'],
+                "database.connections.{$connection}.port" => $database['port'],
+                "database.connections.{$connection}.database" => $database['database'],
+                "database.connections.{$connection}.username" => $database['username'],
+                "database.connections.{$connection}.password" => $database['password'] ?? '',
+                "database.connections.{$connection}.prefix" => $database['prefix'] ?? '',
+            ]);
+        }
+
+        DB::purge($connection);
     }
 
     protected function writeEnvFile(array $database, array $settings): void
@@ -654,11 +677,11 @@ class InstallController extends Controller
 
         $replacements = [
             'APP_NAME' => $settings['shop_name'] ?: config('app.name', 'ShopHub'),
-            'DB_CONNECTION' => 'mysql',
-            'DB_HOST' => $database['host'],
-            'DB_PORT' => $database['port'],
+            'DB_CONNECTION' => $database['connection'] ?? 'mysql',
+            'DB_HOST' => $database['host'] ?? '',
+            'DB_PORT' => $database['port'] ?? '',
             'DB_DATABASE' => $database['database'],
-            'DB_USERNAME' => $database['username'],
+            'DB_USERNAME' => $database['username'] ?? '',
             'DB_PASSWORD' => $database['password'] ?? '',
             'QUEUE_CONNECTION' => ($settings['mail_queue_enabled'] ?? false) ? 'database' : 'sync',
             'BACKUP_ENABLED' => ($settings['backup_enabled'] ?? '1') === '1' ? 'true' : 'false',

@@ -17,23 +17,32 @@
         </div>
 
         <div class="grid grid-2">
-            <div>
+            <div style="grid-column: 1 / -1">
+                <label>Database Type</label>
+                <select name="connection" id="db_connection" onchange="toggleDbFields()">
+                    <option value="mysql" {{ old('connection', $database['connection'] ?? 'mysql') === 'mysql' ? 'selected' : '' }}>MySQL / MariaDB</option>
+                    <option value="pgsql" {{ old('connection', $database['connection'] ?? 'mysql') === 'pgsql' ? 'selected' : '' }}>PostgreSQL</option>
+                    <option value="sqlite" {{ old('connection', $database['connection'] ?? 'mysql') === 'sqlite' ? 'selected' : '' }}>SQLite</option>
+                </select>
+            </div>
+
+            <div class="db-field-remote">
                 <label>Host</label>
                 <input type="text" name="host" value="{{ old('host', $database['host'] ?? '127.0.0.1') }}" placeholder="127.0.0.1">
             </div>
-            <div>
+            <div class="db-field-remote">
                 <label>Port</label>
-                <input type="number" name="port" value="{{ old('port', $database['port'] ?? '3306') }}" placeholder="3306">
+                <input type="number" name="port" id="db_port" value="{{ old('port', $database['port'] ?? '3306') }}" placeholder="3306">
             </div>
             <div>
-                <label>Database</label>
-                <input type="text" name="database" value="{{ old('database', $database['database'] ?? '') }}" placeholder="slim_cart_db">
+                <label id="db_name_label">Database Name</label>
+                <input type="text" name="database" id="db_database" value="{{ old('database', $database['database'] ?? '') }}" placeholder="microshophub_db">
             </div>
-            <div>
+            <div class="db-field-remote">
                 <label>Username</label>
                 <input type="text" name="username" value="{{ old('username', $database['username'] ?? '') }}" placeholder="root">
             </div>
-            <div>
+            <div class="db-field-remote">
                 <label>Password</label>
                 <input type="password" name="password" value="{{ old('password', $database['password'] ?? '') }}" placeholder="Optional">
             </div>
@@ -48,4 +57,34 @@
             <button class="btn btn-primary" type="submit">Test & Continue</button>
         </div>
     </form>
+
+    <script>
+        function toggleDbFields() {
+            const connection = document.getElementById('db_connection').value;
+            const remoteFields = document.querySelectorAll('.db-field-remote');
+            const portInput = document.getElementById('db_port');
+            const dbNameLabel = document.getElementById('db_name_label');
+            const dbDatabaseInput = document.getElementById('db_database');
+
+            if (connection === 'sqlite') {
+                remoteFields.forEach(el => el.style.display = 'none');
+                dbNameLabel.textContent = 'Database Path';
+                if (!dbDatabaseInput.value) {
+                    dbDatabaseInput.value = 'database/database.sqlite';
+                }
+            } else {
+                remoteFields.forEach(el => el.style.display = 'block');
+                dbNameLabel.textContent = 'Database Name';
+                
+                if (connection === 'pgsql') {
+                    if (portInput.value === '3306' || !portInput.value) portInput.value = '5432';
+                } else if (connection === 'mysql') {
+                    if (portInput.value === '5432' || !portInput.value) portInput.value = '3306';
+                }
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', toggleDbFields);
+    </script>
 @endsection
