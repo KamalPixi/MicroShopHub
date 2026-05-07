@@ -71,10 +71,14 @@ class HomepageSettings extends Component
         'settings.footer_copyright_text' => 'nullable|string|max:255',
     ];
 
-    public function mount(HomepageSettingsService $service): void
+    public function boot(HomepageSettingsService $service): void
     {
         $this->service = $service;
-        $state = $service->loadState();
+    }
+
+    public function mount(): void
+    {
+        $state = $this->service->loadState();
         $this->settings = $state['settings'];
         $this->bannerSlides = $state['bannerSlides'];
         $this->bannerChips = $state['bannerChips'];
