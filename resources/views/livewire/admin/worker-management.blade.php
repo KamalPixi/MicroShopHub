@@ -126,7 +126,7 @@
                                 <span class="text-[8px] bg-indigo-50 text-indigo-600 px-1 rounded font-bold">#{{ $job['id'] }}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-[9px] text-slate-400">{{ $job['created_at'] }}</span>
+                                <span class="text-[9px] text-slate-400">{{ $job['created_at'] }} • {{ $job['queue'] }}</span>
                                 <span class="text-[9px] text-slate-500">Tries: {{ $job['attempts'] }}</span>
                             </div>
                         </div>

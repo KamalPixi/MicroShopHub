@@ -143,6 +143,7 @@ class WorkerManagement extends Component
                     return [
                         'id' => $job->id,
                         'name' => $jobName,
+                        'queue' => $job->queue,
                         'attempts' => $job->attempts,
                         'created_at' => \Carbon\Carbon::createFromTimestamp($job->created_at)->diffForHumans(),
                     ];
