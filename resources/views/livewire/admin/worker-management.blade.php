@@ -99,11 +99,11 @@
                 <div class="flex-1 overflow-auto p-6 font-mono text-[11px] leading-relaxed text-slate-700 bg-slate-50/20 custom-scrollbar">
                     <pre class="whitespace-pre-wrap">{{ $logs ?: 'Waiting for worker activity...' }}</pre>
                 </div>
-                <div class="px-5 py-3 bg-gray-50/50 border-t border-gray-100 flex justify-between items-center">
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Last Updated: {{ now()->format('H:i:s') }}</span>
-                    <div class="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 rounded-md border border-emerald-100">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="text-[8px] font-extrabold text-emerald-700 uppercase tracking-tighter">Live Monitor</span>
+                <div class="px-5 py-2.5 bg-gray-50/50 border-t border-gray-100 flex justify-between items-center">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Last Sync: {{ now()->format('H:i:s') }}</span>
+                    <div class="flex items-center gap-1.5 opacity-60">
+                        <span class="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-[7px] font-bold text-slate-400 uppercase tracking-widest">Live Monitor</span>
                     </div>
                 </div>
             </div>
