@@ -9,37 +9,69 @@
         <span class="step">5. Complete</span>
     </div>
 
-    <div class="two-col">
-        <div class="card">
-            <h2 style="margin:0 0 8px;font-size:18px">System checks</h2>
-            <p class="muted small" style="margin:0 0 12px">Make sure the server can run the app before moving on.</p>
-
-            <div class="checklist">
-                @foreach($checks as $check)
-                    <div class="checkitem">
-                        <div class="small">{{ $check['label'] }}</div>
-                        <span class="pill {{ $check['ok'] ? 'ok' : 'bad' }}">{{ $check['ok'] ? 'OK' : 'Missing' }}</span>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="card">
-            <h2 style="margin:0 0 8px;font-size:18px">What this installer does</h2>
-            <div class="stack small muted">
-                <div>• Verifies PHP extensions and writable folders.</div>
-                <div>• Saves database credentials.</div>
-                <div>• Runs migrations and seeders.</div>
-                <div>• Saves shop name, slogan, brand colors, language, countries, payments, and email defaults.</div>
-                <div>• Locks the installer after completion.</div>
-            </div>
-
-            <form method="POST" action="{{ route('install.requirements.store') }}" style="margin-top:16px">
-                @csrf
-                <div class="btn-row">
-                    <button class="btn btn-primary" type="submit">Continue</button>
+    <div class="stack" style="gap: 32px;">
+        <div class="grid grid-2" style="align-items: start; gap: 24px;">
+            <div class="stack" style="gap: 16px;">
+                <div>
+                    <h2 class="section-title">System Requirements</h2>
+                    <p class="section-desc">We need to ensure your server environment meets the minimum requirements to run MicroShopHub.</p>
                 </div>
-            </form>
+
+                <div class="card grid grid-2" style="padding: 12px; gap: 8px;">
+                    @foreach($checks as $check)
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f8fafc; border: 1px solid var(--line); border-radius: var(--radius-sm);">
+                            <span class="small" style="font-weight: 500;">{{ $check['label'] }}</span>
+                            @if($check['ok'])
+                                <span class="xsmall" style="color: var(--good); font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Passed
+                                </span>
+                            @else
+                                <span class="xsmall" style="color: var(--bad); font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    Missing
+                                </span>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="card stack" style="gap: 16px;">
+                <h3 class="section-title" style="font-size: 15px;">Installation Overview</h3>
+                <div class="stack" style="gap: 10px;">
+                    <div class="small muted" style="display: flex; gap: 10px;">
+                        <span style="color: var(--accent); font-weight: 800;">01</span>
+                        <span>Environment & Permissions Check</span>
+                    </div>
+                    <div class="small muted" style="display: flex; gap: 10px;">
+                        <span style="color: var(--accent); font-weight: 800;">02</span>
+                        <span>Database Connectivity & Configuration</span>
+                    </div>
+                    <div class="small muted" style="display: flex; gap: 10px;">
+                        <span style="color: var(--accent); font-weight: 800;">03</span>
+                        <span>Shop Branding & Global Settings</span>
+                    </div>
+                    <div class="small muted" style="display: flex; gap: 10px;">
+                        <span style="color: var(--accent); font-weight: 800;">04</span>
+                        <span>Migration & Initial Data Seeding</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 8px; padding-top: 16px; border-top: 1px dashed var(--line);">
+                    <p class="xsmall muted">Once you complete these steps, the installer will lock automatically to secure your site.</p>
+                </div>
+            </div>
         </div>
+
+        <form method="POST" action="{{ route('install.requirements.store') }}">
+            @csrf
+            <div class="btn-row">
+                <button class="btn btn-primary" type="submit">
+                    Check & Continue
+                    <svg style="margin-left: 4px" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </div>
+        </form>
     </div>
 @endsection
