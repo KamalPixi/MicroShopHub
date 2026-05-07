@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'MicroShopHub') }} Installer</title>
+    <title>MicroShopHub Installer</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -125,7 +125,7 @@
                 ⚠️ Installer must be completed once. After finalization the installer is locked automatically.
             </div>
             <div class="top">
-                <h1 class="title">{{ config('app.name', 'MicroShopHub') }} Installer</h1>
+                <h1 class="title">MicroShopHub Installer</h1>
                 <p class="subtitle">Step-by-step setup for a fresh installation.</p>
             </div>
             <div class="content">
