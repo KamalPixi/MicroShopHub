@@ -128,11 +128,35 @@ class Installer extends Component
             return redirect()->route('store.index');
         }
 
+        // Restore from session
+        $this->step = session('installer.step', 1);
+        $this->db = session('installer.db', $this->db);
+        $this->settings = session('installer.settings', $this->settings);
+        $this->custom_currencies = session('installer.custom_currencies', $this->custom_currencies);
+        $this->country_codes = session('installer.country_codes', $this->country_codes);
+        $this->custom_countries = session('installer.custom_countries', $this->custom_countries);
+
         $this->checkRequirements();
         $this->checkDrivers();
         
-        $this->settings['app_url'] = url('/');
-        $this->settings['mail_from_address'] = 'noreply@' . parse_url(url('/'), PHP_URL_HOST);
+        if (empty($this->settings['app_url'])) {
+            $this->settings['app_url'] = url('/');
+        }
+        if (empty($this->settings['mail_from_address'])) {
+            $this->settings['mail_from_address'] = 'noreply@' . parse_url(url('/'), PHP_URL_HOST);
+        }
+    }
+
+    public function updated($propertyName)
+    {
+        session([
+            'installer.step' => $this->step,
+            'installer.db' => $this->db,
+            'installer.settings' => $this->settings,
+            'installer.custom_currencies' => $this->custom_currencies,
+            'installer.country_codes' => $this->country_codes,
+            'installer.custom_countries' => $this->custom_countries,
+        ]);
     }
 
     protected function isInstalled()
