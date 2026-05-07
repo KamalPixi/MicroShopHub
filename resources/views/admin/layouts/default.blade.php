@@ -170,6 +170,11 @@
         /* Sidebar transition */
         aside {
             transition: transform 0.3s ease;
+            z-index: 40;
+        }
+
+        main {
+            transition: margin-left 0.3s ease;
         }
 
         .sidebar-collapsed {
@@ -493,12 +498,12 @@
             @include('admin.includes.header')
 
             @yield('content')
+            
+            <!-- Footer -->
+            @include('admin.includes.footer')
 
         </main>
     </div>
-
-    <!-- Footer -->
-    @include('admin.includes.footer')
 
     <!-- JavaScript for Sidebar Toggle -->
     <script>
