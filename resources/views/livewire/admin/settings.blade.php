@@ -994,8 +994,9 @@
                             Create a snapshot of your database. 
                             @if($backupDisk === 's3')
                                 Bucket: <code class="bg-blue-50 text-blue-700 px-1 rounded text-[10px] font-bold">{{ $backupBucket ?: 'Not Set' }}</code>
+                            @else
+                                Path: <code class="bg-gray-100 px-1 rounded text-[10px] font-bold">{{ $backupPath }}</code>
                             @endif
-                            Path: <code class="bg-gray-100 px-1 rounded text-[10px] font-bold">{{ $backupPath }}</code>
                         </p>
                     </div>
                     <button 
