@@ -14,7 +14,7 @@ return [
     */
 
     'temporary_file_upload' => [
-        'disk' => env('FILESYSTEM_DISK', 'local'), 
+        'disk' => 'local', 
         'middleware' => null,     // Middleware to apply to the temporary upload endpoint
         'directory' => null,      // Directory to store temporary uploads
         'rules' => null,          // Validation rules for temporary uploads
