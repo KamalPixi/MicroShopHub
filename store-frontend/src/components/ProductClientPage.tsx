@@ -102,6 +102,8 @@ export default function ProductClientPage() {
     const productId = data.product.id;
     const variationId = matchedVariation ? matchedVariation.id : null;
     
+    addToCart(productId, variationId, quantity, selectedAttributes);
+    
     setAddedMessage(true);
     setTimeout(() => {
       setAddedMessage(false);

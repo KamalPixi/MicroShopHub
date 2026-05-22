@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { addToCart, removeFromCart, isInCart } from "../utils/cart";
 
 interface SaleProduct {
   id: number;
@@ -94,6 +95,19 @@ export default function FlashSale({
     return () => clearInterval(interval);
   }, [targetTime]);
 
+  useEffect(() => {
+    const updateCart = () => {
+      const state: { [id: number]: boolean } = {};
+      products.forEach((p) => {
+        state[p.id] = isInCart(p.id);
+      });
+      setCartState(state);
+    };
+    updateCart();
+    window.addEventListener("cart-updated", updateCart);
+    return () => window.removeEventListener("cart-updated", updateCart);
+  }, [products]);
+
   const scrollLeft = () => {
     containerRef.current?.scrollBy({ left: -scrollAmount, behavior: "smooth" });
   };
@@ -105,10 +119,11 @@ export default function FlashSale({
   const toggleCart = (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setCartState((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    if (isInCart(id)) {
+      removeFromCart(id);
+    } else {
+      addToCart(id, null, 1);
+    }
   };
 
   return (
