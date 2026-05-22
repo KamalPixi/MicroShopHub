@@ -172,12 +172,21 @@ export function HomePageContent() {
       {/* Main Core Store Layout */}
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-6 pb-12">
         {/* Banner Hero Section */}
-        <Hero
-          heroTitle={settings.hero_title || "Find what fits your life"}
-          heroSubtitle={settings.hero_subtitle || "Curated products, fast delivery, and an elegant shopping experience."}
-          bannerSlides={banners}
-          chips={settings.hero_chips ? settings.hero_chips.split(",").map((s: string) => s.trim()) : undefined}
-        />
+        {settings.home_hero_enabled !== false && (
+          <Hero
+            bannerType={settings.home_banner_type}
+            heroTitle={settings.home_hero_title}
+            heroSubtitle={settings.home_hero_subtitle}
+            ctaLabel={settings.home_hero_cta_label}
+            ctaUrl={settings.home_hero_cta_url}
+            chips={settings.home_banner_chips}
+            bannerSlides={banners}
+            autoplayEnabled={settings.home_banner_autoplay_enabled !== false}
+            brandingColor={settings.branding_color}
+            secondaryColor={settings.secondary_color}
+            accentColor={settings.accent_color}
+          />
+        )}
 
         {/* Dynamic Flash Sale */}
         {data?.flash_sale && flashSaleProducts.length > 0 && (

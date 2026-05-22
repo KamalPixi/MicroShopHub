@@ -1,14 +1,12 @@
 [
-  "_next/static/R7vrGn1ErPFYk3KzGa8sl/_buildManifest.js",
-  "_next/static/R7vrGn1ErPFYk3KzGa8sl/_clientMiddlewareManifest.js",
-  "_next/static/R7vrGn1ErPFYk3KzGa8sl/_ssgManifest.js",
+  "_next/static/chunks/0.jhs_np~d1.d.css",
   "_next/static/chunks/028muish91yaq.js",
   "_next/static/chunks/03~yq9q893hmn.js",
-  "_next/static/chunks/09e570_ki18mb.css",
+  "_next/static/chunks/06_r4665x2f~-.js",
+  "_next/static/chunks/0829d8bu_ta5j.js",
   "_next/static/chunks/0e~57yd-etptb.js",
   "_next/static/chunks/0ge-~hq-dyxeb.js",
   "_next/static/chunks/0h4n8nxpo.imy.js",
-  "_next/static/chunks/0hqg0xm--q1a9.js",
   "_next/static/chunks/0j2lj1f.ie38o.js",
   "_next/static/chunks/0kcb_7mjthoax.js",
   "_next/static/chunks/0m8ewloedo3u-.js",
@@ -29,5 +27,8 @@
   "_next/static/media/8a480f0b521d4e75-s.0jzbimsg8vl84.woff2",
   "_next/static/media/bbc41e54d2fcbd21-s.0mvwgmnhv29no.woff2",
   "_next/static/media/caa3a2e1cccd8315-s.p.09~u27dqhyhd6.woff2",
-  "_next/static/media/fef07dbb0973bf53-s.12tyk43_3sh9u.woff2"
+  "_next/static/media/fef07dbb0973bf53-s.12tyk43_3sh9u.woff2",
+  "_next/static/yTdsG_Zq30MR5zLjoy_UA/_buildManifest.js",
+  "_next/static/yTdsG_Zq30MR5zLjoy_UA/_clientMiddlewareManifest.js",
+  "_next/static/yTdsG_Zq30MR5zLjoy_UA/_ssgManifest.js"
 ]

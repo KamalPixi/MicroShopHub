@@ -48,6 +48,9 @@ class StoreApiController extends Controller
                 'home_newsletter_enabled',
                 'home_newsletter_title',
                 'home_newsletter_subtitle',
+                'branding_color',
+                'secondary_color',
+                'accent_color',
             ])
             ->pluck('value', 'key')
             ->toArray();
