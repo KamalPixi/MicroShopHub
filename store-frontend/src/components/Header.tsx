@@ -5,6 +5,7 @@ import Link from "next/link";
 import { api } from "../utils/api";
 import { getCartCount } from "../utils/cart";
 import AuthModal from "./AuthModal";
+import { useModal } from "@/context/ModalContext";
 
 interface HeaderProps {
   storeName?: string;
@@ -20,8 +21,8 @@ export default function Header({
   const [searchQuery, setSearchQuery] = useState("");
   const [cartCountState, setCartCountState] = useState(0);
   const [user, setUser] = useState<any>(null);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const { openModal, closeModal } = useModal();
 
   // Sync cart count
   useEffect(() => {
@@ -179,7 +180,17 @@ export default function Header({
                 </>
               ) : (
                 <button
-                  onClick={() => setAuthModalOpen(true)}
+                  onClick={() =>
+                    openModal(
+                      <AuthModal
+                        onSuccess={(authenticatedUser) => {
+                          setUser(authenticatedUser);
+                          window.location.reload();
+                        }}
+                        onClose={closeModal}
+                      />
+                    )
+                  }
                   className="inline-flex items-center justify-center h-10 w-10 rounded-full border border-gray-100 bg-white text-gray-600 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50/20 active:scale-95 transition-all"
                   title="Sign In / Register"
                 >
@@ -230,16 +241,6 @@ export default function Header({
           </div>
         </div>
       </div>
-
-      {/* Login / Register Modal Dialog */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        onSuccess={(authenticatedUser) => {
-          setUser(authenticatedUser);
-          window.location.reload();
-        }}
-      />
     </header>
   );
 }

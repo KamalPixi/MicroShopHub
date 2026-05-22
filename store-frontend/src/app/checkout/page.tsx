@@ -7,6 +7,7 @@ import Footer from "../../components/Footer";
 import { api, AddressData, CheckoutConfigResponse, ResolvedCartItem } from "../../utils/api";
 import { getCart, clearCart } from "../../utils/cart";
 import AuthModal from "../../components/AuthModal";
+import { useModal } from "@/context/ModalContext";
 
 export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState(getCart());
@@ -15,9 +16,9 @@ export default function CheckoutPage() {
   
   // Auth state
   const [user, setUser] = useState<any>(null);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [guestCheckoutAllowed, setGuestCheckoutAllowed] = useState(false);
   const [checkoutAsGuest, setCheckoutAsGuest] = useState(false);
+  const { openModal, closeModal } = useModal();
   
   // Checkout Form State
   const [email, setEmail] = useState("");
@@ -345,7 +346,17 @@ export default function CheckoutPage() {
           </p>
           <div className="space-y-3">
             <button
-              onClick={() => setAuthModalOpen(true)}
+               onClick={() => openModal(
+                 <AuthModal
+                   onSuccess={(u) => {
+                     setUser(u);
+                     setEmail(u.email);
+                     setPhone(u.phone || "");
+                     window.location.reload();
+                   }}
+                   onClose={closeModal}
+                 />
+               )}
               className="w-full h-11 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md shadow-blue-500/10"
             >
               Sign In / Register
@@ -357,17 +368,6 @@ export default function CheckoutPage() {
               Return to Cart
             </a>
           </div>
-
-          <AuthModal
-            isOpen={authModalOpen}
-            onClose={() => setAuthModalOpen(false)}
-            onSuccess={(u) => {
-              setUser(u);
-              setEmail(u.email);
-              setPhone(u.phone || "");
-              window.location.reload();
-            }}
-          />
         </main>
         <Footer />
       </div>
@@ -411,7 +411,17 @@ export default function CheckoutPage() {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => setAuthModalOpen(true)}
+                    onClick={() => openModal(
+                      <AuthModal
+                        onSuccess={(u) => {
+                          setUser(u);
+                          setEmail(u.email);
+                          setPhone(u.phone || "");
+                          window.location.reload();
+                        }}
+                        onClose={closeModal}
+                      />
+                    )}
                     className="h-8 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] uppercase tracking-wider transition-all active:scale-95"
                   >
                     Login
@@ -803,17 +813,7 @@ export default function CheckoutPage() {
 
           </div>
 
-          <AuthModal
-            isOpen={authModalOpen}
-            onClose={() => setAuthModalOpen(false)}
-            onSuccess={(authenticatedUser) => {
-              setUser(authenticatedUser);
-              setEmail(authenticatedUser.email);
-              setPhone(authenticatedUser.phone || "");
-              window.location.reload();
-            }}
-          />
-        </form>
+         </form>
       </main>
 
       <Footer />
