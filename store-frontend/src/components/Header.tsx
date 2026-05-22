@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { api } from "../utils/api";
+import { api, CategoryTree, ProductData } from "../utils/api";
 import { getCartCount } from "../utils/cart";
 import AuthModal from "./AuthModal";
 import { useModal } from "@/context/ModalContext";
@@ -19,10 +19,16 @@ export default function Header({
   cartCount: propCartCount,
 }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [categories, setCategories] = useState<CategoryTree[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchResults, setSearchResults] = useState<ProductData[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [cartCountState, setCartCountState] = useState(0);
   const [user, setUser] = useState<any>(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const { openModal, closeModal } = useModal();
+  const searchRef = useRef<HTMLDivElement>(null);
 
   // Sync cart count
   useEffect(() => {
@@ -36,6 +42,61 @@ export default function Header({
       window.removeEventListener("cart-updated", updateCount);
     };
   }, []);
+
+  // Fetch categories for search dropdown
+  useEffect(() => {
+    api.fetchCategories()
+      .then((res) => {
+        setCategories(res);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch categories in header", err);
+      });
+  }, []);
+
+  // Debounced realtime product search
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      setSearchLoading(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    const delayDebounceFn = setTimeout(() => {
+      api.searchProducts({
+        query: searchQuery,
+        category: selectedCategory || undefined,
+      })
+        .then((res) => {
+          setSearchResults(res.products || []);
+          setShowDropdown(true);
+        })
+        .catch((err) => {
+          console.error("Realtime search error:", err);
+        })
+        .finally(() => {
+          setSearchLoading(false);
+        });
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, selectedCategory]);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const stripHtml = (html: string) => {
+    return html ? html.replace(/<[^>]*>/g, "") : "";
+  };
 
   // Fetch current authenticated user
   useEffect(() => {
@@ -53,8 +114,11 @@ export default function Header({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/search/?q=${encodeURIComponent(searchQuery)}`;
+    if (searchQuery.trim() || selectedCategory) {
+      const params = new URLSearchParams();
+      if (searchQuery.trim()) params.append("q", searchQuery.trim());
+      if (selectedCategory) params.append("category", selectedCategory);
+      window.location.href = `/search/?${params.toString()}`;
     }
   };
 
@@ -95,36 +159,172 @@ export default function Header({
           </div>
 
           {/* Search Bar */}
-          <div className="flex-1 max-w-xl mx-4 sm:mx-8">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <input
-                type="text"
-                placeholder="Search for items, categories or brands..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-10 pl-4 pr-10 rounded-full border border-gray-200 bg-gray-50/50 text-sm transition-all focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 placeholder-gray-400 text-gray-800"
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors"
-                aria-label="Search"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2.5"
-                  stroke="currentColor"
-                  className="w-5 h-5"
+          <div className="flex-1 max-w-xl mx-4 sm:mx-8 relative" ref={searchRef}>
+            <form onSubmit={handleSearchSubmit} className="flex w-full h-10 border border-gray-200 rounded-full overflow-hidden bg-gray-50/50 focus-within:bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all">
+              {/* Category Dropdown (matching old blade logic, hidden on mobile/small) */}
+              <div className="relative border-r border-gray-150 bg-gray-100/30 hidden sm:block flex-shrink-0 hover:bg-gray-100/60 transition-colors">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="appearance-none bg-transparent h-full pl-4 pr-8 text-[10px] font-extrabold uppercase tracking-wider text-gray-500 hover:text-gray-900 focus:outline-none cursor-pointer max-w-[130px] truncate"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z"
-                  />
-                </svg>
-              </button>
+                  <option value="">All Categories</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center px-1 text-gray-400">
+                  <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Text Input Block */}
+              <div className="flex-1 relative h-full">
+                <input
+                  type="text"
+                  placeholder="Search for items, categories or brands..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => {
+                    if (searchQuery.trim().length >= 2) setShowDropdown(true);
+                  }}
+                  className="w-full h-full pl-10 pr-10 bg-transparent text-sm transition-all focus:outline-none placeholder-gray-400 text-gray-800"
+                />
+                
+                {/* Search Magnifying Glass Icon (Left inside Input) */}
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2.5"
+                    stroke="currentColor"
+                    className="w-4 h-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z"
+                    />
+                  </svg>
+                </div>
+
+                {/* Clear Search Input Button */}
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSearchResults([]);
+                      setShowDropdown(false);
+                    }}
+                    className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors active:scale-90"
+                    aria-label="Clear query"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Search Submit Action Button (Right aligned) */}
+                <button
+                  type="submit"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors active:scale-90"
+                  aria-label="Submit Search"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="3"
+                    stroke="currentColor"
+                    className="w-4 h-4"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </button>
+              </div>
             </form>
+
+            {/* Realtime Autocomplete Search Results */}
+            {showDropdown && searchQuery.trim().length >= 2 && (
+              <div className="absolute top-full left-0 right-0 z-[100] mt-2 rounded-2xl bg-white border border-gray-100 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                {searchLoading ? (
+                  <div className="flex items-center justify-center py-8 gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+                    <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Searching products...</span>
+                  </div>
+                ) : searchResults.length > 0 ? (
+                  <>
+                    <ul className="divide-y divide-gray-50 max-h-[320px] overflow-y-auto pr-1">
+                      {searchResults.map((product) => (
+                        <li key={product.id} className="hover:bg-slate-50 transition-colors">
+                          <Link
+                            href={`/product/${product.slug}`}
+                            onClick={() => setShowDropdown(false)}
+                            className="flex items-center px-4 py-3 group"
+                          >
+                            {/* Thumbnail */}
+                            <div className="flex-shrink-0 h-10 w-10 border border-gray-150 rounded-lg overflow-hidden bg-slate-50">
+                              <img
+                                src={product.thumbnail_url || "https://placehold.co/100"}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            {/* Name and Description snippet */}
+                            <div className="ml-3 flex-1 min-w-0">
+                              <p className="text-xs font-bold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                                {product.name}
+                              </p>
+                              <p className="text-[10px] text-gray-400 truncate mt-0.5">
+                                {stripHtml(product.description)}
+                              </p>
+                            </div>
+                            {/* Price block */}
+                            <div className="ml-3 text-right flex-shrink-0">
+                              {product.sale_price ? (
+                                <>
+                                  <span className="block text-[9px] text-gray-400 line-through leading-none">
+                                    {product.currency_symbol}{product.price.toFixed(2)}
+                                  </span>
+                                  <span className="text-xs font-black text-blue-600 leading-none mt-1 inline-block">
+                                    {product.currency_symbol}{product.sale_price.toFixed(2)}
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="text-xs font-bold text-gray-900 leading-none">
+                                  {product.currency_symbol}{product.price.toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                    
+                    <div className="bg-slate-50 p-2 text-center border-t border-gray-100">
+                      <button
+                        type="submit"
+                        onClick={() => setShowDropdown(false)}
+                        className="text-blue-600 hover:text-blue-700 text-[10px] font-extrabold uppercase tracking-wider transition-colors w-full py-1.5 hover:underline"
+                      >
+                        View All Results for "{searchQuery}"
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="px-4 py-6 text-center text-xs text-gray-400 font-bold">
+                    🔍 No products found for "{searchQuery}"
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Action Links */}
