@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { addToCart, removeFromCart, isInCart } from "../utils/cart";
+import { useNotification } from "@/context/NotificationContext";
 
 interface Product {
   id: number;
@@ -57,6 +58,7 @@ export default function NewArrivals({
   title = "New Arrivals",
   products = defaultProducts,
 }: NewArrivalsProps) {
+  const { showNotification } = useNotification();
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollAmount = 300;
   const [cartState, setCartState] = useState<{ [id: number]: boolean }>({});
@@ -82,13 +84,15 @@ export default function NewArrivals({
     containerRef.current?.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
-  const toggleCart = (id: number, e: React.MouseEvent) => {
+  const toggleCart = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (isInCart(id)) {
-      removeFromCart(id);
+    if (isInCart(product.id)) {
+      removeFromCart(product.id);
+      showNotification(`🗑️ Removed ${product.name} from your cart.`, "info");
     } else {
-      addToCart(id, null, 1);
+      addToCart(product.id, null, 1);
+      showNotification(`🛒 Added ${product.name} to your cart!`, "success");
     }
   };
 
@@ -174,7 +178,7 @@ export default function NewArrivals({
                     </div>
 
                     <button
-                      onClick={(e) => toggleCart(product.id, e)}
+                      onClick={(e) => toggleCart(product, e)}
                       className={`text-[10px] font-bold px-3 py-2 rounded-xl transition-all active:scale-95 flex items-center gap-1 shadow-sm border ${
                         isInCart
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"

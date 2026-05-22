@@ -5,9 +5,11 @@ import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { api, ProductData, SearchResponse } from "../../utils/api";
-import { addToCart, isInCart } from "../../utils/cart";
+import { addToCart, removeFromCart, isInCart } from "../../utils/cart";
+import { useNotification } from "@/context/NotificationContext";
 
 function SearchContent() {
+  const { showNotification } = useNotification();
   const getSearchParam = (key: string): string => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -141,12 +143,11 @@ function SearchContent() {
     e.stopPropagation();
     e.preventDefault();
     if (isInCart(product.id)) {
-      // Remove from cart
-      // (Using our cart helper)
-      // Custom handler
+      removeFromCart(product.id);
+      showNotification(`🗑️ Removed ${product.name} from your cart.`, "info");
     } else {
-      const activePrice = product.sale_price !== null ? product.sale_price : product.price;
       addToCart(product.id, null, 1);
+      showNotification(`🛒 Added ${product.name} to your cart!`, "success");
     }
   };
 
@@ -391,19 +392,30 @@ function SearchContent() {
                         </div>
 
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            if (isAdded) return;
-                            addToCart(prod.id, null, 1);
-                          }}
+                          onClick={(e) => handleToggleCartItem(prod, e)}
                           className={`text-[10px] font-bold px-2.5 py-2 rounded-xl transition-all active:scale-95 flex items-center gap-1 shadow-sm border ${
                             isAdded
                               ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
                               : "bg-white text-gray-700 border-gray-200 hover:border-blue-500 hover:text-blue-600"
                           }`}
+                          title={isAdded ? "Remove from cart" : "Add to Cart"}
                         >
-                          {isAdded ? "Added" : "Add"}
+                          {isAdded ? (
+                            <>
+                              <svg
+                                className="w-3.5 h-3.5 text-emerald-600 animate-in zoom-in duration-300"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                              </svg>
+                              <span>Added</span>
+                            </>
+                          ) : (
+                            "Add"
+                          )}
                         </button>
                       </div>
                     </div>

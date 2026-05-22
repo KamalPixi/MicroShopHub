@@ -6,8 +6,10 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { api, ProductDetailResponse, ProductData } from "../utils/api";
 import { addToCart, isInCart } from "../utils/cart";
+import { useNotification } from "@/context/NotificationContext";
 
 export default function ProductClientPage() {
+  const { showNotification } = useNotification();
   const [pathname, setPathname] = useState("");
 
   useEffect(() => {
@@ -104,6 +106,8 @@ export default function ProductClientPage() {
     
     addToCart(productId, variationId, quantity, selectedAttributes);
     
+    showNotification(`🛒 Added ${data.product.name} to your cart!`, "success");
+    
     setAddedMessage(true);
     setTimeout(() => {
       setAddedMessage(false);
@@ -118,6 +122,8 @@ export default function ProductClientPage() {
     const variationId = matchedVariation ? matchedVariation.id : null;
     
     addToCart(productId, variationId, quantity, selectedAttributes);
+    
+    showNotification(`🛒 Added ${data.product.name} to your cart!`, "success");
     
     setTimeout(() => {
       window.history.pushState(null, "", "/checkout");
