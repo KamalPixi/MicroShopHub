@@ -6,8 +6,12 @@
         "node": ">=20.19.0"
     },
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "build:frontend": "npm run build --prefix store-frontend",
+        "build:backend": "vite build",
+        "build": "npm run build:frontend && npm run build:backend",
+        "dev:frontend": "npm run dev --prefix store-frontend",
+        "dev:backend": "vite",
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

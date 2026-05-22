@@ -22,3 +22,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 Archive.zip
+database.sqlite
+public/_next/*

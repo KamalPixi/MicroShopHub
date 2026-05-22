@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Cache;
 |--------------------------------------------------------------------------
 */
 use App\Http\Controllers\Store\StoreController;
+use App\Http\Controllers\Api\StoreApiController;
+use App\Http\Controllers\Api\CustomerApiController;
 use App\Http\Controllers\Store\CustomerController;
 use App\Http\Controllers\Store\AuthController;
 use App\Http\Controllers\Store\PaymentController;
@@ -74,21 +76,27 @@ Route::get('/language/{locale}', function (Request $request, string $locale) {
     return back();
 })->middleware('app.installed')->name('store.language.switch');
 
-Route::middleware(['app.installed', 'store.analytics', 'store.locale'])->name('store.')->group(function () {
-    Route::get('/', [StoreController::class, 'index'])->name('index');
-    Route::get('/search', [StoreController::class, 'search'])->name('search');
-    Route::get('/flash-sale', [StoreController::class, 'flashSale'])->name('flash-sale');
-    Route::get('/product/{slug}', [StoreController::class, 'show'])->name('product.show');
-    Route::get('/about', [StoreController::class, 'about'])->name('about');
-    Route::get('/faq', [StoreController::class, 'faq'])->name('faq');
-    Route::get('/privacy-policy', [StoreController::class, 'privacyPolicy'])->name('privacy-policy');
-    Route::get('/terms', [StoreController::class, 'terms'])->name('terms');
-    Route::get('/refund-policy', [StoreController::class, 'refundPolicy'])->name('refund-policy');
-    Route::get('/shipping', [StoreController::class, 'shippingInfo'])->name('shipping');
-    Route::get('/cookie-policy', [StoreController::class, 'cookiePolicy'])->name('cookie-policy');
-    Route::get('/contact', [StoreController::class, 'contact'])->name('contact');
-    Route::get('/cart', [StoreController::class, 'cart'])->name('cart.index');
-    Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+$serveSpa = function () {
+    if (view()->exists('storefront')) {
+        return view('storefront');
+    }
+    return response('Storefront template not found. Please compile the next.js frontend.', 404);
+};
+
+Route::middleware(['app.installed', 'store.analytics', 'store.locale'])->name('store.')->group(function () use ($serveSpa) {
+    Route::get('/', $serveSpa)->name('index');
+    Route::get('/search', $serveSpa)->name('search');
+    Route::get('/flash-sale', $serveSpa)->name('flash-sale');
+    Route::get('/product/{slug}', $serveSpa)->name('product.show');
+    Route::get('/about', $serveSpa)->name('about');
+    Route::get('/faq', $serveSpa)->name('faq');
+    Route::get('/privacy-policy', $serveSpa)->name('privacy-policy');
+    Route::get('/terms', $serveSpa)->name('terms');
+    Route::get('/refund-policy', $serveSpa)->name('refund-policy');
+    Route::get('/shipping', $serveSpa)->name('shipping');
+    Route::get('/cookie-policy', $serveSpa)->name('cookie-policy');
+    Route::get('/contact', $serveSpa)->name('contact');
+    Route::get('/cart', $serveSpa)->name('cart.index');
 });
 
 Route::get('/sitemap.xml', [StoreController::class, 'sitemap'])->middleware('app.installed')->name('sitemap');
@@ -100,15 +108,13 @@ Route::get('/sitemap.xml', [StoreController::class, 'sitemap'])->middleware('app
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['app.installed', 'store.analytics', 'store.locale'])->group(function () {
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
-    Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::middleware(['app.installed', 'store.analytics', 'store.locale'])->group(function () use ($serveSpa) {
+    Route::get('/login', $serveSpa)->name('login');
+    Route::get('/register', $serveSpa)->name('register');
 
-    Route::middleware('auth')->group(function () {
-        Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
-        Route::get('/email/verify', function () {
-            return view('store.email-verification');
-        })->name('verification.notice');
+    Route::middleware('auth')->group(function () use ($serveSpa) {
+        Route::get('/dashboard', $serveSpa)->name('customer.dashboard');
+        Route::get('/email/verify', $serveSpa)->name('verification.notice');
 
         Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
             $request->fulfill();
@@ -259,3 +265,45 @@ Route::prefix('admin')
             });
         });
     });
+
+/*
+|--------------------------------------------------------------------------
+| Decoupled Next.js Storefront JSON APIs
+|--------------------------------------------------------------------------
+*/
+Route::prefix('api')->middleware(['web', 'app.installed', 'store.locale'])->group(function () {
+    // Public storefront endpoints
+    Route::get('/homepage', [StoreApiController::class, 'homepage']);
+    Route::get('/categories', [StoreApiController::class, 'categories']);
+    Route::get('/products', [StoreApiController::class, 'products']);
+    Route::get('/products/{slug}', [StoreApiController::class, 'productDetail']);
+    Route::get('/flash-sales', [StoreApiController::class, 'flashSale']);
+    Route::post('/cart/resolve', [StoreApiController::class, 'resolveCart']);
+    Route::post('/newsletter/subscribe', [StoreApiController::class, 'subscribeNewsletter']);
+    Route::get('/pages/{slug}', [StoreApiController::class, 'staticPage']);
+
+    // Customer session, auth & checkout
+    Route::get('/auth/settings', [CustomerApiController::class, 'authSettings']);
+    Route::post('/auth/send-otp', [CustomerApiController::class, 'sendOtp']);
+    Route::post('/auth/login-otp', [CustomerApiController::class, 'loginOtp']);
+    Route::post('/auth/login-password', [CustomerApiController::class, 'loginPassword']);
+    Route::post('/auth/register', [CustomerApiController::class, 'register']);
+    Route::post('/auth/logout', [CustomerApiController::class, 'logout']);
+    Route::get('/auth/user', [CustomerApiController::class, 'currentUser']);
+    Route::post('/coupon/validate', [CustomerApiController::class, 'validateCoupon']);
+    Route::get('/checkout/config', [CustomerApiController::class, 'checkoutConfig']);
+    Route::post('/orders', [CustomerApiController::class, 'placeOrder']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Dynamic Storefront SPA Route Fallback
+|--------------------------------------------------------------------------
+*/
+Route::fallback(function () {
+    if (view()->exists('storefront')) {
+        return view('storefront');
+    }
+    return response('Storefront template not found. Please compile the next.js frontend.', 404);
+});
+
