@@ -27,6 +27,10 @@ function SearchContent() {
   const [loading, setLoading] = useState(true);
   const [cartState, setCartState] = useState<{ [id: number]: boolean }>({});
 
+  // Collapsible accordion sidebar state (collapsed by default to maximize vertical product view space)
+  const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
+  const [isPriceExpanded, setIsPriceExpanded] = useState(false);
+
   // Sync cart item states
   useEffect(() => {
     const updateCartStates = () => {
@@ -46,12 +50,34 @@ function SearchContent() {
   // Sync parameters from URL on load and popstate
   useEffect(() => {
     const syncParams = () => {
-      setQuery(getSearchParam("q"));
-      setSelectedCategory(getSearchParam("category"));
-      setMinPrice(getSearchParam("min_price"));
-      setMaxPrice(getSearchParam("max_price"));
-      setSort(getSearchParam("sort"));
-      setPage(Number(getSearchParam("page")) || 1);
+      const q = getSearchParam("q");
+      const cat = getSearchParam("category");
+      const minP = getSearchParam("min_price");
+      const maxP = getSearchParam("max_price");
+      const s = getSearchParam("sort");
+      const p = Number(getSearchParam("page")) || 1;
+
+      setQuery(q);
+      setSelectedCategory(cat);
+      setMinPrice(minP);
+      setMaxPrice(maxP);
+      setSort(s);
+      setPage(p);
+
+      // If active filter selection exists, auto-expand the filter block for seamless editing on desktop ONLY.
+      // On mobile viewports (width < 1024px), we keep all filters collapsed by default to save precious Y-axis space.
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
+      if (!isMobile) {
+        if (cat) {
+          setIsCategoriesExpanded(true);
+        }
+        if (minP || maxP) {
+          setIsPriceExpanded(true);
+        }
+      } else {
+        setIsCategoriesExpanded(false);
+        setIsPriceExpanded(false);
+      }
     };
 
     syncParams();
@@ -137,87 +163,134 @@ function SearchContent() {
             
             {/* Categories filter */}
             <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-              <h3 className="text-xs font-black uppercase tracking-wider text-gray-900 mb-3">Categories</h3>
-              <div className="space-y-1">
-                <button
-                  onClick={() => updateFilters({ category: "" })}
-                  className={`w-full text-left px-2 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                    !selectedCategory
-                      ? "bg-blue-50 text-blue-600 font-bold"
-                      : "text-gray-600 hover:bg-gray-50"
+              <button
+                onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
+                className="w-full flex items-center justify-between focus:outline-none group"
+              >
+                <span className="text-xs font-black uppercase tracking-wider text-gray-900 group-hover:text-blue-600 transition-colors">Categories</span>
+                <svg
+                  className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${
+                    isCategoriesExpanded ? "rotate-180" : ""
                   }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  All Categories
-                </button>
-                {data?.categories?.map((cat) => (
-                  <div key={cat.id} className="space-y-1 mt-1">
-                    <button
-                      onClick={() => updateFilters({ category: cat.id })}
-                      className={`w-full text-left px-2 py-1 rounded-lg text-xs font-bold transition-colors ${
-                        String(selectedCategory) === String(cat.id)
-                          ? "bg-blue-50 text-blue-600"
-                          : "text-gray-700 hover:bg-gray-50"
-                      }`}
-                    >
-                      {cat.name}
-                    </button>
-                    {/* Subcategories */}
-                    {cat.children && cat.children.length > 0 && (
-                      <div className="pl-3 space-y-0.5 border-l border-gray-100 ml-2">
-                        {cat.children.map((sub) => (
-                          <button
-                            key={sub.id}
-                            onClick={() => updateFilters({ category: sub.id })}
-                            className={`w-full text-left px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                              String(selectedCategory) === String(sub.id)
-                                ? "text-blue-600 font-bold"
-                                : "text-gray-500 hover:text-gray-900"
-                            }`}
-                          >
-                            {sub.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.5"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {isCategoriesExpanded && (
+                <div className="space-y-1 mt-4 pt-3 border-t border-gray-55">
+                  <button
+                    onClick={() => updateFilters({ category: "" })}
+                    className={`w-full text-left px-2 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                      !selectedCategory
+                        ? "bg-blue-50 text-blue-600 font-bold"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                  {data?.categories?.map((cat) => (
+                    <div key={cat.id} className="space-y-1 mt-1">
+                      <button
+                        onClick={() => updateFilters({ category: cat.id })}
+                        className={`w-full text-left px-2 py-1 rounded-lg text-xs font-bold transition-colors ${
+                          String(selectedCategory) === String(cat.id)
+                            ? "bg-blue-50 text-blue-600"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        {cat.name}
+                      </button>
+                      {/* Subcategories */}
+                      {cat.children && cat.children.length > 0 && (
+                        <div className="pl-3 space-y-0.5 border-l border-gray-100 ml-2">
+                          {cat.children.map((sub) => (
+                            <button
+                              key={sub.id}
+                              onClick={() => updateFilters({ category: sub.id })}
+                              className={`w-full text-left px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                                String(selectedCategory) === String(sub.id)
+                                  ? "text-blue-600 font-bold"
+                                  : "text-gray-500 hover:text-gray-900"
+                              }`}
+                            >
+                                {sub.name}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Price Range Selector */}
             <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-              <h3 className="text-xs font-black uppercase tracking-wider text-gray-900 mb-3">Price Range</h3>
-              <form onSubmit={handlePriceFilterSubmit} className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-[9px] font-bold text-gray-400 uppercase mb-1">Min Price</label>
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
-                      className="w-full h-8 px-2 rounded-lg border border-gray-200 text-xs text-gray-800 focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[9px] font-bold text-gray-400 uppercase mb-1">Max Price</label>
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
-                      className="w-full h-8 px-2 rounded-lg border border-gray-200 text-xs text-gray-800 focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full h-8 rounded-lg bg-slate-900 hover:bg-slate-950 text-white font-bold text-[10px] uppercase tracking-wider transition-all"
+              <button
+                onClick={() => setIsPriceExpanded(!isPriceExpanded)}
+                className="w-full flex items-center justify-between focus:outline-none group"
+              >
+                <span className="text-xs font-black uppercase tracking-wider text-gray-900 group-hover:text-blue-600 transition-colors">Price Range</span>
+                <svg
+                  className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${
+                    isPriceExpanded ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Apply Filter
-                </button>
-              </form>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.5"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {isPriceExpanded && (
+                <form onSubmit={handlePriceFilterSubmit} className="space-y-3 mt-4 pt-3 border-t border-gray-55">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[9px] font-bold text-gray-400 uppercase mb-1">Min Price</label>
+                      <input
+                        type="number"
+                        placeholder="Min"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        className="w-full h-8 px-2 rounded-lg border border-gray-200 text-xs text-gray-800 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[9px] font-bold text-gray-400 uppercase mb-1">Max Price</label>
+                      <input
+                        type="number"
+                        placeholder="Max"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        className="w-full h-8 px-2 rounded-lg border border-gray-200 text-xs text-gray-800 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full h-8 rounded-lg bg-slate-900 hover:bg-slate-950 text-white font-bold text-[10px] uppercase tracking-wider transition-all"
+                  >
+                    Apply Filter
+                  </button>
+                </form>
+              )}
             </div>
+
           </aside>
 
           {/* Results Area */}
