@@ -39,11 +39,11 @@
             <div class="grid grid-3" style="grid-column: 1 / -1; gap: 12px;">
                 <div>
                     <label>Brand Color</label>
-                    <input type="text" name="branding_color" value="{{ old('branding_color', $settings['branding_color'] ?? '#111111') }}" placeholder="#111111">
+                    <input type="text" name="branding_color" value="{{ old('branding_color', $settings['branding_color'] ?? '#ee4d2d') }}" placeholder="#ee4d2d">
                 </div>
                 <div>
                     <label>Secondary Color</label>
-                    <input type="text" name="secondary_color" value="{{ old('secondary_color', $settings['secondary_color'] ?? '#6B7280') }}" placeholder="#6B7280">
+                    <input type="text" name="secondary_color" value="{{ old('secondary_color', $settings['secondary_color'] ?? '#ff5722') }}" placeholder="#ff5722">
                 </div>
                 <div>
                     <label>Accent Color</label>

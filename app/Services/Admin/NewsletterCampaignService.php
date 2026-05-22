@@ -113,7 +113,7 @@ class NewsletterCampaignService
         $storeName = Setting::where('key', 'shop_name')->value('value') ?: config('app.name', 'Store');
         $storeSlogan = Setting::where('key', 'site_title')->value('value') ?: '';
         $storeLogo = Setting::where('key', 'shop_logo')->value('value');
-        $brandColor = Setting::where('key', 'branding_color')->value('value') ?: '#111111';
+        $brandColor = Setting::where('key', 'branding_color')->value('value') ?: '#ee4d2d';
         $buttonText = trim((string) ($campaign->button_text ?? '')) ?: 'Shop now';
         $buttonUrl = trim((string) ($campaign->button_url ?? '')) ?: url('/');
 
@@ -125,7 +125,7 @@ class NewsletterCampaignService
             ? '<img src="' . e(\Illuminate\Support\Facades\Storage::url($storeLogo)) . '" alt="' . e($storeName) . '" style="height:42px; width:auto; display:block; object-fit:contain;">'
             : '<div style="font-size:22px;font-weight:800;line-height:1;color:#111;">' . e($storeName) . '</div>';
 
-        $heroColor = e($brandColor ?: '#111111');
+        $heroColor = e($brandColor ?: '#ee4d2d');
         $productCards = '';
 
         foreach ($products as $product) {

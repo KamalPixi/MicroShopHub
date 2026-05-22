@@ -276,8 +276,70 @@ export function HomePageContent() {
   );
 }
 
+function adjustColorBrightness(hex: string, percent: number) {
+  let num = parseInt(hex.replace("#", ""), 16),
+    amt = Math.round(2.55 * percent),
+    R = (num >> 16) + amt,
+    G = ((num >> 8) & 0x00ff) + amt,
+    B = (num & 0x0000ff) + amt;
+  return (
+    "#" +
+    (
+      0x1000000 +
+      (R < 255 ? (R < 0 ? 0 : R) : 255) * 0x10000 +
+      (G < 255 ? (G < 0 ? 0 : G) : 255) * 0x100 +
+      (B < 255 ? (B < 0 ? 0 : B) : 255)
+    )
+      .toString(16)
+      .slice(1)
+  );
+}
+
+function hexToRgba(hex: string, alpha: number) {
+  let c = hex.replace("#", "");
+  if (c.length === 3) {
+    c = c.split("").map((x) => x + x).join("");
+  }
+  const r = parseInt(c.substring(0, 2), 16);
+  const g = parseInt(c.substring(2, 4), 16);
+  const b = parseInt(c.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export default function Home() {
   const [pathname, setPathname] = useState("");
+
+  // Dynamically load dynamic branding colors from settings on mount
+  useEffect(() => {
+    async function loadBrandingColors() {
+      try {
+        const homepageData = await api.fetchHomepage();
+        if (homepageData && homepageData.settings) {
+          const settings = homepageData.settings;
+          const primary = settings.branding_color || "#ee4d2d";
+          const secondary = settings.secondary_color || "#ff5722";
+          const accent = settings.accent_color || "#f59e0b";
+
+          const primaryHover = settings.branding_color
+            ? adjustColorBrightness(settings.branding_color, -12)
+            : "#d03e22";
+
+          const primaryLight = hexToRgba(primary, 0.05);
+          const primaryLightBorder = hexToRgba(primary, 0.15);
+
+          document.documentElement.style.setProperty("--primary", primary);
+          document.documentElement.style.setProperty("--primary-hover", primaryHover);
+          document.documentElement.style.setProperty("--primary-light", primaryLight);
+          document.documentElement.style.setProperty("--primary-light-border", primaryLightBorder);
+          document.documentElement.style.setProperty("--secondary", secondary);
+          document.documentElement.style.setProperty("--accent", accent);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic branding colors", err);
+      }
+    }
+    loadBrandingColors();
+  }, []);
 
   useEffect(() => {
     setPathname(window.location.pathname);

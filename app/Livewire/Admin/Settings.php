@@ -21,8 +21,8 @@ class Settings extends Component
     public $settings = [
         // General
         'shop_logo' => '',
-        'branding_color' => '#000000',
-        'secondary_color' => '#6B7280',
+        'branding_color' => '#ee4d2d',
+        'secondary_color' => '#ff5722',
         'accent_color' => '#F59E0B',
         'shop_name' => '',
         'site_title' => '',

@@ -49,14 +49,14 @@
                         <label for="branding_color" class="block text-sm font-semibold text-gray-700">Primary Color</label>
                         <div class="flex items-center mt-1">
                             <input wire:model="settings.branding_color" type="color" id="branding_color" class="h-9 w-12 border border-gray-300 rounded p-0.5 cursor-pointer">
-                            <input wire:model="settings.branding_color" type="text" class="ml-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono uppercase" placeholder="#000000">
+                            <input wire:model="settings.branding_color" type="text" class="ml-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono uppercase" placeholder="#ee4d2d">
                         </div>
                     </div>
                     <div>
                         <label for="secondary_color" class="block text-sm font-semibold text-gray-700">Secondary Color</label>
                         <div class="flex items-center mt-1">
                             <input wire:model="settings.secondary_color" type="color" id="secondary_color" class="h-9 w-12 border border-gray-300 rounded p-0.5 cursor-pointer">
-                            <input wire:model="settings.secondary_color" type="text" class="ml-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono uppercase" placeholder="#6B7280">
+                            <input wire:model="settings.secondary_color" type="text" class="ml-2 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono uppercase" placeholder="#ff5722">
                         </div>
                     </div>
                     <div>

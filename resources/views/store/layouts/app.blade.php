@@ -46,8 +46,8 @@
         $storeName = trim((string) ($storeMeta['shop_name'] ?? '')) ?: config('app.name', 'Store Name');
         $storeSlogan = $storeMeta['site_title'] ?? '';
         $storeLogo = $storeMeta['shop_logo'] ?? '';
-        $primaryColor = $brandSettings['branding_color'] ?? '#2563eb';
-        $secondaryColor = $brandSettings['secondary_color'] ?? '#64748b';
+        $primaryColor = $brandSettings['branding_color'] ?? '#ee4d2d';
+        $secondaryColor = $brandSettings['secondary_color'] ?? '#ff5722';
         $accentColor = $brandSettings['accent_color'] ?? '#f59e0b';
         $storefrontTheme = \App\Support\StorefrontTheme::currentKey();
         $liveChatEnabled = filter_var(\App\Models\Setting::where('key', 'live_chat_enabled')->value('value'), FILTER_VALIDATE_BOOLEAN);

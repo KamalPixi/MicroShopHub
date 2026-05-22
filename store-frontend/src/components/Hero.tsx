@@ -54,8 +54,8 @@ export default function Hero({
   chips = ["Free Shipping", "Secure Payments", "Easy Returns"],
   bannerSlides = defaultSlides,
   autoplayEnabled = true,
-  brandingColor = "#2563eb",
-  secondaryColor = "#64748b",
+  brandingColor = "#ee4d2d",
+  secondaryColor = "#ff5722",
   accentColor = "#f59e0b",
 }: HeroProps) {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -92,8 +92,8 @@ export default function Hero({
     }
   };
 
-  const primaryBg = brandingColor || "#2563eb";
-  const secondaryBg = secondaryColor || "#64748b";
+  const primaryBg = brandingColor || "#ee4d2d";
+  const secondaryBg = secondaryColor || "#ff5722";
   const accentBg = accentColor || "#f59e0b";
 
   const gradientStyle = {
