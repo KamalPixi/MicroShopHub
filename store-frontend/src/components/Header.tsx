@@ -18,6 +18,32 @@ export default function Header({
   storeSlogan = "Curated Products, Fast Delivery",
   cartCount: propCartCount,
 }: HeaderProps) {
+  const [dynamicStoreName, setDynamicStoreName] = useState(storeName);
+  const [dynamicStoreSlogan, setDynamicStoreSlogan] = useState(storeSlogan);
+
+  useEffect(() => {
+    setDynamicStoreName(storeName);
+  }, [storeName]);
+
+  useEffect(() => {
+    setDynamicStoreSlogan(storeSlogan);
+  }, [storeSlogan]);
+
+  useEffect(() => {
+    if (storeName === "ShopHub" || !storeName) {
+      api.fetchHomepage()
+        .then((res) => {
+          if (res && res.settings) {
+            if (res.settings.store_name) setDynamicStoreName(res.settings.store_name);
+            if (res.settings.store_slogan) setDynamicStoreSlogan(res.settings.store_slogan);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load storefront settings in Header", err);
+        });
+    }
+  }, [storeName]);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState<CategoryTree[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -144,14 +170,14 @@ export default function Header({
             <Link href="/" className="group transition-transform duration-200 active:scale-95">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-extrabold shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/35 transition-all">
-                  {storeName.charAt(0).toUpperCase()}
+                  {dynamicStoreName ? dynamicStoreName.charAt(0).toUpperCase() : "S"}
                 </div>
                 <div>
                   <h1 className="text-lg font-black text-gray-900 leading-none tracking-tight group-hover:text-blue-600 transition-colors">
-                    {storeName}
+                    {dynamicStoreName}
                   </h1>
                   <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.18em] leading-none text-blue-600/80">
-                    {storeSlogan}
+                    {dynamicStoreSlogan}
                   </p>
                 </div>
               </div>
@@ -362,6 +388,17 @@ export default function Header({
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Signed in as</p>
                         <p className="text-xs font-bold text-gray-800 line-clamp-1">{user.name}</p>
                       </div>
+                      <a
+                        href="/dashboard"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setProfileDropdownOpen(false);
+                          window.location.href = "/dashboard";
+                        }}
+                        className="block px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors"
+                      >
+                        My Dashboard
+                      </a>
                       <Link
                         href="/checkout"
                         onClick={() => setProfileDropdownOpen(false)}

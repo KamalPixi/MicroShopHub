@@ -114,7 +114,9 @@ Route::middleware(['app.installed', 'store.analytics', 'store.locale'])->group(f
 
     Route::middleware('auth')->group(function () use ($serveSpa) {
         Route::get('/dashboard', $serveSpa)->name('customer.dashboard');
-        Route::get('/email/verify', $serveSpa)->name('verification.notice');
+        Route::get('/email/verify', function () {
+            return view('store.email-verification');
+        })->name('verification.notice');
 
         Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
             $request->fulfill();

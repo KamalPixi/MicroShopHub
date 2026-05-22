@@ -638,4 +638,132 @@ class CustomerApiController extends Controller
             'total' => (float) $order->total,
         ]);
     }
+
+    /**
+     * Update customer profile settings.
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'gender' => 'nullable|integer|in:1,2,3',
+            'birthday' => 'nullable|date',
+            'avatar' => 'nullable|image|max:1024', // 1MB Max
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $data = [
+            'name' => trim($request->input('name')),
+            'phone' => trim($request->input('phone')),
+            'gender' => $request->input('gender'),
+            'birthday' => $request->input('birthday'),
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->input('password'));
+        }
+
+        // Handle Avatar Upload
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                \Illuminate\Support\Facades\Storage::delete($user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars');
+            $data['avatar'] = $path;
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'Profile updated successfully.',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'gender' => $user->gender,
+                'birthday' => $user->birthday ? $user->birthday->format('Y-m-d') : null,
+                'avatar_url' => $user->avatar ? \Illuminate\Support\Facades\Storage::url($user->avatar) : null,
+            ]
+        ]);
+    }
+
+    /**
+     * Add a new customer address.
+     */
+    public function addAddress(Request $request)
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|string|in:home,office,billing,shipping,other',
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'address_line1' => 'required|string|max:255',
+            'address_line2' => 'nullable|string|max:255',
+            'city' => 'required|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'postal_code' => 'nullable|string|max:30',
+            'country_code' => 'required|string|exists:countries,code',
+            'is_default' => 'boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $addressData = $validator->validated();
+
+        if (! empty($addressData['is_default'])) {
+            $user->addresses()->update(['is_default' => false]);
+        }
+
+        $address = $user->addresses()->create($addressData);
+
+        return response()->json([
+            'message' => 'Address added successfully.',
+            'address' => $address
+        ]);
+    }
+
+    /**
+     * Delete a customer address.
+     */
+    public function deleteAddress($id)
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $address = $user->addresses()->find($id);
+        if (! $address) {
+            return response()->json(['message' => 'Address not found.'], 404);
+        }
+
+        $address->delete();
+
+        return response()->json([
+            'message' => 'Address removed successfully.'
+        ]);
+    }
 }

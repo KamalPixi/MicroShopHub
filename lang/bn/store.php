@@ -148,6 +148,7 @@ return [
     'place_order' => 'অর্ডার দিন',
     'continue_shopping' => 'শপিং চালিয়ে যান',
     'visit_home' => 'হোমে যান',
+    'back_to_store' => 'স্টোরে ফিরে যান',
     'shopping_cart_checkout' => 'কার্ট ও চেকআউট',
     'items_in_cart' => 'কার্টের আইটেম',
     'select_address' => 'ঠিকানা নির্বাচন করুন',

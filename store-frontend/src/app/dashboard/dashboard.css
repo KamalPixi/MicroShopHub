@@ -1,0 +1,143 @@
+/* Dashboard page styling */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: var(--background);
+  color: var(--foreground);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.dashboard-title {
+  font-family: var(--font-sans);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.dashboard-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.dashboard-tab {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--primary-light-border);
+  border-radius: 8px;
+  background: var(--primary-light);
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dashboard-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary-hover);
+}
+
+.dashboard-content {
+  min-height: 400px;
+}
+
+/* Profile component */
+.profile-component {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.profile-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.profile-form input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--primary-light-border);
+  border-radius: 6px;
+  margin-top: 0.25rem;
+}
+
+.primary-button {
+  background: var(--primary);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.primary-button:hover {
+  background: var(--primary-hover);
+}
+
+.secondary-button {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Addresses component */
+.addresses-component {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.address-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+.address-item {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--primary-light-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.address-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.address-form input,
+.address-form select {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--primary-light-border);
+  border-radius: 6px;
+  margin-top: 0.25rem;
+}
+
+/* Orders component */
+.orders-component {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.order-list {
+  list-style: none;
+  padding: 0;
+}
+.order-item {
+  border: 1px solid var(--primary-light-border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.order-header {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.order-summary span {
+  display: inline-block;
+  margin-right: 1rem;
+}
+.order-items {
+  list-style: disc inside;
+  margin-top: 0.5rem;
+}

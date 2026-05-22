@@ -57,6 +57,14 @@
                     </div>
 
                     <nav class="p-2 space-y-1">
+                        <a href="{{ route('store.index') }}"
+                           class="mb-3 flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-semibold border border-blue-100 bg-blue-50/70 text-blue-600 hover:bg-blue-100 hover:text-blue-700">
+                            <svg class="w-5 h-5 shrink-0 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            <span>{{ __('store.back_to_store') }}</span>
+                        </a>
+
                         @foreach([
                             'overview' => ['label' => __('store.overview'), 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
                             'orders' => ['label' => __('store.my_orders'), 'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],

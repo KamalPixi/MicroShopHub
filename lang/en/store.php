@@ -148,6 +148,7 @@ return [
     'place_order' => 'Place Order',
     'continue_shopping' => 'Continue Shopping',
     'visit_home' => 'Visit Home',
+    'back_to_store' => 'Back to Store',
     'shopping_cart_checkout' => 'Shopping Cart & Checkout',
     'items_in_cart' => 'Items in Cart',
     'select_address' => 'Select Address',
