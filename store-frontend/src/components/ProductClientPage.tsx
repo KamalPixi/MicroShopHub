@@ -29,6 +29,8 @@ export default function ProductClientPage() {
   
   // Gallery Image State
   const [activeImage, setActiveImage] = useState("");
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   
   // Variations State
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
@@ -36,6 +38,8 @@ export default function ProductClientPage() {
   const [quantity, setQuantity] = useState(1);
   const [addedMessage, setAddedMessage] = useState(false);
   const [buyNowLoading, setBuyNowLoading] = useState(false);
+
+  const images = data ? [data.product.thumbnail_url, ...(data.product.image_urls || [])].filter(Boolean) : [];
 
   useEffect(() => {
     if (!slug) return;
@@ -90,6 +94,55 @@ export default function ProductClientPage() {
 
     setMatchedVariation(match || null);
   }, [selectedAttributes, data]);
+
+  // Lightbox handlers and navigation state synchronization
+  const handlePrevImage = (e?: React.MouseEvent | React.KeyboardEvent) => {
+    e?.stopPropagation();
+    if (images.length === 0) return;
+    const prevIdx = (lightboxIndex - 1 + images.length) % images.length;
+    setLightboxIndex(prevIdx);
+    if (images[prevIdx]) {
+      setActiveImage(images[prevIdx]);
+    }
+  };
+
+  const handleNextImage = (e?: React.MouseEvent | React.KeyboardEvent) => {
+    e?.stopPropagation();
+    if (images.length === 0) return;
+    const nextIdx = (lightboxIndex + 1) % images.length;
+    setLightboxIndex(nextIdx);
+    if (images[nextIdx]) {
+      setActiveImage(images[nextIdx]);
+    }
+  };
+
+  // Sync lightboxIndex when activeImage changes
+  useEffect(() => {
+    const idx = images.indexOf(activeImage);
+    if (idx !== -1) {
+      setLightboxIndex(idx);
+    }
+  }, [activeImage, images]);
+
+  // Handle keyboard events and scrolling locks
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsLightboxOpen(false);
+      if (e.key === "ArrowLeft") handlePrevImage();
+      if (e.key === "ArrowRight") handleNextImage();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    
+    // Lock underlying page scroll
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = originalOverflow || "unset";
+    };
+  }, [isLightboxOpen, lightboxIndex, images]);
 
   const handleAttributeChange = (optName: string, valName: string) => {
     setSelectedAttributes((prev) => ({
@@ -198,7 +251,7 @@ export default function ProductClientPage() {
   const discountAmount = hasDiscount ? (originalPrice as number) - activePrice : 0;
   const discountPercentage = hasDiscount ? Math.round((discountAmount / (originalPrice as number)) * 100) : 0;
 
-  const images = [product.thumbnail_url, ...(product.image_urls || [])].filter(Boolean);
+  // images array already defined at top level
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f4f7fb]">
@@ -211,15 +264,30 @@ export default function ProductClientPage() {
           
           {/* LEFT: Galleries Display */}
           <div className="space-y-4">
-            <div className="aspect-[4/3] rounded-2xl bg-gray-50 border border-gray-50 overflow-hidden relative shadow-inner">
+            <div 
+              className="aspect-[4/3] rounded-2xl bg-gray-50 border border-gray-50 overflow-hidden relative shadow-inner group/img cursor-zoom-in animate-in fade-in duration-300"
+              onClick={() => setIsLightboxOpen(true)}
+              title="Click to view full screen"
+            >
               {activeImage ? (
-                <img src={activeImage} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                <img src={activeImage} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 font-bold text-xs uppercase">No Product Image</div>
               )}
 
+              {/* Magnifying expand overlay icon */}
+              {activeImage && (
+                <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover/img:opacity-100 duration-300 z-10">
+                  <div className="bg-white/90 backdrop-blur-md text-gray-900 rounded-full p-3 shadow-lg transform translate-y-2 group-hover/img:translate-y-0 transition-all duration-300">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+
               {flash_sale && (
-                <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-3 py-1 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
+                <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-3 py-1 text-[9px] font-black uppercase tracking-wider text-white shadow-sm z-20">
                   ⚡ Flash Deal
                 </span>
               )}
@@ -592,6 +660,102 @@ export default function ProductClientPage() {
       </main>
 
       <Footer />
+
+      {/* Immersive Fullscreen Lightbox Overlay */}
+      {isLightboxOpen && (
+        <div 
+          className="fixed inset-0 z-[100000] bg-black/95 backdrop-blur-xl flex flex-col justify-between p-6 animate-in fade-in duration-300"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          {/* Top Panel: Title and Close button */}
+          <div className="flex items-center justify-between text-white w-full max-w-7xl mx-auto z-10">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Viewing Product Image</span>
+              <h2 className="text-sm font-bold text-gray-200 line-clamp-1">{product.name}</h2>
+            </div>
+            <button
+              onClick={() => setIsLightboxOpen(false)}
+              className="text-gray-400 hover:text-white hover:bg-white/10 p-2.5 rounded-full transition-all active:scale-90"
+              aria-label="Close Fullscreen View"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Middle: Active Image + Arrow controls */}
+          <div className="relative flex-grow flex items-center justify-center max-w-7xl w-full mx-auto my-4 min-h-0">
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevImage(e);
+                }}
+                className="absolute left-2 sm:left-4 z-50 text-gray-400 hover:text-white bg-black/30 hover:bg-black/60 border border-white/10 p-3 sm:p-4 rounded-full transition-all active:scale-95 flex items-center justify-center cursor-pointer"
+                aria-label="Previous Image"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+              </button>
+            )}
+
+            <div 
+              className="relative max-h-full max-w-full aspect-auto flex items-center justify-center min-h-0 overflow-hidden rounded-2xl bg-black/20 border border-white/5"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img 
+                src={images[lightboxIndex]} 
+                alt={product.name} 
+                className="max-h-[70vh] sm:max-h-[75vh] w-auto max-w-full object-contain rounded-xl select-none shadow-2xl animate-in zoom-in-95 duration-300"
+              />
+            </div>
+
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextImage(e);
+                }}
+                className="absolute right-2 sm:right-4 z-50 text-gray-400 hover:text-white bg-black/30 hover:bg-black/60 border border-white/10 p-3 sm:p-4 rounded-full transition-all active:scale-95 flex items-center justify-center cursor-pointer"
+                aria-label="Next Image"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Bottom Panel: Gallery thumbnails navigation */}
+          <div className="w-full max-w-7xl mx-auto flex flex-col items-center gap-3 z-10" onClick={(e) => e.stopPropagation()}>
+            {images.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar">
+                {images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setLightboxIndex(idx);
+                      setActiveImage(img);
+                    }}
+                    className={`flex-none h-12 w-16 sm:h-14 sm:w-18 rounded-lg overflow-hidden border-2 bg-neutral-900 transition-all ${
+                      lightboxIndex === idx ? "border-blue-500 scale-95" : "border-transparent opacity-50 hover:opacity-100"
+                    }`}
+                  >
+                    <img src={img} alt="Lightbox thumbnail" className="h-full w-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+            <span className="text-[10px] font-bold text-gray-500">
+              {lightboxIndex + 1} / {images.length}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
