@@ -10,7 +10,7 @@
 }
 
 .dashboard-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   font-size: 2rem;
   font-weight: 600;
   margin-bottom: 1rem;
