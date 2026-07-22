@@ -143,7 +143,7 @@ class Settings extends Component
     public string $backupBucket = '';
 
     protected $rules = [
-        'logo' => 'nullable|image|max:2048',
+        'logo' => 'nullable|image|max:10240',
         'settings.branding_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         'settings.secondary_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         'settings.accent_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
@@ -938,10 +938,11 @@ class Settings extends Component
         }
 
         if (in_array('shop_logo', $keys, true) && $this->logo) {
+            $disk = config('filesystems.default');
             if ($oldLogo = Setting::where('key', 'shop_logo')->value('value')) {
-                Storage::disk()->delete($oldLogo);
+                Storage::disk($disk)->delete($oldLogo);
             }
-            $this->settings['shop_logo'] = $this->logo->store('logos');
+            $this->settings['shop_logo'] = $this->logo->store('logos', $disk);
             $this->logo = null;
         }
 

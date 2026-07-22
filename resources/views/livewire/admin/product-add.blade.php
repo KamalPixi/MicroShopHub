@@ -159,7 +159,7 @@
             @endif
 
             @if($currentStep === 3)
-                <div class="p-6 space-y-6 animate-fade-in" x-data="imageCropper({ target: 'thumbnail', ratio: 1/1, width: 500 })">
+                <div class="p-6 space-y-6 animate-fade-in" x-data="imageCropper({ target: 'thumbnail', ratio: 1/1, width: 1000 })">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center border-b pb-3 mb-5">
                         <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         Product Images
@@ -169,7 +169,7 @@
                         <div class="flex flex-col md:flex-row gap-6 items-start">
                             <div class="flex-1">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Main Thumbnail <span class="text-red-500">*</span></label>
-                                <p class="text-xs text-gray-500 mb-3">Required: 1:1 Aspect Ratio (Recommended: 500x500px)</p>
+                                <p class="text-xs text-gray-500 mb-3">Required: 1:1 Aspect Ratio (Recommended: High quality 1000x1000px)</p>
                                 
                                 <input type="file" accept="image/*" @change="fileChosen" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition">
                                 @error('thumbnail') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
