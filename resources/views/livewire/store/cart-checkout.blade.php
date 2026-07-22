@@ -3,9 +3,8 @@
 
         @include('admin.includes.errors')
 
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ __('store.shopping_cart_checkout') }}</h1>
-
         @if(count($cart) > 0)
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ __('store.shopping_cart_checkout') }}</h1>
             <div class="lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
 
                 <div class="lg:col-span-8 space-y-6">
@@ -935,29 +934,32 @@
 
             </div>
         @else
-            <div class="max-w-md mx-auto text-center py-24 px-6 bg-white rounded-3xl border border-gray-100 shadow-sm">
-                <div class="relative mb-8 inline-flex">
-                    <div class="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-20"></div>
-                    <div
-                        class="relative z-10 flex items-center justify-center w-24 h-24 bg-gray-50 rounded-full text-gray-300 border-2 border-gray-100">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                        </svg>
+            <div class="py-12 sm:py-16 px-4 flex flex-col items-center justify-center min-h-[50vh]">
+                <h1 class="text-2xl font-bold text-gray-900 mb-8 text-center">{{ __('store.shopping_cart_checkout') }}</h1>
+                <div class="max-w-md w-full bg-white rounded-3xl border border-gray-200/80 p-8 sm:p-10 text-center shadow-lg shadow-gray-100 flex flex-col items-center">
+                    <div class="relative mb-6 inline-flex">
+                        <div class="absolute inset-0 bg-primary/10 rounded-full animate-ping opacity-20"></div>
+                        <div
+                            class="relative z-10 flex items-center justify-center w-20 h-20 bg-gray-50 rounded-full text-gray-400 border border-gray-100 shadow-inner">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            </svg>
+                        </div>
                     </div>
+                    <h2 class="text-2xl font-extrabold text-gray-900 mb-2 tracking-tight">{{ __('store.your_cart_is_empty') }}</h2>
+                    <p class="text-gray-500 text-sm font-medium leading-relaxed mb-8 max-w-xs">Looks like you haven't added anything to
+                        your cart yet. Let's find something amazing for you!</p>
+                    <a href="{{ route('store.index') }}"
+                        class="w-full sm:w-auto inline-flex items-center justify-center bg-gray-900 hover:bg-black text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg group">
+                        <span>{{ __('store.start_shopping') }}</span>
+                        <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6">
+                            </path>
+                        </svg>
+                    </a>
                 </div>
-                <h2 class="text-2xl font-black text-gray-900 mb-3 tracking-tight">{{ __('store.your_cart_is_empty') }}</h2>
-                <p class="text-gray-500 mb-10 text-sm font-medium leading-relaxed">Looks like you haven't added anything to
-                    your cart yet. Let's find something amazing for you!</p>
-                <a href="{{ route('store.index') }}"
-                    class="inline-flex items-center justify-center bg-primary text-white px-10 py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 group">
-                    {{ __('store.start_shopping') }}
-                    <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6">
-                        </path>
-                    </svg>
-                </a>
             </div>
         @endif
 
