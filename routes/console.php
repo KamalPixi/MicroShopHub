@@ -10,10 +10,7 @@ Artisan::command('inspire', function () {
 
 // Automated Daily Database Backups (Only if enabled in settings)
 if (env('BACKUP_ENABLED', true)) {
-    Schedule::command('db:backup')->dailyAt('00:00');
-
-    // Automatically upload backups to S3 shortly after creation
-    Schedule::command('db:upload-s3')->dailyAt('00:15');
+    Schedule::command('app:backup-db')->dailyAt('02:00');
 }
 
 // If in "Cron Mode", we can also schedule the queue to run if no persistent worker is available
