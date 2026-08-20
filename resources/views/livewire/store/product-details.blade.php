@@ -28,17 +28,19 @@
                         @elseif ($product->video_url)
                             @php
                                 $vUrl = $product->video_url;
-                                $isYt = preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_\-]{11})/', $vUrl, $ytM);
+                                $isYt = preg_match('/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?|shorts)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i', $vUrl, $ytM);
                                 $ytId = $isYt ? $ytM[1] : null;
-                                $isVm = preg_match('/vimeo\.com\/(\d+)/', $vUrl, $vmM);
-                                $vmId = $isVm ? $vmM[1] : null;
+                                $isVm = preg_match('/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/i', $vUrl, $vmM);
+                                $vmId = $isVm ? end($vmM) : null;
                             @endphp
                             @if ($ytId)
-                                <iframe src="https://www.youtube.com/embed/{{ $ytId }}"
+                                <iframe src="https://www.youtube.com/embed/{{ $ytId }}?rel=0"
                                         class="w-full h-full"
                                         frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen>
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        referrerpolicy="strict-origin-when-cross-origin"
+                                        allowfullscreen
+                                        title="{{ $product->name }} product video">
                                 </iframe>
                             @elseif ($vmId)
                                 <iframe src="https://player.vimeo.com/video/{{ $vmId }}"
@@ -485,20 +487,21 @@
             @elseif ($product->video_url)
                 @php
                     $videoUrl = $product->video_url;
-                    $isYoutube = preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_\-]{11})/', $videoUrl, $ytMatch);
+                    $isYoutube = preg_match('/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?|shorts)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i', $videoUrl, $ytMatch);
                     $youtubeId = $isYoutube ? $ytMatch[1] : null;
 
-                    $isVimeo = preg_match('/vimeo\.com\/(\d+)/', $videoUrl, $vimeoMatch);
-                    $vimeoId = $isVimeo ? $vimeoMatch[1] : null;
+                    $isVimeo = preg_match('/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/i', $videoUrl, $vimeoMatch);
+                    $vimeoId = $isVimeo ? end($vimeoMatch) : null;
                 @endphp
 
                 @if ($youtubeId)
                     <div class="rounded-xl overflow-hidden shadow-sm aspect-video">
                         <iframe
-                            src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                            src="https://www.youtube.com/embed/{{ $youtubeId }}?rel=0"
                             class="w-full h-full"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
                             allowfullscreen
                             loading="lazy"
                             title="{{ $product->name }} product video">
