@@ -359,16 +359,16 @@ class ProductAdd extends Component
             ]);
         }
         
-        // SEO Friendly Filenames
+        // SEO Friendly & Collision-Free Filenames
         $thumbnailPath = null;
         if ($this->thumbnail) {
-            $name = $this->slug . '-' . Str::lower(Str::random(5)) . '.' . $this->thumbnail->getClientOriginalExtension();
+            $name = $this->generateMediaFilename('thumbnail', $this->thumbnail);
             $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, config('filesystems.default'));
         }
 
         $galleryPaths = [];
         foreach ($this->images as $index => $image) {
-            $name = $this->slug . '-gallery-' . ($index + 1) . '-' . Str::lower(Str::random(5)) . '.' . $image->getClientOriginalExtension();
+            $name = $this->generateMediaFilename('gallery', $image, $index + 1);
             $galleryPaths[] = $image->storeAs('images/products', $name, config('filesystems.default'));
         }
 
@@ -376,7 +376,7 @@ class ProductAdd extends Component
         $videoPath = null;
         $videoUrl   = null;
         if ($this->videoSource === 'upload' && $this->videoFile) {
-            $name      = $this->slug . '-video-' . Str::lower(Str::random(5)) . '.' . $this->videoFile->getClientOriginalExtension();
+            $name      = $this->generateMediaFilename('video', $this->videoFile);
             $videoPath = $this->videoFile->storeAs('videos/products', $name, config('filesystems.default'));
         } elseif ($this->videoSource === 'url' && $this->videoUrl) {
             $videoUrl = $this->videoUrl;
@@ -458,6 +458,24 @@ class ProductAdd extends Component
             'columns' => array_values($this->measurementColumns),
             'rows'    => $rows,
         ];
+    }
+
+    /**
+     * Generate an SEO-friendly, collision-free media filename.
+     * Format: {slug}-{type}-{sku?}-{timestamp}-{random}.{ext}
+     * e.g., "blue-tshirt-thumbnail-sku-101-1771601234-a1b2c3.jpg"
+     * e.g., "blue-tshirt-gallery-1-1771601234-d4e5f6.webp"
+     */
+    protected function generateMediaFilename(string $type, $file, ?int $index = null): string
+    {
+        $baseSlug = Str::slug($this->slug ?: $this->name ?: 'product');
+        $skuPart  = !empty($this->sku) ? '-' . Str::slug($this->sku) : '';
+        $typePart = $index !== null ? "{$type}-{$index}" : $type;
+        $timePart = time();
+        $randPart = Str::lower(Str::random(6));
+        $ext      = Str::lower($file->getClientOriginalExtension() ?: 'jpg');
+
+        return "{$baseSlug}-{$typePart}{$skuPart}-{$timePart}-{$randPart}.{$ext}";
     }
 
     public function render()

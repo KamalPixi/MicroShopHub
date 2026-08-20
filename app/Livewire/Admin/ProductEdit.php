@@ -396,9 +396,9 @@ class ProductEdit extends Component
         // 1. Prepare Images (Merge Existing + New)
         $finalImages = $this->existingGallery; // Start with what wasn't deleted
 
-        // Save New Images with SEO Friendly Names
+        // Save New Images with SEO Friendly & Collision-Free Names
         foreach ($this->newImages as $index => $img) {
-            $name = $this->slug . '-gallery-' . (count($finalImages) + 1) . '-' . Str::lower(Str::random(5)) . '.' . $img->getClientOriginalExtension();
+            $name = $this->generateMediaFilename('gallery', $img, count($finalImages) + 1);
             $finalImages[] = $img->storeAs('images/products', $name, config('filesystems.default'));
         }
 
@@ -406,7 +406,7 @@ class ProductEdit extends Component
         $thumbnailPath = $this->product->thumbnail;
         if ($this->thumbnail) {
              if ($thumbnailPath) Storage::disk()->delete($thumbnailPath);
-             $name = $this->slug . '-' . Str::lower(Str::random(5)) . '.' . $this->thumbnail->getClientOriginalExtension();
+             $name = $this->generateMediaFilename('thumbnail', $this->thumbnail);
              $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, config('filesystems.default'));
         }
 
@@ -428,7 +428,7 @@ class ProductEdit extends Component
             if ($videoPath) {
                 Storage::disk(config('filesystems.default'))->delete($videoPath);
             }
-            $name      = $this->slug . '-video-' . Str::lower(Str::random(5)) . '.' . $this->videoFile->getClientOriginalExtension();
+            $name      = $this->generateMediaFilename('video', $this->videoFile);
             $videoPath = $this->videoFile->storeAs('videos/products', $name, config('filesystems.default'));
             $videoUrl  = null; // clear any old URL
         } elseif ($this->videoSource === 'url') {
@@ -501,6 +501,24 @@ class ProductEdit extends Component
 
         session()->flash('success', 'Product updated successfully.');
         return redirect()->route('admin.products.index');
+    }
+
+    /**
+     * Generate an SEO-friendly, collision-free media filename.
+     * Format: {slug}-{type}-{sku?}-{timestamp}-{random}.{ext}
+     * e.g., "blue-tshirt-thumbnail-sku-101-1771601234-a1b2c3.jpg"
+     * e.g., "blue-tshirt-gallery-1-1771601234-d4e5f6.webp"
+     */
+    protected function generateMediaFilename(string $type, $file, ?int $index = null): string
+    {
+        $baseSlug = Str::slug($this->slug ?: $this->name ?: 'product');
+        $skuPart  = !empty($this->sku) ? '-' . Str::slug($this->sku) : '';
+        $typePart = $index !== null ? "{$type}-{$index}" : $type;
+        $timePart = time();
+        $randPart = Str::lower(Str::random(6));
+        $ext      = Str::lower($file->getClientOriginalExtension() ?: 'jpg');
+
+        return "{$baseSlug}-{$typePart}{$skuPart}-{$timePart}-{$randPart}.{$ext}";
     }
 
     public function render()
