@@ -14,31 +14,72 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6 mb-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             
-            {{-- Product Image Gallery --}}
+            {{-- Product Image & Video Gallery --}}
             <div class="space-y-4">
-                {{-- Main Image with Zoom --}}
-                <div class="aspect-square bg-gray-50 rounded-2xl overflow-hidden relative group cursor-zoom-in border border-gray-100"
-                     role="button"
-                     tabindex="0"
-                     @keydown.enter="lightboxOpen = true"
-                     @click="lightboxOpen = true"
-                     @mousemove="zoomImage($event)" 
-                     @mouseleave="resetZoom()"
-                     aria-label="Click to open image in full screen">
-                    <button type="button"
-                            class="absolute top-3 right-3 z-10 inline-flex items-center justify-center rounded-full border border-white/70 bg-white/90 p-2 text-gray-700 shadow-sm transition-all hover:bg-primary hover:text-white hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                            @click.stop="lightboxOpen = true"
-                            aria-label="Zoom product image">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"></path>
-                        </svg>
-                    </button>
-                    <img :src="mainImage" 
-                         x-ref="mainImg" 
-                         alt="{{ $product->name }}" 
-                         class="w-full h-full object-cover transition-transform duration-200" 
-                         :style="zoomStyle"
-                         loading="lazy">
+                {{-- Main Media Area (Image with Zoom OR Active Video) --}}
+                <div class="aspect-square bg-gray-50 rounded-2xl overflow-hidden relative group border border-gray-100 flex items-center justify-center">
+                    {{-- Video Viewport --}}
+                    <div x-show="activeMediaType === 'video'" class="w-full h-full bg-black flex items-center justify-center" style="display: none;">
+                        @if ($product->video_path)
+                            <video controls autoplay playsinline class="w-full h-full object-contain">
+                                <source src="{{ Storage::disk('public')->url($product->video_path) }}">
+                                Your browser does not support the video tag.
+                            </video>
+                        @elseif ($product->video_url)
+                            @php
+                                $vUrl = $product->video_url;
+                                $isYt = preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_\-]{11})/', $vUrl, $ytM);
+                                $ytId = $isYt ? $ytM[1] : null;
+                                $isVm = preg_match('/vimeo\.com\/(\d+)/', $vUrl, $vmM);
+                                $vmId = $isVm ? $vmM[1] : null;
+                            @endphp
+                            @if ($ytId)
+                                <iframe src="https://www.youtube.com/embed/{{ $ytId }}"
+                                        class="w-full h-full"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen>
+                                </iframe>
+                            @elseif ($vmId)
+                                <iframe src="https://player.vimeo.com/video/{{ $vmId }}"
+                                        class="w-full h-full"
+                                        frameborder="0"
+                                        allow="autoplay; fullscreen; picture-in-picture"
+                                        allowfullscreen>
+                                </iframe>
+                            @else
+                                <video controls autoplay class="w-full h-full object-contain">
+                                    <source src="{{ $vUrl }}">
+                                </video>
+                            @endif
+                        @endif
+                    </div>
+
+                    {{-- Image Viewport with Zoom --}}
+                    <div x-show="activeMediaType === 'image'"
+                         class="w-full h-full cursor-zoom-in relative"
+                         role="button"
+                         tabindex="0"
+                         @keydown.enter="lightboxOpen = true"
+                         @click="lightboxOpen = true"
+                         @mousemove="zoomImage($event)" 
+                         @mouseleave="resetZoom()"
+                         aria-label="Click to open image in full screen">
+                        <button type="button"
+                                class="absolute top-3 right-3 z-10 inline-flex items-center justify-center rounded-full border border-white/70 bg-white/90 p-2 text-gray-700 shadow-sm transition-all hover:bg-primary hover:text-white hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                @click.stop="lightboxOpen = true"
+                                aria-label="Zoom product image">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6v6m0-6L14 10M9 21H3v-6m0 6l7-7"></path>
+                            </svg>
+                        </button>
+                        <img :src="mainImage" 
+                             x-ref="mainImg" 
+                             alt="{{ $product->name }}" 
+                             class="w-full h-full object-cover transition-transform duration-200" 
+                             :style="zoomStyle"
+                             loading="lazy">
+                    </div>
                 </div>
 
                 {{-- Thumbnail Gallery --}}
@@ -46,28 +87,28 @@
                     $mainImageUrl = $product->thumbnail 
                         ? (Str::startsWith($product->thumbnail, ['http']) 
                             ? $product->thumbnail 
-                            : Storage::url($product->thumbnail))
+                            : Storage::disk('public')->url($product->thumbnail))
                         : 'https://placehold.co/600';
                     
                     $allImages = array_merge(
                         [$mainImageUrl],
                         collect($product->images ?? [])->map(fn($img) => 
-                            Str::startsWith($img, ['http']) ? $img : Storage::url($img)
+                            Str::startsWith($img, ['http']) ? $img : Storage::disk('public')->url($img)
                         )->toArray()
                     );
                 @endphp
 
-                @if(!empty($product->images) && is_array($product->images) && count($product->images) > 0)
+                @if((!empty($product->images) && is_array($product->images) && count($product->images) > 0) || $product->video_path || $product->video_url)
                     <div class="grid gap-3" 
                          style="grid-template-columns: repeat(auto-fill, minmax(80px, 1fr))"
                          role="tablist"
                          aria-label="Product image gallery">
                         {{-- Thumbnail: Main Image --}}
-                        <button @click="mainImage = '{{ $mainImageUrl }}'"
-                                :aria-selected="mainImage === '{{ $mainImageUrl }}'"
+                        <button @click="activeMediaType = 'image'; mainImage = '{{ $mainImageUrl }}'"
+                                :aria-selected="activeMediaType === 'image' && mainImage === '{{ $mainImageUrl }}'"
                                 role="tab"
                                 class="aspect-square rounded-xl overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                                :class="mainImage === '{{ $mainImageUrl }}' ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-200'">
+                                :class="activeMediaType === 'image' && mainImage === '{{ $mainImageUrl }}' ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-200'">
                             <img src="{{ $mainImageUrl }}" 
                                  class="w-full h-full object-cover" 
                                  loading="lazy"
@@ -75,19 +116,35 @@
                         </button>
 
                         {{-- Additional Image Thumbnails --}}
-                        @foreach($product->images as $index => $img)
-                            @php $imgUrl = Str::startsWith($img, ['http']) ? $img : Storage::url($img); @endphp
-                            <button @click="mainImage = '{{ $imgUrl }}'"
-                                    :aria-selected="mainImage === '{{ $imgUrl }}'"
+                        @foreach($product->images ?? [] as $index => $img)
+                            @php $imgUrl = Str::startsWith($img, ['http']) ? $img : Storage::disk('public')->url($img); @endphp
+                            <button @click="activeMediaType = 'image'; mainImage = '{{ $imgUrl }}'"
+                                    :aria-selected="activeMediaType === 'image' && mainImage === '{{ $imgUrl }}'"
                                     role="tab"
                                     class="aspect-square rounded-xl overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                                    :class="mainImage === '{{ $imgUrl }}' ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-200'">
+                                    :class="activeMediaType === 'image' && mainImage === '{{ $imgUrl }}' ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-200'">
                                 <img src="{{ $imgUrl }}" 
                                      class="w-full h-full object-cover" 
                                      loading="lazy"
                                      alt="Product image {{ $index + 2 }}">
                             </button>
                         @endforeach
+
+                        {{-- Video Thumbnail in Gallery --}}
+                        @if ($product->video_path || $product->video_url)
+                            <button @click="activeMediaType = 'video'"
+                                    :aria-selected="activeMediaType === 'video'"
+                                    role="tab"
+                                    class="aspect-square rounded-xl overflow-hidden border-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 relative bg-gray-900 flex flex-col items-center justify-center text-white group"
+                                    :class="activeMediaType === 'video' ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-gray-300'">
+                                <div class="w-8 h-8 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow group-hover:scale-110 transition-transform">
+                                    <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-[10px] font-bold mt-1 tracking-tight text-white/90">VIDEO</span>
+                            </button>
+                        @endif
                     </div>
                 @endif
             </div>
@@ -421,7 +478,7 @@
                     <video controls preload="metadata"
                            class="w-full max-h-[480px] rounded-xl"
                            aria-label="{{ $product->name }} product video">
-                        <source src="{{ Storage::url($product->video_path) }}">
+                        <source src="{{ Storage::disk('public')->url($product->video_path) }}">
                         Your browser does not support the video tag.
                     </video>
                 </div>
@@ -651,6 +708,7 @@
 <script>
 function productDetailData() {
     return {
+        activeMediaType: 'image',
         lightboxOpen: false,
         sizeGuideOpen: false,
         mainImage: '{{ $mainImageUrl ?? 'https://placehold.co/600' }}',

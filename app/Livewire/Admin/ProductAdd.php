@@ -363,13 +363,13 @@ class ProductAdd extends Component
         $thumbnailPath = null;
         if ($this->thumbnail) {
             $name = $this->generateMediaFilename('thumbnail', $this->thumbnail);
-            $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, config('filesystems.default'));
+            $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, 'public');
         }
 
         $galleryPaths = [];
         foreach ($this->images as $index => $image) {
             $name = $this->generateMediaFilename('gallery', $image, $index + 1);
-            $galleryPaths[] = $image->storeAs('images/products', $name, config('filesystems.default'));
+            $galleryPaths[] = $image->storeAs('images/products', $name, 'public');
         }
 
         // Video: prefer uploaded file; fall back to URL
@@ -377,7 +377,7 @@ class ProductAdd extends Component
         $videoUrl   = null;
         if ($this->videoSource === 'upload' && $this->videoFile) {
             $name      = $this->generateMediaFilename('video', $this->videoFile);
-            $videoPath = $this->videoFile->storeAs('videos/products', $name, config('filesystems.default'));
+            $videoPath = $this->videoFile->storeAs('videos/products', $name, 'public');
         } elseif ($this->videoSource === 'url' && $this->videoUrl) {
             $videoUrl = $this->videoUrl;
         }
