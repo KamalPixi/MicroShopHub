@@ -20,6 +20,9 @@ class Product extends Model
                     Storage::disk($disk)->delete($image);
                 }
             }
+            if ($product->video_path) {
+                Storage::disk($disk)->delete($product->video_path);
+            }
         });
     }
 
@@ -42,6 +45,8 @@ class Product extends Model
         'has_variations',
         'thumbnail',
         'images',
+        'video_path',
+        'video_url',
         'featured',
         'status',
     ];

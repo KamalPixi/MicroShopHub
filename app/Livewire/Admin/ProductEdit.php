@@ -43,6 +43,14 @@ class ProductEdit extends Component
     public $newImages = []; // Array of newly uploaded temporary files
     public $existingGallery = []; // Array of paths strings (from JSON column)
 
+    // Video
+    public $videoFile;                   // New uploaded video (Livewire temp)
+    public $videoUrl = '';               // YouTube / external URL
+    public $existingVideoPath;           // Currently saved video_path
+    public $existingVideoUrl = '';       // Currently saved video_url
+    public $videoSource = 'upload';      // 'upload' | 'url' (tab toggle)
+    public $removeExistingVideo = false; // Flag to delete stored video on save
+
     // Step 4: Pricing & Inventory
     public $has_variations = false;
     public $imagesToDelete = [];
@@ -84,6 +92,11 @@ class ProductEdit extends Component
         $this->existingThumbnail = $this->product->thumbnail;
         // The 'images' attribute is already cast to array by your Model
         $this->existingGallery = $this->product->images ?? [];
+
+        // Video
+        $this->existingVideoPath = $this->product->video_path;
+        $this->existingVideoUrl  = $this->product->video_url ?? '';
+        $this->videoSource       = $this->existingVideoPath ? 'upload' : ($this->existingVideoUrl ? 'url' : 'upload');
 
         // 4. Fill Pricing/Variations
         if ($this->product->has_variations) {
@@ -199,6 +212,15 @@ class ProductEdit extends Component
         array_splice($this->newImages, $index, 1);
     }
 
+    public function removeExistingVideo()
+    {
+        $this->removeExistingVideo  = true;
+        $this->existingVideoPath    = null;
+        $this->existingVideoUrl     = '';
+        $this->videoFile            = null;
+        $this->videoUrl             = '';
+    }
+
     // --- Navigation & Validation ---
 
     public function nextStep()
@@ -235,6 +257,8 @@ class ProductEdit extends Component
             $this->validate([
                 'thumbnail' => 'nullable|image|max:25600', 
                 'newImages.*' => 'image|max:25600',
+                'videoFile' => 'nullable|mimes:mp4,mov,avi,webm|max:102400',
+                'videoUrl'  => 'nullable|url',
             ]);
         }
     }
@@ -277,6 +301,40 @@ class ProductEdit extends Component
              $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, config('filesystems.default'));
         }
 
+        // Handle Video
+        $videoPath = $this->product->video_path;
+        $videoUrl  = $this->product->video_url;
+
+        if ($this->removeExistingVideo) {
+            // Admin explicitly removed the existing video
+            if ($videoPath) {
+                Storage::disk(config('filesystems.default'))->delete($videoPath);
+            }
+            $videoPath = null;
+            $videoUrl  = null;
+        }
+
+        if ($this->videoSource === 'upload' && $this->videoFile) {
+            // Replace with newly uploaded file
+            if ($videoPath) {
+                Storage::disk(config('filesystems.default'))->delete($videoPath);
+            }
+            $name      = $this->slug . '-video-' . Str::lower(Str::random(5)) . '.' . $this->videoFile->getClientOriginalExtension();
+            $videoPath = $this->videoFile->storeAs('videos/products', $name, config('filesystems.default'));
+            $videoUrl  = null; // clear any old URL
+        } elseif ($this->videoSource === 'url') {
+            // Admin switched to URL tab
+            $urlValue = trim($this->videoUrl);
+            if ($urlValue) {
+                // Delete any previously stored file when switching to URL
+                if ($videoPath) {
+                    Storage::disk(config('filesystems.default'))->delete($videoPath);
+                    $videoPath = null;
+                }
+                $videoUrl = $urlValue;
+            }
+        }
+
         // 2. Update Product
         $this->product->update([
             'name' => $this->name,
@@ -289,6 +347,8 @@ class ProductEdit extends Component
             'stock' => $this->has_variations ? 0 : $this->stock,
             'thumbnail' => $thumbnailPath,
             'images' => $finalImages, // Saving the array directly (Eloquent handles JSON encoding)
+            'video_path' => $videoPath,
+            'video_url'  => $videoUrl,
         ]);
 
         // 3. Relationships

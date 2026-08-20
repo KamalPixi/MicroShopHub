@@ -305,6 +305,72 @@
                         </div>
                     </div>
                 </div>
+
+                    {{-- Video Section --}}
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 mx-6 mb-6"
+                         x-data="{ videoTab: @entangle('videoSource') }">
+                        <h4 class="text-sm font-semibold text-gray-800 mb-1 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Product Video <span class="text-gray-400 font-normal text-xs">(optional)</span>
+                        </h4>
+                        <p class="text-xs text-gray-500 mb-4">Attach a demo or promo video to the product page.</p>
+
+                        {{-- Tab switcher --}}
+                        <div class="flex rounded-lg border border-gray-200 overflow-hidden mb-5 w-fit bg-white shadow-sm">
+                            <button type="button"
+                                    @click="videoTab = 'upload'; $wire.set('videoSource', 'upload')"
+                                    :class="videoTab === 'upload' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'"
+                                    class="px-4 py-2 text-xs font-semibold transition-colors flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                Upload File
+                            </button>
+                            <button type="button"
+                                    @click="videoTab = 'url'; $wire.set('videoSource', 'url')"
+                                    :class="videoTab === 'url' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'"
+                                    class="px-4 py-2 text-xs font-semibold transition-colors flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                YouTube / URL
+                            </button>
+                        </div>
+
+                        {{-- Upload tab --}}
+                        <div x-show="videoTab === 'upload'" x-transition>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">
+                                Video File <span class="text-gray-400">(mp4, mov, avi, webm &mdash; max 100 MB)</span>
+                            </label>
+                            <input wire:model="videoFile" type="file" accept="video/mp4,video/quicktime,video/x-msvideo,video/webm"
+                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition">
+                            @error('videoFile') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
+
+                            @if ($videoFile)
+                                <div class="mt-3">
+                                    <p class="text-xs text-gray-500 mb-1">Preview:</p>
+                                    <video controls class="w-full max-h-48 rounded-lg border border-gray-200 shadow-sm bg-black">
+                                        <source src="{{ $videoFile->temporaryUrl() }}">
+                                    </video>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- URL tab --}}
+                        <div x-show="videoTab === 'url'" x-transition>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">YouTube or External Video URL</label>
+                            <input wire:model.live="videoUrl" type="url"
+                                   placeholder="https://www.youtube.com/watch?v=..."
+                                   class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2">
+                            @error('videoUrl') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
+
+                            @if ($videoUrl)
+                                <p class="text-xs text-green-600 mt-2 flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    URL set: {{ $videoUrl }}
+                                </p>
+                            @endif
+                        </div>
+                    </div>
             @endif
 
             @if($currentStep === 4)

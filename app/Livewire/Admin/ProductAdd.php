@@ -35,6 +35,9 @@ class ProductAdd extends Component
     public $thumbnail;
     public $images = [];
     public $tempImage;
+    public $videoFile;       // Uploaded video file (Livewire temp)
+    public $videoUrl = '';   // YouTube / external video URL
+    public $videoSource = 'upload'; // 'upload' | 'url' (tab toggle)
 
     // Step 4: Inventory & Variations
     public $price;
@@ -95,6 +98,8 @@ class ProductAdd extends Component
             $this->validate([
                 'thumbnail' => 'nullable|image|max:25600',
                 'images.*' => 'image|max:25600',
+                'videoFile' => 'nullable|mimes:mp4,mov,avi,webm|max:102400',
+                'videoUrl'  => 'nullable|url',
             ]);
         }
         elseif ($this->currentStep == 4) {
@@ -262,6 +267,16 @@ class ProductAdd extends Component
             $galleryPaths[] = $image->storeAs('images/products', $name, config('filesystems.default'));
         }
 
+        // Video: prefer uploaded file; fall back to URL
+        $videoPath = null;
+        $videoUrl   = null;
+        if ($this->videoSource === 'upload' && $this->videoFile) {
+            $name      = $this->slug . '-video-' . Str::lower(Str::random(5)) . '.' . $this->videoFile->getClientOriginalExtension();
+            $videoPath = $this->videoFile->storeAs('videos/products', $name, config('filesystems.default'));
+        } elseif ($this->videoSource === 'url' && $this->videoUrl) {
+            $videoUrl = $this->videoUrl;
+        }
+
         $product = Product::create([
             'name' => $this->name,
             'slug' => $this->slug,
@@ -274,6 +289,8 @@ class ProductAdd extends Component
             'status' => $this->status,
             'thumbnail' => $thumbnailPath,
             'images' => $galleryPaths,
+            'video_path' => $videoPath,
+            'video_url'  => $videoUrl,
         ]);
 
         $product->categories()->sync($this->selectedCategories);
