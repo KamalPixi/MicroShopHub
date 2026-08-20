@@ -39,6 +39,16 @@ class ProductAdd extends Component
     public $videoUrl = '';   // YouTube / external video URL
     public $videoSource = 'upload'; // 'upload' | 'url' (tab toggle)
 
+    // Step 3: Measurements / Size Chart
+    public $hasMeasurements = false;
+    public $measurementUnit = 'cm';
+    public $measurementColumns = ['Shoulder', 'Bust', 'Waist', 'Length'];
+    public $measurementRows = [
+        ['label' => 'XS', 'values' => ['', '', '', '']],
+        ['label' => 'S',  'values' => ['', '', '', '']],
+        ['label' => 'M',  'values' => ['', '', '', '']],
+    ];
+
     // Step 4: Inventory & Variations
     public $price;
     public $stock;
@@ -81,6 +91,7 @@ class ProductAdd extends Component
     public function validateStep()
     {
         if ($this->currentStep == 1) {
+            $this->sku = trim((string)$this->sku) !== '' ? trim((string)$this->sku) : null;
             $this->validate([
                 'name' => 'required|string|max:255',
                 'slug' => 'required|string|unique:products,slug',
@@ -123,6 +134,16 @@ class ProductAdd extends Component
 
     // --- Logic Handlers ---
 
+    public function updatedSku($value)
+    {
+        $this->sku = trim((string)$value) !== '' ? trim((string)$value) : null;
+        if ($this->sku) {
+            $this->validateOnly('sku', [
+                'sku' => 'nullable|string|max:100|unique:products,sku',
+            ]);
+        }
+    }
+
     public function updatedName($value)
     {
         $this->slug = Str::slug($value);
@@ -145,6 +166,38 @@ class ProductAdd extends Component
     {
         unset($this->images[$index]);
         $this->images = array_values($this->images); 
+    }
+
+    // --- Measurement / Size Chart Actions ---
+
+    public function addMeasurementColumn()
+    {
+        $this->measurementColumns[] = '';
+        // Append an empty value slot to every existing row
+        foreach ($this->measurementRows as $i => $_) {
+            $this->measurementRows[$i]['values'][] = '';
+        }
+    }
+
+    public function removeMeasurementColumn($colIndex)
+    {
+        array_splice($this->measurementColumns, $colIndex, 1);
+        foreach ($this->measurementRows as $i => $_) {
+            array_splice($this->measurementRows[$i]['values'], $colIndex, 1);
+        }
+    }
+
+    public function addMeasurementRow()
+    {
+        $this->measurementRows[] = [
+            'label'  => '',
+            'values' => array_fill(0, count($this->measurementColumns), ''),
+        ];
+    }
+
+    public function removeMeasurementRow($rowIndex)
+    {
+        array_splice($this->measurementRows, $rowIndex, 1);
     }
 
     // Toggle Handlers
@@ -252,7 +305,59 @@ class ProductAdd extends Component
 
     public function submit()
     {
-        $this->validateStep();
+        // 1. Sanitize SKU
+        $this->sku = trim((string)$this->sku) !== '' ? trim((string)$this->sku) : null;
+
+        // 2. Validate Step 1 (Basic Info & unique SKU)
+        try {
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'slug' => 'required|string|unique:products,slug',
+                'sku' => 'nullable|string|max:100|unique:products,sku',
+                'status' => 'required|integer|in:0,1',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->currentStep = 1;
+            throw $e;
+        }
+
+        // 3. Validate Step 2 (Categories)
+        try {
+            $this->validate([
+                'selectedCategories' => 'required|array|min:1',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->currentStep = 2;
+            throw $e;
+        }
+
+        // 4. Validate Step 3 (Media & Video)
+        try {
+            $this->validate([
+                'thumbnail' => 'nullable|image|max:25600',
+                'images.*' => 'image|max:25600',
+                'videoFile' => 'nullable|mimes:mp4,mov,avi,webm|max:102400',
+                'videoUrl'  => 'nullable|url',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->currentStep = 3;
+            throw $e;
+        }
+
+        // 5. Validate Step 4 (Pricing / Variations)
+        if ($this->has_variations) {
+            $this->validate([
+                'variations' => 'required|array|min:1',
+                'variations.*.sku' => 'required|string|distinct',
+                'variations.*.price' => 'required|numeric|min:0',
+                'variations.*.stock' => 'required|integer|min:0',
+            ]);
+        } else {
+            $this->validate([
+                'price' => 'required|numeric|min:0',
+                'stock' => 'required|integer|min:0',
+            ]);
+        }
         
         // SEO Friendly Filenames
         $thumbnailPath = null;
@@ -291,6 +396,7 @@ class ProductAdd extends Component
             'images' => $galleryPaths,
             'video_path' => $videoPath,
             'video_url'  => $videoUrl,
+            'measurements' => $this->buildMeasurementsPayload(),
         ]);
 
         $product->categories()->sync($this->selectedCategories);
@@ -330,6 +436,28 @@ class ProductAdd extends Component
 
         session()->flash('message', 'Product created successfully!');
         return redirect()->route('admin.products.index');
+    }
+
+    private function buildMeasurementsPayload(): ?array
+    {
+        if (!$this->hasMeasurements) return null;
+
+        // Filter out entirely-empty rows
+        $rows = array_values(array_filter($this->measurementRows, fn($r) => trim($r['label'] ?? '') !== ''));
+        if (empty($rows) || empty($this->measurementColumns)) return null;
+
+        // Ensure every row has the right number of value slots
+        $colCount = count($this->measurementColumns);
+        $rows = array_map(function ($row) use ($colCount) {
+            $vals = array_slice(array_pad($row['values'] ?? [], $colCount, ''), 0, $colCount);
+            return ['label' => $row['label'], 'values' => $vals];
+        }, $rows);
+
+        return [
+            'unit'    => $this->measurementUnit,
+            'columns' => array_values($this->measurementColumns),
+            'rows'    => $rows,
+        ];
     }
 
     public function render()

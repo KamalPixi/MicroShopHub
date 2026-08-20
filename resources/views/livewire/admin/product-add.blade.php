@@ -73,7 +73,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">SKU</label>
-                            <input wire:model="sku" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="SKU-12345">
+                            <input wire:model.blur="sku" type="text" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="SKU-12345">
                             @error('sku') <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
@@ -304,10 +304,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
                     {{-- Video Section --}}
-                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 mx-6 mb-6"
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200"
                          x-data="{ videoTab: @entangle('videoSource') }">
                         <h4 class="text-sm font-semibold text-gray-800 mb-1 flex items-center gap-2">
                             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -371,6 +370,144 @@
                             @endif
                         </div>
                     </div>
+
+                    {{-- Measurements / Size Chart Section --}}
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="p-1.5 bg-blue-100 text-blue-700 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-gray-800">Measurements & Size Guide <span class="text-gray-400 font-normal text-xs">(optional)</span></h4>
+                                    <p class="text-xs text-gray-500">Provide dimensions (e.g., Shoulder, Bust, Length, Waist) for each product variation/size.</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" wire:model.live="hasMeasurements" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+
+                        @if ($hasMeasurements)
+                            <div class="mt-5 pt-4 border-t border-gray-200 space-y-4 animate-fade-in">
+                                {{-- Measurement Unit Selector --}}
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-semibold text-gray-700">Measurement Unit:</span>
+                                    <div class="inline-flex rounded-lg border border-gray-200 bg-white p-0.5 shadow-sm">
+                                        <button type="button" 
+                                                wire:click="$set('measurementUnit', 'cm')"
+                                                class="px-3 py-1 text-xs font-medium rounded-md transition-all {{ $measurementUnit === 'cm' ? 'bg-blue-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900' }}">
+                                            cm
+                                        </button>
+                                        <button type="button" 
+                                                wire:click="$set('measurementUnit', 'inch')"
+                                                class="px-3 py-1 text-xs font-medium rounded-md transition-all {{ $measurementUnit === 'inch' ? 'bg-blue-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900' }}">
+                                            inches (in)
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {{-- Columns Configuration --}}
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-xs space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                            1. Define Measurement Parameters (Columns)
+                                        </label>
+                                        <button type="button" wire:click="addMeasurementColumn" 
+                                                class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                            Add Parameter
+                                        </button>
+                                    </div>
+
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach ($measurementColumns as $colIndex => $colName)
+                                            <div class="inline-flex items-center bg-gray-50 border border-gray-300 rounded-lg overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 shadow-xs">
+                                                <input type="text" 
+                                                       wire:model="measurementColumns.{{ $colIndex }}"
+                                                       placeholder="e.g. Bust"
+                                                       class="text-xs border-0 bg-transparent py-1.5 px-2.5 text-gray-800 placeholder-gray-400 focus:outline-none w-28 font-medium">
+                                                <button type="button" 
+                                                        wire:click="removeMeasurementColumn({{ $colIndex }})"
+                                                        class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 transition border-l border-gray-200"
+                                                        title="Remove column">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                </button>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                {{-- Size Rows Table --}}
+                                <div class="bg-white rounded-lg border border-gray-200 shadow-xs overflow-hidden">
+                                    <div class="p-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                                        <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                            2. Size Values Grid
+                                        </label>
+                                        <button type="button" wire:click="addMeasurementRow" 
+                                                class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                            Add Size Row
+                                        </button>
+                                    </div>
+
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-xs text-left">
+                                            <thead class="bg-gray-100 text-gray-700 font-semibold border-b border-gray-200">
+                                                <tr>
+                                                    <th class="py-2.5 px-3 w-28">Size / Tag</th>
+                                                    @foreach ($measurementColumns as $colName)
+                                                        <th class="py-2.5 px-3 min-w-[90px]">
+                                                            {{ $colName ?: 'Param' }} ({{ $measurementUnit }})
+                                                        </th>
+                                                    @endforeach
+                                                    <th class="py-2.5 px-3 w-10 text-center"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100">
+                                                @forelse ($measurementRows as $rowIndex => $row)
+                                                    <tr class="hover:bg-gray-50/70 transition">
+                                                        <td class="p-2">
+                                                            <input type="text" 
+                                                                   wire:model="measurementRows.{{ $rowIndex }}.label"
+                                                                   placeholder="e.g. S / 38"
+                                                                   class="w-full text-xs font-bold text-gray-900 border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                                        </td>
+                                                        @foreach ($measurementColumns as $colIndex => $_)
+                                                            <td class="p-2">
+                                                                <input type="text" 
+                                                                       wire:model="measurementRows.{{ $rowIndex }}.values.{{ $colIndex }}"
+                                                                       placeholder="0"
+                                                                       class="w-full text-xs text-gray-700 border border-gray-200 rounded px-2 py-1 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                                            </td>
+                                                        @endforeach
+                                                        <td class="p-2 text-center">
+                                                            <button type="button" 
+                                                                    wire:click="removeMeasurementRow({{ $rowIndex }})"
+                                                                    class="text-gray-400 hover:text-red-600 transition p-1 rounded hover:bg-red-50"
+                                                                    title="Remove row">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="{{ count($measurementColumns) + 2 }}" class="p-4 text-center text-gray-400 text-xs italic">
+                                                            No size rows added yet. Click "Add Size Row" to start adding size dimensions.
+                                                        </td>
+                                                    </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             @endif
 
             @if($currentStep === 4)

@@ -51,6 +51,12 @@ class ProductEdit extends Component
     public $videoSource = 'upload';      // 'upload' | 'url' (tab toggle)
     public $removeExistingVideo = false; // Flag to delete stored video on save
 
+    // Measurements / Size Chart
+    public $hasMeasurements = false;
+    public $measurementUnit = 'cm';
+    public $measurementColumns = [];
+    public $measurementRows = [];
+
     // Step 4: Pricing & Inventory
     public $has_variations = false;
     public $imagesToDelete = [];
@@ -98,6 +104,23 @@ class ProductEdit extends Component
         $this->existingVideoUrl  = $this->product->video_url ?? '';
         $this->videoSource       = $this->existingVideoPath ? 'upload' : ($this->existingVideoUrl ? 'url' : 'upload');
 
+        // Measurements
+        $measurements = $this->product->measurements;
+        if (!empty($measurements) && !empty($measurements['columns'])) {
+            $this->hasMeasurements      = true;
+            $this->measurementUnit      = $measurements['unit'] ?? 'cm';
+            $this->measurementColumns   = $measurements['columns'];
+            $this->measurementRows      = $measurements['rows'] ?? [];
+        } else {
+            // Default empty scaffold
+            $this->measurementColumns = ['Shoulder', 'Bust', 'Waist', 'Length'];
+            $this->measurementRows    = [
+                ['label' => 'XS', 'values' => ['', '', '', '']],
+                ['label' => 'S',  'values' => ['', '', '', '']],
+                ['label' => 'M',  'values' => ['', '', '', '']],
+            ];
+        }
+
         // 4. Fill Pricing/Variations
         if ($this->product->has_variations) {
             $this->has_variations = true;
@@ -140,6 +163,16 @@ class ProductEdit extends Component
         }
 
         $this->selectedAttributes = array_unique($usedAttributeIds);
+    }
+
+    public function updatedSku($value)
+    {
+        $this->sku = trim((string)$value) !== '' ? trim((string)$value) : null;
+        if ($this->sku) {
+            $this->validateOnly('sku', [
+                'sku' => ['nullable', 'string', 'max:100', Rule::unique('products', 'sku')->ignore($this->product->id)],
+            ]);
+        }
     }
 
     public function updatedName($value)
@@ -221,6 +254,57 @@ class ProductEdit extends Component
         $this->videoUrl             = '';
     }
 
+    // --- Measurement / Size Chart Actions ---
+
+    public function addMeasurementColumn()
+    {
+        $this->measurementColumns[] = '';
+        foreach ($this->measurementRows as $i => $_) {
+            $this->measurementRows[$i]['values'][] = '';
+        }
+    }
+
+    public function removeMeasurementColumn($colIndex)
+    {
+        array_splice($this->measurementColumns, $colIndex, 1);
+        foreach ($this->measurementRows as $i => $_) {
+            array_splice($this->measurementRows[$i]['values'], $colIndex, 1);
+        }
+    }
+
+    public function addMeasurementRow()
+    {
+        $this->measurementRows[] = [
+            'label'  => '',
+            'values' => array_fill(0, count($this->measurementColumns), ''),
+        ];
+    }
+
+    public function removeMeasurementRow($rowIndex)
+    {
+        array_splice($this->measurementRows, $rowIndex, 1);
+    }
+
+    private function buildMeasurementsPayload(): ?array
+    {
+        if (!$this->hasMeasurements) return null;
+
+        $rows = array_values(array_filter($this->measurementRows, fn($r) => trim($r['label'] ?? '') !== ''));
+        if (empty($rows) || empty($this->measurementColumns)) return null;
+
+        $colCount = count($this->measurementColumns);
+        $rows = array_map(function ($row) use ($colCount) {
+            $vals = array_slice(array_pad($row['values'] ?? [], $colCount, ''), 0, $colCount);
+            return ['label' => $row['label'], 'values' => $vals];
+        }, $rows);
+
+        return [
+            'unit'    => $this->measurementUnit,
+            'columns' => array_values($this->measurementColumns),
+            'rows'    => $rows,
+        ];
+    }
+
     // --- Navigation & Validation ---
 
     public function nextStep()
@@ -241,6 +325,7 @@ class ProductEdit extends Component
     public function validateStep($step)
     {
         if ($step == 1) {
+            $this->sku = trim((string)$this->sku) !== '' ? trim((string)$this->sku) : null;
             $this->validate([
                 'name' => 'required|min:3',
                 'slug' => ['required', Rule::unique('products', 'slug')->ignore($this->product->id)],
@@ -267,8 +352,32 @@ class ProductEdit extends Component
 
     public function submit()
     {
-        $this->validateStep(1);
-        $this->validateStep(2);
+        // 1. Sanitize SKU
+        $this->sku = trim((string)$this->sku) !== '' ? trim((string)$this->sku) : null;
+
+        // 2. Validate Step 1
+        try {
+            $this->validateStep(1);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->currentStep = 1;
+            throw $e;
+        }
+
+        // 3. Validate Step 2
+        try {
+            $this->validateStep(2);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->currentStep = 2;
+            throw $e;
+        }
+
+        // 4. Validate Step 3
+        try {
+            $this->validateStep(3);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->currentStep = 3;
+            throw $e;
+        }
         
         if (!$this->has_variations) {
             $this->validate([
@@ -339,6 +448,7 @@ class ProductEdit extends Component
         $this->product->update([
             'name' => $this->name,
             'slug' => $this->slug,
+            'sku'  => $this->sku,
             'description' => $this->description,
             'featured' => $this->featured,
             'status' => $this->status,
@@ -349,6 +459,7 @@ class ProductEdit extends Component
             'images' => $finalImages, // Saving the array directly (Eloquent handles JSON encoding)
             'video_path' => $videoPath,
             'video_url'  => $videoUrl,
+            'measurements' => $this->buildMeasurementsPayload(),
         ]);
 
         // 3. Relationships

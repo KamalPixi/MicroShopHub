@@ -30,9 +30,10 @@ class Product extends Model
 
     protected $casts = [
         'has_variations' => 'boolean',
-        'featured' => 'boolean',
-        'status' => 'boolean',
-        'images' => 'array',
+        'featured'       => 'boolean',
+        'status'         => 'boolean',
+        'images'         => 'array',
+        'measurements'   => 'array',
     ];
 
     protected $fillable = [
@@ -47,6 +48,7 @@ class Product extends Model
         'images',
         'video_path',
         'video_url',
+        'measurements',
         'featured',
         'status',
     ];

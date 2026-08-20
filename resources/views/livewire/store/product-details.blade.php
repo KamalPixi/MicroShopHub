@@ -1,6 +1,6 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6" 
      x-data="productDetailData()" 
-     @keydown.escape="lightboxOpen = false">
+     @keydown.escape="lightboxOpen = false; sizeGuideOpen = false">
 
     {{-- Breadcrumb Navigation --}}
     <nav class="flex flex-wrap items-center gap-1 text-xs text-gray-500 mb-4 pb-2 border-b border-gray-100" aria-label="Breadcrumb">
@@ -189,13 +189,25 @@
                                 <h3 id="options-heading" class="text-xs font-bold text-gray-900">{{ __('store.attributes_variations') }}</h3>
                                 <p class="text-[11px] text-gray-500">{{ __('store.variation_options') }}</p>
                             </div>
-                            @if(!empty($selectedAttributes))
-                                <button wire:click="resetSelection" 
-                                        type="button"
-                                        class="text-xs text-gray-500 hover:text-red-600 underline transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded px-1">
-                                    {{ __('store.clear_all') }}
-                                </button>
-                            @endif
+                            <div class="flex items-center gap-2">
+                                @if(!empty($product->measurements['columns']) && !empty($product->measurements['rows']))
+                                    <button type="button" 
+                                            @click="sizeGuideOpen = true" 
+                                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-primary bg-white hover:bg-primary/5 border border-gray-200 hover:border-primary/40 px-2.5 py-1 rounded-lg transition-all shadow-2xs group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
+                                        <svg class="w-3.5 h-3.5 text-primary group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                                        </svg>
+                                        <span>Size Guide</span>
+                                    </button>
+                                @endif
+                                @if(!empty($selectedAttributes))
+                                    <button wire:click="resetSelection" 
+                                            type="button"
+                                            class="text-xs text-gray-500 hover:text-red-600 underline transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded px-1">
+                                        {{ __('store.clear_all') }}
+                                    </button>
+                                @endif
+                            </div>
                         </div>
 
                         @foreach($productOptions as $option)
@@ -223,6 +235,18 @@
                                 </div>
                             </div>
                         @endforeach
+                    </div>
+                @elseif(!empty($product->measurements['columns']) && !empty($product->measurements['rows']))
+                    {{-- Size Guide Button for simple product (no variation options) --}}
+                    <div class="mb-4">
+                        <button type="button" 
+                                @click="sizeGuideOpen = true" 
+                                class="inline-flex items-center gap-2 text-xs font-semibold text-gray-700 hover:text-primary bg-white hover:bg-primary/5 border border-gray-200 hover:border-primary/40 px-3.5 py-2 rounded-xl transition-all shadow-2xs group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
+                            <svg class="w-4 h-4 text-primary group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                            </svg>
+                            <span>View Size & Measurements Guide</span>
+                        </button>
                     </div>
                 @endif
 
@@ -508,6 +532,94 @@
         </div>
     @endif
     
+    {{-- Size Guide Modal --}}
+    @if(!empty($product->measurements['columns']) && !empty($product->measurements['rows']))
+        <div x-show="sizeGuideOpen" 
+             style="display: none;" 
+             x-transition.opacity 
+             class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="size-guide-title"
+             @click.self="sizeGuideOpen = false">
+            
+            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-fade-in"
+                 @click.stop>
+                {{-- Modal Header --}}
+                <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+                    <div class="flex items-center gap-2.5">
+                        <span class="p-2 bg-primary/10 text-primary rounded-xl">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <h3 id="size-guide-title" class="text-base font-bold text-gray-900">Product Size & Measurements</h3>
+                            <p class="text-xs text-gray-500">All measurements are in <span class="font-semibold text-primary uppercase">{{ $product->measurements['unit'] ?? 'cm' }}</span></p>
+                        </div>
+                    </div>
+                    <button type="button" 
+                            @click="sizeGuideOpen = false" 
+                            class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-primary"
+                            aria-label="Close size guide">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                {{-- Modal Body / Table --}}
+                <div class="p-5 overflow-y-auto space-y-4">
+                    <div class="rounded-xl border border-gray-200 overflow-hidden shadow-xs">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-gray-50 text-gray-800 font-bold border-b border-gray-200">
+                                <tr>
+                                    <th class="py-3 px-4 bg-gray-100/80 font-extrabold text-gray-900">Size</th>
+                                    @foreach($product->measurements['columns'] as $col)
+                                        <th class="py-3 px-4 font-semibold text-gray-700">
+                                            {{ $col }} <span class="text-[10px] text-gray-400 font-normal">({{ $product->measurements['unit'] ?? 'cm' }})</span>
+                                        </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @foreach($product->measurements['rows'] as $row)
+                                    <tr class="hover:bg-primary/5 transition">
+                                        <td class="py-3 px-4 font-bold text-gray-900 bg-gray-50/50">
+                                            <span class="inline-block px-2 py-0.5 rounded-md bg-white border border-gray-200 font-mono shadow-2xs">
+                                                {{ $row['label'] }}
+                                            </span>
+                                        </td>
+                                        @foreach($row['values'] as $val)
+                                            <td class="py-3 px-4 text-gray-700 font-medium font-mono">
+                                                {{ $val !== '' && $val !== null ? $val : '-' }}
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{-- Tips Box --}}
+                    <div class="p-3.5 bg-blue-50/60 rounded-xl border border-blue-100 text-xs text-blue-800 flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="leading-relaxed">
+                            <span class="font-bold">Measuring Tip:</span> For the best fit, measure a similar garment that fits you well and compare its measurements to the chart above.
+                        </p>
+                    </div>
+                </div>
+
+                {{-- Modal Footer --}}
+                <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+                    <button type="button" 
+                            @click="sizeGuideOpen = false" 
+                            class="px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-xl hover:bg-black transition shadow-sm">
+                        Close Size Guide
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
     {{-- Lightbox Modal --}}
     <div x-show="lightboxOpen" 
          style="display: none;" 
@@ -540,6 +652,7 @@
 function productDetailData() {
     return {
         lightboxOpen: false,
+        sizeGuideOpen: false,
         mainImage: '{{ $mainImageUrl ?? 'https://placehold.co/600' }}',
         zoomStyle: '',
         currentStock: @js($currentStock),
