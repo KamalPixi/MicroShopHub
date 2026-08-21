@@ -88,7 +88,8 @@ class StoreController extends Controller
         }
 
         // 1. Shop By Category
-        $homeCategories = Category::where('show_on_homepage', true)
+        $homeCategories = Category::active()
+            ->where('show_on_homepage', true)
             ->orderBy('created_at', 'desc')
             ->take(10) 
             ->get();
@@ -183,7 +184,7 @@ class StoreController extends Controller
             ->paginate(10) // 15 items to fit 5-column layout nicely (3 rows)
             ->withQueryString(); // Keep search params in pagination links
         
-        $categories = Category::whereNull('parent_id')->with('children')->get();
+        $categories = Category::active()->whereNull('parent_id')->with(['children' => fn($q) => $q->active()])->get();
         
         return view('store.search', compact('products', 'categories', 'query', 'categoryId', 'minPrice', 'maxPrice', 'sort', 'activeFlashSale', 'flashSaleMap'));
     }
@@ -289,7 +290,8 @@ class StoreController extends Controller
             ['loc' => $baseUrl . '/search', 'changefreq' => 'weekly', 'priority' => '0.7'],
         ]);
 
-        $categoryUrls = Category::select('id', 'updated_at')
+        $categoryUrls = Category::active()
+            ->select('id', 'updated_at')
             ->orderBy('name')
             ->get()
             ->map(function ($category) use ($baseUrl) {

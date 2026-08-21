@@ -6,10 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = ['name', 'subtitle', 'slug', 'parent_id', 'thumbnail', 'show_on_homepage'];
+    protected $fillable = ['name', 'subtitle', 'slug', 'parent_id', 'thumbnail', 'show_on_homepage', 'is_active'];
     protected $casts = [
         'show_on_homepage' => 'boolean',
+        'is_active'        => 'boolean',
     ];
+
+    /**
+     * Scope a query to only include active categories.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 
     /**
      * Get the parent category (if any).

@@ -46,7 +46,7 @@ class HeaderSearch extends Component
         }
 
         // Fetch root categories for the dropdown
-        $categories = Category::whereNull('parent_id')->orderBy('name')->get();
+        $categories = Category::active()->whereNull('parent_id')->orderBy('name')->get();
 
         return view('livewire.store.header-search', [
             'results' => $results,

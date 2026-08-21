@@ -14,6 +14,7 @@ class Categories extends Component
     use WithPagination, WithFileUploads;
 
     public $search = '';
+    public $filterStatus = '';
     public $perPage = 10;
     public $name = '';
     public $subtitle = '';
@@ -21,6 +22,7 @@ class Categories extends Component
     public $parent_id = null;
     public $thumbnail;
     public $show_on_homepage = false;
+    public $is_active = true;
     public $editingId = null;
     public $existingThumbnail = null;
     public $isSlugManuallyEdited = false;
@@ -32,11 +34,21 @@ class Categories extends Component
         'parent_id' => 'nullable|exists:categories,id',
         'thumbnail' => 'nullable|image|max:2048', // Max 2MB
         'show_on_homepage' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
-    protected $queryString = ['search' => ['except' => ''], 'perPage' => ['except' => 10]];
+    protected $queryString = [
+        'search' => ['except' => ''], 
+        'filterStatus' => ['except' => ''],
+        'perPage' => ['except' => 10]
+    ];
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterStatus()
     {
         $this->resetPage();
     }
@@ -61,6 +73,7 @@ class Categories extends Component
         $this->parent_id = null;
         $this->thumbnail = null;
         $this->show_on_homepage = false;
+        $this->is_active = true;
         $this->editingId = null;
         $this->existingThumbnail = null;
         $this->isSlugManuallyEdited = false;
@@ -82,6 +95,7 @@ class Categories extends Component
             'slug' => $this->slug,
             'parent_id' => $this->parent_id,
             'show_on_homepage' => $this->show_on_homepage,
+            'is_active' => (bool) $this->is_active,
         ];
 
         if ($this->thumbnail) {
@@ -106,10 +120,20 @@ class Categories extends Component
         $this->subtitle = $category->subtitle;
         $this->slug = $category->slug;
         $this->parent_id = $category->parent_id;
-        $this->show_on_homepage = $category->show_on_homepage;
+        $this->show_on_homepage = (bool) $category->show_on_homepage;
+        $this->is_active = (bool) $category->is_active;
         $this->existingThumbnail = $category->thumbnail;
         $this->thumbnail = null;
         $this->isSlugManuallyEdited = true; // Assume slug is manually set when editing
+    }
+
+    public function toggleStatus($categoryId)
+    {
+        $category = Category::findOrFail($categoryId);
+        $category->is_active = !$category->is_active;
+        $category->save();
+
+        session()->flash('message', "Category '{$category->name}' " . ($category->is_active ? 'activated' : 'deactivated') . ' successfully.');
     }
 
     public function deleteCategory($categoryId)
@@ -128,6 +152,9 @@ class Categories extends Component
         $categories = Category::query()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->when($this->filterStatus !== '', function ($query) {
+                $query->where('is_active', $this->filterStatus === '1');
             })
             ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);

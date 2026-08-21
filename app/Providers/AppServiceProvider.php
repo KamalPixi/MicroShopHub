@@ -95,8 +95,11 @@ class AppServiceProvider extends ServiceProvider
             $queueConnection = trim((string) ($settings['queue_connection'] ?? 'sync')) ?: 'sync';
             config(['queue.default' => $queueConnection]);
 
-            $navbarCategories = Category::whereNull('parent_id')
-                ->with('children')
+            $navbarCategories = Category::active()
+                ->whereNull('parent_id')
+                ->with(['children' => function ($q) {
+                    $q->active()->orderBy('name');
+                }])
                 ->orderBy('name')
                 ->get();
 

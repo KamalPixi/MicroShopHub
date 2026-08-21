@@ -79,19 +79,36 @@
                 </div>
 
                 <div class="flex items-start">
-                    <div class="pt-5">
-                        <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
-                            <input 
-                                wire:model="show_on_homepage" 
-                                type="checkbox" 
-                                class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                            >
-                            <span>Show on (Shop By Category) List</span>
-                        </label>
-                        <p class="mt-1 text-xs text-gray-500">
-                            When enabled, this category appears in the storefront Shop By Category section.
-                        </p>
-                        @error('show_on_homepage') <span class="text-red-600 text-xs block mt-1">{{ $message }}</span> @enderror
+                    <div class="pt-5 space-y-3">
+                        <div>
+                            <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                                <input 
+                                    wire:model="is_active" 
+                                    type="checkbox" 
+                                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                >
+                                <span class="font-semibold">Active Category</span>
+                            </label>
+                            <p class="mt-0.5 text-xs text-gray-500">
+                                When deactivated, this category is hidden from storefront navigation, search, and category lists.
+                            </p>
+                            @error('is_active') <span class="text-red-600 text-xs block mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                                <input 
+                                    wire:model="show_on_homepage" 
+                                    type="checkbox" 
+                                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                >
+                                <span>Show on (Shop By Category) List</span>
+                            </label>
+                            <p class="mt-0.5 text-xs text-gray-500">
+                                When enabled, this category appears in the storefront Shop By Category section.
+                            </p>
+                            @error('show_on_homepage') <span class="text-red-600 text-xs block mt-1">{{ $message }}</span> @enderror
+                        </div>
                     </div>
                 </div>
 
@@ -179,15 +196,29 @@
                 Categories List
             </h3>
         </div>
-        <div class="mb-4">
-            <label for="search" class="block text-sm font-medium text-gray-700">Search Categories</label>
-            <input 
-                wire:model.live="search" 
-                type="text" 
-                id="search" 
-                class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-                placeholder="Search by category name"
-            >
+        <div class="mb-4 flex flex-col sm:flex-row gap-3">
+            <div class="flex-1">
+                <label for="search" class="block text-xs font-semibold text-gray-600 uppercase mb-1">Search Categories</label>
+                <input 
+                    wire:model.live="search" 
+                    type="text" 
+                    id="search" 
+                    class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
+                    placeholder="Search by category name..."
+                >
+            </div>
+            <div class="w-full sm:w-48">
+                <label for="filterStatus" class="block text-xs font-semibold text-gray-600 uppercase mb-1">Status Filter</label>
+                <select 
+                    wire:model.live="filterStatus" 
+                    id="filterStatus" 
+                    class="form-input block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
+                >
+                    <option value="">All Statuses</option>
+                    <option value="1">Active Only</option>
+                    <option value="0">Inactive Only</option>
+                </select>
+            </div>
         </div>
 
         @include('admin.includes.message')
@@ -201,6 +232,7 @@
                         <th class="font-medium text-gray-700 p-2">Slug</th>
                         <th class="font-medium text-gray-700 p-2">Parent</th>
                         <th class="font-medium text-gray-700 p-2">Thumbnail</th>
+                        <th class="font-medium text-gray-700 p-2">Status</th>
                         <th class="font-medium text-gray-700 p-2">Show on Homepage</th>
                         <th class="font-medium text-gray-700 p-2 text-end">Action</th>
                     </tr>
@@ -221,6 +253,17 @@
                                 @else
                                     N/A
                                 @endif
+                            </td>
+                            <td class="p-2">
+                                <button 
+                                    wire:click="toggleStatus({{ $category->id }})" 
+                                    type="button"
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition cursor-pointer {{ $category->is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}"
+                                    title="Click to {{ $category->is_active ? 'deactivate' : 'activate' }}"
+                                >
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $category->is_active ? 'bg-green-600' : 'bg-red-600' }}"></span>
+                                    {{ $category->is_active ? 'Active' : 'Inactive' }}
+                                </button>
                             </td>
                             <td class="p-2">
                                 <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full 
@@ -253,7 +296,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-gray-500 py-4">No categories found.</td>
+                            <td colspan="8" class="text-center text-gray-500 py-4">No categories found.</td>
                         </tr>
                     @endforelse
                 </tbody>
