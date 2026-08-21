@@ -252,11 +252,11 @@
                                 @if(!empty($product->measurements['columns']) && !empty($product->measurements['rows']))
                                     <button type="button" 
                                             @click="sizeGuideOpen = true" 
-                                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-primary bg-white hover:bg-primary/5 border border-gray-200 hover:border-primary/40 px-2.5 py-1 rounded-lg transition-all shadow-2xs group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
-                                        <svg class="w-3.5 h-3.5 text-primary group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-primary bg-white hover:bg-primary/5 border border-gray-200 hover:border-primary/40 px-3 py-1.5 rounded-lg transition-all shadow-2xs group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
+                                        <svg class="w-3.5 h-3.5 text-primary group-hover:scale-110 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
                                         </svg>
-                                        <span>Size Guide</span>
+                                        <span class="whitespace-nowrap">Size Guide</span>
                                     </button>
                                 @endif
                                 @if(!empty($selectedAttributes))
@@ -300,11 +300,11 @@
                     <div class="mb-4">
                         <button type="button" 
                                 @click="sizeGuideOpen = true" 
-                                class="inline-flex items-center gap-2 text-xs font-semibold text-gray-700 hover:text-primary bg-white hover:bg-primary/5 border border-gray-200 hover:border-primary/40 px-3.5 py-2 rounded-xl transition-all shadow-2xs group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
-                            <svg class="w-4 h-4 text-primary group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="inline-flex items-center gap-2.5 text-xs font-semibold text-gray-700 hover:text-primary bg-white hover:bg-primary/5 border border-gray-200 hover:border-primary/40 px-4 py-2.5 rounded-xl transition-all shadow-2xs group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
+                            <svg class="w-4 h-4 text-primary group-hover:scale-110 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
                             </svg>
-                            <span>View Size & Measurements Guide</span>
+                            <span class="whitespace-nowrap">View Size & Measurements Guide</span>
                         </button>
                     </div>
                 @endif

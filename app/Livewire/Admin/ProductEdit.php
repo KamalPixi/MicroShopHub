@@ -112,12 +112,15 @@ class ProductEdit extends Component
             $this->measurementColumns   = $measurements['columns'];
             $this->measurementRows      = $measurements['rows'] ?? [];
         } else {
-            // Default empty scaffold
-            $this->measurementColumns = ['Shoulder', 'Bust', 'Waist', 'Length'];
-            $this->measurementRows    = [
-                ['label' => 'XS', 'values' => ['', '', '', '']],
-                ['label' => 'S',  'values' => ['', '', '', '']],
-                ['label' => 'M',  'values' => ['', '', '', '']],
+            // Default standard scaffold
+            $this->measurementUnit      = 'cm';
+            $this->measurementColumns   = ['Chest / Bust', 'Shoulder', 'Length', 'Sleeve'];
+            $this->measurementRows      = [
+                ['label' => 'S',   'values' => ['96', '42', '68', '20']],
+                ['label' => 'M',   'values' => ['102', '44', '70', '21']],
+                ['label' => 'L',   'values' => ['108', '46', '72', '22']],
+                ['label' => 'XL',  'values' => ['114', '48', '74', '23']],
+                ['label' => 'XXL', 'values' => ['120', '50', '76', '24']],
             ];
         }
 
@@ -283,6 +286,85 @@ class ProductEdit extends Component
     public function removeMeasurementRow($rowIndex)
     {
         array_splice($this->measurementRows, $rowIndex, 1);
+    }
+
+    public function applyMeasurementPreset(string $preset)
+    {
+        $isInch = $this->measurementUnit === 'inch';
+
+        switch ($preset) {
+            case 'bottoms':
+            case 'pants':
+                $this->measurementColumns = ['Waist', 'Hip', 'Thigh', 'Length'];
+                $this->measurementRows = $isInch ? [
+                    ['label' => '28 / S',   'values' => ['28', '37', '22', '39']],
+                    ['label' => '30 / M',   'values' => ['30', '39', '23', '39.5']],
+                    ['label' => '32 / L',   'values' => ['32', '41', '24', '40']],
+                    ['label' => '34 / XL',  'values' => ['34', '43', '25', '41']],
+                    ['label' => '36 / XXL', 'values' => ['36', '45', '26', '42']],
+                ] : [
+                    ['label' => '28 / S',   'values' => ['71', '94', '56', '98']],
+                    ['label' => '30 / M',   'values' => ['76', '99', '58', '100']],
+                    ['label' => '32 / L',   'values' => ['81', '104', '61', '102']],
+                    ['label' => '34 / XL',  'values' => ['86', '109', '63', '104']],
+                    ['label' => '36 / XXL', 'values' => ['91', '114', '66', '106']],
+                ];
+                break;
+
+            case 'dress':
+                $this->measurementColumns = ['Bust', 'Waist', 'Hip', 'Length'];
+                $this->measurementRows = $isInch ? [
+                    ['label' => 'S',   'values' => ['34.5', '27.5', '37', '37.5']],
+                    ['label' => 'M',   'values' => ['36', '29', '38.5', '38']],
+                    ['label' => 'L',   'values' => ['38', '31', '40', '39']],
+                    ['label' => 'XL',  'values' => ['40', '32.5', '42', '40']],
+                    ['label' => 'XXL', 'values' => ['42', '34', '44', '41']],
+                ] : [
+                    ['label' => 'S',   'values' => ['88', '70', '94', '95']],
+                    ['label' => 'M',   'values' => ['92', '74', '98', '97']],
+                    ['label' => 'L',   'values' => ['96', '78', '102', '99']],
+                    ['label' => 'XL',  'values' => ['100', '82', '106', '101']],
+                    ['label' => 'XXL', 'values' => ['104', '86', '110', '103']],
+                ];
+                break;
+
+            case 'shoes':
+                $this->measurementColumns = ['EU Size', 'UK Size', 'Foot Length'];
+                $this->measurementRows = $isInch ? [
+                    ['label' => '39', 'values' => ['39', '6', '9.6']],
+                    ['label' => '40', 'values' => ['40', '6.5', '9.8']],
+                    ['label' => '41', 'values' => ['41', '7.5', '10.2']],
+                    ['label' => '42', 'values' => ['42', '8', '10.4']],
+                    ['label' => '43', 'values' => ['43', '9', '10.8']],
+                    ['label' => '44', 'values' => ['44', '9.5', '11.0']],
+                ] : [
+                    ['label' => '39', 'values' => ['39', '6', '24.5']],
+                    ['label' => '40', 'values' => ['40', '6.5', '25.0']],
+                    ['label' => '41', 'values' => ['41', '7.5', '26.0']],
+                    ['label' => '42', 'values' => ['42', '8', '26.5']],
+                    ['label' => '43', 'values' => ['43', '9', '27.5']],
+                    ['label' => '44', 'values' => ['44', '9.5', '28.0']],
+                ];
+                break;
+
+            case 'tops':
+            default:
+                $this->measurementColumns = ['Chest / Bust', 'Shoulder', 'Length', 'Sleeve'];
+                $this->measurementRows = $isInch ? [
+                    ['label' => 'S',   'values' => ['38', '16.5', '27', '8']],
+                    ['label' => 'M',   'values' => ['40', '17.5', '28', '8.5']],
+                    ['label' => 'L',   'values' => ['42', '18.5', '29', '9']],
+                    ['label' => 'XL',  'values' => ['44', '19.5', '30', '9.5']],
+                    ['label' => 'XXL', 'values' => ['46', '20.5', '31', '10']],
+                ] : [
+                    ['label' => 'S',   'values' => ['96', '42', '68', '20']],
+                    ['label' => 'M',   'values' => ['102', '44', '70', '21']],
+                    ['label' => 'L',   'values' => ['108', '46', '72', '22']],
+                    ['label' => 'XL',  'values' => ['114', '48', '74', '23']],
+                    ['label' => 'XXL', 'values' => ['120', '50', '76', '24']],
+                ];
+                break;
+        }
     }
 
     private function buildMeasurementsPayload(): ?array

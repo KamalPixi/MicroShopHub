@@ -440,20 +440,46 @@
 
                         @if ($hasMeasurements)
                             <div class="mt-5 pt-4 border-t border-gray-200 space-y-4 animate-fade-in">
-                                {{-- Measurement Unit Selector --}}
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs font-semibold text-gray-700">Measurement Unit:</span>
-                                    <div class="inline-flex rounded-lg border border-gray-200 bg-white p-0.5 shadow-sm">
-                                        <button type="button" 
-                                                wire:click="$set('measurementUnit', 'cm')"
-                                                class="px-3 py-1 text-xs font-medium rounded-md transition-all {{ $measurementUnit === 'cm' ? 'bg-blue-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900' }}">
-                                            cm
-                                        </button>
-                                        <button type="button" 
-                                                wire:click="$set('measurementUnit', 'inch')"
-                                                class="px-3 py-1 text-xs font-medium rounded-md transition-all {{ $measurementUnit === 'inch' ? 'bg-blue-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900' }}">
-                                            inches (in)
-                                        </button>
+                                {{-- Quick Templates / Presets & Unit Selector --}}
+                                <div class="flex flex-wrap items-center justify-between gap-3 bg-blue-50/60 p-3 rounded-lg border border-blue-100">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="text-xs font-bold text-blue-950 flex items-center gap-1">
+                                            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                            Quick Templates:
+                                        </span>
+                                        <div class="flex flex-wrap gap-1.5">
+                                            <button type="button" wire:click="applyMeasurementPreset('tops')" 
+                                                    class="px-2.5 py-1 text-xs font-medium bg-white text-gray-700 hover:text-blue-700 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-md transition shadow-2xs">
+                                                👕 Tops / Shirts
+                                            </button>
+                                            <button type="button" wire:click="applyMeasurementPreset('bottoms')" 
+                                                    class="px-2.5 py-1 text-xs font-medium bg-white text-gray-700 hover:text-blue-700 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-md transition shadow-2xs">
+                                                👖 Pants / Bottoms
+                                            </button>
+                                            <button type="button" wire:click="applyMeasurementPreset('dress')" 
+                                                    class="px-2.5 py-1 text-xs font-medium bg-white text-gray-700 hover:text-blue-700 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-md transition shadow-2xs">
+                                                👗 Dresses / Kurtis
+                                            </button>
+                                            <button type="button" wire:click="applyMeasurementPreset('shoes')" 
+                                                    class="px-2.5 py-1 text-xs font-medium bg-white text-gray-700 hover:text-blue-700 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-md transition shadow-2xs">
+                                                👟 Footwear
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-semibold text-gray-600">Unit:</span>
+                                        <div class="inline-flex rounded-lg border border-gray-200 bg-white p-0.5 shadow-2xs">
+                                            <button type="button" 
+                                                    wire:click="$set('measurementUnit', 'cm')"
+                                                    class="px-2.5 py-1 text-xs font-medium rounded-md transition-all {{ $measurementUnit === 'cm' ? 'bg-blue-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900' }}">
+                                                cm
+                                            </button>
+                                            <button type="button" 
+                                                    wire:click="$set('measurementUnit', 'inch')"
+                                                    class="px-2.5 py-1 text-xs font-medium rounded-md transition-all {{ $measurementUnit === 'inch' ? 'bg-blue-600 text-white shadow-xs' : 'text-gray-600 hover:text-gray-900' }}">
+                                                inches (in)
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
