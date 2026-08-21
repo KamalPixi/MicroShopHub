@@ -393,21 +393,23 @@ class ProductEdit extends Component
             ]);
         }
 
+        $disk = config('filesystems.default');
+
         // 1. Prepare Images (Merge Existing + New)
         $finalImages = $this->existingGallery; // Start with what wasn't deleted
 
         // Save New Images with SEO Friendly & Collision-Free Names
         foreach ($this->newImages as $index => $img) {
             $name = $this->generateMediaFilename('gallery', $img, count($finalImages) + 1);
-            $finalImages[] = $img->storeAs('images/products', $name, 'public');
+            $finalImages[] = $img->storeAs('images/products', $name, $disk);
         }
 
         // Handle Thumbnail with SEO Friendly Name
         $thumbnailPath = $this->product->thumbnail;
         if ($this->thumbnail) {
-             if ($thumbnailPath) Storage::disk('public')->delete($thumbnailPath);
+             if ($thumbnailPath) Storage::disk($disk)->delete($thumbnailPath);
              $name = $this->generateMediaFilename('thumbnail', $this->thumbnail);
-             $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, 'public');
+             $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, $disk);
         }
 
         // Handle Video
@@ -417,7 +419,7 @@ class ProductEdit extends Component
         if ($this->removeExistingVideo) {
             // Admin explicitly removed the existing video
             if ($videoPath) {
-                Storage::disk('public')->delete($videoPath);
+                Storage::disk($disk)->delete($videoPath);
             }
             $videoPath = null;
             $videoUrl  = null;
@@ -426,10 +428,10 @@ class ProductEdit extends Component
         if ($this->videoSource === 'upload' && $this->videoFile) {
             // Replace with newly uploaded file
             if ($videoPath) {
-                Storage::disk('public')->delete($videoPath);
+                Storage::disk($disk)->delete($videoPath);
             }
             $name      = $this->generateMediaFilename('video', $this->videoFile);
-            $videoPath = $this->videoFile->storeAs('videos/products', $name, 'public');
+            $videoPath = $this->videoFile->storeAs('videos/products', $name, $disk);
             $videoUrl  = null; // clear any old URL
         } elseif ($this->videoSource === 'url') {
             // Admin switched to URL tab
@@ -437,7 +439,7 @@ class ProductEdit extends Component
             if ($urlValue) {
                 // Delete any previously stored file when switching to URL
                 if ($videoPath) {
-                    Storage::disk('public')->delete($videoPath);
+                    Storage::disk($disk)->delete($videoPath);
                     $videoPath = null;
                 }
                 $videoUrl = $urlValue;
@@ -495,7 +497,7 @@ class ProductEdit extends Component
 
         // 5. Cleanup Deleted Files
         foreach ($this->imagesToDelete as $path) {
-            Storage::disk('public')->delete($path);
+            Storage::disk($disk)->delete($path);
         }
         $this->imagesToDelete = [];
 

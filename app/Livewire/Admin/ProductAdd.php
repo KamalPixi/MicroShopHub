@@ -360,16 +360,17 @@ class ProductAdd extends Component
         }
         
         // SEO Friendly & Collision-Free Filenames
+        $disk = config('filesystems.default');
         $thumbnailPath = null;
         if ($this->thumbnail) {
             $name = $this->generateMediaFilename('thumbnail', $this->thumbnail);
-            $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, 'public');
+            $thumbnailPath = $this->thumbnail->storeAs('images/products', $name, $disk);
         }
 
         $galleryPaths = [];
         foreach ($this->images as $index => $image) {
             $name = $this->generateMediaFilename('gallery', $image, $index + 1);
-            $galleryPaths[] = $image->storeAs('images/products', $name, 'public');
+            $galleryPaths[] = $image->storeAs('images/products', $name, $disk);
         }
 
         // Video: prefer uploaded file; fall back to URL
@@ -377,7 +378,7 @@ class ProductAdd extends Component
         $videoUrl   = null;
         if ($this->videoSource === 'upload' && $this->videoFile) {
             $name      = $this->generateMediaFilename('video', $this->videoFile);
-            $videoPath = $this->videoFile->storeAs('videos/products', $name, 'public');
+            $videoPath = $this->videoFile->storeAs('videos/products', $name, $disk);
         } elseif ($this->videoSource === 'url' && $this->videoUrl) {
             $videoUrl = $this->videoUrl;
         }

@@ -11,7 +11,7 @@ class Product extends Model
     {
         parent::boot();
         static::deleting(function ($product) {
-            $disk = 'public';
+            $disk = config('filesystems.default');
             if ($product->thumbnail) {
                 Storage::disk($disk)->delete($product->thumbnail);
             }

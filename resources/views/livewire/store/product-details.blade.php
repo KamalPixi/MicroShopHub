@@ -22,7 +22,7 @@
                     <div x-show="activeMediaType === 'video'" class="w-full h-full bg-black flex items-center justify-center" style="display: none;">
                         @if ($product->video_path)
                             <video controls autoplay playsinline class="w-full h-full object-contain">
-                                <source src="{{ Storage::disk('public')->url($product->video_path) }}">
+                                <source src="{{ Storage::url($product->video_path) }}">
                                 Your browser does not support the video tag.
                             </video>
                         @elseif ($product->video_url)
@@ -89,22 +89,22 @@
                     $mainImageUrl = $product->thumbnail 
                         ? (Str::startsWith($product->thumbnail, ['http']) 
                             ? $product->thumbnail 
-                            : Storage::disk('public')->url($product->thumbnail))
+                            : Storage::url($product->thumbnail))
                         : 'https://placehold.co/600';
                     
                     $allImages = array_merge(
                         [$mainImageUrl],
                         collect($product->images ?? [])->map(fn($img) => 
-                            Str::startsWith($img, ['http']) ? $img : Storage::disk('public')->url($img)
+                            Str::startsWith($img, ['http']) ? $img : Storage::url($img)
                         )->toArray()
                     );
                 @endphp
 
                 @if((!empty($product->images) && is_array($product->images) && count($product->images) > 0) || $product->video_path || $product->video_url)
                     <div class="grid gap-3" 
-                         style="grid-template-columns: repeat(auto-fill, minmax(80px, 1fr))"
-                         role="tablist"
-                         aria-label="Product image gallery">
+                          style="grid-template-columns: repeat(auto-fill, minmax(80px, 1fr))"
+                          role="tablist"
+                          aria-label="Product image gallery">
                         {{-- Thumbnail: Main Image --}}
                         <button @click="activeMediaType = 'image'; mainImage = '{{ $mainImageUrl }}'"
                                 :aria-selected="activeMediaType === 'image' && mainImage === '{{ $mainImageUrl }}'"
@@ -119,7 +119,7 @@
 
                         {{-- Additional Image Thumbnails --}}
                         @foreach($product->images ?? [] as $index => $img)
-                            @php $imgUrl = Str::startsWith($img, ['http']) ? $img : Storage::disk('public')->url($img); @endphp
+                            @php $imgUrl = Str::startsWith($img, ['http']) ? $img : Storage::url($img); @endphp
                             <button @click="activeMediaType = 'image'; mainImage = '{{ $imgUrl }}'"
                                     :aria-selected="activeMediaType === 'image' && mainImage === '{{ $imgUrl }}'"
                                     role="tab"
@@ -480,7 +480,7 @@
                     <video controls preload="metadata"
                            class="w-full max-h-[480px] rounded-xl"
                            aria-label="{{ $product->name }} product video">
-                        <source src="{{ Storage::disk('public')->url($product->video_path) }}">
+                        <source src="{{ Storage::url($product->video_path) }}">
                         Your browser does not support the video tag.
                     </video>
                 </div>
