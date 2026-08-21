@@ -32,6 +32,7 @@ class StoreController extends Controller
                 'home_hero_cta_url',
                 'home_banner_chips',
                 'home_banner_slides',
+                'home_category_navbar_enabled',
                 'home_shop_by_category_enabled',
                 'home_shop_by_category_title',
                 'home_featured_products_enabled',
@@ -48,6 +49,7 @@ class StoreController extends Controller
         $homepageSettings['home_hero_enabled'] = filter_var($homepageSettings['home_hero_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_banner_type'] = $homepageSettings['home_banner_type'] ?? 'split';
         $homepageSettings['home_banner_autoplay_enabled'] = filter_var($homepageSettings['home_banner_autoplay_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $homepageSettings['home_category_navbar_enabled'] = filter_var($homepageSettings['home_category_navbar_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_shop_by_category_enabled'] = filter_var($homepageSettings['home_shop_by_category_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_featured_products_enabled'] = filter_var($homepageSettings['home_featured_products_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $homepageSettings['home_new_arrivals_enabled'] = filter_var($homepageSettings['home_new_arrivals_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);

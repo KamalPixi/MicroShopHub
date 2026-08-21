@@ -244,6 +244,14 @@
 
                 <div class="space-y-4">
                     <div class="rounded-lg border border-gray-200 bg-white p-3">
+                        <label class="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                            <input type="checkbox" wire:model="settings.home_category_navbar_enabled" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                            <span>Show Category Navigation Bar</span>
+                        </label>
+                        <p class="mt-1 text-xs text-gray-500">Controls the category navigation bar below the header on the homepage.</p>
+                    </div>
+
+                    <div class="rounded-lg border border-gray-200 bg-white p-3">
                         <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
                             <input type="checkbox" wire:model="settings.home_shop_by_category_enabled" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
                             <span>Show Shop by Category</span>

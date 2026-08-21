@@ -103,19 +103,22 @@ class AppServiceProvider extends ServiceProvider
                 ->orderBy('name')
                 ->get();
 
-            $storeMeta = Setting::whereIn('key', ['shop_name', 'site_title'])
+            $storeMeta = Setting::whereIn('key', ['shop_name', 'site_title', 'home_category_navbar_enabled'])
                 ->pluck('value', 'key');
             $siteStoreName = trim((string) ($storeMeta['shop_name'] ?? '')) ?: config('app.name', 'ShopHub');
             $siteStoreSlogan = trim((string) ($storeMeta['site_title'] ?? ''));
+            $homeCategoryNavbarEnabled = filter_var($storeMeta['home_category_navbar_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
             
             View::share('navbarCategories', $navbarCategories);
             View::share('siteStoreName', $siteStoreName);
             View::share('siteStoreSlogan', $siteStoreSlogan);
+            View::share('homeCategoryNavbarEnabled', $homeCategoryNavbarEnabled);
         } catch (\Exception $e) {
             // Failsafe in case database isn't ready yet (e.g., during migration)
             View::share('navbarCategories', collect());
             View::share('siteStoreName', config('app.name', 'ShopHub'));
             View::share('siteStoreSlogan', '');
+            View::share('homeCategoryNavbarEnabled', true);
         }
     }
 }

@@ -31,6 +31,7 @@ class HomepageSettings extends Component
         'bannerSlides.*.image_file' => 'nullable|image|max:4096',
         'bannerSlides.*.link_url' => 'nullable|string|max:255',
         'bannerSlides.*.alt' => 'nullable|string|max:255',
+        'settings.home_category_navbar_enabled' => 'boolean',
         'settings.home_shop_by_category_enabled' => 'boolean',
         'settings.home_shop_by_category_title' => 'nullable|string|max:255',
         'settings.home_featured_products_enabled' => 'boolean',
@@ -146,6 +147,7 @@ class HomepageSettings extends Component
     public function saveHomepageSections(): void
     {
         $this->validate([
+            'settings.home_category_navbar_enabled' => $this->rules['settings.home_category_navbar_enabled'],
             'settings.home_shop_by_category_enabled' => $this->rules['settings.home_shop_by_category_enabled'],
             'settings.home_shop_by_category_title' => $this->rules['settings.home_shop_by_category_title'],
             'settings.home_featured_products_enabled' => $this->rules['settings.home_featured_products_enabled'],

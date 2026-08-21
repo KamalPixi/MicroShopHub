@@ -1,4 +1,4 @@
-@if(request()->routeIs('store.index'))
+@if(request()->routeIs('store.index') && ($homeCategoryNavbarEnabled ?? true))
 <nav class="bg-white border-b border-gray-200 relative z-30 isolate" x-data="{ mobileMenuOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="h-14 flex items-center justify-between md:justify-center">

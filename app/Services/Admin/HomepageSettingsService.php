@@ -21,6 +21,7 @@ class HomepageSettingsService
             'home_hero_cta_url' => '/search',
             'home_banner_chips' => '[]',
             'home_banner_slides' => '[]',
+            'home_category_navbar_enabled' => true,
             'home_shop_by_category_enabled' => true,
             'home_shop_by_category_title' => 'Shop by Category',
             'home_featured_products_enabled' => true,
@@ -163,6 +164,7 @@ class HomepageSettingsService
     public function saveHomepageSections(array $settings): void
     {
         $this->persistSettings($settings, [
+            'home_category_navbar_enabled',
             'home_shop_by_category_enabled',
             'home_shop_by_category_title',
             'home_featured_products_enabled',

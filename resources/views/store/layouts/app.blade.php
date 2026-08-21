@@ -105,10 +105,13 @@
         $storefrontHeaderView = \App\Support\StorefrontTheme::partial('header');
         $storefrontNavbarView = \App\Support\StorefrontTheme::partial('navbar');
         $storefrontFooterView = \App\Support\StorefrontTheme::partial('footer');
+        $showCategoryNavbar = !request()->routeIs('store.index') || ($homeCategoryNavbarEnabled ?? true);
     @endphp
 
     @include($storefrontHeaderView, ['storeName' => $storeName, 'storeLogo' => $storeLogo, 'storeSlogan' => $storeSlogan])
-    @include($storefrontNavbarView)
+    @if($showCategoryNavbar)
+        @include($storefrontNavbarView)
+    @endif
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full {{ $storefrontTheme === 'modern' ? (request()->routeIs('store.index') ? 'pt-1 md:pt-2' : (request()->routeIs('store.product.show') ? 'py-3 md:py-4' : 'pt-0 md:pt-1')) : (request()->routeIs('store.product.show') ? 'py-3 md:py-4' : 'pt-2 md:pt-3') }}">
         @yield('content')
