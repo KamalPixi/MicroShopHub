@@ -1,7 +1,7 @@
 @if(request()->routeIs('store.index') && ($homeCategoryNavbarEnabled ?? true))
 <nav class="bg-white border-b border-gray-200 relative z-30 isolate" x-data="{ mobileMenuOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="h-14 flex items-center justify-between md:justify-center">
+        <div class="py-2.5 flex items-center justify-between md:justify-center">
 
             <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary">
                 <span class="sr-only">Open main menu</span>
@@ -17,20 +17,20 @@
                 {{ __('store.categories') }}
             </div>
 
-            <div class="hidden md:flex justify-center space-x-8 items-center h-full">
+            <div class="hidden md:flex flex-wrap justify-center items-center gap-6">
                 
-                <a href="{{ route('store.index') }}" class="text-gray-600 hover:text-primary font-medium transition-colors text-sm lg:text-base">{{ __('store.all_products') }}</a>
+                <a href="{{ route('store.index') }}" class="whitespace-nowrap py-1 text-gray-600 hover:text-primary font-medium transition-colors text-sm">{{ __('store.all_products') }}</a>
 
                 @if(isset($navbarCategories) && $navbarCategories->count() > 0)
                     @foreach($navbarCategories as $category)
                         
                         @if($category->children->isNotEmpty())
-                            <div class="relative group h-full flex items-center" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                                <div class="flex items-center space-x-1 text-gray-600 group-hover:text-primary font-medium transition-colors focus:outline-none">
-                                    <a href="{{ route('store.search', ['category' => $category->id]) }}" class="text-sm lg:text-base hover:text-primary">
+                            <div class="relative group flex items-center" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                                <div class="inline-flex items-center gap-1 py-1 text-gray-600 group-hover:text-primary font-medium transition-colors focus:outline-none whitespace-nowrap">
+                                    <a href="{{ route('store.search', ['category' => $category->id]) }}" class="text-sm hover:text-primary whitespace-nowrap">
                                         {{ $category->name }}
                                     </a>
-                                    <button type="button" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
+                                    <button type="button" class="inline-flex items-center shrink-0" aria-label="Open {{ $category->name }} categories">
                                         <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
                                 </div>
@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                         @else
-                            <a href="{{ route('store.search', ['category' => $category->id]) }}" class="text-gray-600 hover:text-primary font-medium transition-colors text-sm lg:text-base">
+                            <a href="{{ route('store.search', ['category' => $category->id]) }}" class="whitespace-nowrap py-1 text-gray-600 hover:text-primary font-medium transition-colors text-sm">
                                 {{ $category->name }}
                             </a>
                         @endif

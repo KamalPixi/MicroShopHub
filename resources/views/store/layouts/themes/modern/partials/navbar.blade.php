@@ -14,16 +14,16 @@
                 </button>
 
                 <div class="hidden md:flex flex-wrap items-center gap-2">
-                    <a href="{{ route('store.index') }}" class="inline-flex items-center rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary/25 hover:text-primary">{{ __('store.all_products') }}</a>
+                    <a href="{{ route('store.index') }}" class="inline-flex items-center whitespace-nowrap rounded-full border border-gray-200 px-3.5 py-1.5 text-sm font-semibold text-gray-700 transition hover:border-primary/25 hover:text-primary">{{ __('store.all_products') }}</a>
                     @if(isset($navbarCategories) && $navbarCategories->count() > 0)
                         @foreach($navbarCategories as $category)
                             @if($category->children->isNotEmpty())
                                 <div class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                                    <div class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition group-hover:border-primary/25 group-hover:text-primary focus:outline-none">
-                                        <a href="{{ route('store.search', ['category' => $category->id]) }}" class="hover:text-primary">
+                                    <div class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-gray-200 px-3.5 py-1.5 text-sm font-semibold text-gray-700 transition group-hover:border-primary/25 group-hover:text-primary focus:outline-none">
+                                        <a href="{{ route('store.search', ['category' => $category->id]) }}" class="hover:text-primary whitespace-nowrap">
                                             {{ $category->name }}
                                         </a>
-                                        <button type="button" class="inline-flex items-center" aria-label="Open {{ $category->name }} categories">
+                                        <button type="button" class="inline-flex items-center shrink-0" aria-label="Open {{ $category->name }} categories">
                                             <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                             </svg>
@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                             @else
-                                <a href="{{ route('store.search', ['category' => $category->id]) }}" class="inline-flex items-center rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary/25 hover:text-primary">{{ $category->name }}</a>
+                                <a href="{{ route('store.search', ['category' => $category->id]) }}" class="inline-flex items-center whitespace-nowrap rounded-full border border-gray-200 px-3.5 py-1.5 text-sm font-semibold text-gray-700 transition hover:border-primary/25 hover:text-primary">{{ $category->name }}</a>
                             @endif
                         @endforeach
                     @endif
