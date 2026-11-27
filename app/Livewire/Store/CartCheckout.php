@@ -116,7 +116,7 @@ class CartCheckout extends Component
         $sendcloudEnabled = filter_var($this->settings['sendcloud_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $shopPickupEnabled = filter_var($this->settings['shop_pickup_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
 
-        $shippingQuery = ShippingMethod::where('active', true);
+        $shippingQuery = ShippingMethod::with('categories')->where('active', true);
         if (! $sendcloudEnabled) {
             $shippingQuery->where(function ($q) {
                 $q->whereNull('provider')->orWhere('provider', '!=', 'sendcloud');
@@ -125,7 +125,33 @@ class CartCheckout extends Component
         if (! $shopPickupEnabled) {
             $shippingQuery->where('type', '!=', 'local_pickup');
         }
-        $this->shippingMethods = $shippingQuery->orderBy('cost', 'asc')->get();
+        $allActiveMethods = $shippingQuery->orderBy('cost', 'asc')->get();
+
+        $productIds = collect($this->cart)->pluck('product_id')->filter()->unique()->values()->all();
+        if (! empty($productIds)) {
+            $cartCategoryIds = Product::whereIn('id', $productIds)
+                ->with('categories')
+                ->get()
+                ->flatMap(fn ($product) => $product->categories->flatMap(fn ($cat) => array_filter([$cat->id, $cat->parent_id])))
+                ->unique()
+                ->values();
+
+            if ($cartCategoryIds->isNotEmpty()) {
+                $filteredMethods = $allActiveMethods->filter(function ($method) use ($cartCategoryIds) {
+                    if ($method->categories->isEmpty()) {
+                        return true;
+                    }
+
+                    return $method->categories->pluck('id')->intersect($cartCategoryIds)->isNotEmpty();
+                })->values();
+
+                $this->shippingMethods = $filteredMethods->isNotEmpty() ? $filteredMethods : $allActiveMethods;
+            } else {
+                $this->shippingMethods = $allActiveMethods;
+            }
+        } else {
+            $this->shippingMethods = $allActiveMethods;
+        }
         $this->currencySymbol = Currency::getActive()->symbol;
         $this->codEnabled = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $rawOffline = $this->settings['offline_payment_methods'] ?? '[]';

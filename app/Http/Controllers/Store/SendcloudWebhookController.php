@@ -24,9 +24,11 @@ class SendcloudWebhookController extends Controller
             'sendcloud_mode',
             'sendcloud_test_secret_key',
             'sendcloud_secret_key',
+            'sendcloud_webhook_secret',
         ])->pluck('value', 'key')->toArray();
 
         $candidateSecrets = array_values(array_filter(array_unique([
+            trim((string) ($keys['sendcloud_webhook_secret'] ?? '')),
             trim((string) ($keys['sendcloud_test_secret_key'] ?? '')),
             trim((string) ($keys['sendcloud_secret_key'] ?? '')),
         ])));

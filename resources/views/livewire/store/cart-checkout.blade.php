@@ -493,7 +493,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
                             @foreach($shippingMethods as $method)
                                 @php
                                     $isPickup = ($method->type ?? 'flat_rate') === 'local_pickup';
@@ -504,10 +504,10 @@
                                         class="peer sr-only">
 
                                     <div
-                                        class="p-3 rounded-xl border transition-all duration-200 flex items-center justify-between gap-3 {{ $isSelected ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                                        class="h-full p-3.5 rounded-xl border transition-all duration-200 flex items-start justify-between gap-3 {{ $isSelected ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-gray-200 bg-white hover:border-gray-300' }}">
 
-                                        <div class="flex items-center gap-3 min-w-0">
-                                            <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 {{ $isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500 group-hover:text-gray-700' }}">
+                                        <div class="flex items-start gap-3 min-w-0">
+                                            <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 {{ $isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500 group-hover:text-gray-700' }}">
                                                 @if($isPickup)
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l1-5h16l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M9 20v-6h6v6" />
@@ -520,7 +520,7 @@
                                             </div>
 
                                             <div class="min-w-0">
-                                                <span class="block text-sm font-bold text-gray-900 truncate">{{ $method->name }}</span>
+                                                <span class="block text-sm font-bold text-gray-900 leading-snug break-words">{{ $method->name }}</span>
                                                 <span class="text-xs text-gray-500 flex items-center mt-0.5">
                                                     <svg class="w-3 h-3 mr-1 text-gray-400 shrink-0" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">

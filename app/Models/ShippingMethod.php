@@ -15,4 +15,9 @@ class ShippingMethod extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_shipping_method')->withTimestamps();
+    }
 }

@@ -42,6 +42,6 @@ class Currency extends Model
         return self::where('is_default', true)->first()
             ?? self::where('active', true)->orderByDesc('is_default')->first()
             ?? self::first()
-            ?? new self(['code' => 'BDT', 'symbol' => '৳', 'exchange_rate' => 1]);
+            ?? new self(['code' => 'EUR', 'symbol' => '€', 'exchange_rate' => 1]);
     }
 }

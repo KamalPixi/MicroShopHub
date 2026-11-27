@@ -209,14 +209,24 @@
                             </div>
 
                             @if($order->sendcloud_parcel_id)
-                                <button type="button" wire:click="refreshSendcloudParcel" wire:loading.attr="disabled" class="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 rounded-lg px-3 py-1.5 text-xs font-semibold">
-                                    Refresh Tracking
+                                <button type="button" wire:click="refreshSendcloudParcel" wire:loading.attr="disabled" wire:target="refreshSendcloudParcel" class="inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed text-gray-700 rounded-lg px-3 py-1.5 text-xs font-semibold">
+                                    <svg wire:loading wire:target="refreshSendcloudParcel" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                    </svg>
+                                    <span wire:loading.remove wire:target="refreshSendcloudParcel">Refresh Tracking</span>
+                                    <span wire:loading wire:target="refreshSendcloudParcel">Refreshing...</span>
                                 </button>
                             @elseif($sendcloudEnabled)
                                 <div class="flex flex-wrap items-center gap-2">
                                     <input type="number" min="1" wire:model="sendcloudMethodOverride" placeholder="Method ID (optional)" class="w-40 border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-mono">
-                                    <button type="button" wire:click="createSendcloudParcel" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-1.5 text-xs font-semibold">
-                                        Create Sendcloud Parcel
+                                    <button type="button" wire:click="createSendcloudParcel" wire:loading.attr="disabled" wire:target="createSendcloudParcel" class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg px-3 py-1.5 text-xs font-semibold">
+                                        <svg wire:loading wire:target="createSendcloudParcel" class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                        </svg>
+                                        <span wire:loading.remove wire:target="createSendcloudParcel">Create Sendcloud Parcel</span>
+                                        <span wire:loading wire:target="createSendcloudParcel">Creating Parcel...</span>
                                     </button>
                                 </div>
                             @endif

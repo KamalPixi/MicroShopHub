@@ -143,6 +143,10 @@ class SendcloudService
                 }
             }
 
+            $existing = ShippingMethod::where('provider', 'sendcloud')
+                ->where('external_id', $externalId)
+                ->first();
+
             ShippingMethod::updateOrCreate(
                 ['provider' => 'sendcloud', 'external_id' => $externalId],
                 [
@@ -151,7 +155,7 @@ class SendcloudService
                     'type' => 'flat_rate',
                     'cost' => $price,
                     'estimated_days' => 3,
-                    'active' => true,
+                    'active' => $existing ? $existing->active : false,
                 ]
             );
             $synced++;

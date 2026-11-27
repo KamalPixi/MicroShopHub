@@ -76,6 +76,7 @@ class Settings extends Component
         'sendcloud_test_secret_key' => '',
         'sendcloud_public_key' => '',
         'sendcloud_secret_key' => '',
+        'sendcloud_webhook_secret' => '',
         'sendcloud_default_shipping_method_id' => '',
         'sendcloud_request_label' => true,
         'sendcloud_default_weight' => '1.00',
@@ -144,6 +145,11 @@ class Settings extends Component
 
     public $logo;
     public $savedSection = '';
+    public array $sectionAlert = [
+        'section' => '',
+        'type' => 'success',
+        'message' => '',
+    ];
     public $telegramChatOptions = [];
     public $telegramFetchMessage = '';
     public $telegramWebhookMessage = '';
@@ -202,6 +208,7 @@ class Settings extends Component
         'settings.sendcloud_test_secret_key' => 'nullable|string|max:255',
         'settings.sendcloud_public_key' => 'nullable|string|max:255',
         'settings.sendcloud_secret_key' => 'nullable|string|max:255',
+        'settings.sendcloud_webhook_secret' => 'nullable|string|max:255',
         'settings.sendcloud_default_shipping_method_id' => 'nullable|integer|min:1',
         'settings.sendcloud_request_label' => 'boolean',
         'settings.sendcloud_default_weight' => 'nullable|numeric|min:0.01|max:1000',
@@ -606,6 +613,34 @@ class Settings extends Component
         ], false, 'bkash');
     }
 
+    public function generateSendcloudWebhookSecret(): void
+    {
+        $upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+        $lower = 'abcdefghijkmnopqrstuvwxyz';
+        $digits = '23456789';
+        $special = '!@#$%^&*-_';
+        $all = $upper . $lower . $digits . $special;
+
+        $chars = [
+            $upper[random_int(0, strlen($upper) - 1)],
+            $lower[random_int(0, strlen($lower) - 1)],
+            $digits[random_int(0, strlen($digits) - 1)],
+            $special[random_int(0, strlen($special) - 1)],
+        ];
+
+        for ($i = 0; $i < 24; $i++) {
+            $chars[] = $all[random_int(0, strlen($all) - 1)];
+        }
+
+        shuffle($chars);
+        $secret = implode('', $chars);
+
+        $this->settings['sendcloud_webhook_secret'] = $secret;
+        Setting::updateOrCreate(['key' => 'sendcloud_webhook_secret'], ['value' => $secret]);
+        $this->savedSection = 'sendcloud';
+        $this->setSectionAlert('sendcloud', 'success', 'Generated and saved a new Sendcloud Webhook Signature Key.');
+    }
+
     public function saveSendcloudGateway()
     {
         $this->saveSettings([
@@ -615,6 +650,7 @@ class Settings extends Component
             'sendcloud_test_secret_key',
             'sendcloud_public_key',
             'sendcloud_secret_key',
+            'sendcloud_webhook_secret',
             'sendcloud_default_shipping_method_id',
             'sendcloud_request_label',
             'sendcloud_default_weight',
@@ -625,6 +661,7 @@ class Settings extends Component
             'settings.sendcloud_test_secret_key' => $this->rules['settings.sendcloud_test_secret_key'],
             'settings.sendcloud_public_key' => $this->rules['settings.sendcloud_public_key'],
             'settings.sendcloud_secret_key' => $this->rules['settings.sendcloud_secret_key'],
+            'settings.sendcloud_webhook_secret' => $this->rules['settings.sendcloud_webhook_secret'],
             'settings.sendcloud_default_shipping_method_id' => $this->rules['settings.sendcloud_default_shipping_method_id'],
             'settings.sendcloud_request_label' => $this->rules['settings.sendcloud_request_label'],
             'settings.sendcloud_default_weight' => $this->rules['settings.sendcloud_default_weight'],
@@ -663,11 +700,11 @@ class Settings extends Component
         [$pub, $sec] = $this->activeSendcloudKeys();
         $result = $sendcloud->testConnection($pub, $sec);
 
-        if ($result['ok']) {
-            session()->flash('message', $result['message']);
-        } else {
-            session()->flash('error', $result['message']);
-        }
+        $this->setSectionAlert(
+            'sendcloud',
+            $result['ok'] ? 'success' : 'error',
+            $result['message']
+        );
     }
 
     public function syncSendcloudShippingMethods(SendcloudService $sendcloud)
@@ -675,9 +712,9 @@ class Settings extends Component
         try {
             [$pub, $sec] = $this->activeSendcloudKeys();
             $count = $sendcloud->syncShippingMethods($pub, $sec);
-            session()->flash('message', "Synced {$count} Sendcloud shipping method(s).");
+            $this->setSectionAlert('sendcloud', 'success', "Synced {$count} Sendcloud shipping method(s).");
         } catch (\Throwable $e) {
-            session()->flash('error', $e->getMessage());
+            $this->setSectionAlert('sendcloud', 'error', $e->getMessage());
         }
     }
 
@@ -1034,6 +1071,15 @@ class Settings extends Component
         session()->flash('message', 'Offline payment methods updated.');
     }
 
+    protected function setSectionAlert(string $section, string $type, string $message): void
+    {
+        $this->sectionAlert = [
+            'section' => $section,
+            'type' => $type,
+            'message' => $message,
+        ];
+    }
+
     protected function saveSettings(array $keys, array $rules, bool $checkAuth = false, string $sectionKey = ''): void
     {
         $this->validate($rules);
@@ -1080,7 +1126,7 @@ class Settings extends Component
         }
 
         $this->savedSection = $sectionKey;
-        session()->flash('message', 'Shop settings updated successfully.');
+        $this->setSectionAlert($sectionKey, 'success', 'Settings saved successfully.');
     }
 
     public function render()

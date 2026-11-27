@@ -77,6 +77,17 @@
                 </label>
                 @error('active') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
             </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Categories (Optional — leave unchecked for all products)</label>
+                <div class="flex flex-wrap gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3">
+                    @foreach($allCategories ?? [] as $cat)
+                        <label class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 cursor-pointer hover:border-blue-300">
+                            <input type="checkbox" wire:model="selectedCategoryIds" value="{{ $cat->id }}" class="h-3.5 w-3.5 text-blue-600 border-gray-300 rounded">
+                            <span>{{ $cat->name }}</span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
             <div class="md:col-span-2 flex flex-wrap gap-2">
                 <button 
                     wire:click="save" 
@@ -135,16 +146,105 @@
                 <span class="text-xs font-bold text-gray-800 shrink-0">{{ $stats['most_used_method_count'] ?? 0 }}</span>
             </div>
         </div>
-        <div class="mb-3">
-            <label for="search" class="block text-sm font-medium text-gray-700">Search Shipping Methods</label>
-            <input 
-                wire:model.live="search" 
-                type="text" 
-                id="search" 
-                class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-                placeholder="Search by method name"
-            >
+        <div class="mb-4 flex flex-wrap items-end gap-2">
+            <div class="flex-1 min-w-[180px]">
+                <label for="search" class="block text-xs font-medium text-gray-600 mb-1">Search</label>
+                <input 
+                    wire:model.live="search" 
+                    type="text" 
+                    id="search" 
+                    class="block w-full h-9 border border-gray-300 rounded-lg bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3" 
+                    placeholder="Search by method name"
+                >
+            </div>
+            <div class="w-36">
+                <label for="statusFilter" class="block text-xs font-medium text-gray-600 mb-1">Status</label>
+                <select wire:model.live="statusFilter" id="statusFilter" class="block w-full h-9 border border-gray-300 rounded-lg bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-2.5">
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active Only</option>
+                    <option value="inactive">Inactive Only</option>
+                </select>
+            </div>
+            <div class="w-36">
+                <label for="providerFilter" class="block text-xs font-medium text-gray-600 mb-1">Provider</label>
+                <select wire:model.live="providerFilter" id="providerFilter" class="block w-full h-9 border border-gray-300 rounded-lg bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-2.5">
+                    <option value="all">All Providers</option>
+                    <option value="sendcloud">Sendcloud</option>
+                    <option value="manual">Manual / Pickup</option>
+                </select>
+            </div>
+            <div class="w-40">
+                <label for="costFilter" class="block text-xs font-medium text-gray-600 mb-1">Pricing</label>
+                <select wire:model.live="costFilter" id="costFilter" class="block w-full h-9 border border-gray-300 rounded-lg bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-2.5">
+                    <option value="all">All (Paid &amp; Free)</option>
+                    <option value="free">Free (€0.00)</option>
+                    <option value="paid">Paid (&gt; €0.00)</option>
+                    <option value="low_to_high">Price: Low to High</option>
+                    <option value="high_to_low">Price: High to Low</option>
+                </select>
+            </div>
+            <div class="w-48">
+                <label for="suitabilityFilter" class="block text-xs font-medium text-gray-600 mb-1">Best For</label>
+                <select wire:model.live="suitabilityFilter" id="suitabilityFilter" class="block w-full h-9 border border-gray-300 rounded-lg bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-2.5">
+                    <option value="all">All Methods</option>
+                    <option value="electronics">Electronics (Tracked Parcels)</option>
+                    <option value="home">Home / Signature Delivery</option>
+                    <option value="express">Express / Fast Courier</option>
+                    <option value="pickup_point">Lockers &amp; Pickup Points</option>
+                </select>
+            </div>
+            <div class="w-32">
+                <label for="perPage" class="block text-xs font-medium text-gray-600 mb-1">Show</label>
+                <select wire:model.live="perPage" id="perPage" class="block w-full h-9 border border-gray-300 rounded-lg bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-2.5">
+                    <option value="15">15 / page</option>
+                    <option value="30">30 / page</option>
+                    <option value="50">50 / page</option>
+                    <option value="100">100 / page</option>
+                </select>
+            </div>
+            <button type="button" wire:click="deactivateAllSendcloud" wire:loading.attr="disabled" wire:target="deactivateAllSendcloud" wire:confirm="Deactivate all Sendcloud methods?" class="h-9 inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed text-gray-800 rounded-lg px-3 text-xs font-semibold whitespace-nowrap">
+                <svg wire:loading wire:target="deactivateAllSendcloud" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+                <span wire:loading.remove wire:target="deactivateAllSendcloud">Deactivate All Sendcloud</span>
+                <span wire:loading wire:target="deactivateAllSendcloud">Deactivating...</span>
+            </button>
+            <button type="button" wire:click="activateAllSendcloud" wire:loading.attr="disabled" wire:target="activateAllSendcloud" wire:confirm="Activate all Sendcloud methods?" class="h-9 inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed text-gray-800 rounded-lg px-3 text-xs font-semibold whitespace-nowrap">
+                <svg wire:loading wire:target="activateAllSendcloud" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+                <span wire:loading.remove wire:target="activateAllSendcloud">Activate All Sendcloud</span>
+                <span wire:loading wire:target="activateAllSendcloud">Activating...</span>
+            </button>
         </div>
+
+        @if(!empty($selectedIds))
+            <div class="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
+                <span class="text-xs font-semibold text-gray-700">{{ count($selectedIds) }} selected</span>
+                <div class="flex flex-wrap items-center gap-2">
+                    <select wire:model="bulkCategoryId" class="h-8 border border-gray-300 rounded-md bg-white text-xs px-2">
+                        <option value="">Tag to Category...</option>
+                        @foreach($allCategories ?? [] as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+                    <button type="button" wire:click="bulkTagCategory" class="border border-blue-300 bg-white hover:bg-blue-50 text-blue-700 rounded-md px-2.5 py-1 text-xs font-semibold">
+                        Apply Tag
+                    </button>
+                    <button type="button" wire:click="bulkActivate" class="border border-green-300 bg-white hover:bg-green-50 text-green-700 rounded-md px-2.5 py-1 text-xs font-semibold">
+                        Activate Selected
+                    </button>
+                    <button type="button" wire:click="bulkDeactivate" class="border border-amber-300 bg-white hover:bg-amber-50 text-amber-700 rounded-md px-2.5 py-1 text-xs font-semibold">
+                        Deactivate Selected
+                    </button>
+                    <button type="button" wire:click="bulkDelete" wire:confirm="Delete selected shipping methods?" class="border border-red-300 bg-white hover:bg-red-50 text-red-700 rounded-md px-2.5 py-1 text-xs font-semibold">
+                        Delete Selected
+                    </button>
+                </div>
+            </div>
+        @endif
 
         @if (session()->has('message'))
             <div class="mb-4 p-2 bg-green-100 text-green-700 rounded-md text-sm">
@@ -156,19 +256,26 @@
             <table class="table-field w-full text-left text-sm">
                 <thead>
                     <tr class="bg-gray-50">
+                        <th class="p-2 w-8">
+                            <input type="checkbox" wire:model.live="selectAll" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        </th>
                         <th class="font-medium text-gray-700 p-2">ID</th>
                         <th class="font-medium text-gray-700 p-2">Name</th>
                         <th class="font-medium text-gray-700 p-2">Type</th>
+                        <th class="font-medium text-gray-700 p-2">Categories</th>
                         <th class="font-medium text-gray-700 p-2">Cost</th>
                         <th class="font-medium text-gray-700 p-2">Estimated Days</th>
                         <th class="font-medium text-gray-700 p-2">Used in Orders</th>
-                        <th class="font-medium text-gray-700 p-2">Active</th>
+                        <th class="font-medium text-gray-700 p-2">Status (Click to Toggle)</th>
                         <th class="font-medium text-gray-700 p-2 text-end">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($shippingMethods as $method)
-                        <tr class="border-t">
+                        <tr class="border-t hover:bg-gray-50/70">
+                            <td class="p-2">
+                                <input type="checkbox" wire:model.live="selectedIds" value="{{ $method->id }}" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
                             <td class="p-2">{{ $method->id }}</td>
                             <td class="p-2">
                                 <span class="font-medium text-gray-900">{{ $method->name }}</span>
@@ -185,7 +292,18 @@
                                     <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">Flat Rate</span>
                                 @endif
                             </td>
-                            <td class="p-2">${{ number_format($method->cost, 2) }}</td>
+                            <td class="p-2">
+                                @if($method->categories->isNotEmpty())
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($method->categories as $cat)
+                                            <span class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">{{ $cat->name }}</span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-[11px] text-gray-400">All Categories</span>
+                                @endif
+                            </td>
+                            <td class="p-2">{{ \App\Models\Currency::getActive()->symbol }}{{ number_format($method->cost, 2) }}</td>
                             <td class="p-2">{{ $method->estimated_days ?? 'N/A' }}</td>
                             <td class="p-2">
                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
@@ -193,10 +311,15 @@
                                 </span>
                             </td>
                             <td class="p-2">
-                                <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full 
-                                    {{ $method->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                <button
+                                    type="button"
+                                    wire:click="toggleActive({{ $method->id }})"
+                                    class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border transition cursor-pointer {{ $method->active ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200' : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200' }}"
+                                    title="Click to toggle active/inactive"
+                                >
+                                    <span class="h-1.5 w-1.5 rounded-full {{ $method->active ? 'bg-green-600' : 'bg-gray-400' }}"></span>
                                     {{ $method->active ? 'Active' : 'Inactive' }}
-                                </span>
+                                </button>
                             </td>
                             <td class="p-2 text-end space-x-1">
                                 <!-- Edit -->

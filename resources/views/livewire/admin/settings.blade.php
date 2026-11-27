@@ -592,29 +592,64 @@
                     <label for="sendcloud_request_label" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">Request shipping label automatically when creating parcel</label>
                 </div>
 
-                <div class="rounded-lg border border-gray-200 bg-white p-3">
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Webhook URL (for Sendcloud Integration)</label>
-                    <div class="flex items-center gap-2">
-                        <input type="text" readonly value="{{ route('sendcloud.webhook') }}" onclick="this.select()" class="input-field block w-full border border-gray-300 rounded-lg bg-gray-50 text-xs px-3 py-2 font-mono text-gray-700">
+                <div class="rounded-lg border border-gray-200 bg-white p-3 space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Webhook URL (for Sendcloud Integration)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" readonly value="{{ route('sendcloud.webhook') }}" onclick="this.select()" class="input-field block w-full border border-gray-300 rounded-lg bg-gray-50 text-xs px-3 py-2 font-mono text-gray-700">
+                        </div>
+                        <p class="mt-1 text-[11px] text-gray-500">Paste this URL into Sendcloud → Settings → Integrations → Sendcloud API → Webhook URL.</p>
                     </div>
-                    <p class="mt-1 text-[11px] text-gray-500">Paste this URL into Sendcloud → Settings → Integrations → Sendcloud API → Webhook URL. Signatures are verified automatically using your Secret Key.</p>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Webhook Signature Key</label>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <input wire:model="settings.sendcloud_webhook_secret" type="text" onclick="this.select()" class="input-field flex-1 min-w-[220px] border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-xs px-3 py-2 font-mono bg-gray-50" placeholder="Click Generate Key to create a compliant key">
+                            <button wire:click="generateSendcloudWebhookSecret" wire:loading.attr="disabled" wire:target="generateSendcloudWebhookSecret" type="button" class="inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed text-gray-800 rounded-lg px-3 py-2 text-xs font-semibold whitespace-nowrap">
+                                <svg wire:loading wire:target="generateSendcloudWebhookSecret" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                                <span wire:loading.remove wire:target="generateSendcloudWebhookSecret">Generate &amp; Save Key</span>
+                                <span wire:loading wire:target="generateSendcloudWebhookSecret">Generating...</span>
+                            </button>
+                        </div>
+                        @error('settings.sendcloud_webhook_secret') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                        <p class="mt-1 text-[11px] text-gray-500">Copy this key and paste it into Sendcloud's <strong>Webhook Signature Key</strong> field (meets Sendcloud's 16+ char, upper/lower/number/special character rule).</p>
+                    </div>
                 </div>
+
+                @include('livewire.admin.partials.section-alert', ['section' => 'sendcloud'])
 
                 <div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-200">
                     <div class="flex flex-wrap items-center gap-2">
-                        <button wire:click="testSendcloudConnection" wire:loading.attr="disabled" type="button" class="border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 rounded-lg px-3 py-2 text-xs font-semibold">
-                            Test Connection
+                        <button wire:click="testSendcloudConnection" wire:loading.attr="disabled" wire:target="testSendcloudConnection" type="button" class="inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed text-gray-700 rounded-lg px-3 py-2 text-xs font-semibold">
+                            <svg wire:loading wire:target="testSendcloudConnection" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                            </svg>
+                            <span wire:loading.remove wire:target="testSendcloudConnection">Test Connection</span>
+                            <span wire:loading wire:target="testSendcloudConnection">Testing...</span>
                         </button>
-                        <button wire:click="syncSendcloudShippingMethods" wire:loading.attr="disabled" type="button" class="border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg px-3 py-2 text-xs font-semibold">
-                            Sync Shipping Methods
+                        <button wire:click="syncSendcloudShippingMethods" wire:loading.attr="disabled" wire:target="syncSendcloudShippingMethods" type="button" class="inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed text-gray-800 rounded-lg px-3 py-2 text-xs font-semibold">
+                            <svg wire:loading wire:target="syncSendcloudShippingMethods" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                            </svg>
+                            <span wire:loading.remove wire:target="syncSendcloudShippingMethods">Sync Shipping Methods</span>
+                            <span wire:loading wire:target="syncSendcloudShippingMethods">Syncing...</span>
                         </button>
                     </div>
                     <div class="flex items-center gap-3">
                         @if($savedSection === 'sendcloud')
                             <span class="text-xs font-semibold text-green-600">Saved</span>
                         @endif
-                        <button wire:click="saveSendcloudGateway" wire:loading.attr="disabled" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
-                            Save Sendcloud
+                        <button wire:click="saveSendcloudGateway" wire:loading.attr="disabled" wire:target="saveSendcloudGateway" type="button" class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            <svg wire:loading wire:target="saveSendcloudGateway" class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                            </svg>
+                            <span wire:loading.remove wire:target="saveSendcloudGateway">Save Sendcloud</span>
+                            <span wire:loading wire:target="saveSendcloudGateway">Saving...</span>
                         </button>
                     </div>
                 </div>
@@ -655,12 +690,19 @@
                     </div>
                 </div>
 
+                @include('livewire.admin.partials.section-alert', ['section' => 'shop_pickup'])
+
                 <div class="flex items-center justify-end gap-3 pt-2 border-t border-gray-200">
                     @if($savedSection === 'shop_pickup')
                         <span class="text-xs font-semibold text-green-600">Saved</span>
                     @endif
-                    <button wire:click="saveShopPickupSettings" wire:loading.attr="disabled" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
-                        Save Pickup Settings
+                    <button wire:click="saveShopPickupSettings" wire:loading.attr="disabled" wire:target="saveShopPickupSettings" type="button" class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                        <svg wire:loading wire:target="saveShopPickupSettings" class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                        <span wire:loading.remove wire:target="saveShopPickupSettings">Save Pickup Settings</span>
+                        <span wire:loading wire:target="saveShopPickupSettings">Saving...</span>
                     </button>
                 </div>
             </div>
