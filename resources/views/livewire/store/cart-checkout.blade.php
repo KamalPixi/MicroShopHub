@@ -120,130 +120,141 @@
                                     && ($authSettings['email_password_enabled'] || $authSettings['email_otp_enabled'])
                                     && (!$authSettings['guest_checkout_enabled'] || $showAuthSection)
                                 )
-                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-sm font-semibold text-gray-800">
-                                            {{ $authSettings['guest_checkout_enabled'] ? __('store.optional_account_access') : __('store.login_required') }}
-                                        </p>
-                                        @if($authSettings['guest_checkout_enabled'])
-                                            <button wire:click="toggleAuthSection" type="button"
-                                                class="text-[11px] px-2 py-1 rounded bg-primary/10 text-primary font-semibold hover:bg-primary/20">{{ __('store.hide') }}</button>
-                                        @endif
-                                    </div>
+                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-3.5 space-y-2.5">
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <div>
+                                            <p class="text-sm font-semibold text-gray-800">
+                                                {{ $authSettings['guest_checkout_enabled'] ? __('store.optional_account_access') : __('store.login_required') }}
+                                            </p>
+                                            @if(!$authSettings['guest_checkout_enabled'])
+                                                <p class="text-xs text-gray-500">{{ __('store.login_or_register_to_place_order') }}</p>
+                                            @endif
+                                        </div>
 
-                                    @if(!$authSettings['guest_checkout_enabled'])
-                                        <p class="text-xs text-gray-600">{{ __('store.login_or_register_to_place_order') }}</p>
-                                    @endif
+                                        <div class="flex items-center gap-3">
+                                            @if($authSettings['email_password_enabled'])
+                                                <div class="inline-flex items-center gap-1 rounded-lg bg-gray-100 p-1 border border-gray-200">
+                                                    <button type="button" wire:click="setAuthPanel('login')"
+                                                        class="px-4 py-1.5 text-xs rounded-md transition cursor-pointer {{ $authPanel === 'login' ? 'bg-white text-gray-900 font-semibold shadow-sm' : 'text-gray-600 hover:text-gray-900 font-medium' }}">
+                                                        {{ __('store.login') }}
+                                                    </button>
+                                                    <button type="button" wire:click="setAuthPanel('register')"
+                                                        class="px-4 py-1.5 text-xs rounded-md transition cursor-pointer {{ $authPanel === 'register' ? 'bg-white text-gray-900 font-semibold shadow-sm' : 'text-gray-600 hover:text-gray-900 font-medium' }}">
+                                                        {{ __('store.register') }}
+                                                    </button>
+                                                </div>
+                                            @endif
+                                            @if($authSettings['guest_checkout_enabled'])
+                                                <button wire:click="toggleAuthSection" type="button"
+                                                    class="text-[11px] px-2 py-1 rounded bg-primary/10 text-primary font-semibold hover:bg-primary/20">{{ __('store.hide') }}</button>
+                                            @endif
+                                        </div>
+                                    </div>
 
                                     @if(session('auth_success'))
                                         <p class="text-xs text-green-700 font-semibold">{{ session('auth_success') }}</p>
                                     @endif
 
-                                    @if($authSettings['email_password_enabled'])
-                                        <div class="grid grid-cols-2 gap-2 rounded-lg bg-gray-100 p-1">
-                                            <button type="button" wire:click="setAuthPanel('login')"
-                                                class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'login' ? 'bg-primary text-white shadow-sm' : 'text-gray-700' }}">
-                                                {{ __('store.login') }}
-                                            </button>
-                                            <button type="button" wire:click="setAuthPanel('register')"
-                                                class="py-2 text-xs rounded-md font-semibold {{ $authPanel === 'register' ? 'bg-primary text-white shadow-sm' : 'text-gray-700' }}">
-                                                {{ __('store.register') }}
-                                            </button>
-                                        </div>
-                                    @endif
-
                                     @if($authPanel === 'login')
                                         @if($authSettings['email_password_enabled'] && $authSettings['email_otp_enabled'])
-                                            <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-1 border border-gray-200">
+                                            <div class="inline-flex items-center gap-1 rounded-lg bg-gray-100 p-1 border border-gray-200">
                                                 <button type="button" wire:click="setAuthMethod('password')"
-                                                    class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'password' ? 'bg-primary text-white' : 'text-gray-700' }}">
+                                                    class="px-4 py-1.5 text-xs rounded-md transition cursor-pointer {{ $authMethod === 'password' ? 'bg-white text-gray-900 font-semibold shadow-sm' : 'text-gray-600 hover:text-gray-900 font-medium' }}">
                                                     {{ __('store.email_password') }}
                                                 </button>
                                                 <button type="button" wire:click="setAuthMethod('otp')"
-                                                    class="py-2 text-xs rounded-md font-semibold {{ $authMethod === 'otp' ? 'bg-primary text-white' : 'text-gray-700' }}">
+                                                    class="px-4 py-1.5 text-xs rounded-md transition cursor-pointer {{ $authMethod === 'otp' ? 'bg-white text-gray-900 font-semibold shadow-sm' : 'text-gray-600 hover:text-gray-900 font-medium' }}">
                                                     {{ __('store.email_otp') }}
                                                 </button>
                                             </div>
                                         @endif
 
-                                        <input wire:model="loginEmail" type="email"
-                                            class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
-                                            placeholder="{{ __('store.email_for_login') }}">
-                                        @error('loginEmail') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-
                                         @if($authMethod === 'password' && $authSettings['email_password_enabled'])
-                                            <div class="space-y-2">
-                                                <input wire:model="loginPassword" type="password"
-                                                    class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
-                                                    placeholder="{{ __('store.password') }}">
-                                                @error('loginPassword') <span class="text-red-500 text-xs">{{ $message }}</span>
-                                                @enderror
-
-                                                <div class="flex flex-col items-start gap-4 pt-2">
-                                                    <label class="inline-flex items-center text-xs text-gray-700">
-                                                        <input wire:model="loginRemember" type="checkbox"
-                                                            class="rounded border-gray-300 text-primary focus:ring-primary mr-2">
-                                                        {{ __('store.remember_me') }}
-                                                    </label>
-                                                    <button wire:click="loginWithPasswordInline" type="button"
-                                                        class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                                        {{ __('store.login') }}
-                                                    </button>
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                                <div>
+                                                    <input wire:model="loginEmail" type="email"
+                                                        class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
+                                                        placeholder="{{ __('store.email_for_login') }}">
+                                                    @error('loginEmail') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                </div>
+                                                <div>
+                                                    <input wire:model="loginPassword" type="password"
+                                                        class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
+                                                        placeholder="{{ __('store.password') }}">
+                                                    @error('loginPassword') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
-                                        @endif
 
-                                        @if($authMethod === 'otp' && $authSettings['email_otp_enabled'])
-                                            <div class="space-y-2">
+                                            <div class="flex items-center justify-between gap-3 pt-1">
+                                                <label class="inline-flex items-center text-xs text-gray-700 cursor-pointer">
+                                                    <input wire:model="loginRemember" type="checkbox"
+                                                        class="rounded border-gray-300 text-primary focus:ring-primary mr-2">
+                                                    {{ __('store.remember_me') }}
+                                                </label>
+                                                <button wire:click="loginWithPasswordInline" type="button"
+                                                    class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
+                                                    {{ __('store.login') }}
+                                                </button>
+                                            </div>
+                                        @elseif($authMethod === 'otp' && $authSettings['email_otp_enabled'])
+                                            <div class="flex flex-col sm:flex-row gap-2">
+                                                <div class="flex-1">
+                                                    <input wire:model="loginEmail" type="email"
+                                                        class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
+                                                        placeholder="{{ __('store.email_for_login') }}">
+                                                    @error('loginEmail') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                </div>
                                                 @if(!$loginOtpSent)
-                                                    <div class="pt-2">
-                                                        <button wire:click="sendLoginOtp" type="button"
-                                                            class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                                            {{ __('store.send_otp') }}
-                                                        </button>
-                                                    </div>
+                                                    <button wire:click="sendLoginOtp" type="button"
+                                                        class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition whitespace-nowrap self-start">
+                                                        {{ __('store.send_otp') }}
+                                                    </button>
                                                 @else
-                                                    <div class="flex gap-2">
+                                                    <div class="flex gap-2 sm:w-64">
                                                         <input wire:model="loginOtp" type="text" maxlength="6"
                                                             class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3 tracking-widest text-center font-mono"
                                                             placeholder="123456">
                                                         <button wire:click="verifyLoginOtp" type="button"
-                                                            class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
+                                                            class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition whitespace-nowrap">
                                                             {{ __('store.verify') }}
                                                         </button>
                                                     </div>
-                                                    @if(session('otp_message'))
-                                                    <p class="text-xs text-primary">{{ session('otp_message') }}</p> @endif
-                                                    @error('loginOtp') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                                 @endif
                                             </div>
+                                            @if($loginOtpSent)
+                                                @if(session('otp_message'))
+                                                    <p class="text-xs text-primary">{{ session('otp_message') }}</p>
+                                                @endif
+                                                @error('loginOtp') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                                            @endif
                                         @endif
                                     @else
-                                        <div class="space-y-2">
-                                            <input wire:model="registerName" type="text"
-                                                class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
-                                                placeholder="{{ __('store.full_name') }}">
-                                            @error('registerName') <span class="text-red-500 text-xs">{{ $message }}</span>
-                                            @enderror
-
-                                            <input wire:model="registerEmail" type="email"
-                                                class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
-                                                placeholder="{{ __('store.email') }}">
-                                            @error('registerEmail') <span class="text-red-500 text-xs">{{ $message }}</span>
-                                            @enderror
-
-                                            <input wire:model="registerPassword" type="password"
-                                                class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
-                                                placeholder="{{ __('store.create_password') }}">
-                                            @error('registerPassword') <span class="text-red-500 text-xs">{{ $message }}</span>
-                                            @enderror
-
-                                            <div class="pt-2">
-                                                <button wire:click="registerInline" type="button"
-                                                    class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
-                                                    {{ __('store.create_account_continue') }}
-                                                </button>
+                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                                            <div>
+                                                <input wire:model="registerName" type="text"
+                                                    class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
+                                                    placeholder="{{ __('store.full_name') }}">
+                                                @error('registerName') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
                                             </div>
+                                            <div>
+                                                <input wire:model="registerEmail" type="email"
+                                                    class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
+                                                    placeholder="{{ __('store.email') }}">
+                                                @error('registerEmail') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <input wire:model="registerPassword" type="password"
+                                                    class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
+                                                    placeholder="{{ __('store.create_password') }}">
+                                                @error('registerPassword') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="flex justify-end pt-1">
+                                            <button wire:click="registerInline" type="button"
+                                                class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary transition">
+                                                {{ __('store.create_account_continue') }}
+                                            </button>
                                         </div>
                                     @endif
                                 </div>
@@ -259,10 +270,6 @@
                                             placeholder="you@example.com">
                                         @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
-                                </div>
-                            @elseif(!auth()->check())
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                                    <p class="text-xs text-gray-600">{{ __('store.login_or_register_to_place_order') }}</p>
                                 </div>
                             @endif
                         </div>
