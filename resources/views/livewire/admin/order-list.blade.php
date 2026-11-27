@@ -1,112 +1,93 @@
-<div class="bg-white p-5 rounded-xl border border-gray-200 table-container mx-auto">
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div>
-            <h3 class="text-base font-bold text-gray-800">Orders</h3>
-            <p class="text-xs text-gray-500">Track and manage customer orders.</p>
+<div class="bg-white p-4 rounded-xl border border-gray-200 table-container mx-auto" x-data="{ period: 'today' }">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div class="flex items-center gap-3">
+            <div>
+                <h3 class="text-sm font-bold text-gray-800">Orders</h3>
+                <p class="text-[11px] text-gray-500">Showing <span class="font-semibold text-gray-700">{{ $orders->count() }}</span> of <span class="font-semibold text-gray-700">{{ $orders->total() }}</span></p>
+            </div>
+            <div class="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5 text-[11px] font-semibold">
+                <button type="button" @click="period = 'today'" :class="period === 'today' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'" class="rounded-md px-2.5 py-1 transition">
+                    Today ({{ $stats['today_total_orders'] }})
+                </button>
+                <button type="button" @click="period = 'all'" :class="period === 'all' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'" class="rounded-md px-2.5 py-1 transition">
+                    All Time ({{ $stats['total_orders'] }})
+                </button>
+            </div>
         </div>
-        <div class="text-xs text-gray-500">
-            Showing <span class="font-semibold text-gray-700">{{ $orders->count() }}</span> of
-            <span class="font-semibold text-gray-700">{{ $orders->total() }}</span>
+        <div class="flex items-center gap-2 flex-1 max-w-md justify-end">
+            <input 
+                wire:model.live="search" 
+                type="text" 
+                id="search" 
+                class="input-field block w-full border border-gray-300 rounded-lg text-xs px-2.5 py-1.5 focus:outline-none focus:ring-0 focus:border-gray-300" 
+                placeholder="Search order ID, customer, status..."
+            >
+            <select wire:model.live="perPage" class="border border-gray-300 rounded-lg text-xs px-2 py-1.5 bg-white shrink-0" title="Per Page">
+                <option value="10">10 / pg</option>
+                <option value="20">20 / pg</option>
+                <option value="30">30 / pg</option>
+            </select>
         </div>
     </div>
 
-    <div class="space-y-4 mb-4">
-        <div class="rounded-xl border border-gray-200 bg-white p-4">
-            <div class="mb-3 flex items-start justify-between gap-3">
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-800">Today</h4>
-                    <p class="text-xs text-gray-500">What needs attention right now</p>
-                </div>
-                <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ $stats['today_total_orders'] }} orders</span>
+    <div class="mb-3">
+        <div x-show="period === 'today'" class="grid grid-cols-3 lg:grid-cols-6 gap-2">
+            <div class="rounded-lg border border-gray-200 bg-slate-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-slate-500">New</span>
+                <span class="text-sm font-bold text-slate-900">{{ $stats['today_total_orders'] }}</span>
             </div>
-            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
-                <div class="rounded-xl border border-gray-200 bg-slate-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-slate-500">New Orders</p>
-                    <p class="mt-1 text-xl font-bold text-slate-900">{{ $stats['today_total_orders'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-amber-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-amber-600">Pending Payment</p>
-                    <p class="mt-1 text-xl font-bold text-amber-800">{{ $stats['today_pending_payment'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">To Process</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['today_to_process'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Shipped</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['today_shipped'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Delivered</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['today_delivered'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Cancelled</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['today_cancelled'] }}</p>
-                </div>
+            <div class="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-amber-700">Pending Pay</span>
+                <span class="text-sm font-bold text-amber-800">{{ $stats['today_pending_payment'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">To Process</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['today_to_process'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Shipped</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['today_shipped'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Delivered</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['today_delivered'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Cancelled</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['today_cancelled'] }}</span>
             </div>
         </div>
 
-        <div class="rounded-xl border border-gray-200 bg-white p-4">
-            <div class="mb-3 flex items-start justify-between gap-3">
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-800">All Time</h4>
-                    <p class="text-xs text-gray-500">Overall business volume</p>
-                </div>
-                <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ $stats['total_orders'] }} orders</span>
+        <div x-show="period === 'all'" style="display: none;" class="grid grid-cols-3 lg:grid-cols-6 gap-2">
+            <div class="rounded-lg border border-gray-200 bg-slate-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-slate-500">Total</span>
+                <span class="text-sm font-bold text-slate-900">{{ $stats['total_orders'] }}</span>
             </div>
-            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
-                <div class="rounded-xl border border-gray-200 bg-slate-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-slate-500">Total Orders</p>
-                    <p class="mt-1 text-xl font-bold text-slate-900">{{ $stats['total_orders'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-amber-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-amber-600">Pending Payment</p>
-                    <p class="mt-1 text-xl font-bold text-amber-800">{{ $stats['pending_payment'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">To Process</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['to_process'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Shipped</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['shipped'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Delivered</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['delivered'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Cancelled / Refunded</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['cancelled'] }}</p>
-                </div>
+            <div class="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-amber-700">Pending Pay</span>
+                <span class="text-sm font-bold text-amber-800">{{ $stats['pending_payment'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">To Process</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['to_process'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Shipped</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['shipped'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Delivered</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['delivered'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Cancelled</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['cancelled'] }}</span>
             </div>
         </div>
     </div>
     
     {{-- success/failed message --}}
     @include('admin.includes.message')
-
-    <div class="mb-4 flex flex-wrap items-center gap-3">
-        <div class="flex-1 min-w-[220px]">
-            <label for="search" class="block text-xs font-semibold text-gray-600">Search Orders</label>
-            <input 
-                wire:model.live="search" 
-                type="text" 
-                id="search" 
-                class="input-field mt-1 block w-full border border-gray-300 rounded-lg text-xs px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" 
-                placeholder="Search by order ID, customer name, or status"
-            >
-        </div>
-        <div>
-            <label class="block text-xs font-semibold text-gray-600">Per Page</label>
-            <select wire:model.live="perPage" class="mt-1 border border-gray-300 rounded-lg text-xs px-3 py-2 bg-white">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-            </select>
-        </div>
-    </div>
 
     @php
         $defaultCurrency = \App\Models\Currency::getActive();

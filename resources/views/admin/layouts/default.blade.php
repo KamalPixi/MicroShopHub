@@ -155,26 +155,71 @@
         }
 
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
+            height: 6px;
         }
 
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
-            border-radius: 4px;
+            border-radius: 9999px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #6b7280;
-            border-radius: 4px;
+            background: #9ca3af;
+            border-radius: 9999px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #4b5563;
+            background: #6b7280;
+        }
+
+        aside nav {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+        }
+
+        aside nav::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        aside nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        aside nav::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 9999px;
+        }
+
+        aside nav::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.6);
         }
 
         /* Sidebar transition */
         aside {
             transition: transform 0.3s ease;
+        }
+
+        main {
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar-submenu {
+            display: grid;
+            grid-template-rows: 0fr;
+            opacity: 0;
+            margin-top: 0;
+            transition: grid-template-rows 0.24s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, margin-top 0.24s ease;
+        }
+
+        .sidebar-submenu.is-open {
+            grid-template-rows: 1fr;
+            opacity: 1;
+            margin-top: 0.375rem;
+        }
+
+        .sidebar-submenu > ul {
+            overflow: hidden;
         }
 
         .sidebar-collapsed {
@@ -355,9 +400,9 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 1.75rem;
-            height: 1.75rem;
-            border-radius: 0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 0.375rem;
             border: 1px solid #e5e7eb;
             background: #fff;
             color: #4b5563;
@@ -455,7 +500,7 @@
             border: 1px solid #e5e7eb;
         }
         .table-field th, .table-field td {
-            padding: 0.75rem;
+            padding: 0.45rem 0.6rem;
         }
         .table-field tr:hover {
             background-color: #f9fafb;
@@ -493,7 +538,7 @@
         @include('admin.includes.sidebar')
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 overflow-y-auto ml-60">
+        <main class="flex-1 p-3 overflow-y-auto ml-60">
             <!-- Header -->
             @include('admin.includes.header')
 

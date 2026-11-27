@@ -1,13 +1,16 @@
-<div class="space-y-6">
-    <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-7 5h7"></path>
-            </svg>
-            {{ $editingId ? 'Edit Category' : 'Add Category' }}
-        </h3>
+<div class="space-y-3" x-data="{ showForm: @js((bool) $editingId) }" x-effect="if ($wire.editingId) showForm = true">
+    <div x-show="showForm" x-cloak class="bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-gray-800 flex items-center">
+                <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-7 5h7"></path>
+                </svg>
+                {{ $editingId ? 'Edit Category' : 'Add Category' }}
+            </h3>
+            <button type="button" @click="showForm = false; $wire.resetForm()" class="text-xs text-gray-500 hover:text-gray-800">Close</button>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input 
@@ -187,37 +190,34 @@
         </div>
     </div>
 
-    <div class="bg-white p-4 rounded-lg shadow table-container">
-        <div class="flex justify-between">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-white p-4 rounded-xl border border-gray-200 table-container">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100">
+            <h3 class="text-sm font-bold text-gray-800 flex items-center shrink-0">
+                <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-7 5h7"></path>
                 </svg>
                 Categories List
             </h3>
-        </div>
-        <div class="mb-4 flex flex-col sm:flex-row gap-3">
-            <div class="flex-1">
-                <label for="search" class="block text-xs font-semibold text-gray-600 uppercase mb-1">Search Categories</label>
+            <div class="flex flex-wrap items-center gap-2 flex-1 max-w-xl justify-end">
                 <input 
                     wire:model.live="search" 
                     type="text" 
                     id="search" 
-                    class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-                    placeholder="Search by category name..."
+                    class="input-field flex-1 min-w-[160px] border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-xs px-2.5 py-1.5" 
+                    placeholder="Search categories..."
                 >
-            </div>
-            <div class="w-full sm:w-48">
-                <label for="filterStatus" class="block text-xs font-semibold text-gray-600 uppercase mb-1">Status Filter</label>
                 <select 
                     wire:model.live="filterStatus" 
                     id="filterStatus" 
-                    class="form-input block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
+                    class="form-input w-36 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-xs px-2.5 py-1.5"
                 >
                     <option value="">All Statuses</option>
                     <option value="1">Active Only</option>
                     <option value="0">Inactive Only</option>
                 </select>
+                <button type="button" @click="showForm = !showForm" class="bg-primary text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0">
+                    <span x-text="showForm ? 'Hide Form' : '+ Add Category'">+ Add Category</span>
+                </button>
             </div>
         </div>
 
@@ -242,14 +242,16 @@
                         <tr class="border-t">
                             <td class="p-2">{{ $category->id }}</td>
                             <td class="p-2">
-                                {{ $category->name }}
-                                <p class="text-xs text-gray-500 mb-2">{{ $category->subtitle }}</p>
+                                <div class="font-medium text-gray-800">{{ $category->name }}</div>
+                                @if($category->subtitle)
+                                    <p class="text-[11px] text-gray-500 leading-tight">{{ $category->subtitle }}</p>
+                                @endif
                             </td>
                             <td class="p-2">{{ $category->slug }}</td>
                             <td class="p-2">{{ $category->parent ? $category->parent->name : 'None' }}</td>
                             <td class="p-2">
                                 @if ($category->thumbnail)
-                                    <img src="{{ Storage::url($category->thumbnail) }}" alt="{{ $category->name }}" class="h-12 w-12 object-cover rounded">
+                                    <img src="{{ Storage::url($category->thumbnail) }}" alt="{{ $category->name }}" class="h-8 w-8 object-cover rounded">
                                 @else
                                     N/A
                                 @endif

@@ -504,7 +504,11 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
-                                                {{ $method->estimated_days }} {{ __('store.days') }}
+                                                @if(($method->type ?? 'flat_rate') === 'local_pickup')
+                                                    In-store pickup
+                                                @else
+                                                    {{ $method->estimated_days }} {{ __('store.days') }}
+                                                @endif
                                             </span>
                                         </div>
 
@@ -527,6 +531,16 @@
                         </div>
                         @error('selectedShippingMethod') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span>
                         @enderror
+
+                        @php
+                            $activeMethod = collect($shippingMethods)->firstWhere('id', $selectedShippingMethod);
+                        @endphp
+                        @if($activeMethod && ($activeMethod->type ?? 'flat_rate') === 'local_pickup')
+                            <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+                                <p class="font-semibold">Collect from Shop</p>
+                                <p class="mt-0.5">{{ $settings['shop_pickup_address'] ?? 'Collect your order in person from our shop.' }}</p>
+                            </div>
+                        @endif
                     </div>
 
                 </div>

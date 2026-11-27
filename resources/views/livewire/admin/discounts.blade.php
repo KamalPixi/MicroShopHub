@@ -1,18 +1,21 @@
-<div class="space-y-6">
+<div class="space-y-3" x-data="{ showForm: @js((bool) $editingId) }" x-effect="if ($wire.editingId) showForm = true">
     @php
         $activeCurrency = \App\Models\Currency::getActive();
         $currencySymbol = $activeCurrency?->symbol ?? '৳';
         $currencyCode = $activeCurrency?->code ?? 'BDT';
     @endphp
     <!-- Form Section -->
-    <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            {{ $editingId ? 'Edit Coupon' : 'Add Coupon' }}
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div x-show="showForm" x-cloak class="bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-gray-800 flex items-center">
+                <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                {{ $editingId ? 'Edit Coupon' : 'Add Coupon' }}
+            </h3>
+            <button type="button" @click="showForm = false; $wire.resetForm()" class="text-xs text-gray-500 hover:text-gray-800">Close</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
                 <label for="code" class="block text-sm font-medium text-gray-700">Code</label>
                 <input 
@@ -141,24 +144,26 @@
     </div>
 
     <!-- List Section -->
-    <div class="bg-white p-4 rounded-lg shadow table-container">
-        <div class="flex justify-between">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-white p-4 rounded-xl border border-gray-200 table-container">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100">
+            <h3 class="text-sm font-bold text-gray-800 flex items-center shrink-0">
+                <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 Coupons List
             </h3>
-        </div>
-        <div class="mb-4">
-            <label for="search" class="block text-sm font-medium text-gray-700">Search Coupons</label>
-            <input 
-                wire:model.live="search" 
-                type="text" 
-                id="search" 
-                class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-                placeholder="Search by coupon code"
-            >
+            <div class="flex items-center gap-2 flex-1 max-w-md justify-end">
+                <input 
+                    wire:model.live="search" 
+                    type="text" 
+                    id="search" 
+                    class="input-field block w-full border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-xs px-2.5 py-1.5" 
+                    placeholder="Search by coupon code..."
+                >
+                <button type="button" @click="showForm = !showForm" class="bg-primary text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0">
+                    <span x-text="showForm ? 'Hide Form' : '+ Add Coupon'">+ Add Coupon</span>
+                </button>
+            </div>
         </div>
 
         {{-- success/failed message --}}

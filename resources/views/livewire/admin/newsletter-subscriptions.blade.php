@@ -1,76 +1,52 @@
-<div class="bg-white p-4 rounded-lg shadow table-container mx-auto">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+<div class="bg-white p-4 rounded-xl border border-gray-200 table-container mx-auto">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100">
         <div>
-            <h3 class="text-lg font-semibold text-gray-800">Newsletter Subscriptions</h3>
-            <p class="text-xs text-gray-500">Manage subscribers and consent status</p>
+            <h3 class="text-sm font-bold text-gray-800">Newsletter Subscriptions</h3>
+            <p class="text-[11px] text-gray-500">Manage subscribers and consent status</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+            <input
+                wire:model.live="search"
+                type="text"
+                id="search"
+                class="border border-gray-300 rounded-lg focus:border-primary focus:ring-primary text-xs px-2.5 py-1.5 w-48"
+                placeholder="Search email or name..."
+            >
+            <select
+                wire:model.live="status"
+                id="status"
+                class="border border-gray-300 rounded-lg text-xs px-2.5 py-1.5 bg-white"
+            >
+                <option value="">All Statuses</option>
+                <option value="subscribed">Subscribed</option>
+                <option value="unsubscribed">Unsubscribed</option>
+            </select>
+            <select
+                wire:model.live="perPage"
+                id="perPage"
+                class="border border-gray-300 rounded-lg text-xs px-2 py-1.5 bg-white"
+            >
+                <option value="10">10 / pg</option>
+                <option value="25">25 / pg</option>
+                <option value="50">50 / pg</option>
+            </select>
         </div>
     </div>
 
     @include('admin.includes.message')
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-        <div class="border border-gray-200 rounded-lg p-3">
-            <p class="text-xs text-gray-500">Total</p>
-            <p class="text-lg font-semibold text-gray-900">{{ $totalCount }}</p>
+    <div class="grid grid-cols-3 gap-2 mb-3">
+        <div class="border border-gray-200 bg-gray-50 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+            <p class="text-[11px] text-gray-500">Total</p>
+            <p class="text-sm font-bold text-gray-900">{{ $totalCount }}</p>
         </div>
-        <div class="border border-gray-200 rounded-lg p-3">
-            <p class="text-xs text-gray-500">Subscribed</p>
-            <p class="text-lg font-semibold text-green-600">{{ $subscribedCount }}</p>
+        <div class="border border-green-200 bg-green-50 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+            <p class="text-[11px] text-green-700">Subscribed</p>
+            <p class="text-sm font-bold text-green-700">{{ $subscribedCount }}</p>
         </div>
-        <div class="border border-gray-200 rounded-lg p-3">
-            <p class="text-xs text-gray-500">Unsubscribed</p>
-            <p class="text-lg font-semibold text-gray-600">{{ $unsubscribedCount }}</p>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-        <div>
-            <label for="search" class="block text-xs font-medium text-gray-700">Search</label>
-            <input
-                wire:model.live="search"
-                type="text"
-                id="search"
-                class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-primary focus:ring-primary text-sm px-3 py-2"
-                placeholder="Search by email or name"
-            >
-        </div>
-        <div>
-            <label for="status" class="block text-xs font-medium text-gray-700">Status</label>
-            <div class="relative mt-1">
-                <select
-                    wire:model.live="status"
-                    id="status"
-                    class="block w-full appearance-none border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 bg-white pr-8 focus:outline-none focus:ring-0 focus:border-gray-300"
-                >
-                    <option value="">All</option>
-                    <option value="subscribed">Subscribed</option>
-                    <option value="unsubscribed">Unsubscribed</option>
-                </select>
-                <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
-                    <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
-                    </svg>
-                </span>
-            </div>
-        </div>
-        <div>
-            <label for="perPage" class="block text-xs font-medium text-gray-700">Per page</label>
-            <div class="relative mt-1">
-                <select
-                    wire:model.live="perPage"
-                    id="perPage"
-                    class="block w-full appearance-none border border-gray-300 rounded-lg shadow-sm text-sm px-3 py-2 bg-white pr-8 focus:outline-none focus:ring-0 focus:border-gray-300"
-                >
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                </select>
-                <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
-                    <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
-                    </svg>
-                </span>
-            </div>
+        <div class="border border-gray-200 bg-gray-50 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+            <p class="text-[11px] text-gray-500">Unsubscribed</p>
+            <p class="text-sm font-bold text-gray-700">{{ $unsubscribedCount }}</p>
         </div>
     </div>
 

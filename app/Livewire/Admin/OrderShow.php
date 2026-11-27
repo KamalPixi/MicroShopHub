@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\Order;
 use App\Models\OrderEmailLog;
 use App\Models\Setting;
+use App\Services\SendcloudService;
 use Livewire\Component;
 use App\Jobs\SendRawEmail;
 
@@ -17,6 +18,9 @@ class OrderShow extends Component
     public string $emailMessage = '';
     public string $statusSelection = '';
     public bool $notifyCustomer = false;
+    public bool $sendcloudEnabled = false;
+    public string $sendcloudMode = 'test';
+    public string $sendcloudMethodOverride = '';
 
     public function mount(int $id): void
     {
@@ -37,6 +41,10 @@ class OrderShow extends Component
             $this->customerOrderCount = Order::where('user_id', $this->order->user_id)->count();
             $this->customerTotalSpend = (float) Order::where('user_id', $this->order->user_id)->sum('total');
         }
+
+        $sendcloudService = app(SendcloudService::class);
+        $this->sendcloudEnabled = $sendcloudService->isEnabled();
+        $this->sendcloudMode = $sendcloudService->getConfig()['mode'];
     }
 
     public function updateStatus(string $status): void
@@ -160,6 +168,29 @@ class OrderShow extends Component
             'message' => $messageBody,
             'sent_at' => now(),
         ]);
+    }
+
+    public function createSendcloudParcel(SendcloudService $sendcloud): void
+    {
+        try {
+            $methodOverride = trim($this->sendcloudMethodOverride) !== '' ? (int) $this->sendcloudMethodOverride : null;
+            $sendcloud->createParcel($this->order, $methodOverride);
+            $this->order->refresh();
+            session()->flash('message', 'Sendcloud parcel created successfully.');
+        } catch (\Throwable $e) {
+            session()->flash('error', $e->getMessage());
+        }
+    }
+
+    public function refreshSendcloudParcel(SendcloudService $sendcloud): void
+    {
+        try {
+            $sendcloud->refreshParcel($this->order);
+            $this->order->refresh();
+            session()->flash('message', 'Sendcloud tracking status refreshed.');
+        } catch (\Throwable $e) {
+            session()->flash('error', $e->getMessage());
+        }
     }
 
     public function render()

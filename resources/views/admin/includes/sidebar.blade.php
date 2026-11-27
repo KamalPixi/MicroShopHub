@@ -1,4 +1,4 @@
-<aside id="sidebar" class="w-60 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 p-4 flex flex-col fixed top-0 bottom-0 border-r border-white/10 shadow-[0_24px_60px_rgba(2,6,23,0.45)]">
+<aside id="sidebar" class="w-60 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 py-4 flex flex-col fixed top-0 bottom-0 border-r border-white/10 shadow-[0_24px_60px_rgba(2,6,23,0.45)]">
 @php
         $sidebarSettings = \App\Models\Setting::whereIn('key', ['shop_name', 'site_title', 'shop_logo'])->pluck('value', 'key');
         $sidebarStoreName = trim((string) ($sidebarSettings['shop_name'] ?? '')) ?: config('app.name', 'Store Name');
@@ -11,10 +11,10 @@
         $sidebarStoreSlogan = $sidebarSettings['site_title'] ?? '';
         $adminUser = auth('admin')->user();
     @endphp
-    <div class="mb-5 rounded-2xl border border-white/10 bg-white/5 p-3 shadow-sm backdrop-blur-sm">
+    <div class="mx-4 mb-4 rounded-2xl border border-white/10 bg-white/5 p-3 shadow-sm backdrop-blur-sm">
         <div class="flex items-start justify-between gap-3">
         <div class="flex items-center gap-3 min-w-0">
-            <div class="h-10 w-10 rounded-2xl bg-primary/20 border border-white/10 flex items-center justify-center overflow-hidden shadow-inner">
+            <div class="h-10 w-10 rounded-2xl bg-primary/20 border border-white/10 flex items-center justify-center overflow-hidden shadow-inner shrink-0">
                 @if($sidebarStoreLogoUrl)
                     <img src="{{ $sidebarStoreLogoUrl }}" alt="{{ $sidebarStoreName }} logo" class="h-full w-full object-contain p-1">
                 @else
@@ -32,15 +32,15 @@
                 @endif
             </div>
         </div>
-        <button id="toggle-sidebar" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 transition hover:bg-white/10 hover:text-white" aria-label="Collapse sidebar">
+        <button id="toggle-sidebar" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 transition hover:bg-white/10 hover:text-white shrink-0" aria-label="Collapse sidebar">
             <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 6h10M5 12h14M5 18h8"></path>
             </svg>
         </button>
         </div>
     </div>
-    <nav class="flex-1 overflow-y-auto pr-1">
-        <ul class="space-y-2">
+    <nav class="flex-1 overflow-y-auto px-4">
+        <ul class="space-y-1.5">
             <li class="px-2 pt-1">
                 <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Overview</p>
             </li>
@@ -66,7 +66,7 @@
                 <li>
                     <button 
                         class="flex items-center gap-3 text-sm px-3 py-2.5 rounded-xl w-full font-medium transition {{ $isProductsOpen ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}" 
-                        onclick="document.getElementById('products-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                        onclick="document.getElementById('products-submenu').classList.toggle('is-open'); this.querySelector('.chevron').classList.toggle('rotate-90')"
                     >
                         <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
@@ -77,7 +77,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </button>
-                    <ul id="products-submenu" class="ml-4 mt-2 space-y-1.5 border-l border-white/10 pl-3 {{ $isProductsOpen ? '' : 'hidden' }}">
+                    <div id="products-submenu" class="sidebar-submenu {{ $isProductsOpen ? 'is-open' : '' }}">
+                    <ul class="ml-4 space-y-1 border-l border-white/10 pl-3">
                         @if($adminUser?->hasPermission('products.manage'))
                             <li>
                                 <a href="{{ route('admin.products.index') }}" 
@@ -103,6 +104,7 @@
                             </li>
                         @endif
                     </ul>
+                    </div>
                 </li>
             @endif
 
@@ -141,7 +143,7 @@
                     <li>
                         <button
                             class="flex items-center gap-3 text-sm px-3 py-2.5 rounded-xl w-full font-medium transition {{ $isAdminManagementOpen ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}"
-                            onclick="document.getElementById('admin-management-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                            onclick="document.getElementById('admin-management-submenu').classList.toggle('is-open'); this.querySelector('.chevron').classList.toggle('rotate-90')"
                         >
                             <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -154,7 +156,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </button>
-                        <ul id="admin-management-submenu" class="ml-4 mt-2 space-y-1.5 border-l border-white/10 pl-3 {{ $isAdminManagementOpen ? '' : 'hidden' }}">
+                        <div id="admin-management-submenu" class="sidebar-submenu {{ $isAdminManagementOpen ? 'is-open' : '' }}">
+                        <ul class="ml-4 space-y-1 border-l border-white/10 pl-3">
                             <li>
                                 <a href="{{ route('admin.users.index') }}"
                                    class="block text-sm px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.users*') ? 'bg-white text-slate-950 shadow-md ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
@@ -168,6 +171,7 @@
                                 </a>
                             </li>
                         </ul>
+                        </div>
                     </li>
                 @endif
 
@@ -194,7 +198,7 @@
                 <li>
                     <button
                         class="flex items-center gap-3 text-sm px-3 py-2.5 rounded-xl w-full font-medium transition {{ $isPagesOpen ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}"
-                        onclick="document.getElementById('pages-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                        onclick="document.getElementById('pages-submenu').classList.toggle('is-open'); this.querySelector('.chevron').classList.toggle('rotate-90')"
                     >
                         <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h6l4 4v14H7V3zM13 3v5h5"></path>
@@ -205,7 +209,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </button>
-                    <ul id="pages-submenu" class="ml-4 mt-2 space-y-1.5 border-l border-white/10 pl-3 {{ $isPagesOpen ? '' : 'hidden' }}">
+                    <div id="pages-submenu" class="sidebar-submenu {{ $isPagesOpen ? 'is-open' : '' }}">
+                    <ul class="ml-4 space-y-1 border-l border-white/10 pl-3">
                         <li>
                             <a href="{{ route('admin.pages') }}"
                                class="block text-sm px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.pages') ? 'bg-white text-slate-950 shadow-md ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
@@ -255,6 +260,7 @@
                             </a>
                         </li>
                     </ul>
+                    </div>
                 </li>
             @endif
 
@@ -268,7 +274,7 @@
                 <li>
                     <button 
                         class="flex items-center gap-3 text-sm px-3 py-2.5 rounded-xl w-full font-medium transition {{ $isMarketingOpen ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}" 
-                        onclick="document.getElementById('marketing-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                        onclick="document.getElementById('marketing-submenu').classList.toggle('is-open'); this.querySelector('.chevron').classList.toggle('rotate-90')"
                     >
                         <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h7M11 9h7M3 5h4v4H3V5zm0 6h4v4H3v-4zm0 6h4v4H3v-4z"></path>
@@ -279,7 +285,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </button>
-                    <ul id="marketing-submenu" class="ml-4 mt-2 space-y-1.5 border-l border-white/10 pl-3 {{ $isMarketingOpen ? '' : 'hidden' }}">
+                    <div id="marketing-submenu" class="sidebar-submenu {{ $isMarketingOpen ? 'is-open' : '' }}">
+                    <ul class="ml-4 space-y-1 border-l border-white/10 pl-3">
                         <li>
                             <a href="{{ route('admin.marketing.subscriptions') }}" 
                                class="block text-sm px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.marketing.subscriptions') ? 'bg-white text-slate-950 shadow-md ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
@@ -299,6 +306,7 @@
                             </a>
                         </li>
                     </ul>
+                    </div>
                 </li>
             @endif
 
@@ -312,7 +320,7 @@
                 <li>
                     <button 
                         class="flex items-center gap-3 text-sm px-3 py-2.5 rounded-xl w-full font-medium transition {{ $isSettingsOpen ? 'bg-white text-slate-950 shadow-lg shadow-black/20 ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}" 
-                        onclick="document.getElementById('settings-submenu').classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-90')"
+                        onclick="document.getElementById('settings-submenu').classList.toggle('is-open'); this.querySelector('.chevron').classList.toggle('rotate-90')"
                     >
                         <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -333,7 +341,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </button>
-                    <ul id="settings-submenu" class="ml-4 mt-2 space-y-1.5 border-l border-white/10 pl-3 {{ $isSettingsOpen ? '' : 'hidden' }}">
+                    <div id="settings-submenu" class="sidebar-submenu {{ $isSettingsOpen ? 'is-open' : '' }}">
+                    <ul class="ml-4 space-y-1 border-l border-white/10 pl-3">
                         <li>
                             <a href="{{ route('admin.settings') }}" 
                                class="block text-sm px-3 py-2 rounded-lg transition {{ request()->routeIs('admin.settings*') ? 'bg-white text-slate-950 shadow-md ring-1 ring-white/10' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
@@ -359,6 +368,7 @@
                             </a>
                         </li>
                     </ul>
+                    </div>
                 </li>
             @endif
 

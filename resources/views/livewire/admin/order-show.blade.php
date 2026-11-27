@@ -1,8 +1,8 @@
 <div class="mx-auto">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-3">
         <div>
-            <h1 class="text-xl font-bold text-gray-900">Order #{{ $order->order_number ?? $order->id }}</h1>
-            <p class="text-xs text-gray-500">Placed {{ $order->created_at?->format('Y-m-d H:i') }}</p>
+            <h1 class="text-base font-bold text-gray-900">Order #{{ $order->order_number ?? $order->id }}</h1>
+            <p class="text-[11px] text-gray-500">Placed {{ $order->created_at?->format('Y-m-d H:i') }}</p>
         </div>
         <div class="flex items-center gap-2">
             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
@@ -43,9 +43,9 @@
         $displaySymbol = $currencySymbol ?: ($resolvedCode ? $resolvedCode . ' ' : $defaultSymbol);
     @endphp
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div class="lg:col-span-2 space-y-5">
-            <div class="bg-white border border-gray-200 rounded-lg p-5">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div class="lg:col-span-2 space-y-3">
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
                 <div class="flex items-center justify-between mb-3">
                     <h2 class="text-sm font-bold text-gray-800">Order Actions</h2>
                     <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
@@ -124,7 +124,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
                         <p class="text-xs font-semibold text-gray-500 uppercase">Shipping Method</p>
-                        <p class="text-gray-800">{{ $order->shippingMethod?->name ?? '—' }}</p>
+                        <p class="text-gray-800">
+                            {{ $order->shippingMethod?->name ?? '—' }}
+                            @if($order->shippingMethod?->type === 'local_pickup')
+                                <span class="ml-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800">Collect from Shop</span>
+                            @endif
+                        </p>
                     </div>
                     <div>
                         <p class="text-xs font-semibold text-gray-500 uppercase">Payment Method</p>
@@ -187,6 +192,66 @@
                         </p>
                     </div>
                 </div>
+
+                @if(($sendcloudEnabled && $order->shippingMethod?->type !== 'local_pickup') || $order->sendcloud_parcel_id)
+                    <div class="mt-5 pt-4 border-t border-gray-200">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <div class="flex items-center gap-2">
+                                <p class="text-xs font-semibold text-gray-700 uppercase">Sendcloud Delivery Gateway</p>
+                                @if($sendcloudEnabled)
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold {{ $sendcloudMode === 'production' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-800' }}">
+                                        {{ $sendcloudMode === 'production' ? 'Live' : 'Test Mode' }}
+                                    </span>
+                                @endif
+                                @if($order->shipping_status)
+                                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-700">{{ $order->shipping_status }}</span>
+                                @endif
+                            </div>
+
+                            @if($order->sendcloud_parcel_id)
+                                <button type="button" wire:click="refreshSendcloudParcel" wire:loading.attr="disabled" class="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 rounded-lg px-3 py-1.5 text-xs font-semibold">
+                                    Refresh Tracking
+                                </button>
+                            @elseif($sendcloudEnabled)
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <input type="number" min="1" wire:model="sendcloudMethodOverride" placeholder="Method ID (optional)" class="w-40 border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-mono">
+                                    <button type="button" wire:click="createSendcloudParcel" wire:loading.attr="disabled" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-1.5 text-xs font-semibold">
+                                        Create Sendcloud Parcel
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if($order->sendcloud_parcel_id)
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                <div>
+                                    <span class="font-semibold text-gray-500 uppercase block">Parcel ID</span>
+                                    <span class="font-mono text-gray-800">{{ $order->sendcloud_parcel_id }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-semibold text-gray-500 uppercase block">Tracking Number</span>
+                                    @if($order->tracking_url)
+                                        <a href="{{ $order->tracking_url }}" target="_blank" rel="noopener noreferrer" class="font-mono text-blue-600 hover:underline">
+                                            {{ $order->tracking_number ?: 'Track Parcel' }}
+                                        </a>
+                                    @else
+                                        <span class="font-mono text-gray-800">{{ $order->tracking_number ?: '—' }}</span>
+                                    @endif
+                                </div>
+                                <div>
+                                    <span class="font-semibold text-gray-500 uppercase block">Shipping Label</span>
+                                    @if($order->shipping_label_url)
+                                        <a href="{{ $order->shipping_label_url }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-semibold hover:underline">
+                                            Download Label PDF
+                                        </a>
+                                    @else
+                                        <span class="text-gray-500">Not requested</span>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg p-5">

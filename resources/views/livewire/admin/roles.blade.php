@@ -1,18 +1,19 @@
-<div class="space-y-6">
-    <div class="bg-white p-4 rounded-lg shadow">
-        <div class="flex items-start justify-between gap-3 mb-4">
+<div class="space-y-3" x-data="{ showForm: @js((bool) $editingId) }" x-effect="if ($wire.editingId) showForm = true">
+    <div x-show="showForm" x-cloak class="bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
+        <div class="flex items-center justify-between gap-3 mb-3 pb-3 border-b border-gray-100">
             <div>
-                <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <h3 class="text-sm font-bold text-gray-800 flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1M16 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                     {{ $editingId ? 'Edit Role' : 'Add Role' }}
                 </h3>
-                <p class="text-xs text-gray-500">Roles carry permissions. Admin users are assigned to a role.</p>
+                <p class="text-[11px] text-gray-500">Roles carry permissions. Admin users are assigned to a role.</p>
             </div>
+            <button type="button" @click="showForm = false; $wire.resetForm()" class="text-xs text-gray-500 hover:text-gray-800">Close</button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Role Name</label>
                 <input wire:model="name" type="text" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-primary" placeholder="Editor">
@@ -64,21 +65,20 @@
         </div>
     </div>
 
-    <div class="bg-white p-4 rounded-lg shadow table-container">
-        <div class="flex items-start justify-between gap-3 mb-4">
-            <div>
-                <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h4a2 2 0 012 2v2M7 7h10"></path>
-                    </svg>
-                    Roles List
-                </h3>
+    <div class="bg-white p-4 rounded-xl border border-gray-200 table-container">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100">
+            <h3 class="text-sm font-bold text-gray-800 flex items-center gap-1.5 shrink-0">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h4a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                Roles List
+            </h3>
+            <div class="flex items-center gap-2 flex-1 max-w-md justify-end">
+                <input wire:model.live="search" type="text" class="block w-full rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs focus:border-primary focus:ring-primary" placeholder="Search by name or slug...">
+                <button type="button" @click="showForm = !showForm" class="bg-primary text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0">
+                    <span x-text="showForm ? 'Hide Form' : '+ Add Role'">+ Add Role</span>
+                </button>
             </div>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">Search Roles</label>
-            <input wire:model.live="search" type="text" class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-primary" placeholder="Search by name or slug">
         </div>
 
         @include('admin.includes.message')

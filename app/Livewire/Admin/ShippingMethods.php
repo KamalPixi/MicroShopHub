@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\ShippingMethod;
+use App\Models\ShippingZone;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,6 +14,7 @@ class ShippingMethods extends Component
     public $search = '';
     public $perPage = 10;
     public $name = '';
+    public $type = 'flat_rate';
     public $cost = 0;
     public $estimated_days = null;
     public $active = true;
@@ -20,8 +22,9 @@ class ShippingMethods extends Component
 
     protected $rules = [
         'name' => 'required|string|max:255|unique:shipping_methods,name',
+        'type' => 'required|in:flat_rate,free_shipping,local_pickup',
         'cost' => 'required|numeric|min:0',
-        'estimated_days' => 'nullable|integer|min:1',
+        'estimated_days' => 'nullable|integer|min:0',
         'active' => 'boolean',
     ];
 
@@ -35,6 +38,7 @@ class ShippingMethods extends Component
     public function resetForm()
     {
         $this->name = '';
+        $this->type = 'flat_rate';
         $this->cost = 0;
         $this->estimated_days = null;
         $this->active = true;
@@ -50,12 +54,21 @@ class ShippingMethods extends Component
 
         $this->validate();
 
+        $defaultZoneId = ShippingZone::query()->value('id');
+        if (! $defaultZoneId) {
+            $defaultZoneId = ShippingZone::create(['name' => 'Default Zone'])->id;
+        }
+
+        $existing = $this->editingId ? ShippingMethod::find($this->editingId) : null;
+
         ShippingMethod::updateOrCreate(
             ['id' => $this->editingId],
             [
+                'shipping_zone_id' => $existing?->shipping_zone_id ?? $defaultZoneId,
                 'name' => $this->name,
-                'cost' => $this->cost,
-                'estimated_days' => $this->estimated_days,
+                'type' => $this->type,
+                'cost' => $this->type === 'free_shipping' ? 0 : $this->cost,
+                'estimated_days' => $this->estimated_days ?? 0,
                 'active' => $this->active,
             ]
         );
@@ -69,6 +82,7 @@ class ShippingMethods extends Component
         $method = ShippingMethod::findOrFail($methodId);
         $this->editingId = $method->id;
         $this->name = $method->name;
+        $this->type = $method->type ?? 'flat_rate';
         $this->cost = $method->cost;
         $this->estimated_days = $method->estimated_days;
         $this->active = $method->active;

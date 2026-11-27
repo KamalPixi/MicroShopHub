@@ -1,14 +1,14 @@
-<div class="space-y-6">
+<div class="space-y-3">
     @php
         $activeCurrency = \App\Models\Currency::getActive();
         $currencyCode = $activeCurrency?->code ?? 'BDT';
         $currencySymbol = $activeCurrency?->symbol ?? '৳';
     @endphp
-    <section class="rounded-xl border border-gray-200 bg-white p-5">
-        <div class="flex flex-wrap items-start justify-between gap-3">
+    <section class="rounded-xl border border-gray-200 bg-white p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-                <h3 class="text-lg font-bold text-gray-800">Flash Sales</h3>
-                <p class="mt-1 text-xs text-gray-500">Create timed sales and choose which products join the offer.</p>
+                <h3 class="text-sm font-bold text-gray-800">Flash Sales</h3>
+                <p class="text-[11px] text-gray-500">Create timed sales and choose which products join the offer.</p>
             </div>
             @if($flashSaleId)
                 <button type="button" wire:click="resetForm" class="text-xs font-semibold text-gray-600 hover:text-gray-800">Cancel edit</button>
@@ -17,23 +17,23 @@
 
         @include('admin.includes.message')
 
-        <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="rounded-lg border border-gray-200 p-3">
-                <p class="text-xs text-gray-500">Total</p>
-                <p class="text-lg font-semibold text-gray-900">{{ $totalCount }}</p>
+        <div class="mt-2.5 grid grid-cols-3 gap-2">
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <p class="text-[11px] text-gray-500">Total</p>
+                <p class="text-sm font-bold text-gray-900">{{ $totalCount }}</p>
             </div>
-            <div class="rounded-lg border border-gray-200 p-3">
-                <p class="text-xs text-gray-500">Active Now</p>
-                <p class="text-lg font-semibold text-green-600">{{ $activeCount }}</p>
+            <div class="rounded-lg border border-green-200 bg-green-50 px-2.5 py-1.5 flex items-center justify-between">
+                <p class="text-[11px] text-green-700">Active Now</p>
+                <p class="text-sm font-bold text-green-700">{{ $activeCount }}</p>
             </div>
-            <div class="rounded-lg border border-gray-200 p-3">
-                <p class="text-xs text-gray-500">Scheduled</p>
-                <p class="text-lg font-semibold text-amber-600">{{ $scheduledCount }}</p>
+            <div class="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 flex items-center justify-between">
+                <p class="text-[11px] text-amber-700">Scheduled</p>
+                <p class="text-sm font-bold text-amber-700">{{ $scheduledCount }}</p>
             </div>
         </div>
 
-        <div class="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-3 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600">Flash Sale Title</label>
                     <input type="text" wire:model.live="title" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Weekend Flash Sale">

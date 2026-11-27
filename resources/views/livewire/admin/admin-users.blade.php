@@ -1,13 +1,16 @@
-<div class="space-y-6">
+<div class="space-y-3" x-data="{ showForm: @js((bool) $editingId) }" x-effect="if ($wire.editingId) showForm = true">
     <!-- Form Section -->
-    <div class="bg-white p-4 rounded-lg shadow">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-            </svg>
-            {{ $editingId ? 'Edit Admin' : 'Add Admin' }}
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div x-show="showForm" x-cloak class="bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-gray-800 flex items-center">
+                <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                {{ $editingId ? 'Edit Admin' : 'Add Admin' }}
+            </h3>
+            <button type="button" @click="showForm = false; $wire.resetForm()" class="text-xs text-gray-500 hover:text-gray-800">Close</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input 
@@ -81,24 +84,26 @@
     </div>
 
     <!-- List Section -->
-    <div class="bg-white p-4 rounded-lg shadow table-container">
-        <div class="flex justify-between">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-white p-4 rounded-xl border border-gray-200 table-container">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100">
+            <h3 class="text-sm font-bold text-gray-800 flex items-center shrink-0">
+                <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>
                 Admins List
             </h3>
-        </div>
-        <div class="mb-4">
-            <label for="search" class="block text-sm font-medium text-gray-700">Search Admins</label>
-            <input 
-                wire:model.live="search" 
-                type="text" 
-                id="search" 
-                class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" 
-                placeholder="Search by name or email"
-            >
+            <div class="flex items-center gap-2 flex-1 max-w-md justify-end">
+                <input 
+                    wire:model.live="search" 
+                    type="text" 
+                    id="search" 
+                    class="input-field block w-full border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-xs px-2.5 py-1.5" 
+                    placeholder="Search by name or email..."
+                >
+                <button type="button" @click="showForm = !showForm" class="bg-primary text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0">
+                    <span x-text="showForm ? 'Hide Form' : '+ Add Admin'">+ Add Admin</span>
+                </button>
+            </div>
         </div>
 
         {{-- success/failed message --}}

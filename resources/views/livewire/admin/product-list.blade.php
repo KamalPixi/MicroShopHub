@@ -1,40 +1,37 @@
-<div class="bg-white p-3 rounded-lg shadow table-container mx-auto">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-        <h3 class="text-base font-semibold text-gray-800 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<div class="bg-white p-3 rounded-xl border border-gray-200 table-container mx-auto">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100">
+        <h3 class="text-sm font-bold text-gray-800 flex items-center shrink-0">
+            <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-7 5h7"></path>
             </svg>
             Product List
         </h3>
-        <div>
-            <a href="{{ route('admin.products.create') }}" class="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary-700 text-sm flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center gap-2 flex-1 max-w-md justify-end">
+            <input wire:model.live="search" type="text" id="search" class="input-field block w-full border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-xs px-2.5 py-1.5" placeholder="Search by name, slug, or category...">
+            <a href="{{ route('admin.products.create') }}" class="bg-primary text-white px-2.5 py-1.5 rounded-lg hover:bg-primary-700 text-xs font-semibold flex items-center shrink-0">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 Add Product
             </a>
         </div>
     </div>
-    <div class="mb-3 mt-2">
-        <label for="search" class="block text-sm font-medium text-gray-700">Search Products</label>
-        <input wire:model.live="search" type="text" id="search" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Search by name, slug, or category">
-    </div>
 
     {{-- success/failed message --}}
     @include('admin.includes.message')
 
     <div class="overflow-x-auto">
-        <table class="table-field w-full min-w-[1100px] text-left text-xs">
+        <table class="table-field w-full text-left text-xs">
             <thead>
                 <tr class="bg-gray-50">
-                    <th class="font-medium text-gray-700 px-2 py-2" width="20%">Name</th>
-                    <th class="font-medium text-gray-700 px-2 py-2">Categories</th>
-                    <th class="font-medium text-gray-700 px-2 py-2">Sold Amount</th>
-                    <th class="font-medium text-gray-700 px-2 py-2 w-[240px]">Attributes</th>
-                    <th class="font-medium text-gray-700 px-2 py-2 w-[280px]">Variations</th>
-                    <th class="font-medium text-gray-700 px-2 py-2 w-[240px]">Related</th>
-                    <th class="font-medium text-gray-700 px-2 py-2">Status</th>
-                    <th class="font-medium text-gray-700 text-end px-2 py-2">Action</th>
+                    <th class="font-medium text-gray-700 px-2 py-1.5">Name</th>
+                    <th class="font-medium text-gray-700 px-2 py-1.5">Categories</th>
+                    <th class="font-medium text-gray-700 px-2 py-1.5">Sold</th>
+                    <th class="font-medium text-gray-700 px-2 py-1.5">Attrs</th>
+                    <th class="font-medium text-gray-700 px-2 py-1.5">Variations</th>
+                    <th class="font-medium text-gray-700 px-2 py-1.5">Related</th>
+                    <th class="font-medium text-gray-700 px-2 py-1.5">Status</th>
+                    <th class="font-medium text-gray-700 text-end px-2 py-1.5">Action</th>
                 </tr>
             </thead>
             <tbody>

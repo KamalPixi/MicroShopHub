@@ -1,9 +1,9 @@
-<div class="space-y-6">
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-        <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+<div class="space-y-3">
+    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-xs">
+        <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-                <h3 class="text-lg font-semibold text-gray-900">Campaign Builder</h3>
-                <p class="text-xs text-gray-500">Choose a template, pick products, preview the email, then send or schedule it.</p>
+                <h3 class="text-sm font-bold text-gray-900">Campaign Builder</h3>
+                <p class="text-[11px] text-gray-500">Choose a template, pick products, preview the email, then send or schedule it.</p>
             </div>
             @if($campaignId)
                 <button type="button" wire:click="resetForm" class="admin-action-btn admin-action-delete" title="Cancel edit">
@@ -16,46 +16,41 @@
 
         @include('admin.includes.message')
 
-        <div class="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                <p class="text-[11px] uppercase tracking-[0.18em] text-gray-500">Total</p>
-                <p class="text-lg font-semibold text-gray-900">{{ $totalCount }}</p>
+        <div class="mt-2.5 grid grid-cols-2 gap-2 lg:grid-cols-4">
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <p class="text-[11px] uppercase tracking-wider text-gray-500">Total</p>
+                <p class="text-sm font-bold text-gray-900">{{ $totalCount }}</p>
             </div>
-            <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                <p class="text-[11px] uppercase tracking-[0.18em] text-gray-500">Scheduled</p>
-                <p class="text-lg font-semibold text-gray-900">{{ $scheduledCount }}</p>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <p class="text-[11px] uppercase tracking-wider text-gray-500">Scheduled</p>
+                <p class="text-sm font-bold text-gray-900">{{ $scheduledCount }}</p>
             </div>
-            <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                <p class="text-[11px] uppercase tracking-[0.18em] text-gray-500">Sent</p>
-                <p class="text-lg font-semibold text-gray-900">{{ $sentCount }}</p>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <p class="text-[11px] uppercase tracking-wider text-gray-500">Sent</p>
+                <p class="text-sm font-bold text-gray-900">{{ $sentCount }}</p>
             </div>
-            <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                <p class="text-[11px] uppercase tracking-[0.18em] text-gray-500">Subscribers</p>
-                <p class="text-lg font-semibold text-gray-900">{{ $subscriberCount }}</p>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <p class="text-[11px] uppercase tracking-wider text-gray-500">Subscribers</p>
+                <p class="text-sm font-bold text-gray-900">{{ $subscriberCount }}</p>
             </div>
         </div>
 
-        <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[1.25fr_auto]">
-            <div class="space-y-5">
-                <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Template</p>
-                            <h4 class="mt-1 text-sm font-semibold text-gray-900">Choose a campaign layout</h4>
-                        </div>
-                        <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ data_get($templateOptions, $template_key . '.name', 'Template') }}</span>
+        <div class="mt-3 grid grid-cols-1 gap-3 xl:grid-cols-[1.25fr_auto]">
+            <div class="space-y-3">
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <h4 class="text-xs font-semibold text-gray-900">Template Layout</h4>
+                        <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-600">{{ data_get($templateOptions, $template_key . '.name', 'Template') }}</span>
                     </div>
 
-                    <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <div class="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
                         @foreach ($templateOptions as $key => $template)
-                            <label class="cursor-pointer rounded-2xl border p-3.5 transition h-full {{ $template_key === $key ? 'border-black bg-white ring-1 ring-black/10' : 'border-gray-200 bg-white hover:border-gray-300' }}">
-                                <div class="flex h-full items-start gap-2.5">
-                                    <input type="radio" wire:model.live="template_key" value="{{ $key }}" class="mt-1 h-4 w-4 border-gray-300 text-black focus:ring-black">
+                            <label class="cursor-pointer rounded-xl border p-2.5 transition h-full {{ $template_key === $key ? 'border-black bg-white ring-1 ring-black/10' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                                <div class="flex h-full items-start gap-2">
+                                    <input type="radio" wire:model.live="template_key" value="{{ $key }}" class="mt-0.5 h-3.5 w-3.5 border-gray-300 text-black focus:ring-black">
                                     <div class="min-w-0 flex-1">
-                                        <div class="flex flex-wrap items-center gap-2">
-                                            <span class="text-[13px] font-semibold text-gray-900">{{ $template['name'] }}</span>
-                                        </div>
-                                        <p class="mt-1 text-[11px] leading-4 text-gray-500">{{ $template['description'] }}</p>
+                                        <span class="text-xs font-semibold text-gray-900 block">{{ $template['name'] }}</span>
+                                        <p class="mt-0.5 text-[10px] leading-3.5 text-gray-500">{{ $template['description'] }}</p>
                                     </div>
                                 </div>
                             </label>
@@ -63,32 +58,32 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div class="rounded-xl border border-gray-200 bg-white p-3">
+                    <div class="grid grid-cols-1 gap-2.5 md:grid-cols-2">
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Campaign Name</label>
-                            <input wire:model.live="name" type="text" class="mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-black focus:ring-black" placeholder="Spring launch">
+                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Campaign Name</label>
+                            <input wire:model.live="name" type="text" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:ring-black" placeholder="Spring launch">
                             @error('name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Subject</label>
-                            <input wire:model.live="subject" type="text" class="mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-black focus:ring-black" placeholder="New arrivals are here">
+                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Subject</label>
+                            <input wire:model.live="subject" type="text" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:ring-black" placeholder="New arrivals are here">
                             @error('subject') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Preheader</label>
-                            <input wire:model.live="preheader" type="text" class="mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-black focus:ring-black" placeholder="Short teaser line shown in inboxes">
+                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Preheader</label>
+                            <input wire:model.live="preheader" type="text" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:ring-black" placeholder="Short teaser line shown in inboxes">
                             @error('preheader') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Status</label>
+                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Status</label>
                             <div class="relative mt-1">
-                                <select wire:model.live="status" class="block w-full appearance-none rounded-xl border border-gray-300 bg-white px-3 py-2 pr-8 text-sm shadow-sm focus:border-black focus:ring-black">
+                                <select wire:model.live="status" class="block w-full appearance-none rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 pr-8 text-xs focus:border-black focus:ring-black">
                                     <option value="draft">Draft</option>
                                     <option value="scheduled">Scheduled</option>
                                     <option value="sent">Sent</option>
                                 </select>
-                                <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                                <span class="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-gray-400">
                                     <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
                                     </svg>
@@ -98,25 +93,25 @@
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Campaign Copy</label>
-                        <textarea wire:model.live="content" rows="6" class="mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-black focus:ring-black" placeholder="Write the main message here..."></textarea>
+                    <div class="mt-2.5">
+                        <label class="block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Campaign Copy</label>
+                        <textarea wire:model.live="content" rows="3" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:ring-black" placeholder="Write the main message here..."></textarea>
                         @error('content') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="mt-2.5 grid grid-cols-1 gap-2.5 md:grid-cols-2">
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">CTA Text</label>
-                            <input wire:model.live="button_text" type="text" class="mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-black focus:ring-black" placeholder="Shop now">
+                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-gray-500">CTA Text</label>
+                            <input wire:model.live="button_text" type="text" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:ring-black" placeholder="Shop now">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">CTA URL</label>
-                            <input wire:model.live="button_url" type="url" class="mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-black focus:ring-black" placeholder="https://...">
+                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-gray-500">CTA URL</label>
+                            <input wire:model.live="button_url" type="url" class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-black focus:ring-black" placeholder="https://...">
                             @error('button_url') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
                     </div>
 
-                    <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="mt-2.5 grid grid-cols-1 gap-2.5 md:grid-cols-2">
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Schedule Time</label>
                             <input wire:model.live="scheduled_at" type="datetime-local" class="mt-1 block w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-black focus:ring-black">

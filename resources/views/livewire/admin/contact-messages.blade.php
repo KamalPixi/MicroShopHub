@@ -1,54 +1,40 @@
-<div class="space-y-6">
-    <div class="flex items-center justify-between gap-3">
-        <div>
-            <p class="text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-500">Support</p>
-            <h2 class="text-lg font-semibold text-gray-900">Contact Messages</h2>
-            <p class="text-sm text-gray-500">Messages sent from the storefront contact form.</p>
-        </div>
-    </div>
-
+<div class="space-y-3">
     @include('admin.includes.message')
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <div class="rounded-xl border border-gray-200 bg-white p-3">
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Total</p>
-            <p class="mt-1 text-2xl font-bold text-gray-900">{{ $stats['total'] }}</p>
+    <div class="grid grid-cols-2 xl:grid-cols-4 gap-2">
+        <div class="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 flex items-center justify-between">
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Total</p>
+            <p class="text-sm font-bold text-gray-900">{{ $stats['total'] }}</p>
         </div>
-        <div class="rounded-xl border border-gray-200 bg-white p-3">
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">New</p>
-            <p class="mt-1 text-2xl font-bold text-gray-900">{{ $stats['new'] }}</p>
+        <div class="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 flex items-center justify-between">
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">New</p>
+            <p class="text-sm font-bold text-gray-900">{{ $stats['new'] }}</p>
         </div>
-        <div class="rounded-xl border border-gray-200 bg-white p-3">
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Read</p>
-            <p class="mt-1 text-2xl font-bold text-gray-900">{{ $stats['read'] }}</p>
+        <div class="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 flex items-center justify-between">
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Read</p>
+            <p class="text-sm font-bold text-gray-900">{{ $stats['read'] }}</p>
         </div>
-        <div class="rounded-xl border border-gray-200 bg-white p-3">
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Resolved</p>
-            <p class="mt-1 text-2xl font-bold text-gray-900">{{ $stats['resolved'] }}</p>
+        <div class="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 flex items-center justify-between">
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Resolved</p>
+            <p class="text-sm font-bold text-gray-900">{{ $stats['resolved'] }}</p>
         </div>
     </div>
 
-    <div class="rounded-xl border border-gray-200 bg-white p-4 space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div>
-                <label class="block text-xs font-semibold text-gray-600">Search</label>
-                <input type="text" wire:model.live.debounce.300ms="search" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" placeholder="Name, email, subject, message">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-600">Status</label>
-                <select wire:model.live="status" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm appearance-none bg-white">
-                    <option value="all">All</option>
+    <div class="rounded-xl border border-gray-200 bg-white p-4 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+            <h2 class="text-sm font-bold text-gray-900">Contact Messages</h2>
+            <div class="flex flex-wrap items-center gap-2">
+                <input type="text" wire:model.live.debounce.300ms="search" class="w-56 rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs" placeholder="Search name, email, subject...">
+                <select wire:model.live="status" class="rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs bg-white">
+                    <option value="all">All Statuses</option>
                     <option value="new">New</option>
                     <option value="read">Read</option>
                     <option value="resolved">Resolved</option>
                 </select>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-600">Per page</label>
-                <select wire:model.live="perPage" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm appearance-none bg-white">
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
+                <select wire:model.live="perPage" class="rounded-lg border border-gray-300 px-2 py-1.5 text-xs bg-white">
+                    <option value="10">10 / pg</option>
+                    <option value="20">20 / pg</option>
+                    <option value="50">50 / pg</option>
                 </select>
             </div>
         </div>

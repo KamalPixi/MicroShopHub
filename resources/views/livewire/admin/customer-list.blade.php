@@ -1,107 +1,89 @@
-<div class="bg-white p-5 rounded-xl border border-gray-200 table-container mx-auto">
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div>
-            <h3 class="text-base font-bold text-gray-800">Customers</h3>
-            <p class="text-xs text-gray-500">Manage customer profiles and order activity.</p>
+<div class="bg-white p-4 rounded-xl border border-gray-200 table-container mx-auto" x-data="{ period: 'today' }">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div class="flex items-center gap-3">
+            <div>
+                <h3 class="text-sm font-bold text-gray-800">Customers</h3>
+                <p class="text-[11px] text-gray-500">Total: <span class="font-semibold text-gray-700">{{ $customers->total() }}</span></p>
+            </div>
+            <div class="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5 text-[11px] font-semibold">
+                <button type="button" @click="period = 'today'" :class="period === 'today' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'" class="rounded-md px-2.5 py-1 transition">
+                    Today &amp; Growth ({{ $stats['new_today'] }})
+                </button>
+                <button type="button" @click="period = 'all'" :class="period === 'all' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-800'" class="rounded-md px-2.5 py-1 transition">
+                    All Time ({{ $stats['total_customers'] }})
+                </button>
+            </div>
         </div>
-        <div class="text-xs text-gray-500">
-            Total: <span class="font-semibold text-gray-700">{{ $customers->total() }}</span>
+        <div class="flex items-center gap-2 flex-1 max-w-md justify-end">
+            <input 
+                wire:model.live="search" 
+                type="text" 
+                id="search" 
+                class="input-field block w-full border border-gray-300 rounded-lg text-xs px-2.5 py-1.5 focus:outline-none focus:ring-0 focus:border-gray-300" 
+                placeholder="Search by name, email, or phone..."
+            >
+            <select wire:model.live="perPage" class="border border-gray-300 rounded-lg text-xs px-2 py-1.5 bg-white shrink-0">
+                <option value="10">10 / pg</option>
+                <option value="20">20 / pg</option>
+                <option value="30">30 / pg</option>
+            </select>
         </div>
     </div>
 
-    <div class="space-y-4 mb-4">
-        <div class="rounded-xl border border-gray-200 bg-white p-4">
-            <div class="mb-3 flex items-start justify-between gap-3">
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-800">Today & Growth</h4>
-                    <p class="text-xs text-gray-500">Customer movement at a glance</p>
-                </div>
-                <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ $stats['new_today'] }} new today</span>
+    <div class="mb-3">
+        <div x-show="period === 'today'" class="grid grid-cols-2 lg:grid-cols-5 gap-2">
+            <div class="rounded-lg border border-gray-200 bg-slate-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-slate-500">New Today</span>
+                <span class="text-sm font-bold text-slate-900">{{ $stats['new_today'] }}</span>
             </div>
-            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
-                <div class="rounded-xl border border-gray-200 bg-slate-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-slate-500">New Today</p>
-                    <p class="mt-1 text-xl font-bold text-slate-900">{{ $stats['new_today'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">New This Month</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['new_this_month'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Repeat Customers</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['repeat_customers'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">With Orders</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['with_orders'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">No Orders Yet</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['without_orders'] }}</p>
-                </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">This Month</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['new_this_month'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Repeat</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['repeat_customers'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">With Orders</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['with_orders'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">No Orders</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['without_orders'] }}</span>
             </div>
         </div>
 
-        <div class="rounded-xl border border-gray-200 bg-white p-4">
-            <div class="mb-3 flex items-start justify-between gap-3">
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-800">All Time</h4>
-                    <p class="text-xs text-gray-500">Overall customer base and value</p>
-                </div>
-                <span class="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600">{{ $stats['total_customers'] }} customers</span>
+        <div x-show="period === 'all'" style="display: none;" class="grid grid-cols-2 lg:grid-cols-5 gap-2">
+            <div class="rounded-lg border border-gray-200 bg-slate-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-slate-500">Customers</span>
+                <span class="text-sm font-bold text-slate-900">{{ $stats['total_customers'] }}</span>
             </div>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                <div class="rounded-xl border border-gray-200 bg-slate-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-slate-500">Total Customers</p>
-                    <p class="mt-1 text-xl font-bold text-slate-900">{{ $stats['total_customers'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Total Orders</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['total_orders_all_time'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Verified Emails</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $stats['verified_emails'] }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    @php
-                        $currency = \App\Models\Currency::getActive();
-                        $symbol = $currency?->symbol ?? '$';
-                    @endphp
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Lifetime Spend</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ $symbol }}{{ number_format((float) $stats['total_lifetime_spend'], 2) }}</p>
-                </div>
-                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                    <p class="text-[11px] uppercase tracking-wide text-gray-500">Avg Orders / Customer</p>
-                    <p class="mt-1 text-xl font-bold text-gray-900">{{ number_format((float) $stats['avg_orders_per_customer'], 2) }}</p>
-                </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Orders</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['total_orders_all_time'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Verified</span>
+                <span class="text-sm font-bold text-gray-900">{{ $stats['verified_emails'] }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                @php
+                    $currency = \App\Models\Currency::getActive();
+                    $symbol = $currency?->symbol ?? '$';
+                @endphp
+                <span class="text-[11px] text-gray-500">Spend</span>
+                <span class="text-sm font-bold text-gray-900">{{ $symbol }}{{ number_format((float) $stats['total_lifetime_spend'], 2) }}</span>
+            </div>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 flex items-center justify-between">
+                <span class="text-[11px] text-gray-500">Avg Orders</span>
+                <span class="text-sm font-bold text-gray-900">{{ number_format((float) $stats['avg_orders_per_customer'], 2) }}</span>
             </div>
         </div>
     </div>
     
     {{-- success/failed message --}}
     @include('admin.includes.message')
-
-    <div class="mb-4 flex flex-wrap items-center gap-3">
-        <div class="flex-1 min-w-[220px]">
-            <label for="search" class="block text-xs font-semibold text-gray-600">Search Customers</label>
-            <input 
-                wire:model.live="search" 
-                type="text" 
-                id="search" 
-                class="input-field mt-1 block w-full border border-gray-300 rounded-lg text-xs px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300" 
-                placeholder="Search by name, email, or phone"
-            >
-        </div>
-        <div>
-            <label class="block text-xs font-semibold text-gray-600">Per Page</label>
-            <select wire:model.live="perPage" class="mt-1 border border-gray-300 rounded-lg text-xs px-3 py-2 bg-white">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-            </select>
-        </div>
-    </div>
 
     <div class="overflow-x-auto">
         <table class="table-field w-full text-left text-xs">

@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Models\Currency;
 use App\Models\Country;
 use App\Jobs\TestQueueJob;
+use App\Services\SendcloudService;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
@@ -67,6 +68,19 @@ class Settings extends Component
         // Cash on Delivery
         'cod_label' => 'Cash on Delivery',
         'cod_enabled' => false,
+
+        // Delivery Gateways (Sendcloud)
+        'sendcloud_enabled' => false,
+        'sendcloud_mode' => 'test',
+        'sendcloud_test_public_key' => '',
+        'sendcloud_test_secret_key' => '',
+        'sendcloud_public_key' => '',
+        'sendcloud_secret_key' => '',
+        'sendcloud_default_shipping_method_id' => '',
+        'sendcloud_request_label' => true,
+        'sendcloud_default_weight' => '1.00',
+        'shop_pickup_enabled' => true,
+        'shop_pickup_address' => '',
         
         // Operations
         'currency' => 'BDT',
@@ -179,6 +193,17 @@ class Settings extends Component
         'settings.bkash_app_secret' => 'nullable|string|max:255',
         'settings.bkash_username' => 'nullable|string|max:255',
         'settings.bkash_password' => 'nullable|string|max:255',
+        'settings.sendcloud_enabled' => 'boolean',
+        'settings.sendcloud_mode' => 'required|in:test,production',
+        'settings.sendcloud_test_public_key' => 'nullable|string|max:255',
+        'settings.sendcloud_test_secret_key' => 'nullable|string|max:255',
+        'settings.sendcloud_public_key' => 'nullable|string|max:255',
+        'settings.sendcloud_secret_key' => 'nullable|string|max:255',
+        'settings.sendcloud_default_shipping_method_id' => 'nullable|integer|min:1',
+        'settings.sendcloud_request_label' => 'boolean',
+        'settings.sendcloud_default_weight' => 'nullable|numeric|min:0.01|max:1000',
+        'settings.shop_pickup_enabled' => 'boolean',
+        'settings.shop_pickup_address' => 'nullable|string|max:500',
         
         'settings.currency' => 'nullable|string|exists:currencies,code',
         'settings.tax_rate' => 'nullable|numeric|min:0|max:100',
@@ -225,6 +250,12 @@ class Settings extends Component
         // Force Boolean for Checkboxes
         $this->settings['sslcommerz_sandbox'] = filter_var($this->settings['sslcommerz_sandbox'], FILTER_VALIDATE_BOOLEAN);
         $this->settings['cod_enabled'] = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN); // [NEW]
+        $this->settings['sendcloud_enabled'] = filter_var($this->settings['sendcloud_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['sendcloud_mode'] = in_array($this->settings['sendcloud_mode'] ?? 'test', ['test', 'production'], true)
+            ? $this->settings['sendcloud_mode']
+            : 'test';
+        $this->settings['sendcloud_request_label'] = filter_var($this->settings['sendcloud_request_label'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $this->settings['shop_pickup_enabled'] = filter_var($this->settings['shop_pickup_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $this->settings['customer_auth_email_otp_enabled'] = filter_var($this->settings['customer_auth_email_otp_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['customer_auth_email_password_enabled'] = filter_var($this->settings['customer_auth_email_password_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
         $this->settings['customer_auth_guest_checkout_enabled'] = filter_var($this->settings['customer_auth_guest_checkout_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
@@ -567,6 +598,75 @@ class Settings extends Component
             'settings.bkash_username' => $this->rules['settings.bkash_username'],
             'settings.bkash_password' => $this->rules['settings.bkash_password'],
         ], false, 'bkash');
+    }
+
+    public function saveSendcloudGateway()
+    {
+        $this->saveSettings([
+            'sendcloud_enabled',
+            'sendcloud_mode',
+            'sendcloud_test_public_key',
+            'sendcloud_test_secret_key',
+            'sendcloud_public_key',
+            'sendcloud_secret_key',
+            'sendcloud_default_shipping_method_id',
+            'sendcloud_request_label',
+            'sendcloud_default_weight',
+        ], [
+            'settings.sendcloud_enabled' => $this->rules['settings.sendcloud_enabled'],
+            'settings.sendcloud_mode' => $this->rules['settings.sendcloud_mode'],
+            'settings.sendcloud_test_public_key' => $this->rules['settings.sendcloud_test_public_key'],
+            'settings.sendcloud_test_secret_key' => $this->rules['settings.sendcloud_test_secret_key'],
+            'settings.sendcloud_public_key' => $this->rules['settings.sendcloud_public_key'],
+            'settings.sendcloud_secret_key' => $this->rules['settings.sendcloud_secret_key'],
+            'settings.sendcloud_default_shipping_method_id' => $this->rules['settings.sendcloud_default_shipping_method_id'],
+            'settings.sendcloud_request_label' => $this->rules['settings.sendcloud_request_label'],
+            'settings.sendcloud_default_weight' => $this->rules['settings.sendcloud_default_weight'],
+        ], false, 'sendcloud');
+    }
+
+    public function saveShopPickupSettings()
+    {
+        $this->saveSettings([
+            'shop_pickup_enabled',
+            'shop_pickup_address',
+        ], [
+            'settings.shop_pickup_enabled' => $this->rules['settings.shop_pickup_enabled'],
+            'settings.shop_pickup_address' => $this->rules['settings.shop_pickup_address'],
+        ], false, 'shop_pickup');
+    }
+
+    protected function activeSendcloudKeys(): array
+    {
+        $isTest = ($this->settings['sendcloud_mode'] ?? 'test') === 'test';
+
+        return [
+            $isTest ? ($this->settings['sendcloud_test_public_key'] ?? '') : ($this->settings['sendcloud_public_key'] ?? ''),
+            $isTest ? ($this->settings['sendcloud_test_secret_key'] ?? '') : ($this->settings['sendcloud_secret_key'] ?? ''),
+        ];
+    }
+
+    public function testSendcloudConnection(SendcloudService $sendcloud)
+    {
+        [$pub, $sec] = $this->activeSendcloudKeys();
+        $result = $sendcloud->testConnection($pub, $sec);
+
+        if ($result['ok']) {
+            session()->flash('message', $result['message']);
+        } else {
+            session()->flash('error', $result['message']);
+        }
+    }
+
+    public function syncSendcloudShippingMethods(SendcloudService $sendcloud)
+    {
+        try {
+            [$pub, $sec] = $this->activeSendcloudKeys();
+            $count = $sendcloud->syncShippingMethods($pub, $sec);
+            session()->flash('message', "Synced {$count} Sendcloud shipping method(s).");
+        } catch (\Throwable $e) {
+            session()->flash('error', $e->getMessage());
+        }
     }
 
     public function saveOperations()

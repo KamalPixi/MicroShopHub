@@ -112,10 +112,21 @@ class CartCheckout extends Component
     public function mount(): void
     {
         $this->cart = $this->cartService->getCart();
-        $this->shippingMethods = ShippingMethod::where('active', true)->orderBy('cost', 'asc')->get();
-        $this->currencySymbol = Currency::getActive()->symbol;
-
         $this->settings = Setting::pluck('value', 'key')->toArray();
+        $sendcloudEnabled = filter_var($this->settings['sendcloud_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $shopPickupEnabled = filter_var($this->settings['shop_pickup_enabled'] ?? true, FILTER_VALIDATE_BOOLEAN);
+
+        $shippingQuery = ShippingMethod::where('active', true);
+        if (! $sendcloudEnabled) {
+            $shippingQuery->where(function ($q) {
+                $q->whereNull('provider')->orWhere('provider', '!=', 'sendcloud');
+            });
+        }
+        if (! $shopPickupEnabled) {
+            $shippingQuery->where('type', '!=', 'local_pickup');
+        }
+        $this->shippingMethods = $shippingQuery->orderBy('cost', 'asc')->get();
+        $this->currencySymbol = Currency::getActive()->symbol;
         $this->codEnabled = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $rawOffline = $this->settings['offline_payment_methods'] ?? '[]';
         $decodedOffline = is_string($rawOffline) ? json_decode($rawOffline, true) : $rawOffline;

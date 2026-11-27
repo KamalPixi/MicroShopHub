@@ -1,15 +1,15 @@
-<div class="space-y-6">
-    <section class="rounded-xl border border-gray-200 bg-white p-5">
-        <div class="flex flex-wrap items-start justify-between gap-3">
+<div class="space-y-3">
+    <section class="rounded-xl border border-gray-200 bg-white p-4">
+        <div class="flex flex-wrap items-start justify-between gap-2">
             <div>
-                <h3 class="text-lg font-bold text-gray-800">Homepage Settings</h3>
-                <p class="mt-1 text-xs text-gray-500">Control how the storefront homepage looks and which sections appear.</p>
+                <h3 class="text-sm font-bold text-gray-800">Homepage Settings</h3>
+                <p class="text-[11px] text-gray-500">Control how the storefront homepage looks and which sections appear.</p>
             </div>
         </div>
 
         @include('admin.includes.message')
 
-        <div class="mt-5 space-y-5">
+        <div class="mt-3 space-y-3">
             <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>

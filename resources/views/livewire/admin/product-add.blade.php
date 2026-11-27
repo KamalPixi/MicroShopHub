@@ -1,20 +1,20 @@
-<div class="mx-4">
+<div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
-    <style>.ck-editor__editable { min-height: 200px; }</style>
+    <style>.ck-editor__editable { min-height: 140px; }</style>
 
-    <div class="mb-6 flex items-center justify-between">
+    <div class="mb-3 flex items-center justify-between">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900">Add New Product</h2>
-            <p class="text-sm text-gray-500 mt-1">Create a new product listing in your catalog.</p>
+            <h2 class="text-base font-bold text-gray-900">Add New Product</h2>
+            <p class="text-xs text-gray-500">Create a new product listing in your catalog.</p>
         </div>
-        <div class="text-xs font-semibold text-gray-600 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
+        <div class="text-xs font-semibold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full border border-gray-200">
             Step {{ $currentStep }} of {{ $totalSteps }}
         </div>
     </div>
 
-    <div class="mb-6">
+    <div class="mb-4">
         <div class="flex items-center w-full">
             @foreach([1 => 'Basic Info', 2 => 'Organization', 3 => 'Media', 4 => 'Pricing & Variants'] as $step => $label)
                 <div class="flex-1 relative">

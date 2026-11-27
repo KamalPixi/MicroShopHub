@@ -1,7 +1,7 @@
-<div class="bg-white p-6 rounded-lg shadow table-container mx-auto">
-    <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
-        <h3 class="text-xl font-bold text-gray-800 flex items-center">
-            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<div class="bg-white p-4 rounded-xl border border-gray-200 table-container mx-auto">
+    <div class="flex justify-between items-center mb-3 border-b border-gray-100 pb-2.5">
+        <h3 class="text-sm font-bold text-gray-800 flex items-center">
+            <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
@@ -11,8 +11,8 @@
 
     @include('admin.includes.message')
 
-    <div class="space-y-6">
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+    <div class="space-y-3">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">General Identity</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Configure your store's basic information and branding appearance.</p>
 
@@ -83,7 +83,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Storefront Language</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Choose the default storefront language and enable the languages customers can switch between.</p>
 
@@ -135,7 +135,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">SEO & Metadata</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Optimize your store for search engines.</p>
 
@@ -164,7 +164,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Customer Authentication</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Enable or disable customer login methods and guest ordering.</p>
 
@@ -212,7 +212,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Payment Gateways</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Configure credentials and labels. Leave keys blank to disable a method.</p>
 
@@ -475,7 +475,164 @@
 
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+            <div class="flex items-center justify-between mb-1">
+                <h4 class="text-base font-bold text-gray-800">Delivery Gateways</h4>
+                <div class="flex items-center gap-2">
+                    @if(!empty($settings['sendcloud_enabled']))
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold {{ ($settings['sendcloud_mode'] ?? 'test') === 'production' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-800' }}">
+                            {{ ($settings['sendcloud_mode'] ?? 'test') === 'production' ? 'Sendcloud Live (Production)' : 'Sendcloud Test Mode' }}
+                        </span>
+                    @else
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600">
+                            Sendcloud Disabled
+                        </span>
+                    @endif
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Configure Sendcloud as your automated shipping and label generation gateway. Switch between Test Mode and Production Mode, or turn it off anytime.</p>
+
+            <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-gray-800 text-sm">Sendcloud</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700">API v2</span>
+                    </div>
+                    <label for="sendcloud_enabled" class="inline-flex items-center cursor-pointer select-none">
+                        <input wire:model.live="settings.sendcloud_enabled" type="checkbox" id="sendcloud_enabled" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="ml-2 text-sm font-semibold text-gray-700">Enable Sendcloud Gateway</span>
+                    </label>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Environment Mode</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <label class="cursor-pointer rounded-lg border p-3 transition {{ ($settings['sendcloud_mode'] ?? 'test') === 'test' ? 'border-amber-400 bg-amber-50/70 ring-1 ring-amber-300' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                            <div class="flex items-center gap-2">
+                                <input type="radio" wire:model.live="settings.sendcloud_mode" value="test" class="text-amber-600 focus:ring-amber-500">
+                                <span class="text-sm font-bold text-gray-900">Test Mode (Safe)</span>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-600">Uses free Unstamped Letter (<code class="font-mono">sendcloud:letter</code>) or draft parcels — no carrier fees charged.</p>
+                        </label>
+                        <label class="cursor-pointer rounded-lg border p-3 transition {{ ($settings['sendcloud_mode'] ?? 'test') === 'production' ? 'border-green-500 bg-green-50/60 ring-1 ring-green-400' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                            <div class="flex items-center gap-2">
+                                <input type="radio" wire:model.live="settings.sendcloud_mode" value="production" class="text-green-600 focus:ring-green-500">
+                                <span class="text-sm font-bold text-gray-900">Production Mode (Live)</span>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-600">Uses your live credentials and generates real paid carrier labels.</p>
+                        </label>
+                    </div>
+                    @error('settings.sendcloud_mode') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                </div>
+
+                @if(($settings['sendcloud_mode'] ?? 'test') === 'test')
+                    <div class="rounded-lg border border-amber-200 bg-amber-50/50 p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase text-amber-800">Test Credentials</span>
+                            <span class="text-[11px] text-amber-700">Sendcloud uses one API endpoint; you can use dedicated test integration keys or your standard keys here safely.</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Test Public Key</label>
+                                <input wire:model="settings.sendcloud_test_public_key" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sendcloud_test_public_key">
+                                @error('settings.sendcloud_test_public_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Test Secret Key</label>
+                                <input wire:model="settings.sendcloud_test_secret_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sendcloud_test_secret_key">
+                                @error('settings.sendcloud_test_secret_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="rounded-lg border border-green-200 bg-green-50/40 p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase text-green-800">Production (Live) Credentials</span>
+                            <span class="text-[11px] text-green-700">Live carrier labels will be billed to your Sendcloud account.</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Live Public Key</label>
+                                <input wire:model="settings.sendcloud_public_key" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sendcloud_public_key">
+                                @error('settings.sendcloud_public_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Live Secret Key</label>
+                                <input wire:model="settings.sendcloud_secret_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sendcloud_secret_key">
+                                @error('settings.sendcloud_secret_key') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Default Shipping Method ID (Optional)</label>
+                        <input wire:model="settings.sendcloud_default_shipping_method_id" type="number" min="1" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="e.g. 8">
+                        @error('settings.sendcloud_default_shipping_method_id') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Default Parcel Weight (kg)</label>
+                        <input wire:model="settings.sendcloud_default_weight" type="number" step="0.01" min="0.01" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="1.00">
+                        @error('settings.sendcloud_default_weight') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="flex items-center pt-1">
+                    <input wire:model="settings.sendcloud_request_label" type="checkbox" id="sendcloud_request_label" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="sendcloud_request_label" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">Request shipping label automatically when creating parcel</label>
+                </div>
+
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-200">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button wire:click="testSendcloudConnection" wire:loading.attr="disabled" type="button" class="border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 rounded-lg px-3 py-2 text-xs font-semibold">
+                            Test Connection
+                        </button>
+                        <button wire:click="syncSendcloudShippingMethods" wire:loading.attr="disabled" type="button" class="border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg px-3 py-2 text-xs font-semibold">
+                            Sync Shipping Methods
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        @if($savedSection === 'sendcloud')
+                            <span class="text-xs font-semibold text-green-600">Saved</span>
+                        @endif
+                        <button wire:click="saveSendcloudGateway" wire:loading.attr="disabled" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                            Save Sendcloud
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 bg-gray-50 p-5 rounded-lg border border-gray-200 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-gray-800 text-sm">Collect from Shop (Local Pickup)</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">In-Store</span>
+                    </div>
+                    <label for="shop_pickup_enabled" class="inline-flex items-center cursor-pointer select-none">
+                        <input wire:model="settings.shop_pickup_enabled" type="checkbox" id="shop_pickup_enabled" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="ml-2 text-sm font-semibold text-gray-700">Enable Collect from Shop</span>
+                    </label>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Shop Pickup Address &amp; Hours</label>
+                    <textarea wire:model="settings.shop_pickup_address" rows="2" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Store address, floor/counter, and pickup hours"></textarea>
+                    @error('settings.shop_pickup_address') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-2 border-t border-gray-200">
+                    @if($savedSection === 'shop_pickup')
+                        <span class="text-xs font-semibold text-green-600">Saved</span>
+                    @endif
+                    <button wire:click="saveShopPickupSettings" wire:loading.attr="disabled" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                        Save Pickup Settings
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Store Operations</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Currency and tax configurations.</p>
 
@@ -627,7 +784,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Social & Contact</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Customer support info and social media links.</p>
 
@@ -680,7 +837,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Email Settings</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Configure SMTP details used across the system for all email sending.</p>
 
@@ -789,7 +946,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Admin Notifications</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Notify admins when new orders are placed.</p>
 
@@ -872,7 +1029,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Live Chat</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Enable storefront live chat so customers can message the admin team and receive replies from Telegram. The conversation stays between the customer and admin only.</p>
 
@@ -982,7 +1139,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Cron & Queue Setup</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Use cron to process queued jobs on shared hosting and VPS.</p>
 
@@ -1010,7 +1167,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-5 bg-white">
+        <section class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">System & Maintenance</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Manage database backups and system health.</p>
 

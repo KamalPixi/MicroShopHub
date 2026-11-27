@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ShippingMethod extends Model
 {    
-    protected $fillable = ['name', 'cost', 'estimated_days', 'active'];
+    protected $fillable = ['shipping_zone_id', 'name', 'type', 'provider', 'external_id', 'cost', 'estimated_days', 'active'];
     protected $casts = [
         'active' => 'boolean',
     ];

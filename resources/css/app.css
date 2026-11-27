@@ -18,7 +18,7 @@
         @apply w-full text-left border-collapse;
     }
     th, td {
-        @apply p-3 border-b border-gray-200;
+        @apply px-2.5 py-1.5 border-b border-gray-200 text-xs;
     }
     th {
         @apply font-semibold bg-gray-50 text-gray-700;
