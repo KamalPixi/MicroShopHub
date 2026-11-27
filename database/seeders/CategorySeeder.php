@@ -13,97 +13,101 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // Define the category hierarchy
         $categories = [
             [
-                'name' => 'Men\'s Fashion',
-                'subtitle' => 'Modern styles for him',
-                'thumbnail' => 'https://placehold.co/400x225/3b82f6/ffffff?text=Mens+Fashion',
+                'name' => 'Laptops & Computers',
+                'subtitle' => 'Workstations, gaming rigs, and ultrabooks',
+                'thumbnail' => 'https://placehold.co/400x225/0f172a/38bdf8?text=Laptops+%26+Computers',
                 'show_on_homepage' => true,
                 'children' => [
-                    ['name' => 'T-Shirts & Polos', 'subtitle' => 'Casual essentials'],
-                    ['name' => 'Shirts', 'subtitle' => 'Formal & Casual'],
-                    ['name' => 'Jeans & Trousers', 'subtitle' => 'Denim and chinos'],
-                    ['name' => 'Jackets & Coats', 'subtitle' => 'Outerwear for all seasons'],
-                    ['name' => 'Activewear', 'subtitle' => 'Gym and sports gear'],
+                    ['name' => 'Gaming Laptops', 'subtitle' => 'High-refresh RTX & Ryzen machines'],
+                    ['name' => 'Ultrabooks & Workstations', 'subtitle' => 'Thin, light, and studio-ready'],
+                    ['name' => 'Desktop PCs', 'subtitle' => 'Custom & pre-built towers'],
+                    ['name' => 'Mini PCs', 'subtitle' => 'Compact powerhouses'],
+                    ['name' => 'Monitors & Displays', 'subtitle' => '4K, OLED, and 144Hz+ panels'],
                 ],
             ],
             [
-                'name' => 'Women\'s Fashion',
-                'subtitle' => 'Trending styles for her',
-                'thumbnail' => 'https://placehold.co/400x225/ec4899/ffffff?text=Womens+Fashion',
+                'name' => 'Smartphones & Tablets',
+                'subtitle' => 'Flagship phones, tablets, and wearables',
+                'thumbnail' => 'https://placehold.co/400x225/1e293b/818cf8?text=Smartphones+%26+Tablets',
                 'show_on_homepage' => true,
                 'children' => [
-                    ['name' => 'Dresses', 'subtitle' => 'Elegant and casual dresses'],
-                    ['name' => 'Tops & Blouses', 'subtitle' => 'Versatile upper wear'],
-                    ['name' => 'Skirts & Shorts', 'subtitle' => 'Summer favorites'],
-                    ['name' => 'Handbags', 'subtitle' => 'Stylish carriers'],
-                    ['name' => 'Footwear', 'subtitle' => 'Heels, flats, and sneakers'],
+                    ['name' => 'Flagship Smartphones', 'subtitle' => 'Pro cameras and 5G performance'],
+                    ['name' => 'Mid-Range Phones', 'subtitle' => 'Everyday value and battery life'],
+                    ['name' => 'Tablets & iPads', 'subtitle' => 'Productivity and digital art'],
+                    ['name' => 'Smartwatches & Wearables', 'subtitle' => 'Fitness and health tracking'],
+                    ['name' => 'Cases & Screen Protectors', 'subtitle' => 'MagSafe & tempered glass'],
                 ],
             ],
             [
-                'name' => 'Kids\' Wear',
-                'subtitle' => 'Comfortable clothes for kids',
-                'thumbnail' => 'https://placehold.co/400x225/f59e0b/ffffff?text=Kids+Wear',
+                'name' => 'PC Components & Hardware',
+                'subtitle' => 'Build and upgrade your rig',
+                'thumbnail' => 'https://placehold.co/400x225/18181b/22c55e?text=PC+Hardware',
                 'show_on_homepage' => true,
                 'children' => [
-                    ['name' => 'Boys\' Clothing', 'subtitle' => 'Tough and playful'],
-                    ['name' => 'Girls\' Clothing', 'subtitle' => 'Cute and colorful'],
-                    ['name' => 'Baby Clothing', 'subtitle' => 'Soft and gentle'],
+                    ['name' => 'Processors (CPU)', 'subtitle' => 'Intel Core & AMD Ryzen'],
+                    ['name' => 'Graphics Cards (GPU)', 'subtitle' => 'NVIDIA GeForce & AMD Radeon'],
+                    ['name' => 'Motherboards', 'subtitle' => 'ATX, mATX, and Mini-ITX boards'],
+                    ['name' => 'RAM & Storage', 'subtitle' => 'DDR5 memory and NVMe SSDs'],
+                    ['name' => 'Power Supplies & Cooling', 'subtitle' => 'Modular PSUs and AIO coolers'],
                 ],
             ],
             [
-                'name' => 'Accessories',
-                'subtitle' => 'Complete your look',
-                'thumbnail' => 'https://placehold.co/400x225/10b981/ffffff?text=Accessories',
+                'name' => 'Peripherals & Audio',
+                'subtitle' => 'Keyboards, mice, and studio sound',
+                'thumbnail' => 'https://placehold.co/400x225/111827/f59e0b?text=Peripherals+%26+Audio',
+                'show_on_homepage' => true,
+                'children' => [
+                    ['name' => 'Mechanical Keyboards', 'subtitle' => 'Hot-swappable and wireless'],
+                    ['name' => 'Gaming Mice & Pads', 'subtitle' => 'Lightweight precision sensors'],
+                    ['name' => 'Headsets & Earbuds', 'subtitle' => 'ANC and spatial audio'],
+                    ['name' => 'Webcams & Microphones', 'subtitle' => '4K streaming and podcast gear'],
+                    ['name' => 'Hubs, Docks & Cables', 'subtitle' => 'Thunderbolt, USB-C, and HDMI'],
+                ],
+            ],
+            [
+                'name' => 'Smart Gadgets & Networking',
+                'subtitle' => 'Connected tech, power, and Wi-Fi',
+                'thumbnail' => 'https://placehold.co/400x225/09090b/ec4899?text=Smart+Gadgets',
                 'show_on_homepage' => false,
                 'children' => [
-                    ['name' => 'Watches', 'subtitle' => 'Timeless pieces'],
-                    ['name' => 'Sunglasses', 'subtitle' => 'Eye protection & style'],
-                    ['name' => 'Belts & Wallets', 'subtitle' => 'Leather goods'],
-                    ['name' => 'Jewelry', 'subtitle' => 'Necklaces, rings & more'],
-                ],
-            ],
-            [
-                'name' => 'Footwear',
-                'subtitle' => 'Step out in style',
-                'thumbnail' => 'https://placehold.co/400x225/6366f1/ffffff?text=Footwear',
-                'show_on_homepage' => true,
-                'children' => [
-                    ['name' => 'Sneakers', 'subtitle' => 'Everyday comfort'],
-                    ['name' => 'Formal Shoes', 'subtitle' => 'Business & events'],
-                    ['name' => 'Boots', 'subtitle' => 'Rugged and stylish'],
+                    ['name' => 'Routers & Mesh Wi-Fi', 'subtitle' => 'Wi-Fi 6E & Wi-Fi 7 coverage'],
+                    ['name' => 'Power Banks & Chargers', 'subtitle' => 'GaN fast charging solutions'],
+                    ['name' => 'Smart Home Devices', 'subtitle' => 'Lights, plugs, and cameras'],
+                    ['name' => 'Drones & Action Cameras', 'subtitle' => '4K stabilized capture'],
                 ],
             ],
         ];
 
         foreach ($categories as $parentData) {
-            // Create Parent Category
-            $parent = Category::create([
-                'name' => $parentData['name'],
-                'slug' => Str::slug($parentData['name']),
-                'subtitle' => $parentData['subtitle'],
-                'thumbnail' => $parentData['thumbnail'],
-                'show_on_homepage' => $parentData['show_on_homepage'],
-                'parent_id' => null,
-            ]);
+            $parent = Category::updateOrCreate(
+                ['slug' => Str::slug($parentData['name'])],
+                [
+                    'name' => $parentData['name'],
+                    'subtitle' => $parentData['subtitle'],
+                    'thumbnail' => $parentData['thumbnail'],
+                    'show_on_homepage' => $parentData['show_on_homepage'],
+                    'is_active' => true,
+                    'parent_id' => null,
+                ]
+            );
 
-            // Create Children Categories
             if (isset($parentData['children'])) {
                 foreach ($parentData['children'] as $childData) {
-                    
-                    // FIX: Create a unique slug for children by prefixing with parent name
-                    // Example: "Women's Fashion Footwear" -> "womens-fashion-footwear"
                     $uniqueSlug = Str::slug($parent->name . ' ' . $childData['name']);
 
-                    Category::create([
-                        'name' => $childData['name'],
-                        'slug' => $uniqueSlug, 
-                        'subtitle' => $childData['subtitle'],
-                        'thumbnail' => null, 
-                        'show_on_homepage' => false,
-                        'parent_id' => $parent->id,
-                    ]);
+                    Category::updateOrCreate(
+                        ['slug' => $uniqueSlug],
+                        [
+                            'name' => $childData['name'],
+                            'subtitle' => $childData['subtitle'],
+                            'thumbnail' => null,
+                            'show_on_homepage' => false,
+                            'is_active' => true,
+                            'parent_id' => $parent->id,
+                        ]
+                    );
                 }
             }
         }
