@@ -624,10 +624,27 @@
                     </label>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Shop Pickup Address &amp; Hours</label>
-                    <textarea wire:model="settings.shop_pickup_address" rows="2" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Store address, floor/counter, and pickup hours"></textarea>
-                    @error('settings.shop_pickup_address') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Shop Pickup Address</label>
+                        <textarea wire:model="settings.shop_pickup_address" rows="2" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Store name, street address, floor/counter"></textarea>
+                        @error('settings.shop_pickup_address') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Pickup Hours / Time</label>
+                        <input wire:model="settings.shop_pickup_hours" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. Daily, 10:00 AM – 8:00 PM">
+                        @error('settings.shop_pickup_hours') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Map Latitude</label>
+                        <input wire:model="settings.shop_pickup_latitude" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. 23.8103">
+                        @error('settings.shop_pickup_latitude') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Map Longitude</label>
+                        <input wire:model="settings.shop_pickup_longitude" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. 90.4125">
+                        @error('settings.shop_pickup_longitude') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    </div>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-2 border-t border-gray-200">

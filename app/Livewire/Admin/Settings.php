@@ -81,6 +81,9 @@ class Settings extends Component
         'sendcloud_default_weight' => '1.00',
         'shop_pickup_enabled' => true,
         'shop_pickup_address' => '',
+        'shop_pickup_hours' => '',
+        'shop_pickup_latitude' => '',
+        'shop_pickup_longitude' => '',
         
         // Operations
         'currency' => 'BDT',
@@ -204,6 +207,9 @@ class Settings extends Component
         'settings.sendcloud_default_weight' => 'nullable|numeric|min:0.01|max:1000',
         'settings.shop_pickup_enabled' => 'boolean',
         'settings.shop_pickup_address' => 'nullable|string|max:500',
+        'settings.shop_pickup_hours' => 'nullable|string|max:255',
+        'settings.shop_pickup_latitude' => 'nullable|numeric|between:-90,90',
+        'settings.shop_pickup_longitude' => 'nullable|numeric|between:-180,180',
         
         'settings.currency' => 'nullable|string|exists:currencies,code',
         'settings.tax_rate' => 'nullable|numeric|min:0|max:100',
@@ -630,9 +636,15 @@ class Settings extends Component
         $this->saveSettings([
             'shop_pickup_enabled',
             'shop_pickup_address',
+            'shop_pickup_hours',
+            'shop_pickup_latitude',
+            'shop_pickup_longitude',
         ], [
             'settings.shop_pickup_enabled' => $this->rules['settings.shop_pickup_enabled'],
             'settings.shop_pickup_address' => $this->rules['settings.shop_pickup_address'],
+            'settings.shop_pickup_hours' => $this->rules['settings.shop_pickup_hours'],
+            'settings.shop_pickup_latitude' => $this->rules['settings.shop_pickup_latitude'],
+            'settings.shop_pickup_longitude' => $this->rules['settings.shop_pickup_longitude'],
         ], false, 'shop_pickup');
     }
 

@@ -483,47 +483,65 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-                        <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3">
-                            {{ __('store.delivery_method') }}</h2>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide">
+                                    {{ __('store.delivery_method') }}
+                                </h2>
+                                <p class="text-xs text-gray-500 mt-0.5">Choose how you want to receive your order.</p>
+                            </div>
+                        </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @foreach($shippingMethods as $method)
-                                <label class="relative cursor-pointer group">
+                                @php
+                                    $isPickup = ($method->type ?? 'flat_rate') === 'local_pickup';
+                                    $isSelected = (string) $selectedShippingMethod === (string) $method->id;
+                                @endphp
+                                <label class="relative cursor-pointer group block">
                                     <input wire:model.live="selectedShippingMethod" type="radio" value="{{ $method->id }}"
                                         class="peer sr-only">
 
                                     <div
-                                        class="p-3 rounded-lg border border-gray-200 hover:border-primary transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:ring-1 peer-checked:ring-primary/20 flex items-center justify-between">
+                                        class="p-3 rounded-xl border transition-all duration-200 flex items-center justify-between gap-3 {{ $isSelected ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-gray-200 bg-white hover:border-gray-300' }}">
 
-                                        <div class="flex flex-col">
-                                            <span class="text-sm font-bold text-gray-900">{{ $method->name }}</span>
-                                            <span class="text-xs text-gray-500 flex items-center mt-0.5">
-                                                <svg class="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                </svg>
-                                                @if(($method->type ?? 'flat_rate') === 'local_pickup')
-                                                    In-store pickup
-                                                @else
-                                                    {{ $method->estimated_days }} {{ __('store.days') }}
-                                                @endif
-                                            </span>
-                                        </div>
-
-                                        <div class="text-right">
-                                            <span
-                                                class="block text-sm font-bold text-gray-900">{{$currencySymbol}}{{ number_format($method->cost, 2) }}</span>
-
-                                            <div class="hidden peer-checked:block absolute top-0 right-0 -mt-2 -mr-2">
-                                                <span class="bg-primary text-white rounded-full p-0.5 shadow-sm block">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                                            d="M5 13l4 4L19 7"></path>
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 {{ $isSelected ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500 group-hover:text-gray-700' }}">
+                                                @if($isPickup)
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l1-5h16l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M9 20v-6h6v6" />
                                                     </svg>
+                                                @else
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                                    </svg>
+                                                @endif
+                                            </div>
+
+                                            <div class="min-w-0">
+                                                <span class="block text-sm font-bold text-gray-900 truncate">{{ $method->name }}</span>
+                                                <span class="text-xs text-gray-500 flex items-center mt-0.5">
+                                                    <svg class="w-3 h-3 mr-1 text-gray-400 shrink-0" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    @if($isPickup)
+                                                        In-store pickup
+                                                    @else
+                                                        {{ $method->estimated_days }} {{ __('store.days') }}
+                                                    @endif
                                                 </span>
                                             </div>
+                                        </div>
+
+                                        <div class="text-right shrink-0">
+                                            @if((float) $method->cost <= 0)
+                                                <span class="inline-block text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">Free</span>
+                                            @else
+                                                <span class="block text-sm font-bold text-gray-900">{{$currencySymbol}}{{ number_format($method->cost, 2) }}</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </label>
@@ -534,11 +552,55 @@
 
                         @php
                             $activeMethod = collect($shippingMethods)->firstWhere('id', $selectedShippingMethod);
+                            $pickupAddress = trim((string) ($settings['shop_pickup_address'] ?? ''));
+                            $pickupHours = trim((string) ($settings['shop_pickup_hours'] ?? ''));
+                            $pickupLat = trim((string) ($settings['shop_pickup_latitude'] ?? ''));
+                            $pickupLng = trim((string) ($settings['shop_pickup_longitude'] ?? ''));
+                            $hasCoords = $pickupLat !== '' && $pickupLng !== '';
+                            $googleMapsUrl = $hasCoords
+                                ? 'https://www.google.com/maps?q=' . urlencode($pickupLat . ',' . $pickupLng)
+                                : ($pickupAddress !== '' ? 'https://www.google.com/maps/search/?api=1&query=' . urlencode($pickupAddress) : null);
                         @endphp
                         @if($activeMethod && ($activeMethod->type ?? 'flat_rate') === 'local_pickup')
-                            <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-                                <p class="font-semibold">Collect from Shop</p>
-                                <p class="mt-0.5">{{ $settings['shop_pickup_address'] ?? 'Collect your order in person from our shop.' }}</p>
+                            <div class="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                                <div class="flex flex-wrap items-start justify-between gap-3">
+                                    <div class="space-y-2 flex-1 min-w-0">
+                                        <div class="flex items-center gap-2">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                                                Shop Collection
+                                            </span>
+                                            <span class="text-xs font-semibold text-gray-800">Pickup Details</span>
+                                        </div>
+
+                                        <div class="flex items-start gap-2 text-xs text-gray-700">
+                                            <svg class="w-4 h-4 text-gray-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            <span>{{ $pickupAddress !== '' ? $pickupAddress : 'Collect your order in person from our shop.' }}</span>
+                                        </div>
+
+                                        @if($pickupHours !== '')
+                                            <div class="flex items-center gap-2 text-xs text-gray-600">
+                                                <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <span>{{ $pickupHours }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    @if($googleMapsUrl)
+                                        <a href="{{ $googleMapsUrl }}" target="_blank" rel="noopener noreferrer"
+                                           class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-800 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition shrink-0">
+                                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/>
+                                                <circle cx="12" cy="9" r="2.5" fill="#FFFFFF"/>
+                                            </svg>
+                                            <span>Google Maps</span>
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         @endif
                     </div>
