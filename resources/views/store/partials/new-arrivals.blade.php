@@ -34,7 +34,7 @@
                     @php
                         $saleInfo = !empty($flashSaleMap) ? ($flashSaleMap[$product->id] ?? null) : null;
                     @endphp
-                    <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer"
+                    <div class="flex-none w-[220px] sm:w-[260px] snap-start bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group/card cursor-pointer flex flex-col"
                          role="link"
                          tabindex="0"
                          onclick="if (!event.target.closest('button, a, [wire\\:click]')) window.location='{{ route('store.product.show', $product->slug) }}'"
@@ -57,14 +57,14 @@
                             @endif
                         </div>
 
-                        <div class="p-3">
+                        <div class="p-3 flex-1 flex flex-col">
                             <div class="block">
                                 <h3 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base leading-snug line-clamp-2 group-hover/card:text-primary">
                                     {{ $product->name }}
                                 </h3>
                             </div>
                             
-                            <div class="flex items-end justify-between gap-2">
+                            <div class="mt-auto pt-2 flex items-end justify-between gap-2">
                                 <div class="flex flex-col">
                                     @if($saleInfo)
                                         @if($product->has_variations && empty($product->price))

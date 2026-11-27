@@ -43,7 +43,7 @@
         @foreach($saleProducts as $product)
             @php $saleInfo = $flashSaleMap[$product->id] ?? null; @endphp
             @continue(empty($saleInfo))
-            <div class="group flex-none w-[220px] sm:w-[240px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md cursor-pointer snap-start"
+            <div class="group flex-none w-[220px] sm:w-[240px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md cursor-pointer snap-start flex flex-col"
                  role="link"
                  tabindex="0"
                  onclick="if (!event.target.closest('button, a, [wire\\:click]')) window.location='{{ route('store.product.show', $product->slug) }}'"
@@ -66,11 +66,11 @@
                     </div>
                 </div>
 
-                <div class="p-4">
+                <div class="p-4 flex-1 flex flex-col">
                     <h3 class="text-sm font-semibold text-gray-900 transition group-hover:text-primary leading-snug line-clamp-2">
                         {{ $product->name }}
                     </h3>
-                    <div class="mt-2 flex items-end justify-between gap-2">
+                    <div class="mt-auto pt-2 flex items-end justify-between gap-2">
                         <div class="flex flex-col">
                             @if($product->has_variations && empty($product->price))
                             <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500">{{ __('store.from') }}</span>
