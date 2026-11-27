@@ -35,6 +35,10 @@ class CartCheckout extends Component
 
     public $shippingMethods = [];
     public $selectedShippingMethod = null;
+    public array $servicePoints = [];
+    public ?int $selectedServicePointId = null;
+    public string $selectedServicePointName = '';
+    public string $servicePointError = '';
     public $couponCode = '';
     public $appliedCoupon = null;
     public $paymentMethod = 'cod';
@@ -243,7 +247,116 @@ class CartCheckout extends Component
 
     public function updatedSelectedShippingMethod(): void
     {
+        $this->servicePoints = [];
+        $this->selectedServicePointId = null;
+        $this->selectedServicePointName = '';
+        $this->servicePointError = '';
         $this->calculateTotals();
+    }
+
+    public function getBillingStatesProperty(): array
+    {
+        $locations = config('europe_locations', []);
+        $country = strtoupper((string) ($this->billing['country_code'] ?? ''));
+
+        return isset($locations[$country]) ? array_keys($locations[$country]) : [];
+    }
+
+    public function getBillingCitiesProperty(): array
+    {
+        $locations = config('europe_locations', []);
+        $country = strtoupper((string) ($this->billing['country_code'] ?? ''));
+        $state = trim((string) ($this->billing['state'] ?? ''));
+
+        if (! isset($locations[$country])) {
+            return [];
+        }
+
+        if ($state !== '' && isset($locations[$country][$state])) {
+            return $locations[$country][$state];
+        }
+
+        return collect($locations[$country])->flatten()->unique()->values()->all();
+    }
+
+    public function getShippingStatesProperty(): array
+    {
+        $locations = config('europe_locations', []);
+        $country = strtoupper((string) ($this->shipping['country_code'] ?? ''));
+
+        return isset($locations[$country]) ? array_keys($locations[$country]) : [];
+    }
+
+    public function getShippingCitiesProperty(): array
+    {
+        $locations = config('europe_locations', []);
+        $country = strtoupper((string) ($this->shipping['country_code'] ?? ''));
+        $state = trim((string) ($this->shipping['state'] ?? ''));
+
+        if (! isset($locations[$country])) {
+            return [];
+        }
+
+        if ($state !== '' && isset($locations[$country][$state])) {
+            return $locations[$country][$state];
+        }
+
+        return collect($locations[$country])->flatten()->unique()->values()->all();
+    }
+
+    public function isServicePointMethodSelected(): bool
+    {
+        $method = collect($this->shippingMethods)->firstWhere('id', $this->selectedShippingMethod);
+        if (! $method || ($method->provider ?? 'manual') !== 'sendcloud') {
+            return false;
+        }
+
+        $name = strtolower((string) $method->name);
+
+        return str_contains($name, 'shop2shop')
+            || str_contains($name, 'relais')
+            || str_contains($name, 'locker')
+            || str_contains($name, 'service point')
+            || str_contains($name, 'pickup point');
+    }
+
+    public function findServicePoints(): void
+    {
+        $this->servicePointError = '';
+        $this->servicePoints = [];
+
+        $source = $this->shipToDifferentAddress ? $this->shipping : $this->billing;
+        $country = strtoupper(trim((string) ($source['country_code'] ?? '')));
+        $postal = trim((string) ($source['postal_code'] ?? ''));
+
+        if ($country === '' || $postal === '') {
+            $this->servicePointError = 'Please enter your Country and Zip / Postal Code first to find nearby pickup points.';
+            return;
+        }
+
+        try {
+            $method = collect($this->shippingMethods)->firstWhere('id', $this->selectedShippingMethod);
+            $name = strtolower((string) ($method?->name ?? ''));
+            $carrier = null;
+            if (str_contains($name, 'chrono')) {
+                $carrier = 'chronopost';
+            } elseif (str_contains($name, 'mondial')) {
+                $carrier = 'mondial_relay';
+            }
+
+            $this->servicePoints = app(\App\Services\SendcloudService::class)->getServicePoints($country, $postal, $carrier);
+            if (empty($this->servicePoints)) {
+                $this->servicePointError = 'No pickup points found for that postal code. Try another postal code.';
+            }
+        } catch (\Throwable $e) {
+            $this->servicePointError = $e->getMessage();
+        }
+    }
+
+    public function selectServicePoint(int $id, string $name): void
+    {
+        $this->selectedServicePointId = $id;
+        $this->selectedServicePointName = $name;
     }
 
     public function updatedEmail(): void
@@ -383,6 +496,8 @@ class CartCheckout extends Component
                 'currency_code' => $currency?->code ?? 'BDT',
                 'exchange_rate' => $currency?->exchange_rate ?? 1.0000,
                 'shipping_method_id' => $this->selectedShippingMethod,
+                'sendcloud_service_point_id' => $this->selectedServicePointId,
+                'sendcloud_service_point_name' => $this->selectedServicePointName !== '' ? $this->selectedServicePointName : null,
                 'payment_method' => $this->paymentMethod,
                 'payment_status' => $this->paymentMethod === 'offline' ? 'pending_verification' : 'pending',
             ]);

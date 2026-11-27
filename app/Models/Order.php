@@ -20,6 +20,8 @@ class Order extends Model
         'shipping_method_id',
         'shipping_provider',
         'sendcloud_parcel_id',
+        'sendcloud_service_point_id',
+        'sendcloud_service_point_name',
         'tracking_number',
         'tracking_url',
         'shipping_label_url',

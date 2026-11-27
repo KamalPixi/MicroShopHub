@@ -225,6 +225,10 @@ class SendcloudService
             }
         }
 
+        if (! empty($order->sendcloud_service_point_id)) {
+            $parcelPayload['to_service_point'] = (int) $order->sendcloud_service_point_id;
+        }
+
         $response = Http::withBasicAuth($config['public_key'], $config['secret_key'])
             ->acceptJson()
             ->timeout(20)
@@ -239,6 +243,49 @@ class SendcloudService
         $this->updateOrderFromParcel($order, $parcel);
 
         return $parcel;
+    }
+
+    public function getServicePoints(string $countryCode, string $postalCode, ?string $carrier = null): array
+    {
+        $config = $this->getConfig();
+        if ($config['public_key'] === '' || $config['secret_key'] === '') {
+            throw new \RuntimeException('Sendcloud API credentials are not configured.');
+        }
+
+        $query = [
+            'country' => strtoupper(trim($countryCode)),
+            'postal_code' => trim($postalCode),
+        ];
+
+        if ($carrier) {
+            $query['carrier'] = $carrier;
+        }
+
+        $response = Http::withBasicAuth($config['public_key'], $config['secret_key'])
+            ->acceptJson()
+            ->timeout(15)
+            ->get('https://servicepoints.sendcloud.sc/api/v2/service-points/', $query);
+
+        if (! $response->successful()) {
+            throw new \RuntimeException('Sendcloud Service Points error (' . $response->status() . '): ' . ($response->json('error.message') ?? $response->body()));
+        }
+
+        $points = $response->json();
+        if (! is_array($points)) {
+            return [];
+        }
+
+        return collect($points)->take(12)->map(function ($point) {
+            return [
+                'id' => $point['id'] ?? null,
+                'name' => $point['name'] ?? 'Pickup Point',
+                'street' => trim(($point['street'] ?? '') . ' ' . ($point['house_number'] ?? '')),
+                'postal_code' => $point['postal_code'] ?? '',
+                'city' => $point['city'] ?? '',
+                'carrier' => $point['carrier'] ?? '',
+                'distance' => $point['distance'] ?? null,
+            ];
+        })->filter(fn ($p) => ! empty($p['id']))->values()->all();
     }
 
     public function refreshParcel(Order $order): array

@@ -208,7 +208,7 @@
                                 @endif
                             </div>
 
-                            @if($order->sendcloud_parcel_id)
+                        @if($order->sendcloud_parcel_id)
                                 <button type="button" wire:click="refreshSendcloudParcel" wire:loading.attr="disabled" wire:target="refreshSendcloudParcel" class="inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed text-gray-700 rounded-lg px-3 py-1.5 text-xs font-semibold">
                                     <svg wire:loading wire:target="refreshSendcloudParcel" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -231,6 +231,14 @@
                                 </div>
                             @endif
                         </div>
+
+                        @if($order->sendcloud_service_point_id)
+                            <div class="mb-3 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs text-indigo-900">
+                                <span class="font-semibold">Selected Pickup Point:</span>
+                                {{ $order->sendcloud_service_point_name ?: 'Service Point' }}
+                                <span class="font-mono text-indigo-700">(#{{ $order->sendcloud_service_point_id }})</span>
+                            </div>
+                        @endif
 
                         @if($order->sendcloud_parcel_id)
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs bg-gray-50 p-3 rounded-lg border border-gray-200">
