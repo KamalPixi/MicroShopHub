@@ -53,7 +53,7 @@
                                             </div>
                                             <div class="text-right">
                                                 <p class="text-sm font-black text-gray-900">
-                                                    {{ $item['currency_symbol'] ?? $currencySymbol }}{{ number_format($item['price'], 2) }}
+                                                    {{ $currencySymbol }}{{ number_format($item['price'], 2) }}
                                                 </p>
                                                 <p class="text-[10px] text-gray-400 mt-0.5">{{ __('store.per_unit') }}</p>
                                             </div>
@@ -404,17 +404,23 @@
                                 </div>
                             </div>
 
-                            <div class="pt-2">
-                                <label class="inline-flex items-center cursor-pointer">
-                                    <input wire:model.live="shipToDifferentAddress" wire:change="saveGuestDraft"
-                                        type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                                    <span
-                                        class="ml-2 text-sm text-gray-700 font-medium">{{ __('store.ship_to_different_address') }}</span>
-                                </label>
-                            </div>
+                            @php
+                                $activeCheckoutMethod = collect($shippingMethods)->firstWhere('id', $selectedShippingMethod);
+                                $isPickupSelected = $activeCheckoutMethod && ($activeCheckoutMethod->type ?? 'flat_rate') === 'local_pickup';
+                            @endphp
 
-                            @if($shipToDifferentAddress)
-                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4 animate-fade-in-down">
+                            @if(!$isPickupSelected)
+                                <div class="pt-2">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input wire:model.live="shipToDifferentAddress" wire:change="saveGuestDraft"
+                                            type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
+                                        <span
+                                            class="ml-2 text-sm text-gray-700 font-medium">{{ __('store.ship_to_different_address') }}</span>
+                                    </label>
+                                </div>
+
+                                @if($shipToDifferentAddress)
+                                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4 animate-fade-in-down">
 
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
@@ -479,6 +485,7 @@
                                         </div>
                                     </div>
                                 </div>
+                            @endif
                             @endif
                         </div>
                     </div>
@@ -629,8 +636,11 @@
                             @endif
                             <div class="flex justify-between text-gray-600">
                                 <span>{{ __('store.shipping') }}</span>
-                                <span
-                                    class="font-bold text-gray-900">{{$currencySymbol}}{{ number_format($shippingCost, 2) }}</span>
+                                @if((float) $shippingCost <= 0)
+                                    <span class="font-bold text-emerald-700">Free</span>
+                                @else
+                                    <span class="font-bold text-gray-900">{{ $currencySymbol }}{{ number_format($shippingCost, 2) }}</span>
+                                @endif
                             </div>
                             <div class="border-t border-dashed border-gray-300 pt-3 flex justify-between items-end">
                                 <span class="text-base font-bold text-gray-900">{{ __('store.total') }}</span>
