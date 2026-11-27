@@ -592,6 +592,14 @@
                     <label for="sendcloud_request_label" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">Request shipping label automatically when creating parcel</label>
                 </div>
 
+                <div class="rounded-lg border border-gray-200 bg-white p-3">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Webhook URL (for Sendcloud Integration)</label>
+                    <div class="flex items-center gap-2">
+                        <input type="text" readonly value="{{ route('sendcloud.webhook') }}" onclick="this.select()" class="input-field block w-full border border-gray-300 rounded-lg bg-gray-50 text-xs px-3 py-2 font-mono text-gray-700">
+                    </div>
+                    <p class="mt-1 text-[11px] text-gray-500">Paste this URL into Sendcloud → Settings → Integrations → Sendcloud API → Webhook URL. Signatures are verified automatically using your Secret Key.</p>
+                </div>
+
                 <div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-200">
                     <div class="flex flex-wrap items-center gap-2">
                         <button wire:click="testSendcloudConnection" wire:loading.attr="disabled" type="button" class="border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 rounded-lg px-3 py-2 text-xs font-semibold">

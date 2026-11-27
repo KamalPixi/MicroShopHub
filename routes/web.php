@@ -162,6 +162,7 @@ Route::prefix('payment')->middleware('app.installed')->name('payment.')->group(f
 });
 
 Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle'])->middleware('app.installed')->name('telegram.webhook');
+Route::post('/sendcloud/webhook', [\App\Http\Controllers\Store\SendcloudWebhookController::class, 'handle'])->middleware('app.installed')->name('sendcloud.webhook');
 Route::post('/live-chat/telegram', [LiveChatTelegramController::class, 'handle'])->middleware('app.installed')->name('live-chat.telegram');
 
 /*

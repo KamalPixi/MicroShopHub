@@ -137,10 +137,15 @@ class CartCheckout extends Component
         if (! empty($this->offlinePaymentMethods)) {
             $this->offlinePaymentMethodId = '';
         }
+        $priorityOrder = ['FR', 'BE', 'CH', 'DE', 'ES', 'IT', 'LU'];
         $this->supportedCountries = Country::query()
             ->where('active', true)
             ->orderBy('name')
             ->get(['code', 'name'])
+            ->sortBy(function ($country) use ($priorityOrder) {
+                $index = array_search($country->code, $priorityOrder, true);
+                return $index === false ? [1, $country->name] : [0, $index];
+            })
             ->map(fn ($country) => ['code' => $country->code, 'name' => $country->name])
             ->values()
             ->all();
@@ -784,11 +789,11 @@ class CartCheckout extends Component
     {
         $codes = collect($this->supportedCountries)->pluck('code')->all();
 
-        if (in_array('BD', $codes, true)) {
-            return 'BD';
+        if (in_array('FR', $codes, true)) {
+            return 'FR';
         }
 
-        return $codes[0] ?? 'BD';
+        return $codes[0] ?? 'FR';
     }
 
     public function render()

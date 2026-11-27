@@ -13,30 +13,35 @@ class CountrySeeder extends Seeder
         $now = now();
 
         $countries = [
-            ['code' => 'BD', 'name' => 'Bangladesh', 'active' => true],
-            ['code' => 'US', 'name' => 'United States', 'active' => true],
-            ['code' => 'GB', 'name' => 'United Kingdom', 'active' => true],
-            ['code' => 'CA', 'name' => 'Canada', 'active' => true],
-            ['code' => 'MY', 'name' => 'Malaysia', 'active' => true],
-            ['code' => 'SG', 'name' => 'Singapore', 'active' => true],
-            ['code' => 'IN', 'name' => 'India', 'active' => true],
-            ['code' => 'AE', 'name' => 'United Arab Emirates', 'active' => true],
-            ['code' => 'SA', 'name' => 'Saudi Arabia', 'active' => true],
-            ['code' => 'AU', 'name' => 'Australia', 'active' => true],
-            ['code' => 'NZ', 'name' => 'New Zealand', 'active' => true],
-            ['code' => 'DE', 'name' => 'Germany', 'active' => true],
+            ['code' => 'AT', 'name' => 'Austria', 'active' => true],
+            ['code' => 'BE', 'name' => 'Belgium', 'active' => true],
+            ['code' => 'BG', 'name' => 'Bulgaria', 'active' => true],
+            ['code' => 'HR', 'name' => 'Croatia', 'active' => true],
+            ['code' => 'CZ', 'name' => 'Czechia', 'active' => true],
+            ['code' => 'DK', 'name' => 'Denmark', 'active' => true],
+            ['code' => 'EE', 'name' => 'Estonia', 'active' => true],
+            ['code' => 'FI', 'name' => 'Finland', 'active' => true],
             ['code' => 'FR', 'name' => 'France', 'active' => true],
+            ['code' => 'DE', 'name' => 'Germany', 'active' => true],
+            ['code' => 'GR', 'name' => 'Greece', 'active' => true],
+            ['code' => 'HU', 'name' => 'Hungary', 'active' => true],
+            ['code' => 'IS', 'name' => 'Iceland', 'active' => true],
+            ['code' => 'IT', 'name' => 'Italy', 'active' => true],
+            ['code' => 'LV', 'name' => 'Latvia', 'active' => true],
+            ['code' => 'LI', 'name' => 'Liechtenstein', 'active' => true],
+            ['code' => 'LT', 'name' => 'Lithuania', 'active' => true],
+            ['code' => 'LU', 'name' => 'Luxembourg', 'active' => true],
+            ['code' => 'MT', 'name' => 'Malta', 'active' => true],
             ['code' => 'NL', 'name' => 'Netherlands', 'active' => true],
-            ['code' => 'JP', 'name' => 'Japan', 'active' => true],
-            ['code' => 'KR', 'name' => 'South Korea', 'active' => true],
-            ['code' => 'CN', 'name' => 'China', 'active' => true],
-            ['code' => 'TH', 'name' => 'Thailand', 'active' => true],
-            ['code' => 'PH', 'name' => 'Philippines', 'active' => true],
-            ['code' => 'ID', 'name' => 'Indonesia', 'active' => true],
-            ['code' => 'VN', 'name' => 'Vietnam', 'active' => true],
-            ['code' => 'PK', 'name' => 'Pakistan', 'active' => true],
-            ['code' => 'LK', 'name' => 'Sri Lanka', 'active' => true],
-            ['code' => 'NP', 'name' => 'Nepal', 'active' => true],
+            ['code' => 'NO', 'name' => 'Norway', 'active' => true],
+            ['code' => 'PL', 'name' => 'Poland', 'active' => true],
+            ['code' => 'PT', 'name' => 'Portugal', 'active' => true],
+            ['code' => 'RO', 'name' => 'Romania', 'active' => true],
+            ['code' => 'SK', 'name' => 'Slovakia', 'active' => true],
+            ['code' => 'SI', 'name' => 'Slovenia', 'active' => true],
+            ['code' => 'ES', 'name' => 'Spain', 'active' => true],
+            ['code' => 'SE', 'name' => 'Sweden', 'active' => true],
+            ['code' => 'CH', 'name' => 'Switzerland', 'active' => true],
         ];
 
         foreach ($countries as &$country) {
@@ -51,6 +56,8 @@ class CountrySeeder extends Seeder
             ['name', 'active', 'updated_at']
         );
 
-        Country::query()->where('code', 'BD')->update(['active' => true]);
+        Country::query()
+            ->whereNotIn('code', array_column($countries, 'code'))
+            ->update(['active' => false]);
     }
 }
