@@ -1,18 +1,27 @@
-<div class="bg-white p-4 rounded-xl border border-gray-200 table-container mx-auto">
-    <div class="flex justify-between items-center mb-3 border-b border-gray-100 pb-2.5">
-        <h3 class="text-sm font-bold text-gray-800 flex items-center">
-            <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
-            Store Configuration
-        </h3>
+<div class="bg-white p-4 rounded-xl border border-gray-200 table-container mx-auto" x-data="{ activeTab: localStorage.getItem('admin_settings_tab') || 'general', setTab(t) { this.activeTab = t; localStorage.setItem('admin_settings_tab', t); } }">
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-3 border-b border-gray-100 pb-3">
+        <div>
+            <h3 class="text-sm font-bold text-gray-800 flex items-center">
+                <svg class="w-4 h-4 mr-1.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Store Configuration
+            </h3>
+        </div>
+        <div class="flex flex-wrap items-center gap-2" role="tablist">
+            <button type="button" @click="setTab('general')" :class="activeTab === 'general' ? 'bg-primary text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'" class="px-3 py-2 rounded-lg text-xs font-semibold transition">General &amp; Brand</button>
+            <button type="button" @click="setTab('payments')" :class="activeTab === 'payments' ? 'bg-primary text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'" class="px-3 py-2 rounded-lg text-xs font-semibold transition">Payments &amp; Delivery</button>
+            <button type="button" @click="setTab('customers')" :class="activeTab === 'customers' ? 'bg-primary text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'" class="px-3 py-2 rounded-lg text-xs font-semibold transition">Customers &amp; Auth</button>
+            <button type="button" @click="setTab('notifications')" :class="activeTab === 'notifications' ? 'bg-primary text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'" class="px-3 py-2 rounded-lg text-xs font-semibold transition">Email &amp; Chat</button>
+            <button type="button" @click="setTab('system')" :class="activeTab === 'system' ? 'bg-primary text-white shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'" class="px-3 py-2 rounded-lg text-xs font-semibold transition">System &amp; Cron</button>
+        </div>
     </div>
 
     @include('admin.includes.message')
 
     <div class="space-y-3">
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'general'" class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">General Identity</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Configure your store's basic information and branding appearance.</p>
 
@@ -25,8 +34,8 @@
                     </div>
                     <div>
                         <label for="site_title" class="block text-sm font-semibold text-gray-700">Slogan</label>
-                        <p class="mt-1 text-[11px] text-gray-500">Shown under your shop name on the storefront header and footer.</p>
                         <input wire:model="settings.site_title" type="text" id="site_title" class="input-field mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. Best Deals Online">
+                        <p class="mt-1 text-[11px] text-gray-500">Shown under your shop name on the storefront header and footer.</p>
                         @error('settings.site_title') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -83,7 +92,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'general'" class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Storefront Language</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Choose the default storefront language and enable the languages customers can switch between.</p>
 
@@ -135,7 +144,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'general'" class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">SEO & Metadata</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Optimize your store for search engines.</p>
 
@@ -164,7 +173,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'customers'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Customer Authentication</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Enable or disable customer login methods and guest ordering.</p>
 
@@ -212,7 +221,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'payments'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Payment Gateways</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Configure credentials and labels. Leave keys blank to disable a method.</p>
 
@@ -475,7 +484,7 @@
 
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'payments'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <div class="flex items-center justify-between mb-1">
                 <h4 class="text-base font-bold text-gray-800">Delivery Gateways</h4>
                 <div class="flex items-center gap-2">
@@ -632,7 +641,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'payments'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Store Operations</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Currency and tax configurations.</p>
 
@@ -784,7 +793,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'general'" class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Social & Contact</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Customer support info and social media links.</p>
 
@@ -837,7 +846,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'notifications'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Email Settings</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Configure SMTP details used across the system for all email sending.</p>
 
@@ -946,7 +955,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'notifications'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Admin Notifications</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Notify admins when new orders are placed.</p>
 
@@ -1029,7 +1038,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'notifications'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Live Chat</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Enable storefront live chat so customers can message the admin team and receive replies from Telegram. The conversation stays between the customer and admin only.</p>
 
@@ -1139,7 +1148,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'system'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">Cron & Queue Setup</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Use cron to process queued jobs on shared hosting and VPS.</p>
 
@@ -1167,7 +1176,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-gray-200 p-4 bg-white">
+        <section x-show="activeTab === 'system'" x-cloak class="rounded-xl border border-gray-200 p-4 bg-white">
             <h4 class="text-base font-bold text-gray-800">System & Maintenance</h4>
             <p class="text-xs text-gray-500 mt-1 mb-4">Manage database backups and system health.</p>
 
