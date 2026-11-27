@@ -596,7 +596,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pr-1" style="max-height: 380px; overflow-y: auto;">
                             @foreach($shippingMethods as $method)
                                 @php
                                     $isPickup = ($method->type ?? 'flat_rate') === 'local_pickup';
@@ -737,23 +737,33 @@
                                 @endif
 
                                 @if(!empty($servicePoints))
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-60 overflow-y-auto pr-1">
-                                        @foreach($servicePoints as $point)
-                                            @php
-                                                $isPointSelected = (int) $selectedServicePointId === (int) $point['id'];
-                                            @endphp
-                                            <button type="button"
-                                                wire:click="selectServicePoint({{ $point['id'] }}, '{{ addslashes($point['name']) }}')"
-                                                class="text-left p-2.5 rounded-lg border transition {{ $isPointSelected ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-gray-200 bg-white hover:border-gray-300' }}">
-                                                <div class="flex items-start justify-between gap-2">
-                                                    <span class="text-xs font-bold text-gray-900">{{ $point['name'] }}</span>
-                                                    @if(!empty($point['distance']))
-                                                        <span class="text-[10px] text-gray-500 shrink-0">{{ number_format($point['distance'] / 1000, 1) }} km</span>
-                                                    @endif
-                                                </div>
-                                                <p class="text-[11px] text-gray-600 mt-0.5">{{ $point['street'] }}, {{ $point['postal_code'] }} {{ $point['city'] }}</p>
-                                            </button>
-                                        @endforeach
+                                    <div x-data="{ pointQuery: '' }" class="space-y-2">
+                                        <input x-model="pointQuery" type="text"
+                                            class="w-full text-xs border border-gray-300 bg-white rounded-lg py-1.5 px-3 focus:border-primary focus:ring-primary"
+                                            placeholder="Filter pickup points by name or street...">
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pr-1" style="max-height: 240px; overflow-y: auto;">
+                                            @foreach($servicePoints as $point)
+                                                @php
+                                                    $isPointSelected = (int) $selectedServicePointId === (int) $point['id'];
+                                                    $searchable = strtolower($point['name'] . ' ' . $point['street'] . ' ' . $point['postal_code'] . ' ' . $point['city']);
+                                                @endphp
+                                                <button type="button"
+                                                    x-show="!pointQuery || @js($searchable).includes(pointQuery.toLowerCase())"
+                                                    wire:click="selectServicePoint({{ $point['id'] }}, '{{ addslashes($point['name']) }}')"
+                                                    class="text-left p-2.5 rounded-lg border transition cursor-pointer {{ $isPointSelected ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                                                    <div class="flex items-start justify-between gap-2">
+                                                        <span class="text-xs font-bold text-gray-900">{{ $point['name'] }}</span>
+                                                        @if($isPointSelected)
+                                                            <span class="text-[10px] font-bold text-primary shrink-0">✓ Selected</span>
+                                                        @elseif(!empty($point['distance']))
+                                                            <span class="text-[10px] text-gray-500 shrink-0">{{ number_format($point['distance'] / 1000, 1) }} km</span>
+                                                        @endif
+                                                    </div>
+                                                    <p class="text-[11px] text-gray-600 mt-0.5">{{ $point['street'] }}, {{ $point['postal_code'] }} {{ $point['city'] }}</p>
+                                                </button>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endif
                             </div>

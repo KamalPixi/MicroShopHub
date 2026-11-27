@@ -254,10 +254,25 @@ class CartCheckout extends Component
         $this->calculateTotals();
     }
 
+    protected function resolveLocationCountry(array $address): string
+    {
+        $country = strtoupper(trim((string) ($address['country_code'] ?? '')));
+        if ($country !== '') {
+            return $country;
+        }
+
+        $billingCountry = strtoupper(trim((string) ($this->billing['country_code'] ?? '')));
+        if ($billingCountry !== '') {
+            return $billingCountry;
+        }
+
+        return strtoupper((string) ($this->supportedCountries[0]['code'] ?? 'FR'));
+    }
+
     public function getBillingStatesProperty(): array
     {
         $locations = config('europe_locations', []);
-        $country = strtoupper((string) ($this->billing['country_code'] ?? ''));
+        $country = $this->resolveLocationCountry($this->billing);
 
         return isset($locations[$country]) ? array_keys($locations[$country]) : [];
     }
@@ -265,7 +280,7 @@ class CartCheckout extends Component
     public function getBillingCitiesProperty(): array
     {
         $locations = config('europe_locations', []);
-        $country = strtoupper((string) ($this->billing['country_code'] ?? ''));
+        $country = $this->resolveLocationCountry($this->billing);
         $state = trim((string) ($this->billing['state'] ?? ''));
 
         if (! isset($locations[$country])) {
@@ -282,7 +297,7 @@ class CartCheckout extends Component
     public function getShippingStatesProperty(): array
     {
         $locations = config('europe_locations', []);
-        $country = strtoupper((string) ($this->shipping['country_code'] ?? ''));
+        $country = $this->resolveLocationCountry($this->shipping);
 
         return isset($locations[$country]) ? array_keys($locations[$country]) : [];
     }
@@ -290,7 +305,7 @@ class CartCheckout extends Component
     public function getShippingCitiesProperty(): array
     {
         $locations = config('europe_locations', []);
-        $country = strtoupper((string) ($this->shipping['country_code'] ?? ''));
+        $country = $this->resolveLocationCountry($this->shipping);
         $state = trim((string) ($this->shipping['state'] ?? ''));
 
         if (! isset($locations[$country])) {
