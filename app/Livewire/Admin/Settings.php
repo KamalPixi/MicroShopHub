@@ -44,7 +44,9 @@ class Settings extends Component
         // Payment Gateways
         'stripe_mode' => 'test',
         'stripe_test_api_key' => '',
+        'stripe_test_webhook_secret' => '',
         'stripe_api_key' => '',
+        'stripe_webhook_secret' => '',
         'stripe_label' => '',
         
         'paypal_api_key' => '',
@@ -188,7 +190,9 @@ class Settings extends Component
         // Payment Validation
         'settings.stripe_mode' => 'required|in:test,production',
         'settings.stripe_test_api_key' => 'nullable|string|max:255',
+        'settings.stripe_test_webhook_secret' => 'nullable|string|max:255',
         'settings.stripe_api_key' => 'nullable|string|max:255',
+        'settings.stripe_webhook_secret' => 'nullable|string|max:255',
         'settings.stripe_label' => 'nullable|string|max:255',
         'settings.paypal_api_key' => 'nullable|string|max:255',
         'settings.paypal_label' => 'nullable|string|max:255',
@@ -588,12 +592,16 @@ class Settings extends Component
         $this->saveSettings([
             'stripe_mode',
             'stripe_test_api_key',
+            'stripe_test_webhook_secret',
             'stripe_api_key',
+            'stripe_webhook_secret',
             'stripe_label',
         ], [
             'settings.stripe_mode' => $this->rules['settings.stripe_mode'],
             'settings.stripe_test_api_key' => $this->rules['settings.stripe_test_api_key'],
+            'settings.stripe_test_webhook_secret' => $this->rules['settings.stripe_test_webhook_secret'],
             'settings.stripe_api_key' => $this->rules['settings.stripe_api_key'],
+            'settings.stripe_webhook_secret' => $this->rules['settings.stripe_webhook_secret'],
             'settings.stripe_label' => $this->rules['settings.stripe_label'],
         ], false, 'stripe');
     }

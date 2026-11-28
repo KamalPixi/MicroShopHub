@@ -15,6 +15,15 @@ class PaymentController extends Controller
     // --- 1. INITIATE PAYMENT ---
     public function pay(Request $request)
     {
+        $guestAllowed = filter_var(
+            Setting::where('key', 'customer_auth_guest_checkout_enabled')->value('value') ?? false,
+            FILTER_VALIDATE_BOOLEAN
+        );
+
+        if (! auth()->check() && ! $guestAllowed) {
+            return redirect()->back()->with('error', 'Please log in or register before proceeding to payment.');
+        }
+
         $request->validate(['gateway' => 'required|string']);
         $gateway = $request->input('gateway');
 
@@ -301,6 +310,12 @@ class PaymentController extends Controller
             $payload['customer_email'] = $email;
         }
 
+        $orderNumber = trim((string) ($request->input('order_number') ?: session('pending_payment_order_number', '')));
+        if ($orderNumber !== '') {
+            $payload['client_reference_id'] = $orderNumber;
+            $payload['metadata[order_number]'] = $orderNumber;
+        }
+
         $response = Http::withBasicAuth($secretKey, '')
             ->asForm()
             ->timeout(20)
@@ -375,9 +390,25 @@ class PaymentController extends Controller
             $sessionData = $response->json();
 
             if ($response->successful() && ($sessionData['payment_status'] ?? '') === 'paid') {
-                session()->forget('cart');
+                $orderRef = $sessionData['client_reference_id'] ?? ($sessionData['metadata']['order_number'] ?? null);
+                if ($orderRef) {
+                    $order = Order::where('order_number', $orderRef)->first();
+                    if ($order) {
+                        $order->update([
+                            'payment_method' => 'stripe',
+                            'payment_status' => 'paid',
+                            'status' => $order->status === 'pending' ? 'processing' : $order->status,
+                        ]);
+                    }
+                }
 
-                return redirect()->route('store.index')->with('success', 'Stripe payment successful!');
+                session()->forget(['cart', 'pending_payment_order_number', 'guest_checkout', 'auth_checkout', 'guest_coupon', 'auth_coupon']);
+
+                $msg = $orderRef
+                    ? "Stripe payment successful! Order #{$orderRef} confirmed."
+                    : 'Stripe payment successful!';
+
+                return redirect()->route('store.index')->with('success', $msg);
             }
 
             return redirect()->route('store.index')->with('error', 'Stripe payment could not be verified.');
@@ -408,11 +439,94 @@ class PaymentController extends Controller
                 return $this->handlePortPosIpn($request);
             
             case 'stripe':
-                return response()->json(['status' => 'Stripe not implemented'], 404);
+                return $this->handleStripeWebhook($request);
 
             default:
                 return response()->json(['status' => 'Unknown Gateway'], 400);
         }
+    }
+
+    private function handleStripeWebhook(Request $request)
+    {
+        $rawPayload = $request->getContent();
+        $sigHeader = (string) $request->header('Stripe-Signature', '');
+
+        if ($sigHeader === '') {
+            return response()->json(['error' => 'Missing Stripe-Signature header'], 401);
+        }
+
+        $secrets = Setting::whereIn('key', [
+            'stripe_test_webhook_secret',
+            'stripe_webhook_secret',
+        ])->pluck('value', 'key')->toArray();
+
+        $candidateSecrets = array_values(array_filter(array_unique([
+            trim((string) ($secrets['stripe_test_webhook_secret'] ?? '')),
+            trim((string) ($secrets['stripe_webhook_secret'] ?? '')),
+        ])));
+
+        if (empty($candidateSecrets)) {
+            return response()->json(['error' => 'Stripe webhook secret is not configured'], 401);
+        }
+
+        $timestamp = null;
+        $signatures = [];
+        foreach (explode(',', $sigHeader) as $part) {
+            $pair = explode('=', trim($part), 2);
+            if (count($pair) !== 2) {
+                continue;
+            }
+            if ($pair[0] === 't') {
+                $timestamp = (int) $pair[1];
+            } elseif ($pair[0] === 'v1') {
+                $signatures[] = $pair[1];
+            }
+        }
+
+        if (! $timestamp || empty($signatures) || abs(time() - $timestamp) > 300) {
+            return response()->json(['error' => 'Invalid or expired Stripe signature timestamp'], 401);
+        }
+
+        $signedPayload = "{$timestamp}.{$rawPayload}";
+        $verified = false;
+        foreach ($candidateSecrets as $secret) {
+            $expected = hash_hmac('sha256', $signedPayload, $secret);
+            foreach ($signatures as $sig) {
+                if (hash_equals($expected, $sig)) {
+                    $verified = true;
+                    break 2;
+                }
+            }
+        }
+
+        if (! $verified) {
+            Log::warning('Stripe webhook signature mismatch');
+            return response()->json(['error' => 'Invalid signature'], 401);
+        }
+
+        $event = json_decode($rawPayload, true);
+        if (! is_array($event)) {
+            return response()->json(['error' => 'Invalid JSON payload'], 400);
+        }
+
+        $type = (string) ($event['type'] ?? '');
+        $object = $event['data']['object'] ?? [];
+
+        if (in_array($type, ['checkout.session.completed', 'checkout.session.async_payment_succeeded'], true) && is_array($object)) {
+            $orderRef = $object['client_reference_id'] ?? ($object['metadata']['order_number'] ?? null);
+            if ($orderRef) {
+                $order = Order::where('order_number', $orderRef)->first();
+                if ($order) {
+                    $order->update([
+                        'payment_method' => 'stripe',
+                        'payment_status' => 'paid',
+                        'status' => $order->status === 'pending' ? 'processing' : $order->status,
+                    ]);
+                }
+            }
+        }
+
+        return response()->json(['received' => true]);
     }
 
     private function handleSslCommerzIpn(Request $request)

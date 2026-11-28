@@ -274,6 +274,7 @@
                             @endif
                         </div>
 
+                        @if(auth()->check() || $authSettings['guest_checkout_enabled'])
                         <div class="space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
                             @if(auth()->check() && $savedAddresses && $savedAddresses->count() > 0)
                                 <div class="mb-5">
@@ -327,34 +328,42 @@
                                 </div>
                             @endif
 
+                            @php
+                                $isPickupMode = $this->isShopPickupSelected();
+                                $isServicePointMode = $this->isServicePointMethodSelected();
+                                $needsFullAddress = ! $isPickupMode && ! $isServicePointMode;
+                            @endphp
+
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">
-                                        {{ __('store.country') }} <span class="text-red-500">*</span>
-                                    </label>
+                                @if(! $isPickupMode)
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">
+                                            {{ __('store.country') }} <span class="text-red-500">*</span>
+                                        </label>
 
-                                    <div class="relative">
-                                        <select wire:model.live="billing.country_code" wire:change="saveGuestDraft"
-                                            class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
-                                            @foreach($supportedCountries as $country)
-                                                <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="relative">
+                                            <select wire:model.live="billing.country_code" wire:change="saveGuestDraft"
+                                                class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
+                                                @foreach($supportedCountries as $country)
+                                                    <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
+                                                @endforeach
+                                            </select>
 
-                                        <div
-                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                            <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20">
-                                                <path
-                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                            </svg>
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                                </svg>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    @error('billing.country_code')
-                                        <span class="text-red-500 text-xs">{{ $message }}</span>
-                                    @enderror
-                                </div>
+                                        @error('billing.country_code')
+                                            <span class="text-red-500 text-xs">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                @endif
                                 <div>
                                     <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.full_name') }}
                                         <span class="text-red-500">*</span></label>
@@ -371,8 +380,28 @@
                                         placeholder="+123456789">
                                     @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                 </div>
+                                @if($isServicePointMode)
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.zip_postal_code') }} <span class="text-red-500">*</span></label>
+                                        <input wire:model="billing.postal_code" wire:change="saveGuestDraft" type="text"
+                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
+                                            placeholder="e.g. 75014">
+                                        @error('billing.postal_code') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                @endif
                             </div>
 
+                            @if($isPickupMode)
+                                <div class="rounded-lg border border-amber-200 bg-amber-50/70 px-3 py-2 text-xs text-amber-900">
+                                    In-store pickup selected — no shipping address required.
+                                </div>
+                            @elseif($isServicePointMode)
+                                <div class="rounded-lg border border-indigo-200 bg-indigo-50/70 px-3 py-2 text-xs text-indigo-900">
+                                    Pickup Point / Locker selected — only your Country &amp; Postal Code are needed to find nearby locations below.
+                                </div>
+                            @endif
+
+                            @if($needsFullAddress)
                             <div>
                                 <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.address_line_1') }}
                                     <span class="text-red-500">*</span></label>
@@ -460,7 +489,7 @@
                                 $isPickupSelected = $activeCheckoutMethod && ($activeCheckoutMethod->type ?? 'flat_rate') === 'local_pickup';
                             @endphp
 
-                            @if(!$isPickupSelected)
+                            @if($needsFullAddress)
                                 <div class="pt-2">
                                     <label class="inline-flex items-center cursor-pointer">
                                         <input wire:model.live="shipToDifferentAddress" wire:change="saveGuestDraft"
@@ -583,7 +612,9 @@
                                 </div>
                             @endif
                             @endif
+                            @endif
                         </div>
+                        @endif
                     </div>
 
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
@@ -1229,17 +1260,21 @@
                         @endif
                         @error('paymentMethod') <p class="text-red-500 text-xs mb-2">{{ $message }}</p> @enderror
 
-                        @if($paymentMethod === '')
+                        @if(!auth()->check() && !$authSettings['guest_checkout_enabled'])
+                            <button type="button" disabled
+                                class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md opacity-70 cursor-not-allowed flex justify-center items-center">
+                                {{ __('store.log_in_to_order') }}
+                            </button>
+                        @elseif($paymentMethod === '')
                             <button type="button" disabled
                                 class="w-full bg-gray-300 text-gray-600 py-3 rounded-lg font-bold text-base cursor-not-allowed flex justify-center items-center">
                                 Select a Payment Method
                             </button>
                         @elseif($paymentMethod === 'cod' || $paymentMethod === 'offline' || $paymentMethod === 'pay_at_shop')
                             <button wire:click="placeOrder" wire:loading.attr="disabled"
-                                class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center
-                                                   {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? 'opacity-70 cursor-not-allowed' : '' }}">
+                                class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center">
                                 <span wire:loading.remove>
-                                    {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? __('store.log_in_to_order') : __('store.complete_order') }}
+                                    {{ __('store.complete_order') }}
                                 </span>
                                 <span wire:loading><svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -1250,24 +1285,37 @@
                                     </svg></span>
                             </button>
                         @else
-                            <form action="{{ route('payment.pay') }}" method="POST" class="w-full">
-                                @csrf
-                                <input type="hidden" name="gateway" value="{{ $paymentMethod }}">
-                                <input type="hidden" name="amount" value="{{ number_format($total, 2, '.', '') }}">
-                                <input type="hidden" name="payer_reference" value="{{ $phone }}">
-                                <input type="hidden" name="billing_name" value="{{ $billing['name'] }}">
-                                <input type="hidden" name="billing_email" value="{{ $email }}">
-                                <input type="hidden" name="billing_phone" value="{{ $phone }}">
-                                <input type="hidden" name="billing_address" value="{{ $billing['address_line1'] }}">
-                                <input type="hidden" name="billing_city" value="{{ $billing['city'] }}">
-                                <input type="hidden" name="billing_state" value="{{ $billing['state'] }}">
-                                <input type="hidden" name="billing_postal_code" value="{{ $billing['postal_code'] }}">
-                                <input type="hidden" name="billing_country" value="{{ $billing['country_code'] }}">
-                                <button type="submit"
-                                    class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center">
-                                    {{ __('store.proceed_to_payment') }}
+                            <div x-data
+                                 x-on:submit-gateway-payment.window="
+                                    $refs.gatewayOrderNumber.value = $event.detail.orderNumber || '';
+                                    $refs.gatewayForm.submit();
+                                 "
+                                 class="w-full">
+                                <form x-ref="gatewayForm" action="{{ route('payment.pay') }}" method="POST" class="hidden">
+                                    @csrf
+                                    <input type="hidden" name="gateway" value="{{ $paymentMethod }}">
+                                    <input type="hidden" name="order_number" x-ref="gatewayOrderNumber" value="">
+                                    <input type="hidden" name="amount" value="{{ number_format($total, 2, '.', '') }}">
+                                    <input type="hidden" name="payer_reference" value="{{ $phone }}">
+                                    <input type="hidden" name="billing_name" value="{{ $billing['name'] }}">
+                                    <input type="hidden" name="billing_email" value="{{ $email }}">
+                                    <input type="hidden" name="billing_phone" value="{{ $phone }}">
+                                    <input type="hidden" name="billing_address" value="{{ $billing['address_line1'] }}">
+                                    <input type="hidden" name="billing_city" value="{{ $billing['city'] }}">
+                                    <input type="hidden" name="billing_state" value="{{ $billing['state'] }}">
+                                    <input type="hidden" name="billing_postal_code" value="{{ $billing['postal_code'] }}">
+                                    <input type="hidden" name="billing_country" value="{{ $billing['country_code'] }}">
+                                </form>
+                                <button type="button" wire:click="proceedToGatewayPayment" wire:loading.attr="disabled" wire:target="proceedToGatewayPayment"
+                                    class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary disabled:opacity-60 transition-all flex justify-center items-center gap-2 cursor-pointer">
+                                    <svg wire:loading wire:target="proceedToGatewayPayment" class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                    </svg>
+                                    <span wire:loading.remove wire:target="proceedToGatewayPayment">{{ __('store.proceed_to_payment') }}</span>
+                                    <span wire:loading wire:target="proceedToGatewayPayment">Preparing Payment...</span>
                                 </button>
-                            </form>
+                            </div>
                         @endif
                         @error('auth') <p class="text-red-500 text-xs mt-2">{{ $message }}</p> @enderror
 

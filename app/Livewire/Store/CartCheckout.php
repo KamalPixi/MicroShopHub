@@ -97,6 +97,31 @@ class CartCheckout extends Component
 
     protected function rules()
     {
+        if ($this->isShopPickupSelected()) {
+            return [
+                'email' => 'required|email',
+                'phone' => 'nullable|string|max:20',
+                'billing.name' => 'required|string|max:255',
+                'billing.address_line1' => 'nullable|string|max:255',
+                'billing.city' => 'nullable|string|max:100',
+                'billing.country_code' => 'nullable|string|max:2',
+                'selectedShippingMethod' => 'required|exists:shipping_methods,id',
+            ];
+        }
+
+        if ($this->isServicePointMethodSelected()) {
+            return [
+                'email' => 'required|email',
+                'phone' => 'nullable|string|max:20',
+                'billing.name' => 'required|string|max:255',
+                'billing.country_code' => 'required|string|exists:countries,code',
+                'billing.postal_code' => 'required|string|max:20',
+                'billing.address_line1' => 'nullable|string|max:255',
+                'billing.city' => 'nullable|string|max:100',
+                'selectedShippingMethod' => 'required|exists:shipping_methods,id',
+            ];
+        }
+
         return [
             'email' => 'required|email',
             'phone' => 'nullable|string|max:20',
@@ -543,14 +568,42 @@ class CartCheckout extends Component
 
     public function placeOrder(): void
     {
+        $order = $this->createCheckoutOrder(true);
+        if (! $order) {
+            return;
+        }
+
+        $this->notifyAdminNewOrder($order);
+        session()->flash('order_success', "Order #{$order->order_number} placed successfully!");
+    }
+
+    public function proceedToGatewayPayment(): void
+    {
+        $order = $this->createCheckoutOrder(false);
+        if (! $order) {
+            return;
+        }
+
+        session()->put('pending_payment_order_number', $order->order_number);
+        $this->dispatch('submit-gateway-payment', orderNumber: $order->order_number);
+    }
+
+    protected function createCheckoutOrder(bool $clearCart = true): ?Order
+    {
         if (! Auth::check() && ! $this->authSettings['guest_checkout_enabled']) {
             $this->addError('auth', 'Login is required to place an order.');
-            return;
+            return null;
         }
 
         if (empty($this->cart)) {
             $this->addError('cart', 'Your cart is empty.');
-            return;
+            return null;
+        }
+
+        if ($this->isServicePointMethodSelected() && ! $this->selectedServicePointId) {
+            $this->servicePointError = 'Please find and select a nearby pickup point before continuing.';
+            $this->addError('selectedShippingMethod', 'Please select a nearby pickup point.');
+            return null;
         }
 
         $this->validate();
@@ -558,7 +611,7 @@ class CartCheckout extends Component
         $availableGateways = $this->availablePaymentGateways();
         if ($this->paymentMethod === '' || ! in_array($this->paymentMethod, $availableGateways, true)) {
             $this->addError('paymentMethod', 'Please select a valid payment method before placing your order.');
-            return;
+            return null;
         }
 
         if ($this->paymentMethod === 'offline') {
@@ -569,16 +622,18 @@ class CartCheckout extends Component
             ]);
             if (trim((string) $this->offlineReference) === '' && ! $this->offlineProof) {
                 $this->addError('offlineReference', 'Provide a reference or upload a proof.');
-                return;
+                return null;
             }
         }
 
         if ($this->appliedCoupon && ! $this->isCouponEligible($this->appliedCoupon)) {
             $this->addError('coupon', 'Coupon is no longer valid for this cart.');
-            return;
+            return null;
         }
 
-        DB::transaction(function () {
+        $createdOrder = null;
+
+        DB::transaction(function () use (&$createdOrder, $clearCart) {
             $currency = Currency::getActive();
             $order = Order::create([
                 'user_id' => Auth::id(),
@@ -588,7 +643,7 @@ class CartCheckout extends Component
                 'discount' => $this->discountAmount,
                 'shipping_cost' => $this->shippingCost,
                 'total' => $this->total,
-                'currency_code' => $currency?->code ?? 'BDT',
+                'currency_code' => $currency?->code ?? 'EUR',
                 'exchange_rate' => $currency?->exchange_rate ?? 1.0000,
                 'shipping_method_id' => $this->selectedShippingMethod,
                 'sendcloud_service_point_id' => $this->selectedServicePointId,
@@ -603,13 +658,31 @@ class CartCheckout extends Component
                 ]);
             }
 
-            $order->addresses()->create(array_merge($this->billing, [
+            $billingData = $this->billing;
+            if ($this->isShopPickupSelected()) {
+                $billingData['address_line1'] = trim((string) ($billingData['address_line1'] ?? '')) ?: 'In-Store Pickup';
+                $billingData['city'] = trim((string) ($billingData['city'] ?? '')) ?: 'Shop Pickup';
+                $billingData['country_code'] = trim((string) ($billingData['country_code'] ?? '')) ?: $this->getDefaultCountryCode();
+            } elseif ($this->isServicePointMethodSelected()) {
+                $pickedPoint = collect($this->servicePoints)->firstWhere('id', $this->selectedServicePointId);
+                $billingData['address_line1'] = trim((string) ($billingData['address_line1'] ?? ''))
+                    ?: ($pickedPoint['street'] ?? $this->selectedServicePointName ?: 'Pickup Point');
+                $billingData['city'] = trim((string) ($billingData['city'] ?? ''))
+                    ?: ($pickedPoint['city'] ?? 'Pickup Point');
+                $billingData['postal_code'] = trim((string) ($billingData['postal_code'] ?? ''))
+                    ?: ($pickedPoint['postal_code'] ?? '');
+                $billingData['country_code'] = trim((string) ($billingData['country_code'] ?? '')) ?: $this->getDefaultCountryCode();
+            }
+
+            $order->addresses()->create(array_merge($billingData, [
                 'type' => 'billing',
                 'email' => $this->email,
                 'phone' => $this->phone,
             ]));
 
-            $shipData = $this->shipToDifferentAddress ? $this->shipping : $this->billing;
+            $shipData = ($this->shipToDifferentAddress && ! $this->isShopPickupSelected() && ! $this->isServicePointMethodSelected())
+                ? $this->shipping
+                : $billingData;
             $order->addresses()->create(array_merge($shipData, [
                 'type' => 'shipping',
                 'email' => $this->email,
@@ -633,7 +706,7 @@ class CartCheckout extends Component
                     'name' => $item['name'],
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
-                'attributes' => $item['attributes'] ?? [],
+                    'attributes' => $item['attributes'] ?? [],
                 ]);
 
                 if ($product) {
@@ -662,14 +735,17 @@ class CartCheckout extends Component
                 ]);
             }
 
-            $this->cartService->clearCart();
-            $this->cart = [];
-            $this->dispatch('cartUpdated');
-            session()->forget(['guest_checkout', 'auth_checkout', 'guest_coupon', 'auth_coupon']);
+            if ($clearCart) {
+                $this->cartService->clearCart();
+                $this->cart = [];
+                $this->dispatch('cartUpdated');
+                session()->forget(['guest_checkout', 'auth_checkout', 'guest_coupon', 'auth_coupon']);
+            }
 
-            $this->notifyAdminNewOrder($order);
-            session()->flash('order_success', "Order #{$order->order_number} placed successfully!");
+            $createdOrder = $order;
         });
+
+        return $createdOrder;
     }
 
     protected function notifyAdminNewOrder(Order $order): void

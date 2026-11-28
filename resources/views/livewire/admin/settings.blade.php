@@ -256,91 +256,6 @@
 
                 <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
                     <div class="flex items-center mb-4 justify-between">
-                        <div class="flex items-center">
-                            <span class="font-bold text-gray-800 text-sm">SSLCommerz</span>
-                            <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">Local (BDT)</span>
-                        </div>
-                        <img src="https://securepay.sslcommerz.com/public/image/sslcommerz.png" class="h-6 opacity-90" alt="SSL">
-                    </div>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gateway Display Name</label>
-                            <input wire:model="settings.sslcommerz_label" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="bKash / Nagad / Rocket / Visa / MasterCard">
-                            <p class="text-[10px] text-gray-400 mt-1">This text appears on the checkout page.</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Store ID</label>
-                                <input wire:model="settings.sslcommerz_store_id" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="your_store_id">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Store Password</label>
-                                <input wire:model="settings.sslcommerz_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="••••••••">
-                            </div>
-                        </div>
-
-                        <div class="flex items-center pt-2">
-                            <input wire:model="settings.sslcommerz_sandbox" type="checkbox" id="ssl_sandbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                            <label for="ssl_sandbox" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">Enable Sandbox Mode (Test Mode)</label>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 flex items-center justify-end gap-3">
-                        @if($savedSection === 'sslcommerz')
-                            <span class="text-xs font-semibold text-green-600">Saved</span>
-                        @endif
-                        <button wire:click="saveSslCommerzGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
-                            Save SSLCommerz
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                    <div class="flex items-center mb-4 justify-between">
-                        <div class="flex items-center">
-                            <span class="font-bold text-gray-800 text-sm">PortPos</span>
-                            <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-700 border border-gray-200">Invoice</span>
-                        </div>
-                        <div class="h-8 w-8 rounded-lg bg-black text-white flex items-center justify-center text-xs font-bold">PP</div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gateway Display Name</label>
-                            <input wire:model="settings.portpos_label" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Pay with PortPos">
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">App Key</label>
-                                <input wire:model="settings.portpos_app_key" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="portpos_app_key">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Secret Key</label>
-                                <input wire:model="settings.portpos_secret_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="portpos_secret_key">
-                            </div>
-                        </div>
-
-                        <div class="flex items-center pt-2">
-                            <input wire:model="settings.portpos_sandbox" type="checkbox" id="portpos_sandbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                            <label for="portpos_sandbox" class="ml-2 text-sm font-medium text-gray-700 select-none cursor-pointer">Enable Sandbox Mode (Test Mode)</label>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 flex items-center justify-end gap-3">
-                        @if($savedSection === 'portpos')
-                            <span class="text-xs font-semibold text-green-600">Saved</span>
-                        @endif
-                        <button wire:click="savePortPosGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
-                            Save PortPos
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                    <div class="flex items-center mb-4 justify-between">
                         <div class="flex items-center gap-2">
                             <span class="font-bold text-gray-800 text-sm">Stripe</span>
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold {{ ($settings['stripe_mode'] ?? 'test') === 'production' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-800' }}">
@@ -377,16 +292,34 @@
                         </div>
 
                         @if(($settings['stripe_mode'] ?? 'test') === 'test')
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Sandbox Secret Key (Test)</label>
-                                <input wire:model="settings.stripe_test_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sk_test_...">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Sandbox Secret Key (Test)</label>
+                                    <input wire:model="settings.stripe_test_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sk_test_...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Sandbox Webhook Signing Secret</label>
+                                    <input wire:model="settings.stripe_test_webhook_secret" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="whsec_...">
+                                </div>
                             </div>
                         @else
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Live Secret Key (Production)</label>
-                                <input wire:model="settings.stripe_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sk_live_...">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Live Secret Key (Production)</label>
+                                    <input wire:model="settings.stripe_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sk_live_...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Live Webhook Signing Secret</label>
+                                    <input wire:model="settings.stripe_webhook_secret" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="whsec_...">
+                                </div>
                             </div>
                         @endif
+
+                        <div class="rounded-lg border border-gray-200 bg-white p-3">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Stripe Webhook URL</label>
+                            <input type="text" readonly value="{{ route('payment.ipn', ['gateway' => 'stripe']) }}" onclick="this.select()" class="input-field block w-full border border-gray-300 rounded-lg bg-gray-50 text-xs px-3 py-2 font-mono text-gray-700">
+                            <p class="mt-1 text-[11px] text-gray-500">Add this URL in Stripe Dashboard → Developers → Webhooks (listen for <code class="font-mono">checkout.session.completed</code>) and paste the <code class="font-mono">whsec_...</code> signing secret above.</p>
+                        </div>
                     </div>
 
                     @include('livewire.admin.partials.section-alert', ['section' => 'stripe'])
@@ -418,55 +351,6 @@
 
                 <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
                     <div class="flex items-center mb-4 justify-between">
-                        <div class="flex items-center">
-                            <span class="font-bold text-gray-800 text-sm">bKash</span>
-                            <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-pink-100 text-pink-700 border border-pink-200">BDT</span>
-                        </div>
-                        <span class="text-xs text-pink-600 font-semibold">Checkout URL</span>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Base URL</label>
-                            <input wire:model="settings.bkash_base_url" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="https://tokenized.sandbox.bka.sh/v1.2.0-beta">
-                            <p class="text-[10px] text-gray-400 mt-1">Use sandbox or production base URL from bKash docs.</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">App Key</label>
-                                <input wire:model="settings.bkash_app_key" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="app_key">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">App Secret</label>
-                                <input wire:model="settings.bkash_app_secret" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="app_secret">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Username</label>
-                                <input wire:model="settings.bkash_username" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="username">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Password</label>
-                                <input wire:model="settings.bkash_password" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="password">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 flex items-center justify-end gap-3">
-                        @if($savedSection === 'bkash')
-                            <span class="text-xs font-semibold text-green-600">Saved</span>
-                        @endif
-                        <button wire:click="saveBkashGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
-                            Save bKash
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                    <div class="flex items-center mb-4 justify-between">
                         <span class="font-bold text-gray-800 text-sm">PayPal</span>
                         <svg class="h-5 w-auto text-blue-800" viewBox="0 0 18 18" fill="currentColor"><path d="M15.3 5.4c-.6-2.4-3-3.6-6.6-3.6h-4.2c-.3 0-.6.3-.6.6v12.6c0 .3.3.6.6.6h2.1c.3 0 .6-.3.6-.6v-2.4h1.2c3.9 0 6.6-1.5 6.9-6.6zM6.6 3.6h1.8c2.4 0 3.9.6 4.2 2.1.3 1.5-.6 3-3.6 3h-2.4V3.6z"/></svg>
                     </div>
@@ -488,45 +372,6 @@
                         @endif
                         <button wire:click="savePaypalGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
                             Save PayPal
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
-                    <div class="flex items-center mb-4 justify-between">
-                        <span class="font-bold text-gray-800 text-sm">Offline Payments</span>
-                        <span class="text-[10px] font-semibold text-gray-500">Bank transfer / bKash / Nagad / Rocket / USDT</span>
-                    </div>
-                    <div class="space-y-3">
-                        @foreach($offlinePaymentMethods as $index => $method)
-                            <div class="border border-gray-200 rounded-lg p-3 bg-white space-y-2">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    <div class="md:col-span-1">
-                                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Method Name</label>
-                                        <input wire:model="offlinePaymentMethods.{{ $index }}.name" type="text" class="input-field block w-full border border-gray-300 rounded-lg text-sm px-3 py-2" placeholder="bKash Personal / Bank Transfer">
-                                    </div>
-                                    <div class="md:col-span-2">
-                                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Instructions</label>
-                                        <textarea wire:model="offlinePaymentMethods.{{ $index }}.instructions" rows="1" class="input-field block w-full border border-gray-300 rounded-lg text-sm px-3 py-2" placeholder="Account number, wallet number, or steps"></textarea>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <label class="flex items-center gap-2 text-xs text-gray-600">
-                                        <input type="checkbox" wire:model="offlinePaymentMethods.{{ $index }}.active" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
-                                        Active
-                                    </label>
-                                    <button type="button" wire:click="removeOfflinePaymentMethod({{ $index }})" class="text-xs text-red-600 hover:text-red-700">Remove</button>
-                                </div>
-                            </div>
-                        @endforeach
-                        <button type="button" wire:click="addOfflinePaymentMethod" class="text-xs font-semibold text-primary hover:underline">+ Add method</button>
-                    </div>
-                    <div class="mt-4 flex items-center justify-end gap-3">
-                        @if($savedSection === 'offline_payments')
-                            <span class="text-xs font-semibold text-green-600">Saved</span>
-                        @endif
-                        <button wire:click="saveOfflinePaymentMethods" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
-                            Save Offline Methods
                         </button>
                     </div>
                 </div>
