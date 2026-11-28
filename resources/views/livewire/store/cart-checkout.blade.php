@@ -832,7 +832,7 @@
 
                                 @if($this->isShopPickupSelected())
                                     <button type="button" wire:click="$set('paymentMethod','pay_at_shop')"
-                                        class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                        class="cursor-pointer group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                            {{ $paymentMethod === 'pay_at_shop' ? 'border-amber-600 ring-1 ring-amber-200' : 'border-gray-200 hover:border-amber-500' }}">
                                         <div class="flex flex-col items-start text-left">
                                             <div class="h-7 w-7 mb-1 text-amber-700 bg-amber-50 rounded-lg flex items-center justify-center">
@@ -847,17 +847,19 @@
                                                 Pay by card or cash at our shop · Held for {{ max(1, (int) ($settings['shop_pickup_hold_hours'] ?? 24)) }}h before items return to stock
                                             </span>
                                         </div>
-                                        <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors text-gray-400">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                                        @if($paymentMethod === 'pay_at_shop')
+                                            <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background-color: #d97706; color: #ffffff;">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
                                     </button>
                                 @endif
 
                                 @if($codEnabled)
                                     <button type="button" wire:click="$set('paymentMethod','cod')"
-                                        class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                        class="cursor-pointer group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                            {{ $paymentMethod === 'cod' ? 'border-green-600 ring-1 ring-green-200' : 'border-gray-200 hover:border-green-600' }}">
                                         <div class="flex flex-col items-start text-left">
                                             <div
@@ -875,19 +877,20 @@
                                             <span
                                                 class="text-[10px] text-gray-500">{{ __('store.pay_when_you_receive') }}</span>
                                         </div>
-                                        <div
-                                            class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition-colors text-gray-400">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                                        @if($paymentMethod === 'cod')
+                                            <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background-color: #16a34a; color: #ffffff;">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                        d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
                                     </button>
                                 @endif
 
                                 @if(!empty($settings['sslcommerz_store_id']))
                                     <button type="button" wire:click="$set('paymentMethod','sslcommerz')"
-                                        class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                        class="cursor-pointer group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                            {{ $paymentMethod === 'sslcommerz' ? 'border-primary ring-1 ring-primary/20' : 'border-gray-200 hover:border-primary' }}">
                                         <div class="flex flex-col items-start text-left">
                                             <img src="https://securepay.sslcommerz.com/public/image/sslcommerz.png"
@@ -899,26 +902,24 @@
                                             </span>
                                             <span class="text-[10px] text-gray-500">bKash / Cards / Banking</span>
                                         </div>
-                                        <div
-                                            class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-gray-400">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                                        @if($paymentMethod === 'sslcommerz')
+                                            <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background-color: #111827; color: #ffffff;">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                        d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
                                     </button>
                                 @endif
 
                                 @if($this->isStripeConfigured())
                                     <button type="button" wire:click="$set('paymentMethod','stripe')"
-                                        class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                        class="cursor-pointer group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                            {{ $paymentMethod === 'stripe' ? 'border-indigo-600 ring-1 ring-indigo-200' : 'border-gray-200 hover:border-indigo-600' }}">
                                         <div class="flex flex-col items-start text-left">
                                             <div class="flex items-center gap-2 mb-1">
-                                                <svg class="h-5 text-primary" viewBox="0 0 40 17" fill="currentColor">
-                                                    <path
-                                                        d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z" />
-                                                </svg>
+                                                <img src="{{ asset('images/stripe-logo.svg') }}" alt="Stripe" class="h-5 w-auto">
                                                 @if(($settings['stripe_mode'] ?? 'test') === 'test')
                                                     <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">Test Mode</span>
                                                 @endif
@@ -929,19 +930,20 @@
                                             </span>
                                             <span class="text-[10px] text-gray-500">{{ __('store.international') }}</span>
                                         </div>
-                                        <div
-                                            class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-gray-400">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                                        @if($paymentMethod === 'stripe')
+                                            <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background-color: #4f46e5; color: #ffffff;">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                        d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
                                     </button>
                                 @endif
 
                                 @if(!empty($settings['bkash_app_key']) && !empty($settings['bkash_username']))
                                     <button type="button" wire:click="$set('paymentMethod','bkash')"
-                                        class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                        class="cursor-pointer group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                            {{ $paymentMethod === 'bkash' ? 'border-pink-600 ring-1 ring-pink-200' : 'border-gray-200 hover:border-pink-600' }}">
                                         <div class="flex flex-col items-start text-left">
                                             <div
@@ -953,19 +955,20 @@
                                             </span>
                                             <span class="text-[10px] text-gray-500">{{ __('store.bkash_wallet') }}</span>
                                         </div>
-                                        <div
-                                            class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-pink-600 group-hover:text-white transition-colors text-gray-400">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                                        @if($paymentMethod === 'bkash')
+                                            <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background-color: #db2777; color: #ffffff;">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                        d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
                                     </button>
                                 @endif
 
                                 @if(!empty($settings['portpos_app_key']) && !empty($settings['portpos_secret_key']))
                                     <button type="button" wire:click="$set('paymentMethod','portpos')"
-                                        class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                        class="cursor-pointer group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                            {{ $paymentMethod === 'portpos' ? 'border-black ring-1 ring-black/10' : 'border-gray-200 hover:border-black' }}">
                                         <div class="flex flex-col items-start text-left">
                                             <div
@@ -978,19 +981,20 @@
                                             <span
                                                 class="text-[10px] text-gray-500">{{ __('store.portpos_invoice_checkout') }}</span>
                                         </div>
-                                        <div
-                                            class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors text-gray-400">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                                        @if($paymentMethod === 'portpos')
+                                            <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background-color: #111827; color: #ffffff;">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                        d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
                                     </button>
                                 @endif
 
                                 @if(!empty($offlinePaymentMethods))
                                     <button type="button" wire:click="$set('paymentMethod','offline')"
-                                        class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                        class="cursor-pointer group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                            {{ $paymentMethod === 'offline' ? 'border-primary ring-1 ring-primary/20' : 'border-gray-200 hover:border-primary' }}">
                                         <div class="flex flex-col items-start text-left">
                                             <div
@@ -1007,13 +1011,14 @@
                                             <span
                                                 class="text-[10px] text-gray-500">{{ __('store.bank_transfer_wallets') }}</span>
                                         </div>
-                                        <div
-                                            class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors text-gray-400">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                                        @if($paymentMethod === 'offline')
+                                            <div class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background-color: #111827; color: #ffffff;">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                        d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
                                     </button>
                                 @endif
 
