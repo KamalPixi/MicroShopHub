@@ -36,6 +36,7 @@ class CartCheckout extends Component
     public $shippingMethods = [];
     public $selectedShippingMethod = null;
     public bool $deliveryConfirmed = false;
+    public bool $customerInfoEditing = false;
     public array $servicePoints = [];
     public ?int $selectedServicePointId = null;
     public string $selectedServicePointName = '';
@@ -79,7 +80,7 @@ class CartCheckout extends Component
         'city' => '',
         'state' => '',
         'postal_code' => '',
-        'country_code' => 'BD',
+        'country_code' => '',
     ];
     public $shipping = [
         'name' => '',
@@ -88,7 +89,7 @@ class CartCheckout extends Component
         'city' => '',
         'state' => '',
         'postal_code' => '',
-        'country_code' => 'BD',
+        'country_code' => '',
     ];
 
     protected $validationAttributes = [
@@ -214,11 +215,8 @@ class CartCheckout extends Component
         $this->authPanel = 'login';
         $this->showAuthSection = ! $this->authSettings['guest_checkout_enabled'];
 
-        if ($this->shippingMethods->isNotEmpty()) {
-            $this->selectedShippingMethod = $this->shippingMethods->first()->id;
-        }
-
-        $this->syncSelectedPaymentMethod();
+        $this->selectedShippingMethod = null;
+        $this->paymentMethod = '';
 
         $defaultCountry = $this->getDefaultCountryCode();
         if (empty($this->billing['country_code'])) {
@@ -282,6 +280,33 @@ class CartCheckout extends Component
         $this->servicePointError = '';
         $this->syncSelectedPaymentMethod();
         $this->calculateTotals();
+        $this->dispatch('checkout-focus-step', step: 'delivery-details');
+    }
+
+    public function hasCompleteCustomerInfo(): bool
+    {
+        return trim((string) $this->email) !== ''
+            && trim((string) ($this->billing['name'] ?? '')) !== '';
+    }
+
+    public function editCustomerInfo(): void
+    {
+        $this->customerInfoEditing = true;
+    }
+
+    public function saveCustomerInfo(): void
+    {
+        $this->validate([
+            'email' => 'required|email',
+            'phone' => 'nullable|string|max:30',
+            'billing.name' => 'required|string|max:255',
+        ]);
+        $this->saveGuestDraft();
+        $this->customerInfoEditing = false;
+
+        if (! $this->deliveryConfirmed) {
+            $this->dispatch('checkout-focus-step', step: 'delivery');
+        }
     }
 
     public function isShopPickupSelected(): bool
@@ -334,8 +359,8 @@ class CartCheckout extends Component
     {
         $available = $this->availablePaymentGateways();
 
-        if (! in_array($this->paymentMethod, $available, true)) {
-            $this->paymentMethod = $available[0] ?? '';
+        if ($this->paymentMethod !== '' && ! in_array($this->paymentMethod, $available, true)) {
+            $this->paymentMethod = '';
         }
     }
 
@@ -348,12 +373,29 @@ class CartCheckout extends Component
             return;
         }
 
-        if ($this->isServicePointMethodSelected() && ! $this->selectedServicePointId) {
-            $this->servicePointError = 'Please find and select a nearby pickup point before continuing.';
-            return;
+        if ($this->isServicePointMethodSelected()) {
+            $this->validate([
+                'billing.country_code' => 'required|string|size:2',
+                'billing.postal_code' => 'required|string|max:20',
+            ]);
+
+            if (! $this->selectedServicePointId) {
+                $this->servicePointError = 'Please find and select a nearby pickup point before continuing.';
+                return;
+            }
+        } elseif (! $this->isShopPickupSelected()) {
+            $this->validate([
+                'billing.country_code' => 'required|string|size:2',
+                'billing.address_line1' => 'required|string|max:255',
+                'billing.city' => 'required|string|max:120',
+                'billing.state' => 'nullable|string|max:120',
+                'billing.postal_code' => 'nullable|string|max:20',
+            ]);
         }
 
+        $this->saveGuestDraft();
         $this->deliveryConfirmed = true;
+        $this->dispatch('checkout-focus-step', step: 'payment');
     }
 
     public function editDeliveryStep(): void
@@ -854,6 +896,7 @@ class CartCheckout extends Component
         $this->loginPassword = '';
         $this->fillFromAuthenticatedUser();
         session()->flash('auth_success', 'Logged in successfully.');
+        session()->flash('checkout_focus_step', $this->hasCompleteCustomerInfo() ? 'delivery' : 'customer');
         $this->redirect(request()->header('Referer') ?? '/checkout');
     }
 
@@ -886,6 +929,7 @@ class CartCheckout extends Component
         $this->registerPassword = '';
         $this->fillFromAuthenticatedUser();
         session()->flash('auth_success', 'Account created and logged in.');
+        session()->flash('checkout_focus_step', $this->hasCompleteCustomerInfo() ? 'delivery' : 'customer');
         $this->redirect(request()->header('Referer') ?? '/checkout');
     }
 

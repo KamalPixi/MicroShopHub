@@ -1,10 +1,33 @@
-<div class="bg-gray-50 min-h-screen py-6">
+<div class="bg-gray-50 min-h-screen pt-4 pb-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        @include('admin.includes.errors')
+        @if (session('error') || session('warning') || session('success'))
+            <div class="mb-4 space-y-2">
+                @if (session('error'))
+                    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                @if (session('warning'))
+                    <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-800">
+                        {{ session('warning') }}
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-xs font-medium text-green-700">
+                        {{ session('success') }}
+                    </div>
+                @endif
+            </div>
+        @endif
+        @error('cart')
+            <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+                {{ $message }}
+            </div>
+        @enderror
 
         @if(count($cart) > 0)
-            <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ __('store.shopping_cart_checkout') }}</h1>
+            <h1 class="text-2xl font-bold text-gray-900 mb-4">{{ __('store.shopping_cart_checkout') }}</h1>
             <div class="lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start">
 
                 <div class="lg:col-span-8 space-y-6">
@@ -85,7 +108,7 @@
                     </div>
 
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-                        <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
+                        <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-2">
                             <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wide">
                                 {{ __('store.customer_details') }}</h2>
                             @if(auth()->check())
@@ -100,7 +123,8 @@
                             @endif
                         </div>
 
-                        <div class="mb-6 space-y-4">
+                        @if(!auth()->check())
+                        <div class="mb-4 space-y-4">
                             @if(!auth()->check() && $authSettings['guest_checkout_enabled'])
                                 <div class="rounded-lg border border-primary/20 bg-primary/10 p-4">
                                     <p class="text-sm font-semibold text-primary">{{ __('store.guest_checkout_intro') }}</p>
@@ -175,13 +199,13 @@
                                                     <input wire:model="loginEmail" type="email"
                                                         class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
                                                         placeholder="{{ __('store.email_for_login') }}">
-                                                    @error('loginEmail') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                    @error('loginEmail') <span class="text-red-500 text-[11px] leading-tight block mt-1">{{ $message }}</span> @enderror
                                                 </div>
                                                 <div>
                                                     <input wire:model="loginPassword" type="password"
                                                         class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
                                                         placeholder="{{ __('store.password') }}">
-                                                    @error('loginPassword') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                    @error('loginPassword') <span class="text-red-500 text-[11px] leading-tight block mt-1">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
 
@@ -202,7 +226,7 @@
                                                     <input wire:model="loginEmail" type="email"
                                                         class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
                                                         placeholder="{{ __('store.email_for_login') }}">
-                                                    @error('loginEmail') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                    @error('loginEmail') <span class="text-red-500 text-[11px] leading-tight block mt-1">{{ $message }}</span> @enderror
                                                 </div>
                                                 @if(!$loginOtpSent)
                                                     <button wire:click="sendLoginOtp" type="button"
@@ -225,7 +249,7 @@
                                                 @if(session('otp_message'))
                                                     <p class="text-xs text-primary">{{ session('otp_message') }}</p>
                                                 @endif
-                                                @error('loginOtp') <span class="text-red-500 text-xs block">{{ $message }}</span> @enderror
+                                                @error('loginOtp') <span class="text-red-500 text-[11px] leading-tight block">{{ $message }}</span> @enderror
                                             @endif
                                         @endif
                                     @else
@@ -234,19 +258,19 @@
                                                 <input wire:model="registerName" type="text"
                                                     class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
                                                     placeholder="{{ __('store.full_name') }}">
-                                                @error('registerName') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                @error('registerName') <span class="text-red-500 text-[11px] leading-tight block mt-1">{{ $message }}</span> @enderror
                                             </div>
                                             <div>
                                                 <input wire:model="registerEmail" type="email"
                                                     class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
                                                     placeholder="{{ __('store.email') }}">
-                                                @error('registerEmail') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                @error('registerEmail') <span class="text-red-500 text-[11px] leading-tight block mt-1">{{ $message }}</span> @enderror
                                             </div>
                                             <div>
                                                 <input wire:model="registerPassword" type="password"
                                                     class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3"
                                                     placeholder="{{ __('store.create_password') }}">
-                                                @error('registerPassword') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                                                @error('registerPassword') <span class="text-red-500 text-[11px] leading-tight block mt-1">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
 
@@ -260,117 +284,58 @@
                                 </div>
                             @endif
 
-                            @if(auth()->check() || $authSettings['guest_checkout_enabled'])
-                                <div class="grid grid-cols-1 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.email') }} <span
-                                                class="text-red-500">*</span></label>
-                                        <input wire:model="email" wire:change="saveGuestDraft" type="email" {{ auth()->check() ? 'disabled' : '' }}
-                                            class="w-full text-sm border border-gray-300 {{ auth()->check() ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white' }} focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
-                                            placeholder="you@example.com">
-                                        @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                    </div>
-                                </div>
-                            @endif
                         </div>
+                        @endif
 
                         @if(auth()->check() || $authSettings['guest_checkout_enabled'])
-                        <div class="space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
-                            @if(auth()->check() && $savedAddresses && $savedAddresses->count() > 0)
-                                <div class="mb-5">
-                                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
-                                        {{ __('store.select_address') }}</h3>
+                        @php
+                            $showCustomerSummary = ! $customerInfoEditing && $this->hasCompleteCustomerInfo();
+                        @endphp
 
-                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-
-                                        @foreach($savedAddresses as $addr)
-                                            <div wire:click="useSavedAddress({{ $addr->id }})"
-                                                class="cursor-pointer relative p-2.5 rounded-lg border transition-all duration-200 group h-full flex flex-col justify-between
-                                                                {{ $selectedAddressId == $addr->id ? 'border-primary bg-primary/10 ring-1 ring-primary shadow-sm' : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50' }}">
-
-                                                <div class="flex items-center justify-between mb-1.5">
-                                                    <span
-                                                        class="text-[10px] font-bold text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded uppercase tracking-wider">{{ $addr->type ?? 'Home' }}</span>
-                                                    @if($selectedAddressId == $addr->id)
-                                                        <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path fill-rule="evenodd"
-                                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                                clip-rule="evenodd"></path>
-                                                        </svg>
-                                                    @endif
-                                                </div>
-
-                                                <div class="text-xs text-gray-600 leading-snug">
-                                                    <p class="font-bold text-gray-900 truncate mb-0.5">{{ $addr->name }}</p>
-                                                    <p class="truncate text-gray-500">{{ $addr->address_line1 }}</p>
-                                                    <p class="text-[10px] text-gray-400 mt-0.5">{{ $addr->city }},
-                                                        {{ $addr->country_label }}</p>
-                                                </div>
-                                            </div>
-                                        @endforeach
-
-                                        <div wire:click="clearAddressSelection"
-                                            class="cursor-pointer relative p-2.5 rounded-lg border border-dashed border-gray-300 hover:border-primary hover:bg-gray-50 transition-all flex flex-col items-center justify-center text-center h-full min-h-[85px]
-                                                        {{ $selectedAddressId === 'new' ? 'border-primary bg-primary/10 ring-1 ring-primary' : '' }}">
-                                            <div
-                                                class="bg-gray-100 rounded-full p-1.5 mb-1 group-hover:bg-white transition-colors">
-                                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary" fill="none"
-                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 4v16m8-8H4"></path>
-                                                </svg>
-                                            </div>
-                                            <span class="text-xs font-bold text-gray-600 group-hover:text-primary">New
-                                                {{ __('store.address') }}</span>
+                        @if($showCustomerSummary)
+                            <div class="animate-fade-in">
+                                <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-3.5 flex flex-wrap items-center justify-between gap-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                            </svg>
                                         </div>
-
+                                        <div class="flex flex-wrap items-center gap-2 text-xs text-gray-700">
+                                            <span class="text-sm font-bold text-gray-900">{{ $billing['name'] }}</span>
+                                            <span class="text-gray-400">·</span>
+                                            <span class="text-gray-600">{{ $email }}</span>
+                                            @if(trim((string) $phone) !== '')
+                                                <span class="text-gray-400">·</span>
+                                                <span class="text-gray-600">{{ $phone }}</span>
+                                            @endif
+                                        </div>
                                     </div>
+
+                                    <button type="button" wire:click="editCustomerInfo"
+                                        class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-800 shadow-sm cursor-pointer">
+                                        Edit
+                                    </button>
                                 </div>
-                            @endif
-
-                            @php
-                                $isPickupMode = $this->isShopPickupSelected();
-                                $isServicePointMode = $this->isServicePointMethodSelected();
-                                $needsFullAddress = ! $isPickupMode && ! $isServicePointMode;
-                            @endphp
-
+                            </div>
+                        @else
+                        <div class="space-y-4 pt-3 animate-fade-in">
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                @if(! $isPickupMode)
-                                    <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">
-                                            {{ __('store.country') }} <span class="text-red-500">*</span>
-                                        </label>
-
-                                        <div class="relative">
-                                            <select wire:model.live="billing.country_code" wire:change="saveGuestDraft"
-                                                class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
-                                                @foreach($supportedCountries as $country)
-                                                    <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
-                                                @endforeach
-                                            </select>
-
-                                            <div
-                                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                        @error('billing.country_code')
-                                            <span class="text-red-500 text-xs">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                @endif
                                 <div>
                                     <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.full_name') }}
                                         <span class="text-red-500">*</span></label>
                                     <input wire:model="billing.name" wire:change="saveGuestDraft" type="text"
                                         class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
-                                    @error('billing.name') <span class="text-red-500 text-xs">{{ $message }}</span>
+                                    @error('billing.name') <span class="text-red-500 text-[11px] leading-tight">{{ $message }}</span>
                                     @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.email') }} <span
+                                            class="text-red-500">*</span></label>
+                                    <input wire:model="email" wire:change="saveGuestDraft" type="email" {{ auth()->check() ? 'disabled' : '' }}
+                                        class="w-full text-sm border border-gray-300 {{ auth()->check() ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white' }} focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
+                                        placeholder="you@example.com">
+                                    @error('email') <span class="text-red-500 text-[11px] leading-tight">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.phone') }} <span
@@ -378,246 +343,23 @@
                                     <input wire:model="phone" wire:change="saveGuestDraft" type="text"
                                         class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
                                         placeholder="+123456789">
-                                    @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                </div>
-                                @if($isServicePointMode)
-                                    <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.zip_postal_code') }} <span class="text-red-500">*</span></label>
-                                        <input wire:model="billing.postal_code" wire:change="saveGuestDraft" type="text"
-                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                            placeholder="e.g. 75014">
-                                        @error('billing.postal_code') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                    </div>
-                                @endif
-                            </div>
-
-                            @if($isPickupMode)
-                                <div class="rounded-lg border border-amber-200 bg-amber-50/70 px-3 py-2 text-xs text-amber-900">
-                                    In-store pickup selected — no shipping address required.
-                                </div>
-                            @elseif($isServicePointMode)
-                                <div class="rounded-lg border border-indigo-200 bg-indigo-50/70 px-3 py-2 text-xs text-indigo-900">
-                                    Pickup Point / Locker selected — only your Country &amp; Postal Code are needed to find nearby locations below.
-                                </div>
-                            @endif
-
-                            @if($needsFullAddress)
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.address_line_1') }}
-                                    <span class="text-red-500">*</span></label>
-                                <input wire:model="billing.address_line1" wire:change="saveGuestDraft" type="text"
-                                    class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3 placeholder-gray-400"
-                                    placeholder="123 Main St, Apt 4B">
-                                @error('billing.address_line1') <span class="text-red-500 text-xs">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label
-                                        class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.state_province') }}</label>
-                                    @if(!empty($this->billingStates))
-                                        <div class="relative">
-                                            <select wire:model.live="billing.state" wire:change="saveGuestDraft"
-                                                class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
-                                                <option value="">Select state / region</option>
-                                                @foreach($this->billingStates as $stateOption)
-                                                    <option value="{{ $stateOption }}">{{ $stateOption }}</option>
-                                                @endforeach
-                                            </select>
-                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <input wire:model="billing.state" wire:change="saveGuestDraft" type="text"
-                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                            placeholder="State / Region">
-                                    @endif
-                                    @error('billing.state') <span class="text-red-500 text-xs">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div x-data="{ customCity: false }">
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.city') }} <span
-                                            class="text-red-500">*</span></label>
-                                    @if(!empty($this->billingCities))
-                                        <div x-show="!customCity" class="relative">
-                                            <select wire:model="billing.city" wire:change="saveGuestDraft"
-                                                @change="if ($event.target.value === '__other__') { customCity = true; $wire.set('billing.city', ''); }"
-                                                class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
-                                                <option value="">Select city</option>
-                                                @foreach($this->billingCities as $cityOption)
-                                                    <option value="{{ $cityOption }}">{{ $cityOption }}</option>
-                                                @endforeach
-                                                <option value="__other__">Other (type city)...</option>
-                                            </select>
-                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div x-show="customCity" style="display: none;" class="flex gap-1.5">
-                                            <input wire:model="billing.city" wire:change="saveGuestDraft" type="text"
-                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                                placeholder="Type city name">
-                                            <button type="button" @click="customCity = false" class="px-2 text-xs text-gray-500 hover:text-gray-800 border border-gray-300 rounded-lg bg-gray-50" title="Back to list">↺</button>
-                                        </div>
-                                    @else
-                                        <input wire:model="billing.city" wire:change="saveGuestDraft" type="text"
-                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                            placeholder="City">
-                                    @endif
-                                    @error('billing.city') <span class="text-red-500 text-xs">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div>
-                                    <label
-                                        class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.zip_postal_code') }}</label>
-                                    <input wire:model="billing.postal_code" wire:change="saveGuestDraft" type="text"
-                                        class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                        placeholder="e.g. 75001">
-                                    @error('billing.postal_code') <span class="text-red-500 text-xs">{{ $message }}</span>
-                                    @enderror
+                                    @error('phone') <span class="text-red-500 text-[11px] leading-tight">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
-                            @php
-                                $activeCheckoutMethod = collect($shippingMethods)->firstWhere('id', $selectedShippingMethod);
-                                $isPickupSelected = $activeCheckoutMethod && ($activeCheckoutMethod->type ?? 'flat_rate') === 'local_pickup';
-                            @endphp
-
-                            @if($needsFullAddress)
-                                <div class="pt-2">
-                                    <label class="inline-flex items-center cursor-pointer">
-                                        <input wire:model.live="shipToDifferentAddress" wire:change="saveGuestDraft"
-                                            type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary">
-                                        <span
-                                            class="ml-2 text-sm text-gray-700 font-medium">{{ __('store.ship_to_different_address') }}</span>
-                                    </label>
-                                </div>
-
-                                @if($shipToDifferentAddress)
-                                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4 animate-fade-in-down">
-
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="block text-xs font-bold text-gray-600 mb-1">
-                                                {{ __('store.country') }} <span class="text-red-500">*</span>
-                                            </label>
-
-                                            <div class="relative">
-                                                <select wire:model.live="shipping.country_code" wire:change="saveGuestDraft"
-                                                    class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
-                                                    @foreach($supportedCountries as $country)
-                                                        <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
-                                                    @endforeach
-                                                </select>
-
-                                                <div
-                                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 20 20">
-                                                        <path
-                                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-
-                                            @error('billing.country_code')
-                                                <span class="text-red-500 text-xs">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        <div>
-                                            <label
-                                                class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.recipient_name') }}</label>
-                                            <input wire:model="shipping.name" wire:change="saveGuestDraft" type="text"
-                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label
-                                            class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.address') }}</label>
-                                        <input wire:model="shipping.address_line1" wire:change="saveGuestDraft" type="text"
-                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3">
-                                    </div>
-
-                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                        <div>
-                                            <label class="block text-xs font-bold text-gray-600 mb-1">State</label>
-                                            @if(!empty($this->shippingStates))
-                                                <div class="relative">
-                                                    <select wire:model.live="shipping.state" wire:change="saveGuestDraft"
-                                                        class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
-                                                        <option value="">Select state / region</option>
-                                                        @foreach($this->shippingStates as $stateOption)
-                                                            <option value="{{ $stateOption }}">{{ $stateOption }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                                        </svg>
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <input wire:model="shipping.state" wire:change="saveGuestDraft" type="text"
-                                                    class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                                    placeholder="State / Region">
-                                            @endif
-                                        </div>
-                                        <div x-data="{ customShipCity: false }">
-                                            <label
-                                                class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.city') }}</label>
-                                            @if(!empty($this->shippingCities))
-                                                <div x-show="!customShipCity" class="relative">
-                                                    <select wire:model="shipping.city" wire:change="saveGuestDraft"
-                                                        @change="if ($event.target.value === '__other__') { customShipCity = true; $wire.set('shipping.city', ''); }"
-                                                        class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
-                                                        <option value="">Select city</option>
-                                                        @foreach($this->shippingCities as $cityOption)
-                                                            <option value="{{ $cityOption }}">{{ $cityOption }}</option>
-                                                        @endforeach
-                                                        <option value="__other__">Other (type city)...</option>
-                                                    </select>
-                                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                                        </svg>
-                                                    </div>
-                                                </div>
-                                                <div x-show="customShipCity" style="display: none;" class="flex gap-1.5">
-                                                    <input wire:model="shipping.city" wire:change="saveGuestDraft" type="text"
-                                                        class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                                        placeholder="Type city name">
-                                                    <button type="button" @click="customShipCity = false" class="px-2 text-xs text-gray-500 hover:text-gray-800 border border-gray-300 rounded-lg bg-gray-50" title="Back to list">↺</button>
-                                                </div>
-                                            @else
-                                                <input wire:model="shipping.city" wire:change="saveGuestDraft" type="text"
-                                                    class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                                    placeholder="City">
-                                            @endif
-                                        </div>
-                                        <div>
-                                            <label
-                                                class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.zip_code') }}</label>
-                                            <input wire:model="shipping.postal_code" wire:change="saveGuestDraft" type="text"
-                                                class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
-                                                placeholder="e.g. 75001">
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                            @endif
-                            @endif
+                            <div class="pt-1 flex justify-end">
+                                <button type="button" wire:click="saveCustomerInfo" wire:loading.attr="disabled" wire:target="saveCustomerInfo"
+                                    class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-800 shadow-sm cursor-pointer">
+                                    <span wire:loading.remove wire:target="saveCustomerInfo">Save Details</span>
+                                    <span wire:loading wire:target="saveCustomerInfo">Saving...</span>
+                                </button>
+                            </div>
                         </div>
+                        @endif
                         @endif
                     </div>
 
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                    <div id="checkout-delivery-section" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 transition-colors">
                         @php
                             $confirmedMethod = collect($shippingMethods)->firstWhere('id', $selectedShippingMethod);
                             $confirmedIsPickup = $confirmedMethod && ($confirmedMethod->type ?? 'flat_rate') === 'local_pickup';
@@ -737,7 +479,7 @@
                                 </label>
                             @endforeach
                         </div>
-                        @error('selectedShippingMethod') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span>
+                        @error('selectedShippingMethod') <span class="text-red-500 text-[11px] leading-tight mt-2 block">{{ $message }}</span>
                         @enderror
 
                         @php
@@ -752,7 +494,7 @@
                                 : ($pickupAddress !== '' ? 'https://www.google.com/maps/search/?api=1&query=' . urlencode($pickupAddress) : null);
                         @endphp
                         @if($activeMethod && ($activeMethod->type ?? 'flat_rate') === 'local_pickup')
-                            <div class="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                            <div id="checkout-delivery-details" class="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4 transition-colors">
                                 <div class="flex flex-wrap items-start justify-between gap-3">
                                     <div class="space-y-2 flex-1 min-w-0">
                                         <div class="flex items-center gap-2">
@@ -795,21 +537,50 @@
                         @endif
 
                         @if($this->isServicePointMethodSelected())
-                            <div class="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
+                            <div id="checkout-delivery-details" class="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3 transition-colors">
                                 <div class="flex flex-wrap items-center justify-between gap-2">
                                     <div>
                                         <p class="text-xs font-bold text-gray-900 uppercase tracking-wide">Pickup Point / Locker (Sendcloud)</p>
-                                        <p class="text-xs text-gray-500 mt-0.5">Find a nearby shop or locker using your Country and Postal Code.</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Enter your Country and Postal Code to find a nearby shop or locker.</p>
                                     </div>
-                                    <button type="button" wire:click="findServicePoints" wire:loading.attr="disabled" wire:target="findServicePoints"
-                                        class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-60 px-3 py-1.5 text-xs font-semibold text-gray-800 shadow-sm">
-                                        <svg wire:loading wire:target="findServicePoints" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                                        </svg>
-                                        <span wire:loading.remove wire:target="findServicePoints">Find Nearby Points</span>
-                                        <span wire:loading wire:target="findServicePoints">Searching...</span>
-                                    </button>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.country') }} <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <select wire:model.live="billing.country_code" wire:change="saveGuestDraft"
+                                                class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
+                                                @foreach($supportedCountries as $country)
+                                                    <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        @error('billing.country_code') <span class="text-red-500 text-[11px] leading-tight">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.zip_postal_code') }} <span class="text-red-500">*</span></label>
+                                        <input wire:model="billing.postal_code" wire:change="saveGuestDraft" type="text"
+                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
+                                            placeholder="e.g. 75014">
+                                        @error('billing.postal_code') <span class="text-red-500 text-[11px] leading-tight">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <button type="button" wire:click="findServicePoints" wire:loading.attr="disabled" wire:target="findServicePoints"
+                                            class="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-60 px-4 py-2 text-xs font-semibold text-gray-800 shadow-sm cursor-pointer">
+                                            <svg wire:loading wire:target="findServicePoints" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                            </svg>
+                                            <span wire:loading.remove wire:target="findServicePoints">Find Nearby Points</span>
+                                            <span wire:loading wire:target="findServicePoints">Searching...</span>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 @if($servicePointError)
@@ -855,6 +626,115 @@
                             </div>
                         @endif
 
+                        @if($selectedShippingMethod && ! $this->isShopPickupSelected() && ! $this->isServicePointMethodSelected())
+                            <div id="checkout-delivery-details" class="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4 transition-colors">
+                                <p class="text-xs font-bold text-gray-900 uppercase tracking-wide">Delivery Address</p>
+
+                                @if(auth()->check() && $savedAddresses && $savedAddresses->count() > 0)
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        @foreach($savedAddresses as $addr)
+                                            <div wire:click="useSavedAddress({{ $addr->id }})"
+                                                class="cursor-pointer relative p-2.5 rounded-lg border transition-all duration-200 group h-full flex flex-col justify-between bg-white
+                                                                {{ $selectedAddressId == $addr->id ? 'border-primary bg-primary/10 ring-1 ring-primary shadow-sm' : 'border-gray-200 hover:border-primary/50' }}">
+                                                <div class="flex items-center justify-between mb-1">
+                                                    <span class="text-[10px] font-bold text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded uppercase">{{ $addr->type ?? 'Home' }}</span>
+                                                </div>
+                                                <div class="text-xs text-gray-600 leading-snug">
+                                                    <p class="font-bold text-gray-900 truncate">{{ $addr->name }}</p>
+                                                    <p class="truncate text-gray-500">{{ $addr->address_line1 }}</p>
+                                                    <p class="text-[10px] text-gray-400">{{ $addr->city }}, {{ $addr->country_label }}</p>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        <div wire:click="clearAddressSelection"
+                                            class="cursor-pointer relative p-2.5 rounded-lg border border-dashed border-gray-300 bg-white hover:border-primary transition-all flex flex-col items-center justify-center text-center min-h-[75px]
+                                                        {{ $selectedAddressId === 'new' ? 'border-primary bg-primary/10 ring-1 ring-primary' : '' }}">
+                                            <span class="text-xs font-bold text-gray-600">+ New Address</span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.country') }} <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <select wire:model.live="billing.country_code" wire:change="saveGuestDraft"
+                                                class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
+                                                @foreach($supportedCountries as $country)
+                                                    <option value="{{ $country['code'] }}">{{ $country['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        @error('billing.country_code') <span class="text-red-500 text-[11px] leading-tight">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.address_line_1') }} <span class="text-red-500">*</span></label>
+                                        <input wire:model="billing.address_line1" wire:change="saveGuestDraft" type="text"
+                                            class="w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 px-3"
+                                            placeholder="123 Main St, Apt 4B">
+                                        @error('billing.address_line1') <span class="text-red-500 text-[11px] leading-tight">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.state_province') }}</label>
+                                        @if(!empty($this->billingStates))
+                                            <div class="relative">
+                                                <select wire:model.live="billing.state" wire:change="saveGuestDraft"
+                                                    class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
+                                                    <option value="">Select state / region</option>
+                                                    @foreach($this->billingStates as $stateOption)
+                                                        <option value="{{ $stateOption }}">{{ $stateOption }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
+                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <input wire:model="billing.state" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="State / Region">
+                                        @endif
+                                    </div>
+                                    <div x-data="{ customCity: false }">
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.city') }} <span class="text-red-500">*</span></label>
+                                        @if(!empty($this->billingCities))
+                                            <div x-show="!customCity" class="relative">
+                                                <select wire:model="billing.city" wire:change="saveGuestDraft"
+                                                    @change="if ($event.target.value === '__other__') { customCity = true; $wire.set('billing.city', ''); }"
+                                                    class="appearance-none w-full text-sm border border-gray-300 bg-white focus:border-primary focus:ring-primary rounded-lg shadow-sm py-2 pl-3 pr-10">
+                                                    <option value="">Select city</option>
+                                                    @foreach($this->billingCities as $cityOption)
+                                                        <option value="{{ $cityOption }}">{{ $cityOption }}</option>
+                                                    @endforeach
+                                                    <option value="__other__">Other (type city)...</option>
+                                                </select>
+                                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
+                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                                </div>
+                                            </div>
+                                            <div x-show="customCity" style="display: none;" class="flex gap-1.5">
+                                                <input wire:model="billing.city" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="Type city name">
+                                                <button type="button" @click="customCity = false" class="px-2 text-xs text-gray-500 border border-gray-300 rounded-lg bg-white">↺</button>
+                                            </div>
+                                        @else
+                                            <input wire:model="billing.city" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="City">
+                                        @endif
+                                        @error('billing.city') <span class="text-red-500 text-[11px] leading-tight">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">{{ __('store.zip_postal_code') }}</label>
+                                        <input wire:model="billing.postal_code" wire:change="saveGuestDraft" type="text" class="w-full text-sm border border-gray-300 bg-white rounded-lg shadow-sm py-2 px-3" placeholder="e.g. 75001">
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                             <div class="mt-4 pt-3 border-t border-gray-100 flex justify-end">
                                 <button type="button" wire:click="confirmDeliveryStep" wire:loading.attr="disabled" wire:target="confirmDeliveryStep"
                                     class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary disabled:opacity-60 text-white rounded-lg px-4 py-2 text-xs font-bold shadow-sm transition cursor-pointer">
@@ -889,7 +769,9 @@
                             @endif
                             <div class="flex justify-between text-gray-600">
                                 <span>{{ __('store.shipping') }}</span>
-                                @if((float) $shippingCost <= 0)
+                                @if(! $selectedShippingMethod)
+                                    <span class="text-xs font-medium text-gray-400">Select delivery</span>
+                                @elseif((float) $shippingCost <= 0)
                                     <span class="font-bold text-emerald-700">Free</span>
                                 @else
                                     <span class="font-bold text-gray-900">{{ $currencySymbol }}{{ number_format($shippingCost, 2) }}</span>
@@ -938,12 +820,12 @@
                             @if(!$appliedCoupon)
                                 <p class="text-[11px] text-gray-500">{{ __('store.enter_discount_code_apply') }}</p>
                             @endif
-                            @error('coupon') <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p> @enderror
+                            @error('coupon') <p class="text-red-500 text-[11px] leading-tight mt-1 font-medium">{{ $message }}</p> @enderror
                             @if(session('coupon_success'))
                             <p class="text-green-600 text-xs mt-1 font-bold">{{ session('coupon_success') }}</p> @endif
                         </div>
 
-                        <div class="space-y-4 mb-4">
+                        <div id="checkout-payment-section" class="space-y-4 mb-4 p-3 -mx-3 rounded-xl border border-transparent transition-colors">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">{{ __('store.select_payment_method') }}</h3>
 
                             <div class="grid grid-cols-1 gap-4">
@@ -1160,7 +1042,7 @@
                                             </svg>
                                         </span>
                                     </div>
-                                    @error('offlinePaymentMethodId') <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @error('offlinePaymentMethodId') <p class="text-red-500 text-[11px] leading-tight mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 @php
@@ -1178,7 +1060,7 @@
                                     <input type="text" wire:model="offlineReference"
                                         class="mt-1 block w-full border border-gray-300 rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-300"
                                         placeholder="{{ __('store.transaction_id_note') }}">
-                                    @error('offlineReference') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                    @error('offlineReference') <p class="text-red-500 text-[11px] leading-tight mt-1">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label
@@ -1236,7 +1118,7 @@
                                             </button>
                                         @endif
                                     </div>
-                                    @error('offlineProof') <p class="text-red-500 text-xs mt-1.5 font-medium">{{ $message }}</p>
+                                    @error('offlineProof') <p class="text-red-500 text-[11px] leading-tight mt-1.5 font-medium">{{ $message }}</p>
                                     @enderror
 
                                     <p
@@ -1258,12 +1140,17 @@
                                 No payment method is available for this delivery option. Please configure a payment gateway (e.g., Stripe, PortPos, or Offline Payment) in Store Settings.
                             </div>
                         @endif
-                        @error('paymentMethod') <p class="text-red-500 text-xs mb-2">{{ $message }}</p> @enderror
+                        @error('paymentMethod') <p class="text-red-500 text-[11px] leading-tight mb-2">{{ $message }}</p> @enderror
 
                         @if(!auth()->check() && !$authSettings['guest_checkout_enabled'])
                             <button type="button" disabled
                                 class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md opacity-70 cursor-not-allowed flex justify-center items-center">
                                 {{ __('store.log_in_to_order') }}
+                            </button>
+                        @elseif(!$selectedShippingMethod)
+                            <button type="button" disabled
+                                class="w-full bg-gray-300 text-gray-600 py-3 rounded-lg font-bold text-base cursor-not-allowed flex justify-center items-center">
+                                Select a Delivery Method
                             </button>
                         @elseif($paymentMethod === '')
                             <button type="button" disabled
@@ -1317,7 +1204,7 @@
                                 </button>
                             </div>
                         @endif
-                        @error('auth') <p class="text-red-500 text-xs mt-2">{{ $message }}</p> @enderror
+                        @error('auth') <p class="text-red-500 text-[11px] leading-tight mt-2">{{ $message }}</p> @enderror
 
                         <div class="mt-4 flex justify-center items-center text-xs text-gray-400 gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1380,5 +1267,72 @@
                 </div>
             </div>
         @endif
+
+        <style>
+            @keyframes checkoutSectionFocus {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+                    border-color: #e5e7eb;
+                }
+                18% {
+                    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.35), 0 10px 25px -5px rgba(59, 130, 246, 0.15);
+                    border-color: #3b82f6;
+                }
+                36% {
+                    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15);
+                    border-color: #93c5fd;
+                }
+                54% {
+                    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.32), 0 10px 25px -5px rgba(59, 130, 246, 0.12);
+                    border-color: #3b82f6;
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+                }
+            }
+            .checkout-step-focus {
+                animation: checkoutSectionFocus 1.8s ease-out forwards;
+            }
+        </style>
+
+        <script>
+            (function () {
+                const sectionMap = {
+                    delivery: 'checkout-delivery-section',
+                    'delivery-details': 'checkout-delivery-details',
+                    payment: 'checkout-payment-section',
+                };
+
+                window.focusCheckoutStep = function (step) {
+                    const targetId = sectionMap[step];
+                    if (!targetId) return;
+
+                    setTimeout(() => {
+                        const el = document.getElementById(targetId);
+                        if (!el) return;
+
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.classList.remove('checkout-step-focus');
+                        void el.offsetWidth;
+                        el.classList.add('checkout-step-focus');
+
+                        setTimeout(() => {
+                            el.classList.remove('checkout-step-focus');
+                        }, 1900);
+                    }, 90);
+                };
+
+                window.addEventListener('checkout-focus-step', function (event) {
+                    const step = event?.detail?.step ?? event?.detail?.[0]?.step;
+                    if (step) window.focusCheckoutStep(step);
+                });
+
+                @if(session('checkout_focus_step'))
+                    document.addEventListener('DOMContentLoaded', function () {
+                        window.focusCheckoutStep(@json(session('checkout_focus_step')));
+                    });
+                @endif
+            })();
+        </script>
     </div>
 </div>
