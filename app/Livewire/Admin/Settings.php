@@ -42,6 +42,8 @@ class Settings extends Component
         'social_linkedin' => '',
         
         // Payment Gateways
+        'stripe_mode' => 'test',
+        'stripe_test_api_key' => '',
         'stripe_api_key' => '',
         'stripe_label' => '',
         
@@ -81,6 +83,7 @@ class Settings extends Component
         'sendcloud_request_label' => true,
         'sendcloud_default_weight' => '1.00',
         'shop_pickup_enabled' => true,
+        'shop_pickup_hold_hours' => '24',
         'shop_pickup_address' => '',
         'shop_pickup_hours' => '',
         'shop_pickup_latitude' => '',
@@ -183,6 +186,8 @@ class Settings extends Component
         'settings.social_linkedin' => 'nullable|url',
         
         // Payment Validation
+        'settings.stripe_mode' => 'required|in:test,production',
+        'settings.stripe_test_api_key' => 'nullable|string|max:255',
         'settings.stripe_api_key' => 'nullable|string|max:255',
         'settings.stripe_label' => 'nullable|string|max:255',
         'settings.paypal_api_key' => 'nullable|string|max:255',
@@ -213,6 +218,7 @@ class Settings extends Component
         'settings.sendcloud_request_label' => 'boolean',
         'settings.sendcloud_default_weight' => 'nullable|numeric|min:0.01|max:1000',
         'settings.shop_pickup_enabled' => 'boolean',
+        'settings.shop_pickup_hold_hours' => 'nullable|integer|min:1|max:720',
         'settings.shop_pickup_address' => 'nullable|string|max:500',
         'settings.shop_pickup_hours' => 'nullable|string|max:255',
         'settings.shop_pickup_latitude' => 'nullable|numeric|between:-90,90',
@@ -262,6 +268,9 @@ class Settings extends Component
 
         // Force Boolean for Checkboxes
         $this->settings['sslcommerz_sandbox'] = filter_var($this->settings['sslcommerz_sandbox'], FILTER_VALIDATE_BOOLEAN);
+        $this->settings['stripe_mode'] = in_array($this->settings['stripe_mode'] ?? 'test', ['test', 'production'], true)
+            ? $this->settings['stripe_mode']
+            : 'test';
         $this->settings['cod_enabled'] = filter_var($this->settings['cod_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN); // [NEW]
         $this->settings['sendcloud_enabled'] = filter_var($this->settings['sendcloud_enabled'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $this->settings['sendcloud_mode'] = in_array($this->settings['sendcloud_mode'] ?? 'test', ['test', 'production'], true)
@@ -577,12 +586,43 @@ class Settings extends Component
     public function saveStripeGateway()
     {
         $this->saveSettings([
+            'stripe_mode',
+            'stripe_test_api_key',
             'stripe_api_key',
             'stripe_label',
         ], [
+            'settings.stripe_mode' => $this->rules['settings.stripe_mode'],
+            'settings.stripe_test_api_key' => $this->rules['settings.stripe_test_api_key'],
             'settings.stripe_api_key' => $this->rules['settings.stripe_api_key'],
             'settings.stripe_label' => $this->rules['settings.stripe_label'],
         ], false, 'stripe');
+    }
+
+    public function testStripeConnection(): void
+    {
+        $isTest = ($this->settings['stripe_mode'] ?? 'test') === 'test';
+        $key = trim((string) ($isTest ? ($this->settings['stripe_test_api_key'] ?? '') : ($this->settings['stripe_api_key'] ?? '')));
+
+        if ($key === '') {
+            $this->setSectionAlert('stripe', 'error', 'Please enter your Stripe ' . ($isTest ? 'Test (Sandbox)' : 'Live') . ' Secret Key first.');
+            return;
+        }
+
+        try {
+            $response = Http::withBasicAuth($key, '')
+                ->timeout(15)
+                ->get('https://api.stripe.com/v1/balance');
+
+            if ($response->successful()) {
+                $modeLabel = $isTest ? 'Test (Sandbox)' : 'Production (Live)';
+                $this->setSectionAlert('stripe', 'success', "Connected to Stripe {$modeLabel} successfully.");
+            } else {
+                $msg = $response->json('error.message') ?? $response->body();
+                $this->setSectionAlert('stripe', 'error', 'Stripe API error (' . $response->status() . '): ' . $msg);
+            }
+        } catch (\Throwable $e) {
+            $this->setSectionAlert('stripe', 'error', 'Connection failed: ' . $e->getMessage());
+        }
     }
 
     public function savePaypalGateway()
@@ -672,12 +712,14 @@ class Settings extends Component
     {
         $this->saveSettings([
             'shop_pickup_enabled',
+            'shop_pickup_hold_hours',
             'shop_pickup_address',
             'shop_pickup_hours',
             'shop_pickup_latitude',
             'shop_pickup_longitude',
         ], [
             'settings.shop_pickup_enabled' => $this->rules['settings.shop_pickup_enabled'],
+            'settings.shop_pickup_hold_hours' => $this->rules['settings.shop_pickup_hold_hours'],
             'settings.shop_pickup_address' => $this->rules['settings.shop_pickup_address'],
             'settings.shop_pickup_hours' => $this->rules['settings.shop_pickup_hours'],
             'settings.shop_pickup_latitude' => $this->rules['settings.shop_pickup_latitude'],

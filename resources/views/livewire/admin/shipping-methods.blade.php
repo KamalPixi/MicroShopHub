@@ -284,12 +284,14 @@
                                 @endif
                             </td>
                             <td class="p-2">
-                                @if($method->type === 'local_pickup')
-                                    <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Collect from Shop</span>
+                                @if($method->delivery_mode === 'shop_pickup')
+                                    <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">In-Store Pickup</span>
+                                @elseif($method->delivery_mode === 'service_point')
+                                    <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">Pickup Point / Locker</span>
                                 @elseif($method->type === 'free_shipping')
-                                    <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Free Shipping</span>
+                                    <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Home Delivery (Free)</span>
                                 @else
-                                    <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">Flat Rate</span>
+                                    <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">Home Delivery</span>
                                 @endif
                             </td>
                             <td class="p-2">

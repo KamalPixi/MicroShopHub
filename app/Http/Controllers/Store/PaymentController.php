@@ -32,7 +32,7 @@ class PaymentController extends Controller
                 return $this->payWithPortPos($request);
 
             case 'stripe':
-                return redirect()->back()->with('error', 'Stripe not implemented yet.');
+                return $this->payWithStripe($request);
 
             default:
                 return redirect()->back()->with('error', 'Invalid Payment Gateway selected.');
@@ -255,6 +255,72 @@ class PaymentController extends Controller
         return redirect()->away($paymentUrl.$invoiceId);
     }
 
+    private function resolveStripeSecretKey(): string
+    {
+        $settings = Setting::whereIn('key', [
+            'stripe_mode',
+            'stripe_test_api_key',
+            'stripe_api_key',
+        ])->pluck('value', 'key');
+
+        $mode = ($settings['stripe_mode'] ?? 'test') === 'production' ? 'production' : 'test';
+
+        return $mode === 'test'
+            ? trim((string) ($settings['stripe_test_api_key'] ?? ''))
+            : trim((string) ($settings['stripe_api_key'] ?? ''));
+    }
+
+    private function payWithStripe(Request $request)
+    {
+        $secretKey = $this->resolveStripeSecretKey();
+        if ($secretKey === '') {
+            return redirect()->back()->with('error', 'Stripe secret key is not configured.');
+        }
+
+        $amount = (float) $request->input('amount', 0);
+        if ($amount <= 0) {
+            return redirect()->back()->with('error', 'Invalid Stripe payment amount.');
+        }
+
+        $currency = strtolower((string) Currency::getActive()->code ?: 'eur');
+        $unitAmount = (int) round($amount * 100);
+        $shopName = Setting::where('key', 'shop_name')->value('value') ?: 'TechParisien';
+
+        $payload = [
+            'mode' => 'payment',
+            'success_url' => route('payment.success', ['gateway' => 'stripe']) . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('payment.cancel', ['gateway' => 'stripe']),
+            'line_items[0][price_data][currency]' => $currency,
+            'line_items[0][price_data][unit_amount]' => $unitAmount,
+            'line_items[0][price_data][product_data][name]' => $shopName . ' Order',
+            'line_items[0][quantity]' => 1,
+        ];
+
+        $email = trim((string) $request->input('billing_email', ''));
+        if ($email !== '') {
+            $payload['customer_email'] = $email;
+        }
+
+        $response = Http::withBasicAuth($secretKey, '')
+            ->asForm()
+            ->timeout(20)
+            ->post('https://api.stripe.com/v1/checkout/sessions', $payload);
+
+        $result = $response->json();
+        $checkoutUrl = $result['url'] ?? null;
+
+        if (! $response->successful() || ! $checkoutUrl) {
+            Log::error('Stripe session creation failed.', [
+                'status' => $response->status(),
+                'response' => $result,
+            ]);
+
+            return redirect()->back()->with('error', 'Stripe error: ' . ($result['error']['message'] ?? 'Unable to create Stripe checkout session.'));
+        }
+
+        return redirect()->away($checkoutUrl);
+    }
+
     // --- 4. GLOBAL CALLBACK HANDLERS ---
 
     public function success($gateway, Request $request)
@@ -292,6 +358,29 @@ class PaymentController extends Controller
             }
 
             return redirect()->route('store.index')->with('error', 'PortPos payment failed or could not be verified.');
+        }
+
+        if ($gateway === 'stripe') {
+            $sessionId = trim((string) $request->query('session_id', ''));
+            $secretKey = $this->resolveStripeSecretKey();
+
+            if ($sessionId === '' || $secretKey === '') {
+                return redirect()->route('store.index')->with('error', 'Invalid Stripe callback.');
+            }
+
+            $response = Http::withBasicAuth($secretKey, '')
+                ->timeout(15)
+                ->get("https://api.stripe.com/v1/checkout/sessions/{$sessionId}");
+
+            $sessionData = $response->json();
+
+            if ($response->successful() && ($sessionData['payment_status'] ?? '') === 'paid') {
+                session()->forget('cart');
+
+                return redirect()->route('store.index')->with('success', 'Stripe payment successful!');
+            }
+
+            return redirect()->route('store.index')->with('error', 'Stripe payment could not be verified.');
         }
 
         return redirect()->route('store.index')->with('error', 'Unknown Payment Gateway.');

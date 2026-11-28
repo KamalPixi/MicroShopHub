@@ -35,13 +35,14 @@ class CartCheckout extends Component
 
     public $shippingMethods = [];
     public $selectedShippingMethod = null;
+    public bool $deliveryConfirmed = false;
     public array $servicePoints = [];
     public ?int $selectedServicePointId = null;
     public string $selectedServicePointName = '';
     public string $servicePointError = '';
     public $couponCode = '';
     public $appliedCoupon = null;
-    public $paymentMethod = 'cod';
+    public $paymentMethod = '';
     public $offlinePaymentMethods = [];
     public $offlinePaymentMethodId = '';
     public $offlineReference = '';
@@ -192,6 +193,8 @@ class CartCheckout extends Component
             $this->selectedShippingMethod = $this->shippingMethods->first()->id;
         }
 
+        $this->syncSelectedPaymentMethod();
+
         $defaultCountry = $this->getDefaultCountryCode();
         if (empty($this->billing['country_code'])) {
             $this->billing['country_code'] = $defaultCountry;
@@ -247,11 +250,90 @@ class CartCheckout extends Component
 
     public function updatedSelectedShippingMethod(): void
     {
+        $this->deliveryConfirmed = false;
         $this->servicePoints = [];
         $this->selectedServicePointId = null;
         $this->selectedServicePointName = '';
         $this->servicePointError = '';
+        $this->syncSelectedPaymentMethod();
         $this->calculateTotals();
+    }
+
+    public function isShopPickupSelected(): bool
+    {
+        $method = collect($this->shippingMethods)->firstWhere('id', $this->selectedShippingMethod);
+
+        return $method && ($method->type ?? 'flat_rate') === 'local_pickup';
+    }
+
+    public function isStripeConfigured(): bool
+    {
+        $mode = ($this->settings['stripe_mode'] ?? 'test') === 'production' ? 'production' : 'test';
+        $key = $mode === 'test'
+            ? trim((string) ($this->settings['stripe_test_api_key'] ?? ''))
+            : trim((string) ($this->settings['stripe_api_key'] ?? ''));
+
+        return $key !== '';
+    }
+
+    public function availablePaymentGateways(): array
+    {
+        $gateways = [];
+
+        if ($this->isShopPickupSelected()) {
+            $gateways[] = 'pay_at_shop';
+        }
+        if ($this->codEnabled) {
+            $gateways[] = 'cod';
+        }
+        if (! empty($this->settings['sslcommerz_store_id'])) {
+            $gateways[] = 'sslcommerz';
+        }
+        if ($this->isStripeConfigured()) {
+            $gateways[] = 'stripe';
+        }
+        if (! empty($this->settings['bkash_app_key'])) {
+            $gateways[] = 'bkash';
+        }
+        if (! empty($this->settings['portpos_app_key'])) {
+            $gateways[] = 'portpos';
+        }
+        if (! empty($this->offlinePaymentMethods)) {
+            $gateways[] = 'offline';
+        }
+
+        return $gateways;
+    }
+
+    protected function syncSelectedPaymentMethod(): void
+    {
+        $available = $this->availablePaymentGateways();
+
+        if (! in_array($this->paymentMethod, $available, true)) {
+            $this->paymentMethod = $available[0] ?? '';
+        }
+    }
+
+    public function confirmDeliveryStep(): void
+    {
+        $this->servicePointError = '';
+
+        if (! $this->selectedShippingMethod) {
+            $this->addError('selectedShippingMethod', 'Please choose a delivery method.');
+            return;
+        }
+
+        if ($this->isServicePointMethodSelected() && ! $this->selectedServicePointId) {
+            $this->servicePointError = 'Please find and select a nearby pickup point before continuing.';
+            return;
+        }
+
+        $this->deliveryConfirmed = true;
+    }
+
+    public function editDeliveryStep(): void
+    {
+        $this->deliveryConfirmed = false;
     }
 
     protected function resolveLocationCountry(array $address): string
@@ -322,17 +404,8 @@ class CartCheckout extends Component
     public function isServicePointMethodSelected(): bool
     {
         $method = collect($this->shippingMethods)->firstWhere('id', $this->selectedShippingMethod);
-        if (! $method || ($method->provider ?? 'manual') !== 'sendcloud') {
-            return false;
-        }
 
-        $name = strtolower((string) $method->name);
-
-        return str_contains($name, 'shop2shop')
-            || str_contains($name, 'relais')
-            || str_contains($name, 'locker')
-            || str_contains($name, 'service point')
-            || str_contains($name, 'pickup point');
+        return $method && $method->delivery_mode === 'service_point';
     }
 
     public function findServicePoints(): void
@@ -481,6 +554,13 @@ class CartCheckout extends Component
         }
 
         $this->validate();
+
+        $availableGateways = $this->availablePaymentGateways();
+        if ($this->paymentMethod === '' || ! in_array($this->paymentMethod, $availableGateways, true)) {
+            $this->addError('paymentMethod', 'Please select a valid payment method before placing your order.');
+            return;
+        }
+
         if ($this->paymentMethod === 'offline') {
             $this->validate([
                 'offlinePaymentMethodId' => 'required',

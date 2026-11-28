@@ -587,14 +587,62 @@
                     </div>
 
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-                        <div class="flex items-center justify-between mb-3">
-                            <div>
-                                <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                                    {{ __('store.delivery_method') }}
-                                </h2>
-                                <p class="text-xs text-gray-500 mt-0.5">Choose how you want to receive your order.</p>
+                        @php
+                            $confirmedMethod = collect($shippingMethods)->firstWhere('id', $selectedShippingMethod);
+                            $confirmedIsPickup = $confirmedMethod && ($confirmedMethod->type ?? 'flat_rate') === 'local_pickup';
+                        @endphp
+
+                        @if($deliveryConfirmed && $confirmedMethod)
+                            <div class="flex flex-wrap items-start justify-between gap-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center shrink-0 mt-0.5">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide">{{ __('store.delivery_method') }}</h2>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800">Selected</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-gray-800 mt-1">
+                                            {{ $confirmedMethod->name }}
+                                            @if((float) $confirmedMethod->cost <= 0)
+                                                <span class="text-emerald-700 font-bold ml-1">· Free</span>
+                                            @else
+                                                <span class="text-gray-900 font-bold ml-1">· {{ $currencySymbol }}{{ number_format($confirmedMethod->cost, 2) }}</span>
+                                            @endif
+                                        </p>
+                                        @if($selectedServicePointId)
+                                            <p class="text-xs text-gray-600 mt-0.5">
+                                                Pickup Point: <span class="font-semibold text-gray-800">{{ $selectedServicePointName }}</span> (#{{ $selectedServicePointId }})
+                                            </p>
+                                        @elseif($confirmedIsPickup)
+                                            <p class="text-xs text-gray-600 mt-0.5">
+                                                {{ $settings['shop_pickup_address'] ?? 'Collect your order in person from our shop.' }}
+                                            </p>
+                                        @else
+                                            <p class="text-xs text-gray-500 mt-0.5">
+                                                Estimated delivery: {{ $confirmedMethod->estimated_days }} {{ __('store.days') }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <button type="button" wire:click="editDeliveryStep"
+                                    class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-800 shadow-sm cursor-pointer">
+                                    Change
+                                </button>
                             </div>
-                        </div>
+                        @else
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide">
+                                        {{ __('store.delivery_method') }}
+                                    </h2>
+                                    <p class="text-xs text-gray-500 mt-0.5">Choose how you want to receive your order.</p>
+                                </div>
+                            </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pr-1" style="max-height: 380px; overflow-y: auto;">
                             @foreach($shippingMethods as $method)
@@ -625,18 +673,25 @@
 
                                             <div class="min-w-0">
                                                 <span class="block text-sm font-bold text-gray-900 leading-snug break-words">{{ $method->name }}</span>
-                                                <span class="text-xs text-gray-500 flex items-center mt-0.5">
-                                                    <svg class="w-3 h-3 mr-1 text-gray-400 shrink-0" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                    </svg>
-                                                    @if($isPickup)
-                                                        In-store pickup
+                                                <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                                                    @if($method->delivery_mode === 'shop_pickup')
+                                                        <span class="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">In-Store Pickup</span>
+                                                    @elseif($method->delivery_mode === 'service_point')
+                                                        <span class="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700">Pickup Point</span>
                                                     @else
-                                                        {{ $method->estimated_days }} {{ __('store.days') }}
+                                                        <span class="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">Home Delivery</span>
                                                     @endif
-                                                </span>
+                                                    @if(!$isPickup)
+                                                        <span class="text-xs text-gray-500 flex items-center">
+                                                            <svg class="w-3 h-3 mr-1 text-gray-400 shrink-0" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>
+                                                            {{ $method->estimated_days }} {{ __('store.days') }}
+                                                        </span>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
 
@@ -768,6 +823,15 @@
                                 @endif
                             </div>
                         @endif
+
+                            <div class="mt-4 pt-3 border-t border-gray-100 flex justify-end">
+                                <button type="button" wire:click="confirmDeliveryStep" wire:loading.attr="disabled" wire:target="confirmDeliveryStep"
+                                    class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary disabled:opacity-60 text-white rounded-lg px-4 py-2 text-xs font-bold shadow-sm transition cursor-pointer">
+                                    <span wire:loading.remove wire:target="confirmDeliveryStep">Confirm Delivery &amp; Continue →</span>
+                                    <span wire:loading wire:target="confirmDeliveryStep">Confirming...</span>
+                                </button>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
@@ -853,6 +917,31 @@
 
                             <div class="grid grid-cols-1 gap-4">
 
+                                @if($this->isShopPickupSelected())
+                                    <button type="button" wire:click="$set('paymentMethod','pay_at_shop')"
+                                        class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
+                                                           {{ $paymentMethod === 'pay_at_shop' ? 'border-amber-600 ring-1 ring-amber-200' : 'border-gray-200 hover:border-amber-500' }}">
+                                        <div class="flex flex-col items-start text-left">
+                                            <div class="h-7 w-7 mb-1 text-amber-700 bg-amber-50 rounded-lg flex items-center justify-center">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l1-5h16l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M9 20v-6h6v6" />
+                                                </svg>
+                                            </div>
+                                            <span class="text-sm font-bold text-gray-800 group-hover:text-amber-800 transition-colors">
+                                                Pay at Counter (In-Store)
+                                            </span>
+                                            <span class="text-[10px] text-gray-500">
+                                                Pay by card or cash at our shop · Held for {{ max(1, (int) ($settings['shop_pickup_hold_hours'] ?? 24)) }}h before items return to stock
+                                            </span>
+                                        </div>
+                                        <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors text-gray-400">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                @endif
+
                                 @if($codEnabled)
                                     <button type="button" wire:click="$set('paymentMethod','cod')"
                                         class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
@@ -907,15 +996,20 @@
                                     </button>
                                 @endif
 
-                                @if(!empty($settings['stripe_api_key']))
+                                @if($this->isStripeConfigured())
                                     <button type="button" wire:click="$set('paymentMethod','stripe')"
                                         class="group w-full flex items-center justify-between p-3 bg-white border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 h-full
                                                            {{ $paymentMethod === 'stripe' ? 'border-indigo-600 ring-1 ring-indigo-200' : 'border-gray-200 hover:border-indigo-600' }}">
                                         <div class="flex flex-col items-start text-left">
-                                            <svg class="h-5 mb-1 text-primary" viewBox="0 0 40 17" fill="currentColor">
-                                                <path
-                                                    d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z" />
-                                            </svg>
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <svg class="h-5 text-primary" viewBox="0 0 40 17" fill="currentColor">
+                                                    <path
+                                                        d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z" />
+                                                </svg>
+                                                @if(($settings['stripe_mode'] ?? 'test') === 'test')
+                                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">Test Mode</span>
+                                                @endif
+                                            </div>
                                             <span
                                                 class="text-sm font-bold text-gray-800 group-hover:text-primary transition-colors">
                                                 {{ $settings['stripe_label'] ?? null ?: __('store.credit_debit_card') }}
@@ -1128,7 +1222,19 @@
                             </div>
                         @endif
 
-                        @if($paymentMethod === 'cod' || $paymentMethod === 'offline')
+                        @if(empty($this->availablePaymentGateways()))
+                            <div class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 mb-3">
+                                No payment method is available for this delivery option. Please configure a payment gateway (e.g., Stripe, PortPos, or Offline Payment) in Store Settings.
+                            </div>
+                        @endif
+                        @error('paymentMethod') <p class="text-red-500 text-xs mb-2">{{ $message }}</p> @enderror
+
+                        @if($paymentMethod === '')
+                            <button type="button" disabled
+                                class="w-full bg-gray-300 text-gray-600 py-3 rounded-lg font-bold text-base cursor-not-allowed flex justify-center items-center">
+                                Select a Payment Method
+                            </button>
+                        @elseif($paymentMethod === 'cod' || $paymentMethod === 'offline' || $paymentMethod === 'pay_at_shop')
                             <button wire:click="placeOrder" wire:loading.attr="disabled"
                                 class="w-full bg-primary text-white py-3 rounded-lg font-bold text-base shadow-md hover:bg-primary transition-all flex justify-center items-center
                                                    {{ (!auth()->check() && !$authSettings['guest_checkout_enabled']) ? 'opacity-70 cursor-not-allowed' : '' }}">

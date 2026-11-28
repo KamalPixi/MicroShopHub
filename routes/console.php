@@ -13,6 +13,9 @@ if (env('BACKUP_ENABLED', true)) {
     Schedule::command('app:backup-db')->dailyAt('02:00');
 }
 
+// Release expired Pay at Counter orders back to stock hourly
+Schedule::command('orders:release-expired-pickup')->hourly();
+
 // If in "Cron Mode", we can also schedule the queue to run if no persistent worker is available
 // REMOVED: Manual control via dashboard is preferred
 /*

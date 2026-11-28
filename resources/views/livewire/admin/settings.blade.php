@@ -341,7 +341,12 @@
 
                 <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
                     <div class="flex items-center mb-4 justify-between">
-                        <span class="font-bold text-gray-800 text-sm">Stripe</span>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-gray-800 text-sm">Stripe</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold {{ ($settings['stripe_mode'] ?? 'test') === 'production' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-800' }}">
+                                {{ ($settings['stripe_mode'] ?? 'test') === 'production' ? 'Live (Production)' : 'Sandbox (Test Mode)' }}
+                            </span>
+                        </div>
                         <svg class="h-6 w-auto text-blue-600" viewBox="0 0 40 17" fill="currentColor"><path d="M4.64 16.56h-4.64v-16.56h4.64v16.56zm9.24-11.23c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm8.4-7.64h-1.6v11.23h1.6v-4.82c0-2.3.9-3.2 2.65-3.2v-1.63c-1.25 0-2.22.53-2.65 1.48v-3.06zm8.17 0c-2.5 0-4.32 1.95-4.32 4.67s1.82 4.67 4.32 4.67 4.32-1.95 4.32-4.67-1.82-4.67-4.32-4.67zm0 7.64c-1.57 0-2.67-1.32-2.67-2.97s1.1-2.97 2.67-2.97 2.67 1.32 2.67 2.97-1.1 2.97-2.67 2.97zm5.95 3.59h1.6v-15.17h-1.6v15.17zm6.75-12.87c.92 0 1.62-.7 1.62-1.62s-.7-1.62-1.62-1.62-1.62.7-1.62 1.62.7 1.62 1.62 1.62zm-.8 1.64h1.6v11.23h-1.6v-11.23z"/></svg>
                     </div>
 
@@ -350,19 +355,64 @@
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gateway Display Name</label>
                             <input wire:model="settings.stripe_label" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="Credit / Debit Card (International)">
                         </div>
+
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Secret Key</label>
-                            <input wire:model="settings.stripe_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="sk_live_...">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Environment Mode</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <label class="cursor-pointer rounded-lg border p-3 transition {{ ($settings['stripe_mode'] ?? 'test') === 'test' ? 'border-amber-400 bg-amber-50/70 ring-1 ring-amber-300' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                                    <div class="flex items-center gap-2">
+                                        <input type="radio" wire:model.live="settings.stripe_mode" value="test" class="text-amber-600 focus:ring-amber-500">
+                                        <span class="text-xs font-bold text-gray-900">Sandbox (Test Mode)</span>
+                                    </div>
+                                    <p class="mt-1 text-[11px] text-gray-600">Uses your <code class="font-mono">sk_test_...</code> key with Stripe test cards (4242...).</p>
+                                </label>
+                                <label class="cursor-pointer rounded-lg border p-3 transition {{ ($settings['stripe_mode'] ?? 'test') === 'production' ? 'border-green-500 bg-green-50/60 ring-1 ring-green-400' : 'border-gray-200 bg-white hover:border-gray-300' }}">
+                                    <div class="flex items-center gap-2">
+                                        <input type="radio" wire:model.live="settings.stripe_mode" value="production" class="text-green-600 focus:ring-green-500">
+                                        <span class="text-xs font-bold text-gray-900">Production (Live)</span>
+                                    </div>
+                                    <p class="mt-1 text-[11px] text-gray-600">Uses your <code class="font-mono">sk_live_...</code> key for real charges.</p>
+                                </label>
+                            </div>
                         </div>
+
+                        @if(($settings['stripe_mode'] ?? 'test') === 'test')
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Sandbox Secret Key (Test)</label>
+                                <input wire:model="settings.stripe_test_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sk_test_...">
+                            </div>
+                        @else
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Live Secret Key (Production)</label>
+                                <input wire:model="settings.stripe_api_key" type="password" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono bg-white" placeholder="sk_live_...">
+                            </div>
+                        @endif
                     </div>
 
-                    <div class="mt-4 flex items-center justify-end gap-3">
-                        @if($savedSection === 'stripe')
-                            <span class="text-xs font-semibold text-green-600">Saved</span>
-                        @endif
-                        <button wire:click="saveStripeGateway" type="button" class="bg-primary hover:bg-primary text-white rounded-lg px-3 py-2 text-xs font-semibold">
-                            Save Stripe
+                    @include('livewire.admin.partials.section-alert', ['section' => 'stripe'])
+
+                    <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                        <button wire:click="testStripeConnection" wire:loading.attr="disabled" wire:target="testStripeConnection" type="button" class="inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-60 text-gray-800 rounded-lg px-3 py-2 text-xs font-semibold">
+                            <svg wire:loading wire:target="testStripeConnection" class="animate-spin h-3.5 w-3.5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                            </svg>
+                            <span wire:loading.remove wire:target="testStripeConnection">Test Connection</span>
+                            <span wire:loading wire:target="testStripeConnection">Testing...</span>
                         </button>
+                        <div class="flex items-center gap-3">
+                            @if($savedSection === 'stripe')
+                                <span class="text-xs font-semibold text-green-600">Saved</span>
+                            @endif
+                            <button wire:click="saveStripeGateway" wire:loading.attr="disabled" wire:target="saveStripeGateway" type="button" class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary disabled:opacity-60 text-white rounded-lg px-3 py-2 text-xs font-semibold">
+                                <svg wire:loading wire:target="saveStripeGateway" class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                                <span wire:loading.remove wire:target="saveStripeGateway">Save Stripe</span>
+                                <span wire:loading wire:target="saveStripeGateway">Saving...</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -687,6 +737,12 @@
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Map Longitude</label>
                         <input wire:model="settings.shop_pickup_longitude" type="text" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2" placeholder="e.g. 90.4125">
                         @error('settings.shop_pickup_longitude') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Pay at Counter Hold Duration (Hours)</label>
+                        <input wire:model="settings.shop_pickup_hold_hours" type="number" min="1" max="720" class="input-field block w-full border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2 font-mono" placeholder="24">
+                        @error('settings.shop_pickup_hold_hours') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                        <p class="mt-1 text-[11px] text-gray-500">Unpaid Pay at Counter orders are held for this duration before items are released back to stock.</p>
                     </div>
                 </div>
 
